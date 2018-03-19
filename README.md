@@ -1,6 +1,7 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/36cd4ddf298a54226e1a/maintainability)](https://codeclimate.com/github/Privatix/dapp-gui/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/36cd4ddf298a54226e1a/test_coverage)](https://codeclimate.com/github/Privatix/dapp-gui/test_coverage)
 [![Dependency Status](https://david-dm.org/Privatix/dapp-gui.svg)](https://david-dm.org/Privatix/dapp-gui)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FPrivatix%2Fdapp-gui.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FPrivatix%2Fdapp-gui?ref=badge_shield)
 
 # Privatix Network GUI
 
@@ -68,3 +69,6 @@ See also the list of [contributors](https://github.com/Privatix/dapp-gui/contrib
 # License
 
 This project is licensed under the **GPL-3.0 License** - see the [COPYING](COPYING) file for details.
+
+
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FPrivatix%2Fdapp-gui.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2FPrivatix%2Fdapp-gui?ref=badge_large)
