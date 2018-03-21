@@ -5,11 +5,23 @@ import * as path from 'path';
 import * as url from 'url';
 import fetch from 'node-fetch';
 
+const api = 'http://localhost:3000';
+
+const catchEndpoints = [
+    '/publishSO'
+   ,'/addTemplate'
+];
+
   ipcMain.on('api', (event, msg) => {
     const req = JSON.parse(msg);
-    fetch(req.endpoint, req.options)
-        .then(res => res.json())
-        .then(json => event.sender.send('api-reply', JSON.stringify({req: msg, res: json})));
+    if(catchEndpoints.includes(req.endpoint)){
+        console.log(req);
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+    }else{
+        fetch(`${api}${req.endpoint}`, req.options)
+            .then(res => res.json())
+            .then(json => event.sender.send('api-reply', JSON.stringify({req: msg, res: json})));
+    }
   });
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -18,7 +30,12 @@ let win:BrowserWindow = null;
 
 function createWindow () {
   // Create the browser window.
-  win = new BrowserWindow({width: 800, height: 600});
+  console.log(path.join(__dirname, 'icon_64.png'));
+  win = new BrowserWindow({
+      width: 800
+     ,height: 600
+     ,icon: path.join(__dirname, 'icon_64.png')
+  });
 
   // and load the index.html of the app.
   win.loadURL(url.format({

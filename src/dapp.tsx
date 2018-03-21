@@ -2,10 +2,20 @@ import * as $ from 'jquery';
 import 'free-jqgrid';
 import {ipcRenderer} from 'electron';
 import {fetchFactory} from './fetch';
+import TemplatesList from './components/templatesList';
+
+// tslint:disable-next-line
+import * as React from 'react';
+// tslint:disable-next-line
+import {Component} from 'react';
+import { render } from 'react-dom';
+
+// import Form from 'react-jsonschema-form';
+
 
 const fetch = fetchFactory(ipcRenderer);
 
-fetch('http://localhost:3000/sessions', {}).then(res => {
+fetch('/sessions', {}).then(res => {
     $(document).ready(function () {
         'use strict';
         const data = {
@@ -39,4 +49,8 @@ fetch('http://localhost:3000/sessions', {}).then(res => {
             { multipleSearch: true, multipleGroup: true });
         grid.jqGrid('filterToolbar', { defaultSearch: 'cn', stringResult: true });
     });
+});
+
+fetch('/getSOTemplates', {}).then(res => {
+    render(<TemplatesList list={res} />, document.getElementById('templatesList'));
 });
