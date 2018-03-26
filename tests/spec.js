@@ -24,7 +24,7 @@ describe('Application launch', function () {
 
   it('shows an initial window', function () {
       return this.app.client.getText('#h').then(function (hText) {
-          assert.equal("Hello World!", hText)
+          assert.equal("Privatix dapp", hText)
       })
 
   })
