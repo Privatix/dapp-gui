@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {ipcRenderer} from 'electron';
-import {fetchFactory} from '../fetch';
+import {fetchFactory} from '../../fetch';
 
 const fetch = fetchFactory(ipcRenderer);
 
@@ -12,7 +12,7 @@ export default function(props:any){
         evt.stopPropagation();
         // console.log('Data submitted: ',  evt.target);
 
-        fetch('/addTemplate', {method: 'post', body: {templateSrc: (document.getElementById('templateSrc') as HTMLInputElement).value}}).then(res => {
+        fetch('/templates', {method: 'post', body: {templateSrc: (document.getElementById('templateSrc') as HTMLInputElement).value}}).then(res => {
             ReactDOM.unmountComponentAtNode(document.getElementById('template'));
             document.getElementById('template').innerHTML = 'template added!!!';
         });
@@ -22,9 +22,12 @@ export default function(props:any){
         ReactDOM.unmountComponentAtNode(document.getElementById('template'));
     };
 
-    return <form action='' id='addTemplate'>
-      <textarea name='template' id='templateSrc' cols='40' rows='5'></textarea><br/>
-      <button type='button' onClick={onSubmit}>add template</button>
-      <button type='button' onClick={onClick}>cancel</button>
-    </form>;
+    return <div>
+        <form action='' id='addTemplate'>
+          <textarea name='template' id='templateSrc' cols='40' rows='5'></textarea><br/>
+          <button type='button' onClick={onSubmit}>add template</button>
+          <button type='button' onClick={onClick}>cancel</button>
+        </form>
+        <hr />
+    </div>;
 }

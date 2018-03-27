@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import Form from 'react-jsonschema-form';
 import {ipcRenderer} from 'electron';
-import {fetchFactory} from '../fetch';
+import {fetchFactory} from '../../fetch';
 
 const fetch = fetchFactory(ipcRenderer);
 
