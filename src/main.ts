@@ -6,7 +6,9 @@ import * as url from 'url';
 import fetch from 'node-fetch';
 
 const api = 'http://localhost:3000';
-
+  if(process.env.TARGET && process.env.TARGET === 'test'){
+      app.disableHardwareAcceleration();
+  }
 const catchEndpoints = [
     '/publishSO'
    ,'/templates'
@@ -140,14 +142,21 @@ const template1 = {
 let win:BrowserWindow = null;
 
 function createWindow () {
-  // Create the browser window.
-  console.log(path.join(__dirname, 'icon_64.png'));
-  win = new BrowserWindow({
-      width: 800
-     ,height: 600
-     ,icon: path.join(__dirname, 'icon_64.png')
-  });
-
+// Create the browser window.
+//  console.log(path.join(__dirname, 'icon_64.png'));
+  let options;
+  if(process.env.TARGET && process.env.TARGET === 'test'){
+      options = { show: false, webPreferences: {
+        offscreen: true
+      }};
+  }else{
+      options = {
+          width: 800
+         ,height: 600
+         ,icon: path.join(__dirname, 'icon_64.png')
+      };
+  }
+  win = new BrowserWindow(options);
   // and load the index.html of the app.
   win.loadURL(url.format({
     pathname: path.join(__dirname, 'index.html'),

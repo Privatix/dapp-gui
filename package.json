@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "main": "build/main.js",
   "devDependencies": {
+    "@types/node": "^9.6.0",
     "electron": "^1.8.2",
     "mocha": "^5.0.1",
     "spectron": "^3.8.0",
@@ -11,12 +12,13 @@
     "tslint-loader": "^3.5.3",
     "typescript": "2.6.2",
     "webpack": "^4.0.1",
-    "webpack-cli": "^2.0.9"
+    "webpack-cli": "^2.0.9",
+    "xunit-file": "^1.0.0"
   },
   "scripts": {
     "start": "cd build && node back.js > ./back.log 2>&1 & electron . && kill -9 $(lsof -ti :3000)",
     "pretest": "",
-    "test": "cd build && node back.js > ./back.log 2>&1 & mocha tests/spec.js && kill -9 $(lsof -ti :3000)",
+    "test": "cd build && node back.js > ./back.log 2>&1 & mocha -R xunit-file tests/spec.js && kill -9 $(lsof -ti :3000)",
     "posttest": "",
     "build": "rm -rf ./build && mkdir ./build && tslint -c ./configs/tslint.json -p ./configs/tsconfig.json && webpack --mode development --config configs/webpack.config.js && cp -R ./back/specs/spec ./build/ && cp -R assets/* ./build/"
   },
