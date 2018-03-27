@@ -59,7 +59,7 @@ const electronRendererConfig = {
     context: __dirname,
     entry: {
         dapp: [
-            "../src/dapp.ts"
+            "../src/dapp.tsx"
         ]
     },
     target: 'electron-renderer',
@@ -69,13 +69,13 @@ const electronRendererConfig = {
         filename: '[name].js',
     },
     resolve: {
-        extensions: ['.ts', '.js', '.json', '.html'],
-        modules: ['node_modules']
+        extensions: ['.ts', '.tsx', '.js', '.json', '.html'],
+        modules: ['node_modules', './']
     },
     module: {
         rules:[
             /* {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: './configs/tslint.json'}}
-           , */ {test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
+           , */ {test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
         ]
     }
 

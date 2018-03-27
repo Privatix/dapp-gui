@@ -1,0 +1,26 @@
+[
+    {
+        "id": 17251
+       ,"state_channel_id": 9556
+       ,"started": "unknown something"
+       ,"stopped": "unknown something"
+       ,"up": "450"
+       ,"down": "2700"
+    }
+   ,{
+        "id": 16252
+       ,"state_channel_id": 9457
+       ,"started": "unknown something"
+       ,"stopped": "unknown something"
+       ,"up": "430"
+       ,"down": "3900"
+    }
+   ,{
+        "id": 17253
+       ,"state_channel_id": 9458
+       ,"started": "unknown something"
+       ,"stopped": "unknown something"
+       ,"up": "250"
+       ,"down": "5794"
+    }
+]

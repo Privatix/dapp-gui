@@ -2,20 +2,25 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <title>Hello World!</title>
+    <title>Privatix service app</title>
     <link rel="stylesheet" type="text/css" href="css/ui.jqgrid.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
   </head>
   <body>
-    <h1 id="h">Hello World!</h1>
-    We are using node <script>document.write(process.versions.node)</script>,
-    Chrome <script>document.write(process.versions.chrome)</script>,
-    and Electron <script>document.write(process.versions.electron)</script>.
+      <div style="padding: 10px;">
+    <h1 id="h">Privatix dapp</h1>
     <hr />
     <table id="sessions_list"></table>
     <div id="pager"></div>
+    <div id="app"></div>
+    <hr />
+    <table>
+        <tr><td valign="top" width="30%"><div id="templatesList"></div></td><td></td></tr>
+    </table>
     <script>
       const dapp = require('./dapp.js');
       console.log(dapp);
     </script>
+      </div>
   </body>
 </html>
