@@ -1,6 +1,11 @@
-[![Maintainability](https://api.codeclimate.com/v1/badges/36cd4ddf298a54226e1a/maintainability)](https://codeclimate.com/github/Privatix/dapp-gui/maintainability)
+Master branch:
+![Build Status](https://ci.privatix.net/plugins/servlet/wittified/build-status/PNG-TES)
 [![Dependency Status](https://david-dm.org/Privatix/dapp-gui.svg)](https://david-dm.org/Privatix/dapp-gui)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FPrivatix%2Fdapp-gui.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FPrivatix%2Fdapp-gui?ref=badge_shield)
+
+Develop branch:
+![Build Status](https://ci.privatix.net/plugins/servlet/wittified/build-status/PNG-TES0)
+[![Maintainability](https://api.codeclimate.com/v1/badges/36cd4ddf298a54226e1a/maintainability)](https://codeclimate.com/github/Privatix/dapp-gui/maintainability)
 
 # Privatix Network GUI
 
