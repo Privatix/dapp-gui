@@ -3,6 +3,6 @@ import Button from '../button';
 
 export default function(props:any){
 
-    return <Button endpoint={'/closeChannel'} options={{method: 'post', body: {id: props.channelId}}} title={'close'}/>;
+    return <Button endpoint={'/channels/${props.channelId}/status'} options={{method: 'put', body: {action: 'terminate'}}} title={'close'}/>;
 
 }

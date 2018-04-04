@@ -2,5 +2,5 @@ import * as React from 'react';
 import Button from '../button';
 
 export default function(props:any){
-    return <Button endpoint={'/popupOffering'} options={{method: 'post', body: {id: props.offeringId}}} title={'popup'}/>;
+    return <Button endpoint={`/offerings/${props.offeringId}/status`} options={{method: 'put', body: {action: 'popup'}}} title={'popup'}/>;
 }

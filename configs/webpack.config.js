@@ -1,31 +1,5 @@
 const webpack = require('webpack');
 
-const baseConfig = {
-    context: __dirname,
-    entry: {
-        back: [
-            "../back/mock_server.ts",
-        ]
-    },
-    target: 'node',
-    output: {
-        path: __dirname + '/../build/',
-        pathinfo: true,
-        filename: '[name].js',
-    },
-    resolve: {
-        extensions: ['.ts', '.js', '.json', '.html'],
-        modules: ['node_modules']
-    },
-    module: {
-        rules:[
-           /* {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: __dirname + '/tslint.json'}}, */
-           {test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) }
-        ]
-    }
-
-};
-
 const electronMainConfig = {
     context: __dirname,
     entry: {
@@ -81,4 +55,4 @@ const electronRendererConfig = {
 
 };
 
-module.exports = [baseConfig, electronMainConfig, electronRendererConfig];
+module.exports = [electronMainConfig, electronRendererConfig];

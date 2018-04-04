@@ -5,3 +5,4 @@ node_modules
 *.swo
 *.log
 package-lock.json
+xunit.xml

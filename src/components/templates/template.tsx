@@ -10,9 +10,9 @@ export default function(props:any){
 
     const onSubmit = ({formData}) => {
         // console.log('Data submitted: ',  formData);
-        fetch('/publishSO', {method: 'post', body: formData}).then(res => {
+        fetch('/offerings', {method: 'post', body: {offering: formData}}).then(res => {
             ReactDOM.unmountComponentAtNode(document.getElementById('template'));
-            document.getElementById('template').innerHTML = 'offer published!!!';
+            document.getElementById('template').innerHTML = 'offer saved!!!';
         });
     };
 
@@ -22,7 +22,7 @@ export default function(props:any){
 
     return <Form schema={props.src.schema} uiSchema={props.src.uiSchema} onSubmit={onSubmit}>
         <div>
-          <button type='submit'>Create Service Offering</button>
+          <button type='submit'>Save Service Offering</button>
           <button type='button' onClick={onClick}>Cancel</button>
         </div>
     </Form>;
