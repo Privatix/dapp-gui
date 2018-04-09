@@ -1,10 +1,18 @@
 import * as React from 'react';
+import { render } from 'react-dom';
 import { Link } from 'react-router-dom';
 import {ipcRenderer} from 'electron';
 import {fetchFactory} from '../../fetch';
 const fetch = fetchFactory(ipcRenderer);
 import {asyncReactor} from 'async-reactor';
+import AddProduct from './addProduct';
 import ProductItem from './productItem';
+
+const onClick = function(evt:any){
+    evt.preventDefault();
+    evt.stopPropagation();
+    render(<AddProduct />, document.getElementById('product'));
+};
 
 function Loader() {
 
@@ -23,7 +31,9 @@ async function AsyncProducts(props:any){
           {list}
           </ul>
           <hr />
-          <Link to={'/'}>back</Link>
+           <a href='' onClick={onClick}>+ Add product</a> | <Link to={'/'}>back</Link>
+           <hr />
+          <div id='product'></div>
           </div>
    );
 }

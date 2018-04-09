@@ -12,8 +12,8 @@ export default function(props:any){
         evt.stopPropagation();
         // console.log('Data submitted: ',  evt.target);
         const body = {
-            src: (document.getElementById('templateSrc') as HTMLInputElement).value,
-            type: (document.getElementById('templateType') as HTMLInputElement).value
+            raw: btoa((document.getElementById('templateSrc') as HTMLInputElement).value),
+            kind: (document.getElementById('templateType') as HTMLInputElement).value
         };
         fetch('/templates', {method: 'post', body}).then(res => {
             ReactDOM.unmountComponentAtNode(document.getElementById('template'));
@@ -27,7 +27,7 @@ export default function(props:any){
         console.log((document.getElementById('templateFile') as any).files[0].path);
         const body = {
             path: (document.getElementById('templateFile') as any).files[0].path,
-            type: (document.getElementById('templateFromFileType') as HTMLInputElement).value
+            kind: (document.getElementById('templateFromFileType') as HTMLInputElement).value
         };
         fetch('/templates', {method: 'post', body}).then(res => {
             ReactDOM.unmountComponentAtNode(document.getElementById('template'));
@@ -43,8 +43,8 @@ export default function(props:any){
         <hr />
         <form action='' id='addTemplate'>
           <select id='templateType'>
-            <option value='offering'>offering</option>
-            <option value='endpoint'>endpoint</option>
+            <option value='offer'>offer</option>
+            <option value='access'>access</option>
           </select>
           <textarea name='template' id='templateSrc' cols='40' rows='5'></textarea><br/>
           <button type='button' onClick={onSubmit}>add template</button>
@@ -53,8 +53,8 @@ export default function(props:any){
         <hr />
         <form action='#' id='uploadTemplate'>
           <select id='templateFromFileType'>
-            <option value='offering'>offering</option>
-            <option value='endpoint'>endpoint</option>
+            <option value='offer'>offer</option>
+            <option value='access'>access</option>
           </select>
           <label>Load from file <input id='templateFile' name='templateFile' type='file' /></label>
           <button type='button' onClick={onUpload}>upload</button>

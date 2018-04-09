@@ -15,7 +15,7 @@ function Loader() {
 async function AsyncSettings(props:any){
 
     return await fetch('/settings', {method: 'GET'}).then(options => {
-        console.log('OPTIONS!!!', options);
+
         const schema = {
         'schema': {
           'title': 'edit settings',
@@ -28,13 +28,13 @@ async function AsyncSettings(props:any){
       };
 
         (options as any).forEach((option: any) => {
-            schema.schema.properties[option.name] = {'type': 'string', 'default': option.value};
-            schema.uiSchema[option.name] = {'ui:help': option.desc};
+            schema.schema.properties[option.key] = {'type': 'string', 'default': option.value};
+            schema.uiSchema[option.key] = {'ui:help': option.description};
         });
         
         const onSubmit = ({formData}) => {
-            const sendData = Object.keys(formData).map(key => { return {'name': key, 'value': formData[key]}; });
-            fetch('/settings', {method: 'put', body: sendData}).then(res => {
+            const settings = Object.keys(formData).map(key => { return {key, 'value': formData[key], 'description': schema.uiSchema[key]['ui:help']}; });
+            fetch('/settings', {method: 'put', body: settings}).then(res => {
                 // ReactDOM.unmountComponentAtNode(document.getElementById('template'));
             });
         };

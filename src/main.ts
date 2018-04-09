@@ -6,11 +6,12 @@ import * as url from 'url';
 import * as fs from 'fs';
 import fetch from 'node-fetch';
 import mocks from './mocks';
+import * as  btoa from 'btoa';
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
   }
-const api = 'http://localhost:3000';
+const api = 'http://localhost:3000/ui';
 
   ipcMain.on('api', (event, msg) => {
     const req = JSON.parse(msg);
@@ -22,21 +23,28 @@ const api = 'http://localhost:3000';
     if(mocks.has(req)){
         const res = mocks.get(req);
         event.sender.send('api-reply', JSON.stringify({req: msg, res}));
-    }else if(/\/templates/.test(req.endpoint) && req.options.method === 'post') { // DO NOT REMOVE!!! 
-        // console.log(req);
-        if(req.options.body.path){
-            // get file content
-            const body = {
-                src: fs.readFileSync(req.options.body.path, {encoding: 'utf8'}),
-                type: req.options.body.type
-            };
-            console.log(body);
-        }
     }else {
+        if(/\/templates/.test(req.endpoint) && req.options.method === 'post') { // DO NOT REMOVE!!! 
+            // console.log(req);
+            if(req.options.body.path){
+                // get file content
+                req.options.body = {
+                    raw: btoa(fs.readFileSync(req.options.body.path, {encoding: 'utf8'})),
+                    kind: req.options.body.kind
+                };
+            }
+        }
         console.log(req);
+        req.options.body = JSON.stringify(req.options.body);
         fetch(`${api}${req.endpoint}`, req.options)
-            .then(res => res.json())
-            .then(json => event.sender.send('api-reply', JSON.stringify({req: msg, res: json})));
+            .then(res => {
+                console.log('RESPONSE!!!', res);
+                return res.json();
+            })
+            .then(json => {
+                  console.log('RESPONSE!!!', json);
+                  event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
+            });
     }
   });
 

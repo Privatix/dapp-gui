@@ -15,9 +15,8 @@ function Loader() {
 
 async function AsyncOfferings (props: any){
 
-    const endpoint = '/offerings' + (props.match.params.product === 'all' ? '' : `?productId=${props.match.params.product}`);
+    const endpoint = '/offerings' + (props.match.params.product === 'all' ? '' : `?product=${props.match.params.product}`);
     const offerings = await fetch(endpoint, {method: 'GET'});
-    console.log('OFFERINGS!!!', offerings);
     const title = 
         props.match.params.product === 'all'
         ? <h3>offerings list for all products</h3>

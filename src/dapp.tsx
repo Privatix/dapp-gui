@@ -17,6 +17,7 @@ import SessionsList from './components/sessions/sessionsList';
 import Session from './components/sessions/session';
 
 import TemplatesList from './components/templates/templatesList';
+import Template from './components/templates/template';
 
 // tslint:disable-next-line
 import * as React from 'react';
@@ -84,6 +85,7 @@ const app = <Router history={MemoryHistory as any}>
                         <Switch>
                             <Route exact path='/' component={Main} />
                             <Route path='/templates' component={TemplatesList} />
+                            <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />
                             <Route path='/products' component={Products} />
                             <Route path='/product/:product' component={Product} />
