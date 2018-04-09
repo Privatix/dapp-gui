@@ -6,9 +6,7 @@ export default function(props:any){
 
     const offering = JSON.parse(props.match.params.offering);
     return <div>
-        offering view<br />
         <OfferingView offering={offering} /><hr />
-        offering toolbar<br />
         <OfferingTools offering={offering} />
     </div>;
 }

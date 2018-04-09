@@ -22,7 +22,7 @@ async function AsyncTemplates(props:any){
     const onClick = function(evt:any){
         evt.preventDefault();
         evt.stopPropagation();
-        render(<AddTemplate src={props.template} />, document.getElementById('template'));
+        render(<AddTemplate />, document.getElementById('template'));
     };
 
     return (
@@ -32,8 +32,9 @@ async function AsyncTemplates(props:any){
           <ul>
             {list}
           </ul>
-          <a href='' onClick={onClick}>+ Add template</a> <Link to={'/'}>back</Link>
+          <a href='' onClick={onClick}>+ Add template</a> | <Link to={'/'}>back</Link>
         </section>
+        <hr />
         <div id='template'></div>
         </div>
    );

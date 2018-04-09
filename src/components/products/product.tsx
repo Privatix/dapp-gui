@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import ProductView from './productView';
 import ProductTools from './productTools';
 
@@ -7,7 +8,6 @@ export default function(props:any){
     return <div>
         product view
         <ProductView product={product} /><hr />
-        product toolbar
-        <ProductTools product={product} />
+        <ProductTools product={product} /> | <Link to={'/'}>back</Link>
     </div>;
 }
