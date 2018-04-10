@@ -20,7 +20,7 @@ async function AsyncTemplate (props: any){
         formData.id = uuid();
         formData.template = props.id;
         console.log('Data submitted: ',  formData);
-        fetch('/offerings', {method: 'post', body: formData}).then(res => {
+        fetch('/offerings/', {method: 'post', body: formData}).then(res => {
             ReactDOM.unmountComponentAtNode(document.getElementById('template'));
             document.getElementById('template').innerHTML = 'offer saved!!!';
         });

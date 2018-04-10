@@ -15,6 +15,7 @@ import ChannelsList from './components/channels/channelsList';
 import Channel from './components/channels/channel';
 import SessionsList from './components/sessions/sessionsList';
 import Session from './components/sessions/session';
+import Endpoint from './components/endpoints/endpoint';
 
 import TemplatesList from './components/templates/templatesList';
 import Template from './components/templates/template';
@@ -96,6 +97,7 @@ const app = <Router history={MemoryHistory as any}>
                             <Route path='/channel/:channel' component={Channel} />
                             <Route path='/sessions/:channel' component={SessionsList} />
                             <Route path='/session/:session' component={Session} />
+                            <Route path='/endpoint/:channel' component={Endpoint} />
                         </Switch>
                 </Router>;
 

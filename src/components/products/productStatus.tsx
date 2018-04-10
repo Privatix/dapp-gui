@@ -4,7 +4,8 @@ import {fetchFactory} from '../../fetch';
 const fetch = fetchFactory(ipcRenderer);
 
 export default function(props:any){
-    const id = `product${props.serviceId}Status`;
+    const id = `product${props.productId}Status`;
+    // console.log(id);
     const status = <span id={id}></span>;
     const handler = () => {
         fetch(`/product/{props.productId}/status`, {}).then(res => {
