@@ -21,7 +21,7 @@ async function AsyncOfferings (props: any){
         props.match.params.product === 'all'
         ? <h3>offerings list for all products</h3>
         : <h3>offerings list for product: {props.match.params.product}</h3>;
-    const offeringsDOM = (offerings as any).map((offering: any) => <OfferingItem offering={offering} />);
+    const offeringsDOM = (offerings as any).map((offering: any) => <OfferingItem offering={offering} product={props.match.params.product}/>);
     return <div> 
         {title}
         <hr />

@@ -1,10 +1,12 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
+import { Link } from 'react-router-dom';
 import Form from 'react-jsonschema-form';
 import {ipcRenderer} from 'electron';
 import {fetchFactory} from '../../fetch';
 const fetch = fetchFactory(ipcRenderer);
 import {asyncReactor} from 'async-reactor';
+import * as uuid from 'uuid/v4';
 
 function Loader() {
 
@@ -15,29 +17,31 @@ function Loader() {
 async function AsyncFilledOffering(props:any){
 
     const offering = JSON.parse(props.match.params.offering);
-    const endpoint = `/templates?id=${offering.templateId}`;
+    const endpoint = `/templates?id=${offering.template}`;
     const res = await fetch(endpoint, {method: 'GET'});
     const template = res[0];
-    console.log('TEMPLATE!!!', template);
+    template.raw = JSON.parse(atob(template.raw));
+
     Object.keys(offering).forEach((key:string) => {
-        (template as any).schema.properties[key].default = offering[key];
+        if(key in (template as any).raw.schema.properties){
+            (template as any).raw.schema.properties[key].default = offering[key];
+        }
     });
-    console.log('TEMPLATE!!!', template);
+
     const onSubmit = ({formData}) => {
-        // console.log('Data submitted: ',  formData);
-        fetch('/offerings', {method: 'post', body: {offering: formData}}).then(res => {
+
+        formData.id = uuid();
+        formData.template = template.id;
+
+        fetch('/offerings/', {method: 'post', body: formData}).then(res => {
             ReactDOM.unmountComponentAtNode(document.getElementById('template'));
             document.getElementById('template').innerHTML = 'offer saved!!!';
         });
     };
 
-    const onClick = () => {
-        ReactDOM.unmountComponentAtNode(document.getElementById('template'));
-    };
-
-    return <Form schema={(template as any).schema} uiSchema={(template as any).uiSchema} onSubmit={onSubmit}>
+    return <Form schema={(template as any).raw.schema} uiSchema={(template as any).raw.uiSchema} onSubmit={onSubmit}>
               <button type='submit'>Save Service Offering</button>
-              <button type='button' onClick={onClick}>Cancel</button>
+              <Link to={'/'}>Cancel</Link>
         </Form>;
 }
 
