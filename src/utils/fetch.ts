@@ -1,3 +1,5 @@
+import {ipcRenderer} from 'electron';
+
 const queue = {};
 const listen = function(msg: string) {
     const handler = function(resolve: any, reject: any){
@@ -6,7 +8,7 @@ const listen = function(msg: string) {
     return new Promise(handler);
 };
 
-export const fetchFactory = function(ipcRenderer: any){
+const fetchFactory = function(ipcRenderer: any){
 
     ipcRenderer.on('api-reply', (event, arg) => {
         console.log(arg); // prints "pong"
@@ -31,3 +33,5 @@ export const fetchFactory = function(ipcRenderer: any){
         return promise;
     };
 };
+
+export const fetch = fetchFactory(ipcRenderer);

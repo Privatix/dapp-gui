@@ -2,12 +2,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import Form from 'react-jsonschema-form';
-import {ipcRenderer} from 'electron';
-import {fetchFactory} from '../../fetch';
+import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 
 import * as uuid from 'uuid/v4';
-const fetch = fetchFactory(ipcRenderer);
 
 function Loader() {
 
