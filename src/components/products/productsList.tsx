@@ -1,9 +1,7 @@
 import * as React from 'react';
 import { render } from 'react-dom';
 import { Link } from 'react-router-dom';
-import {ipcRenderer} from 'electron';
-import {fetchFactory} from '../../fetch';
-const fetch = fetchFactory(ipcRenderer);
+import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import AddProduct from './addProduct';
 import ProductItem from './productItem';

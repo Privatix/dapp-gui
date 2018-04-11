@@ -1,9 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {asyncReactor} from 'async-reactor';
-import {ipcRenderer} from 'electron';
-import {fetchFactory} from '../../fetch';
-const fetch = fetchFactory(ipcRenderer);
+import {fetch} from 'utils/fetch';
 
 function Loader() {
 

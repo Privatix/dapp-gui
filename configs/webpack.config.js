@@ -1,4 +1,5 @@
 const webpack = require('webpack');
+const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const electronMainConfig = {
     context: __dirname,
@@ -43,8 +44,9 @@ const electronRendererConfig = {
         filename: '[name].js',
     },
     resolve: {
+        plugins: [new TsconfigPathsPlugin({configFile: __dirname + '/tsconfig.json', baseUrl: __dirname + '/src/'})],
         extensions: ['.ts', '.tsx', '.js', '.json', '.html'],
-        modules: ['node_modules', './']
+        modules: ['./', 'node_modules']
     },
     module: {
         rules:[

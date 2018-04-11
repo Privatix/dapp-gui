@@ -11,7 +11,8 @@
         "preserveConstEnums": true,
         "experimentalDecorators": true,
         "emitDecoratorMetadata": true,
-        "isolatedModules": false
+        "isolatedModules": false,
+        "baseUrl": "../src/"
     },
     "files": ["../src/main.ts", "../src/dapp.tsx"],
     "exclude": [

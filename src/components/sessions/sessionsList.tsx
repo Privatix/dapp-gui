@@ -1,8 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import {ipcRenderer} from 'electron';
-import {fetchFactory} from '../../fetch';
-const fetch = fetchFactory(ipcRenderer);
+import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import SessionItem from './sessionItem';
 

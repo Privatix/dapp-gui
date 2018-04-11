@@ -1,7 +1,5 @@
 import * as React from 'react';
-import {ipcRenderer} from 'electron';
-import {fetchFactory} from '../../fetch';
-const fetch = fetchFactory(ipcRenderer);
+import {fetch} from 'utils/fetch';
 
 export default function(props:any){
     const id = `product${props.productId}Status`;
