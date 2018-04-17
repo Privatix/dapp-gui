@@ -78,8 +78,9 @@ function createWindow () {
 
   // Open the DevTools.
 //  win.webContents.openDevTools();
+    win.maximize();
 
-  // Emitted when the window is closed.
+    // Emitted when the window is closed.
   win.on('closed', () => {
     // Dereference the window object, usually you would store windows
     // in an array if your app supports multi windows, this is the time

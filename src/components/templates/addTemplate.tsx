@@ -43,7 +43,7 @@ export default function(props:any){
             <option value='offer'>offer</option>
             <option value='access'>access</option>
           </select>
-          <textarea name='template' id='templateSrc' cols='40' rows='5'></textarea><br/>
+            <textarea name='template' id='templateSrc' cols='40' rows='5'></textarea><br/>
           <button type='button' onClick={onSubmit}>add template</button>
           <button type='button' onClick={onClick}>cancel</button>
         </form>
