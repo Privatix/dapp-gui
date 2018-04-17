@@ -67,6 +67,7 @@ We use [SemVer](http://semver.org/) for versioning. For the versions available, 
 ## Authors
 
 * [gonzazoid](https://github.com/gonzazoid)
+* [lart5](https://github.com/lart5)
 
 See also the list of [contributors](https://github.com/Privatix/dapp-gui/contributors) who participated in this project.
 
