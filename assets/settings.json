@@ -1,0 +1,4 @@
+{
+    "firstStart": true
+   ,"apiEndpoint": "http://localhost:3000/ui"
+}

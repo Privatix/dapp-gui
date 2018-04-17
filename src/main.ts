@@ -8,10 +8,13 @@ import fetch from 'node-fetch';
 import mocks from './mocks';
 import * as  btoa from 'btoa';
 
+const settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
+var password = '';
+
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
   }
-const api = 'http://localhost:3000/ui';
+// const api = 'http://localhost:3000/ui';
 
   ipcMain.on('api', (event, msg) => {
     const req = JSON.parse(msg);
@@ -23,6 +26,31 @@ const api = 'http://localhost:3000/ui';
     if(mocks.has(req)){
         const res = mocks.get(req);
         event.sender.send('api-reply', JSON.stringify({req: msg, res}));
+    }else if(req.endpoint === '/isItFirstStart'){
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings.firstStart}));
+    }else if(req.endpoint === '/isAuthorized'){
+        console.log('isAuthorized', password !== '');
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: password !== ''}));
+    } else if(req.endpoint === '/login'){
+        console.log('login!!!', req.options.body.pwd);
+        password = req.options.body.pwd;
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
+    }else if(req.endpoint === '/accounts' && req.options.method === 'post'){
+        req.options.body = JSON.stringify(req.options.body);
+        /*
+        fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
+            .then(res => {
+                console.log('accounts!!!', res);
+                return res.json();
+            })
+            .then(json => {
+           */
+           const json = true;
+                  console.log('accounts!!!', json);
+                  settings.firstStart = false;
+                  fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+                  event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
+            // });
     }else {
         if(/\/templates/.test(req.endpoint) && req.options.method === 'post') { // DO NOT REMOVE!!! 
             // console.log(req);
@@ -36,7 +64,7 @@ const api = 'http://localhost:3000/ui';
         }
         console.log(req);
         req.options.body = JSON.stringify(req.options.body);
-        fetch(`${api}${req.endpoint}`, req.options)
+        fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 console.log('RESPONSE!!!', res);
                 return res.json();
@@ -77,7 +105,7 @@ function createWindow () {
   }));
 
   // Open the DevTools.
-//  win.webContents.openDevTools();
+  win.webContents.openDevTools();
 
   // Emitted when the window is closed.
   win.on('closed', () => {

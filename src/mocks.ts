@@ -1,4 +1,6 @@
 const mocks = [
+    {endpoint: /\/auth/, method: 'post', res: [true]}
+//   ,{endpoint: /\/accounts/, method: 'post', res: [true]}
     // {endpoint: /\/templates/, method: 'get', res: [template1, template2]}
 //   {endpoint: /\/templates\?/, method: 'get', res: [template1]}
 //   ,{endpoint: /\/offerings\?/, method: 'get', res: [{title: 'second offering', id: 2}, {title: 'third offering', id: 3}]}

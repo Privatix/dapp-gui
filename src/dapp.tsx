@@ -5,6 +5,7 @@ import 'free-jqgrid';
 
 
 import Main from './components/main';
+import Start from './components/start';
 import Settings from './components/settings';
 import Products from './components/products/products';
 import Product from './components/products/product';
@@ -19,6 +20,8 @@ import Endpoint from './components/endpoints/endpoint';
 
 import TemplatesList from './components/templates/templatesList';
 import Template from './components/templates/template';
+import SetAccount from './components/auth/setAccount';
+import Login from './components/auth/login';
 
 // tslint:disable-next-line
 import * as React from 'react';
@@ -84,7 +87,8 @@ let goBack = (e:any) => {
 */
 const app = <Router history={MemoryHistory as any}>
                         <Switch>
-                            <Route exact path='/' component={Main} />
+                            <Route exact path='/' component={Start} />
+                            <Route exact path='/app' component={Main} />
                             <Route path='/templates' component={TemplatesList} />
                             <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />
@@ -98,6 +102,8 @@ const app = <Router history={MemoryHistory as any}>
                             <Route path='/sessions/:channel' component={SessionsList} />
                             <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
+                            <Route path='/setAccount' component={SetAccount} />
+                            <Route path='/auth' component={Login} />
                         </Switch>
                 </Router>;
 
