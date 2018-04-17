@@ -6,6 +6,8 @@ import 'free-jqgrid';
 
 import Main from './components/main';
 import Start from './components/start';
+import Navigation from './components/navigation';
+import Header from './components/header';
 import Settings from './components/settings';
 import Products from './components/products/products';
 import Product from './components/products/product';
@@ -31,6 +33,7 @@ import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 
 import { render } from 'react-dom';
+
 
 // import Form from 'react-jsonschema-form';
 
@@ -85,33 +88,45 @@ let goBack = (e:any) => {
     e.preventDefault();
 };
 */
+
 const app = <Router history={MemoryHistory as any}>
-                        <Switch>
-                            <Route exact path='/' component={Start} />
-                            <Route exact path='/app' component={Main} />
-                            <Route path='/templates' component={TemplatesList} />
-                            <Route path='/template/:id' component={Template} />
-                            <Route path='/settings' component={Settings} />
-                            <Route path='/products' component={Products} />
-                            <Route path='/product/:product' component={Product} />
-                            <Route path='/offerings/:product' component={OfferingsList} />
-                            <Route path='/offering/:offering' component={Offering} />
-                            <Route path='/filledOffering/:offering' component={FilledOffering} />
-                            <Route path='/channels/:offering' component={ChannelsList} />
-                            <Route path='/channel/:channel' component={Channel} />
-                            <Route path='/sessions/:channel' component={SessionsList} />
-                            <Route path='/session/:session' component={Session} />
-                            <Route path='/endpoint/:channel' component={Endpoint} />
-                            <Route path='/setAccount' component={SetAccount} />
-                            <Route path='/auth' component={Login} />
-                        </Switch>
-                </Router>;
+    <div id='wrapper'>
+        <Header />
+        <Navigation />
+        <div className='content-page'>
+            <div className='content'>
+                <div className='container-fluid'>
+                            <Switch>
+                                <Route exact path='/' component={Start} />
+                                <Route exact path='/app' component={Main} />
+                                <Route path='/templates' component={TemplatesList} />
+                                <Route path='/template/:id' component={Template} />
+                                <Route path='/settings' component={Settings} />
+                                <Route path='/products' component={Products} />
+                                <Route path='/product/:product' component={Product} />
+                                <Route path='/offerings/:product' component={OfferingsList} />
+                                <Route path='/offering/:offering' component={Offering} />
+                                <Route path='/filledOffering/:offering' component={FilledOffering} />
+                                <Route path='/channels/:offering' component={ChannelsList} />
+                                <Route path='/channel/:channel' component={Channel} />
+                                <Route path='/sessions/:channel' component={SessionsList} />
+                                <Route path='/session/:session' component={Session} />
+                                <Route path='/endpoint/:channel' component={Endpoint} />
+                                <Route path='/setAccount' component={SetAccount} />
+                                <Route path='/auth' component={Login} />
+                            </Switch>
+                </div>
+            </div>
+        </div>
+    </div>
+</Router>;
 
-    MemoryHistory.listen((location, action) => {
+    /* MemoryHistory.listen((location, action) => {
         console.log(location);
+        // render(<Navigation pathname={location.pathname}/>, findDOMNode(<Navigation />));
         // document.getElementById('back').style.display = (location.pathname === '/') ? 'none' : 'inline';
-    });
-
+    }); */
+    
     render(app, document.getElementById('app'));
 
 
