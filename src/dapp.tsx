@@ -22,8 +22,13 @@ import Endpoint from './components/endpoints/endpoint';
 
 import TemplatesList from './components/templates/templatesList';
 import Template from './components/templates/template';
-import SetAccount from './components/auth/setAccount';
+// import SetAccount from './components/auth/setAccount';
+import AddAccount from './components/accounts/addAccount';
 import Login from './components/auth/login';
+
+
+import AccountsList from './components/accounts/accountsList';
+import Account from './components/accounts/accountView';
 
 // tslint:disable-next-line
 import * as React from 'react';
@@ -113,6 +118,8 @@ const app = <Router history={MemoryHistory as any}>
                                 <Route path='/template/:id' component={Template} />
                                 <Route path='/settings' component={Settings} />
                                 <Route path='/products' component={Products} />
+                                <Route path='/accounts' component={AccountsList} />
+                                <Route path='/account/:account' component={Account} />
                                 <Route path='/product/:product' component={Product} />
                                 <Route path='/offerings/:product' component={OfferingsList} />
                                 <Route path='/offering/:offering' component={Offering} />
@@ -122,6 +129,7 @@ const app = <Router history={MemoryHistory as any}>
                                 <Route path='/sessions/:channel' component={SessionsList} />
                                 <Route path='/session/:session' component={Session} />
                                 <Route path='/endpoint/:channel' component={Endpoint} />
+                                <Route path='/addAccount' render={() => <AddAccount default={false} />} />
                             </Switch>
                 </div>
             </div>
