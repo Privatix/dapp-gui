@@ -42,6 +42,7 @@
     "react-jsonschema-form": "^1.0.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-toggle": "^4.0.2",
     "react-tooltip": "^3.5.0",
     "tsconfig-paths-webpack-plugin": "^3.0.3",
     "uuid": "^3.2.1"
