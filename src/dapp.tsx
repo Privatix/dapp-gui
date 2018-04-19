@@ -33,6 +33,7 @@ import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 
 import { render } from 'react-dom';
+// import {fetch} from "./utils/fetch";
 
 
 // import Form from 'react-jsonschema-form';
@@ -88,6 +89,16 @@ let goBack = (e:any) => {
     e.preventDefault();
 };
 */
+const auth = <Router history={MemoryHistory as any}>
+    <div className='wrapper-page'>
+        <Switch>
+            <Route exact path='/' component={Start} />
+            <Route path='/auth' component={Login} />
+            <Route path='/setAccount' component={SetAccount} />
+        </Switch>
+</div>
+</Router>;
+
 
 const app = <Router history={MemoryHistory as any}>
     <div id='wrapper'>
@@ -97,7 +108,6 @@ const app = <Router history={MemoryHistory as any}>
             <div className='content'>
                 <div className='container-fluid'>
                             <Switch>
-                                <Route exact path='/' component={Start} />
                                 <Route exact path='/app' component={Main} />
                                 <Route path='/templates' component={TemplatesList} />
                                 <Route path='/template/:id' component={Template} />
@@ -112,21 +122,43 @@ const app = <Router history={MemoryHistory as any}>
                                 <Route path='/sessions/:channel' component={SessionsList} />
                                 <Route path='/session/:session' component={Session} />
                                 <Route path='/endpoint/:channel' component={Endpoint} />
-                                <Route path='/setAccount' component={SetAccount} />
-                                <Route path='/auth' component={Login} />
                             </Switch>
                 </div>
             </div>
         </div>
     </div>
 </Router>;
-
-    /* MemoryHistory.listen((location, action) => {
+let lastRender = 'auth';
+    MemoryHistory.listen((location, action) => {
         console.log(location);
+        switch (location.pathname) {
+            case '/setAccount':
+            case '/auth':
+            case '/':
+                if (lastRender!=='auth') {
+                    lastRender = 'auth';
+                    console.log('render auth');
+                    render(auth, document.getElementById('app'));
+                }
+                break;
+            default:
+                if (lastRender!=='app') {
+                    lastRender = 'app';
+                    console.log('render app');
+                    render(app, document.getElementById('app'));
+                }
+                break;
+        }
+
         // render(<Navigation pathname={location.pathname}/>, findDOMNode(<Navigation />));
         // document.getElementById('back').style.display = (location.pathname === '/') ? 'none' : 'inline';
-    }); */
-    
-    render(app, document.getElementById('app'));
+    });
+
+
+    render(auth, document.getElementById('app'));
+
+
+
+
 
 
