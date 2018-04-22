@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import Toggle from 'react-toggle';
+import { Link } from 'react-router-dom';
 // import keythereum = require('keythereum');
 
 import {fetch} from 'utils/fetch';
@@ -48,7 +49,9 @@ const handler = async (evt: any, privateKey, history: any) => {
 };
 
 const GenerateNewAccButton = withRouter(
-    ({ history }) => <button type='button' onClick={(evt: any) => {
+    ({ history }) => <button type='button'
+        className='btn btn-pink btn-block text-uppercase waves-effect waves-light'
+        onClick={(evt: any) => {
         const privateKey = createPrivateKey();
         handler(evt, privateKey, history);
     }}>
@@ -57,7 +60,9 @@ const GenerateNewAccButton = withRouter(
 );
 
 const UseThisButton = withRouter(
-    ({ history }) => <button type='button' onClick={(evt: any) => {
+    ({ history }) => <button type='button'
+        className='btn btn-pink btn-block text-uppercase waves-effect waves-light'
+        onClick={(evt: any) => {
         const privateKey = trim((document.getElementById('privateKey') as any).value);
         handler(evt, privateKey, history);
     }}>
@@ -70,38 +75,52 @@ const UseThisButton = withRouter(
     };
 
     isDefault = props.default;
-
-    return <div> 
-    <h3>{props.default ? 'Set the contract account' : 'Create an Account'}</h3>
-    <form>
-        {props.default ? '' 
-            : <div>
-                <label>Name: <input type='text' defaultValue='Test' id='accountName' /></label>
-                <br />
-                <label>Is default:
-                    <Toggle defaultChecked={false} onChange={handleToggleChange} />
-                </label>
-            </div>
-        }
-        <ul>
-            <li>
-                <span>For token transfers, you need to add your Private Key for address that holds PRIX</span>
+/* <li>
+                <span></span>
                 <span><a data-tip='Link to the<br />user guide' data-html={true}> ? </a></span>
-            </li>
-            <li>We recommend you:
+            </li> */
+    return <div className='container-fluid'>
+        <div className='card-box'>
+        <div className='row'>
+            <div className='col-sm-12 m-b-15'>
+                <div className='btn-group pull-right'>
+                    <Link to={'/accounts'} className='btn btn-default waves-effect waves-light'>&lt;&lt;&lt; Back</Link>
+                </div>
+                <h3 className='page-title'>{props.default ? 'Set the contract account' : 'Create an Account'}</h3>
+            </div>
+        </div>
+        <form className='form-horizontal m-t-20'>
+        {props.default ? '' 
+            : <div><div className='form-group row'>
+                <label className='col-3 col-form-label'>Name:</label>
+                <div className='col-9'>
+                    <input className='form-control' type='text' defaultValue='Test' id='accountName' />
+                </div>
+            </div>
+            <div className='form-group row'>
+                <label className='col-3 col-form-label'>Is default:</label>
+                <div className='col-9'>
+                    <Toggle defaultChecked={false} onChange={handleToggleChange} />
+                </div>
+            </div></div>
+        }
+            <p>For token transfers, you need to add your Private Key for address that holds PRIX</p>
+            <p>We recommend you:</p>
                 <ul>
                     <li>create a separate account</li>
                     <li>transfer to them limited amount of PRIX and ETH</li>
                     <li>use this separate account in this application</li>
                 </ul>
-            </li>
-            <GenerateNewAccButton /><br />
-            -- or -- <br/>
-        </ul>
-        <label>Private key: <input type='text' id='privateKey' /></label>
-        <hr />
+            <GenerateNewAccButton />
+            <p className='m-b-0 m-t-20 text-center font-16'>-- or -- </p>
+            <div className='form-group'>
+                <div className='col-12'>
+                    <label>Private key:</label>
+                    <textarea className='form-control' id='privateKey' required='' placeholder='Private key' />
+                </div>
+            </div>
         <UseThisButton />
     </form>
     <ReactTooltip place='top' type='dark' effect='float'/>
-    </div>;
+        </div></div>;
 });

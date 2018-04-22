@@ -37,7 +37,7 @@ const UseThisButton = withRouter(({ history }) => <button
             };
             const res = await fetch('/accounts', {method: 'post', body});
             console.log(res, body);
-            history.push('/'); 
+            history.push('/auth');
         }else{
             // TODO incorrect private key message
         }
@@ -62,7 +62,7 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
         };
         const res = await fetch('/accounts', {method: 'post', body});
         console.log(res);
-        history.push('/'); 
+        history.push('/auth');
       }
     }
   >
