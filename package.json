@@ -33,6 +33,7 @@
     "free-jqgrid": "^4.15.3",
     "history": "^4.7.2",
     "jquery": "^3.3.1",
+    "keythereum": "^1.0.3",
     "lodash": "^4.17.5",
     "node-fetch": "^2.0.0",
     "popper.js": "^1.14.3",
@@ -41,6 +42,8 @@
     "react-jsonschema-form": "^1.0.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-toggle": "^4.0.2",
+    "react-tooltip": "^3.5.0",
     "tsconfig-paths-webpack-plugin": "^3.0.3",
     "uuid": "^3.2.1"
   },

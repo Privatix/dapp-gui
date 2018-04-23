@@ -5,6 +5,7 @@ import 'free-jqgrid';
 
 
 import Main from './components/main';
+import Start from './components/start';
 import Navigation from './components/navigation';
 import Header from './components/header';
 import Settings from './components/settings';
@@ -21,15 +22,23 @@ import Endpoint from './components/endpoints/endpoint';
 
 import TemplatesList from './components/templates/templatesList';
 import Template from './components/templates/template';
+import SetAccount from './components/auth/setAccount';
+import AddAccount from './components/accounts/addAccount';
+import Login from './components/auth/login';
+
+
+import AccountsList from './components/accounts/accountsList';
+import Account from './components/accounts/accountView';
 
 // tslint:disable-next-line
 import * as React from 'react';
 // tslint:disable-next-line
-import { Route, Router, Switch} from 'react-router';
+import { Route, Router, Switch, Redirect} from 'react-router';
 
 import { createMemoryHistory } from 'history';
 
 import { render } from 'react-dom';
+// import {fetch} from "./utils/fetch";
 
 
 // import Form from 'react-jsonschema-form';
@@ -85,6 +94,16 @@ let goBack = (e:any) => {
     e.preventDefault();
 };
 */
+const auth = <Router history={MemoryHistory as any}>
+    <div className='wrapper-page'>
+        <Switch>
+            <Route exact path='/' component={Start} />
+            <Route path='/auth' component={Login} />
+            <Route path='/setAccount' component={SetAccount} />
+        </Switch>
+</div>
+</Router>;
+
 
 const app = <Router history={MemoryHistory as any}>
     <div id='wrapper'>
@@ -92,35 +111,63 @@ const app = <Router history={MemoryHistory as any}>
         <Navigation />
         <div className='content-page'>
             <div className='content'>
-                <div className='container-fluid'>
-                            <Switch>
-                                <Route exact path='/' component={Main} />
-                                <Route path='/templates' component={TemplatesList} />
-                                <Route path='/template/:id' component={Template} />
-                                <Route path='/settings' component={Settings} />
-                                <Route path='/products' component={Products} />
-                                <Route path='/product/:product' component={Product} />
-                                <Route path='/offerings/:product' component={OfferingsList} />
-                                <Route path='/offering/:offering' component={Offering} />
-                                <Route path='/filledOffering/:offering' component={FilledOffering} />
-                                <Route path='/channels/:offering' component={ChannelsList} />
-                                <Route path='/channel/:channel' component={Channel} />
-                                <Route path='/sessions/:channel' component={SessionsList} />
-                                <Route path='/session/:session' component={Session} />
-                                <Route path='/endpoint/:channel' component={Endpoint} />
-                            </Switch>
-                </div>
+
+                        <Switch>
+                            <Route exact path='/app' component={Main} />
+                            <Route path='/templates' component={TemplatesList} />
+                            <Route path='/template/:id' component={Template} />
+                            <Route path='/settings' component={Settings} />
+                            <Route path='/products' component={Products} />
+                            <Route path='/accounts' component={AccountsList} />
+                            <Route path='/account/:account' component={Account} />
+                            <Route path='/product/:product' component={Product} />
+                            <Route path='/offerings/:product' component={OfferingsList} />
+                            <Route path='/offering/:offering' component={Offering} />
+                            <Route path='/filledOffering/:offering' component={FilledOffering} />
+                            <Route path='/channels/:offering' component={ChannelsList} />
+                            <Route path='/channel/:channel' component={Channel} />
+                            <Route path='/sessions/:channel' component={SessionsList} />
+                            <Route path='/session/:session' component={Session} />
+                            <Route path='/endpoint/:channel' component={Endpoint} />
+                            <Route path='/addAccount' render={() => <AddAccount default={false} />} />
+                        </Switch>
             </div>
         </div>
     </div>
 </Router>;
-
-    /* MemoryHistory.listen((location, action) => {
+let lastRender = 'auth';
+    MemoryHistory.listen((location, action) => {
         console.log(location);
+        switch (location.pathname) {
+            case '/setAccount':
+            case '/auth':
+            case '/':
+                if (lastRender!=='auth') {
+                    lastRender = 'auth';
+                    console.log('render auth');
+                    render(auth, document.getElementById('app'));
+                }
+                break;
+            default:
+                if (lastRender!=='app') {
+                    lastRender = 'app';
+                    console.log('render app');
+                    render(app, document.getElementById('app'));
+                }
+                break;
+        }
+
         // render(<Navigation pathname={location.pathname}/>, findDOMNode(<Navigation />));
         // document.getElementById('back').style.display = (location.pathname === '/') ? 'none' : 'inline';
-    }); */
-    
+    });
+
+
+    // render(auth, document.getElementById('app'));
     render(app, document.getElementById('app'));
+
+
+
+
+
 
 

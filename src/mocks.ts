@@ -1,4 +1,9 @@
 const mocks = [
+    {endpoint: /\/auth/, method: 'post', res: [true]}
+   ,{endpoint: /\/accounts/, method: 'get', res: [{id: 'uuid', name: 'test account', ethAddr: '17E5DEB23d5a0ca1379d1d240cD9ba54EbEE4c63', ethBalance: 100000, ptcBalance: 4573, pscBalance: 893, inUse: true, isDefault: true}]}
+   ,{endpoint: /\/accounts/, method: 'post', res: [true]}
+   ,{endpoint: /\/transactions/, method: 'get', res: [{date: 'some date', ethAddr: '17E5DEB23d5a0ca1379d1d240cD9ba54EbEE4c63'}, {date: 'another date', ethAddr: '17E5DEB23d5a0ca1379d1d240cD9ba54EbEE4c63'}]}
+//   ,{endpoint: /\/accounts/, method: 'post', res: [true]}
     // {endpoint: /\/templates/, method: 'get', res: [template1, template2]}
 //   {endpoint: /\/templates\?/, method: 'get', res: [template1]}
 //   ,{endpoint: /\/offerings\?/, method: 'get', res: [{title: 'second offering', id: 2}, {title: 'third offering', id: 3}]}

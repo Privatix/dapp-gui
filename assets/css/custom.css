@@ -1,0 +1,27 @@
+fieldset {
+    border: 1px solid #dee2e6!important;
+    padding: 0px 10px 10px 10px;
+}
+
+fieldset legend {
+    width:auto;
+    padding: 0px 10px;
+}
+
+.acExchange label {
+    margin: 5px 10px 0px 10px;
+}
+
+.acExchange>label:first-child {
+    width:130px;
+}
+.acExchange label:nth-child(3) {
+    width:210px;
+}
+
+.acExchange input {
+    width:100px;
+}
+.acExchange button {
+    margin-left:10px;
+}

@@ -30,7 +30,7 @@ export default function(props:any){
                         <img src='images/avatar-1.jpg' alt='user' className='rounded-circle' />
                     </a>
                         <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
-                            <NavLink to='#' className='dropdown-item notify-item'>
+                            <NavLink to='/accounts' className='dropdown-item notify-item'>
                                 <i className='md  md-account-child'></i> <span>Accounts</span>
                             </NavLink>
                             <NavLink to='#' className='dropdown-item notify-item'>
