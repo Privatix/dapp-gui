@@ -42,9 +42,9 @@ async function AsyncAddProduct(props:any){
     return <div>
         <hr />
         <form action='' id='addProduct'>
-          <label>product name: <input type='text' name='name' id='productName'></input></label>
-          <label> offering template <select id='offerTplId'>{offersSelect}</select></label>
-          <label> access template <select id='offerAccessId'>{accessSelect}</select></label>
+          <label>product name: <input type='text' name='name' id='productName'></input></label><br />
+          <label> offering template <select id='offerTplId'>{offersSelect}</select></label><br />
+          <label> access template <select id='offerAccessId'>{accessSelect}</select></label><br />
           <label> usage type<select id='usagePerType'>
             <option value='incremental'>incremental</option>
             <option value='total'>total</option>

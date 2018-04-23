@@ -21,7 +21,10 @@ export default function(props:any){
                             </ul>
                         </li>
                         <li className=''>
-                            <NavLink exact to='/offerings' activeClassName='active' className='waves-effect'><i className='md md-toc'></i><span> Offerings </span></NavLink>
+                            <NavLink exact to='/offerings/all' activeClassName='active' className='waves-effect'><i className='md md-toc'></i><span> Offerings </span></NavLink>
+                        </li>
+                        <li className=''>
+                            <NavLink exact to='/templates' activeClassName='active' className='waves-effect'><i className='md md-toc'></i><span> Templates </span></NavLink>
                         </li>
                         <li className=''>
                             <NavLink exact to='/logs' activeClassName='active' className='waves-effect'><i className='dripicons-blog'></i><span> Logs </span></NavLink>
