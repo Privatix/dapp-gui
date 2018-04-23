@@ -83,18 +83,11 @@ let win:BrowserWindow = null;
 function createWindow () {
   // Create the browser window.
   console.log(path.join(__dirname, 'icon_64.png'));
-  let options;
-  if(process.env.TARGET && process.env.TARGET === 'test'){
-      options = { webPreferences: {
-        offscreen: true
-      }};
-  }else{
-      options = {
+  let options = {
           width: 800
          ,height: 600
          ,icon: path.join(__dirname, 'icon_64.png')
       };
-  }
   win = new BrowserWindow(options);
 
   // and load the index.html of the app.
@@ -105,8 +98,10 @@ function createWindow () {
   }));
 
   // Open the DevTools.
-  win.webContents.openDevTools();
-    win.maximize();
+  if (process.env.TARGET === 'dev') {
+      win.webContents.openDevTools();
+  }
+  win.maximize();
 
     // Emitted when the window is closed.
   win.on('closed', () => {
