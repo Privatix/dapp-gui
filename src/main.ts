@@ -105,8 +105,10 @@ function createWindow () {
   }));
 
   // Open the DevTools.
-  win.webContents.openDevTools();
-    win.maximize();
+  if (process.env.TARGET === 'dev') {
+      win.webContents.openDevTools();
+  }
+  win.maximize();
 
     // Emitted when the window is closed.
   win.on('closed', () => {

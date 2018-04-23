@@ -6,9 +6,9 @@ const path = require('path')
 describe('Application launch', function () {
 
   this.timeout(10000)
-
+  let me = null;
   beforeEach(function () {
-      
+    me = this;
     this.app = new Application({
       path: electronPath,
       args: [path.join(__dirname, '..')]
@@ -23,10 +23,13 @@ describe('Application launch', function () {
   })
 
   it('shows an initial window', function () {
-      return this.app.client.getText('#h').then(function (hText) {
-          assert.equal("Privatix dapp", hText)
+      return me.app.client.getWindowCount().then(function(count){
+         return me.app.client.windowByIndex(count-1).then(function() {
+          return me.app.client.getText('#h').then(function (hText) {
+                assert.equal("PRIVATIX", hText, hText)
+            })
+        });
       })
-
   })
 
 })
