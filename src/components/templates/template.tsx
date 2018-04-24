@@ -2,12 +2,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import { Link } from 'react-router-dom';
 import Form from 'react-jsonschema-form';
-import {ipcRenderer} from 'electron';
-import {fetchFactory} from '../../fetch';
+import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 
 import * as uuid from 'uuid/v4';
-const fetch = fetchFactory(ipcRenderer);
 
 function Loader() {
 
@@ -20,7 +18,7 @@ async function AsyncTemplate (props: any){
         formData.id = uuid();
         formData.template = props.id;
         console.log('Data submitted: ',  formData);
-        fetch('/offerings', {method: 'post', body: formData}).then(res => {
+        fetch('/offerings/', {method: 'post', body: formData}).then(res => {
             ReactDOM.unmountComponentAtNode(document.getElementById('template'));
             document.getElementById('template').innerHTML = 'offer saved!!!';
         });

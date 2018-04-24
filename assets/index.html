@@ -1,26 +1,52 @@
 <!DOCTYPE html>
-<html>
+  <html>
   <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="A fully featured admin theme which can be used to build CRM, CMS, etc.">
+    <meta name="author" content="Coderthemes">
+
+    <link rel="shortcut icon" href="images/favicon.ico">
+
     <title>Privatix service app</title>
-    <link rel="stylesheet" type="text/css" href="css/ui.jqgrid.css">
-    <link rel="stylesheet" href="css/bootstrap.min.css">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/icons.css" rel="stylesheet" type="text/css" />
+    <link href="css/style.css" rel="stylesheet" type="text/css" />
+    <link href="css/toggle.css" rel="stylesheet"  type="text/css"/>
+    
+    <link href="css/custom.css" rel="stylesheet"  type="text/css"/>
   </head>
-  <body>
-      <div style="padding: 10px;">
-    <h1 id="h">Privatix dapp</h1>
-    <hr />
-    <table id="sessions_list"></table>
-    <div id="pager"></div>
-    <div id="app"></div>
-    <hr />
-    <table>
-        <tr><td valign="top" width="30%"><div id="templatesList"></div></td><td></td></tr>
-    </table>
-    <script>
+
+  <body class="fixed-left">
+
+  <div id='app'>
+  </div>
+
+
+  <!--<div style="padding: 10px;">-->
+    <!---->
+        <!---->
+        <!--<h1 id="h">Privatix dapp</h1>-->
+    <!--<hr />-->
+    <!--<table id="sessions_list"></table>-->
+    <!--<div id="pager"></div>-->
+    <!--<div id="app"></div>-->
+    <!--<hr />-->
+    <!--<table>-->
+        <!--<tr><td valign="top" width="30%"><div id="templatesList"></div></td><td></td></tr>-->
+    <!--</table>-->
+
+  <script>
+      var resizefunc = [];
       const dapp = require('./dapp.js');
-      console.log(dapp);
-    </script>
-      </div>
+      window.$ = window.jQuery = require('./js/jquery.min.js');
+      const bootstrap = require('./js/bootstrap.min.js');
+  </script>
+
+
+  <script src="js/jquery.slimscroll.js"></script>
+  <script src="js/wow.min.js"></script>
+  <script src="js/jquery.app.js"></script>
   </body>
 </html>
