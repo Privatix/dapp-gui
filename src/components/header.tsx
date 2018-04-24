@@ -10,7 +10,7 @@ export default function(props:any){
         <div className='topbar-left'>
             <div className='text-center'>
                 <NavLink to='/' className='logo'><i
-                    className='icon-c-logo md md-local-parking'></i><span>Privatix</span></NavLink>
+                    className='icon-c-logo md md-local-parking'></i><span id='h'>Privatix</span></NavLink>
             </div>
         </div>
         <nav className='navbar-custom'>

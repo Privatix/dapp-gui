@@ -17,7 +17,8 @@ async function AsyncStart (props:any){
     const firstStart = await fetch('/isItFirstStart', {method: 'get'});
     // const isAuthorized = await fetch('/isAuthorized', {method: 'get'});
 
-    return firstStart
+
+     return firstStart
         ? <SetPassword />
         :  <Login />;
 }

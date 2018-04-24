@@ -23,6 +23,7 @@ const keyIsCorrect = function(key: string){
 };
 
 const UseThisButton = withRouter(({ history }) => <button
+    className='btn btn-pink btn-block text-uppercase waves-effect waves-light'
     type='button'
     onClick={async (evt: any) => {
         evt.preventDefault();
@@ -36,7 +37,7 @@ const UseThisButton = withRouter(({ history }) => <button
             };
             const res = await fetch('/accounts', {method: 'post', body});
             console.log(res, body);
-            history.push('/'); 
+            history.push('/auth');
         }else{
             // TODO incorrect private key message
         }
@@ -48,6 +49,7 @@ const UseThisButton = withRouter(({ history }) => <button
 );
 
 const GenerateNewAccButton = withRouter(({ history }) => <button
+    className='btn btn-pink btn-block text-uppercase waves-effect waves-light'
     type='button'
     onClick={async (evt: any) => {
         evt.preventDefault();
@@ -60,7 +62,7 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
         };
         const res = await fetch('/accounts', {method: 'post', body});
         console.log(res);
-        history.push('/'); 
+        history.push('/auth');
       }
     }
   >
@@ -69,29 +71,36 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
 );
 
 export default function(props: any){
-    return <div> 
-    <h3>Set the contract account</h3>
-    <ul>
-        <li>
-            <span>For token transfers, you need to add your Private Key for address that holds PRIX</span>
-            <span><a data-tip='Link to the<br />user guide' data-html={true}> ? </a></span>
-        </li>
-        <li>We recommend you:
+    return <div className='card-box'>
+        <div className='panel-heading'>
+            <h4 className='text-center'> Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>
+        </div>
+        <div className='p-20'>
             <ul>
-                <li>create a separate account</li>
-                <li>transfer to them limited amount of PRIX and ETH</li>
-                <li>use this separate account in this application</li>
+                <li>
+                    <span>For token transfers, you need to add your Private Key for address that holds PRIX</span>
+                    <span><a data-tip='Link to the<br />user guide' data-html={true}> ? </a></span>
+                </li>
+                <li>We recommend you:
+                    <ul>
+                        <li>create a separate account</li>
+                        <li>transfer to them limited amount of PRIX and ETH</li>
+                        <li>use this separate account in this application</li>
+                    </ul>
+                </li>
             </ul>
-        </li>
-        <GenerateNewAccButton /><br />
-        -- or -- <br/>
-        Private key:
-    </ul>
-    <form>
-        <label>Private key: <input type='text' id='privateKey' /></label>
-        <hr />
-        <UseThisButton />
-    </form>
-    <ReactTooltip place='top' type='dark' effect='float'/>
+            <GenerateNewAccButton />
+            <p className='m-b-0 m-t-20 text-center font-16'>-- or -- </p>
+            <form className='form-horizontal m-t-20'>
+                <div className='form-group'>
+                    <div className='col-12'>
+                        <label>Private key:</label>
+                        <textarea className='form-control' id='privateKey' required='' placeholder='Private key' />
+                    </div>
+                </div>
+                <UseThisButton />
+            </form>
+            <ReactTooltip place='top' type='dark' effect='float'/>
+        </div>
     </div>;
 }
