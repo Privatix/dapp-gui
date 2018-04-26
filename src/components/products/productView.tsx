@@ -1,11 +1,9 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 export default function(props:any){
 
     return <div>
-        <hr />
-        <table>
+        <table className='table table-striped'>
             <tbody>
                 <tr><td>name:</td><td>{props.product.name}</td></tr>
                 <tr><td>dns:</td><td>{}</td></tr>
@@ -13,6 +11,5 @@ export default function(props:any){
                 <tr><td>additional_params:</td><td>{}</td></tr>
             </tbody>
         </table>
-        <Link to={`/template/${props.product.offerAccessID}`}>Access Template</Link>
     </div>;
 }

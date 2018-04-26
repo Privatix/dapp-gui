@@ -44,12 +44,16 @@ async function AsyncTemplate (props: any){
         if(templates[0].kind === 'access'){
             Object.keys(template.uiSchema).forEach(key => template.uiSchema[key]['ui:readonly'] = true);
         }
-        return <Form schema={template.schema} uiSchema={template.uiSchema} onSubmit={onSubmit}>
-            <div>
-             {templates[0].kind === 'offer' ? <button type='submit'>Save Service Offering</button> : ''}
-              <Link to={'/'}>Cancel</Link>
+        return <div className='container-fluid'>
+            <div  className='card-box'>
+                <Form schema={template.schema} uiSchema={template.uiSchema} onSubmit={onSubmit}>
+                    <div>
+                     {templates[0].kind === 'offer' ? <button type='submit'  className='btn btn-default waves-effect waves-light m-r-15'>Save Service Offering</button> : ''}
+                      <Link to={'/products/'} className='btn btn-default waves-effect waves-light'>Cancel</Link>
+                    </div>
+                </Form>
             </div>
-        </Form>;
+        </div>;
     }
 }
 

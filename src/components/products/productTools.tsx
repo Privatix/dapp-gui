@@ -19,16 +19,15 @@ export default function(props:any){
     };
 
     return <div>
-        <Link to={`/template/${props.product.offerTplID}`}>Create an Offering</Link><br />
         <form>
-            <fieldset>
+            <fieldset className='form-group text-center'>
                 <legend>Warning Area</legend>
-                    <button type='button' onClick={onDelete}>Delete</button>
+                    <button type='button' className='btn btn-danger waves-effect waves-light' onClick={onDelete}>Delete</button>
             </fieldset>
         </form>
-        <a href='' onClick={onClick}>Edit</a>
-        <hr />
-        <div id='editProduct'>
+        <div className='text-center'>
+            <a href='' onClick={onClick} className='btn btn-default waves-effect waves-light m-r-15'>Edit product</a>
+            <Link to={`/template/${props.product.offerAccessID}`} className='btn btn-default waves-effect waves-light'>Access Template</Link>
         </div>
     </div>;
 
