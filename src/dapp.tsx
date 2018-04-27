@@ -11,6 +11,7 @@ import Header from './components/header';
 import Settings from './components/settings';
 import Products from './components/products/products';
 import Product from './components/products/product';
+import CreateProduct from './components/products/addProduct';
 import OfferingsList from './components/offerings/offeringsList';
 import Offering from './components/offerings/offering';
 import CreateOffering from './components/offerings/createOffering';
@@ -112,13 +113,13 @@ const app = <Router history={MemoryHistory as any}>
         <Navigation />
         <div className='content-page'>
             <div className='content'>
-
                         <Switch>
                             <Route exact path='/app' component={Main} />
                             <Route path='/templates' component={TemplatesList} />
                             <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />
                             <Route path='/products' component={Products} />
+                            <Route path='/createProduct' component={CreateProduct} />
                             <Route path='/accounts' component={AccountsList} />
                             <Route path='/account/:account' component={Account} />
                             <Route path='/product/:product' component={Product} />
