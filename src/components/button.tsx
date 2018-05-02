@@ -7,6 +7,6 @@ export default function(props:any){
         fetch(props.endpoint, options);
         evt.preventDefault();
     };
-    const a = <a href='#' onClick={handler}>{props.title}</a>;
+    const a = <button onClick={handler}>{props.title}</button>;
     return a;
 }
