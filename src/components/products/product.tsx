@@ -11,7 +11,7 @@ export default function(props:any){
                 <div className='col-sm-12 m-b-15'>
                     <div className='btn-group pull-right col-3'>
                         <div className='text-center col-12'>
-                            <Link to={`/template/${product.offerTplID}`} className='btn btn-default waves-effect waves-light'>Create an Offering</Link>
+                            <Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an Offering</Link>
                         </div>
                     </div>
                     <h3 className='page-title'>Product info</h3>

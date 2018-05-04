@@ -13,7 +13,16 @@ function Loader() {
 
 async function AsyncOfferings (props: any){
 
-    const endpoint = '/offerings' + (props.match.params.product === 'all' ? '' : `?product=${props.match.params.product}`);
+    let endpoint;
+
+    if(props.product){
+        endpoint = '/offerings' + (props.product === 'all' ? '' : `?product=${props.product}`);
+    }else{
+        endpoint = '/offerings' + (props.match.params.product === 'all' ? '' : `?product=${props.match.params.product}`);
+    }
+
+
+//    const endpoint = '/offerings' + (props.match.params.product === 'all' ? '' : `?product=${props.match.params.product}`);
     const offerings = await fetch(endpoint, {method: 'GET'});
     /*
     const title = 
@@ -21,7 +30,7 @@ async function AsyncOfferings (props: any){
         ? <h3>offerings list for all products</h3>
         : <h3>offerings list for product: {props.match.params.product}</h3>;
        */
-    const offeringsDOM = (offerings as any).map((offering: any) => <OfferingItem offering={offering} product={props.match.params.product}/>);
+    const offeringsDOM = (offerings as any).map((offering: any) => <OfferingItem offering={offering} />);
     /*
     return <div> 
         Offerings

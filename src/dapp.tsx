@@ -32,6 +32,8 @@ import Login from './components/auth/login';
 import AccountsList from './components/accounts/accountsList';
 import Account from './components/accounts/accountView';
 
+import Logs from './components/logs/logs';
+
 // tslint:disable-next-line
 import * as React from 'react';
 // tslint:disable-next-line
@@ -133,6 +135,7 @@ const app = <Router history={MemoryHistory as any}>
                             <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
                             <Route path='/addAccount' render={() => <AddAccount default={false} />} />
+                            <Route path='/logs' component={Logs} />
                         </Switch>
             </div>
         </div>
