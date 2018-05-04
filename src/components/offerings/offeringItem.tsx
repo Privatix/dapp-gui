@@ -10,7 +10,6 @@ export default function(props:any){
         <td><OfferingStatus offeringId={props.offering.id} /></td>
         <td>{props.offering.freeUnits}</td>
         <td>{props.offering.maxUnit}</td>
-        <td>info</td>
     </tr>;
     return (elem);
 }

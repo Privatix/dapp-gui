@@ -8,7 +8,27 @@ export default function(props:any){
         fetch(`/offerings/${props.offeringId}/status`, {}).then(res => {
             const holder = document.getElementById(id);
             if(holder){
-                holder.innerHTML = (res as any).status;
+                let status = (res as any).status;
+                let statusLabelClass = 'label-';
+                holder.innerHTML = status;
+
+                switch (status) {
+                    case 'register':
+                        statusLabelClass += 'success';
+                        break;
+                    case 'remove':
+                        statusLabelClass += 'danger';
+                        break;
+                    case 'empty':
+                        statusLabelClass += 'warning';
+                        break;
+                    default:
+                        statusLabelClass += 'inverse';
+                }
+
+                holder.className = '';
+                holder.className = 'label label-table ' + statusLabelClass;
+
                 setTimeout(handler, 1000);
             }
         });

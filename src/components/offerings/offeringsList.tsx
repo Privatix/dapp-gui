@@ -34,10 +34,14 @@ async function AsyncOfferings (props: any){
     return <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12 m-b-15'>
-                <div className='btn-group pull-right m-t-15'>
+                <h3 className='page-title'>Offerings</h3>
+            </div>
+        </div>
+        <div className='row'>
+            <div className='col-sm-12 m-b-20'>
+                <div className='btn-group m-t-5'>
                     <Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an offering</Link>
                 </div>
-                <h3 className='page-title'>Offerings</h3>
             </div>
         </div>
             <div className='row'>
@@ -46,7 +50,7 @@ async function AsyncOfferings (props: any){
                         <table className='table table-bordered table-striped'>
                             <thead>
                                 <tr>
-                                <td>Id</td><td>Service name</td><td>Server</td><td>Status</td><td>Free Units</td><td>Max Units</td><td>Info</td>
+                                <td>Id</td><td>Service name</td><td>Server</td><td>Status</td><td>Free Units</td><td>Max Units</td>
                                 </tr>
                             </thead>
                             <tbody>
