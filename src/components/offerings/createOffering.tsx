@@ -15,6 +15,7 @@ async function AsyncCreateOffering (props: any){
         // 
     };
 */
+    const shell = require('electron').shell;
     const products = await fetch('/products', {method: 'get'});
     const accounts = await fetch('/accounts/', {method: 'get'});
     const templates = await fetch(`/templates?id=${products[0].offerTplID}`, {method: 'get'});
@@ -30,8 +31,13 @@ async function AsyncCreateOffering (props: any){
         {(accounts as any).map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
     </select>;
 
-    const changeGasPrice = (rangeVal:any) => {
+    const changeGasPrice = (any:any) => {
         (document.getElementById('gasPrice') as HTMLInputElement).innerHTML = (document.getElementById('gasRange') as HTMLInputElement).value;
+    };
+
+    const openEthGasStation = (evt:any) => {
+        evt.preventDefault();
+        shell.openExternal('https://ethgasstation.info/');
     };
 
     return <div className='container-fluid'>
@@ -43,7 +49,7 @@ async function AsyncCreateOffering (props: any){
         <div className='row'>
             <div className='col-sm-12'>
                 <div className='card-box'>
-                    <form action='' id='addProduct'>
+                    <form action='' id='addOffering'>
                         <div className='card m-b-20 card-body'>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Server:</label>
@@ -61,7 +67,7 @@ async function AsyncCreateOffering (props: any){
                                 </div>
                             </div>
                             <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Decsription: </label>
+                                <label className='col-2 col-form-label'>Description: </label>
                                 <div className='col-6'>
                                     <input type='text' className='form-control' placeholder='My very fist Offering'/>
                                 </div>
@@ -131,7 +137,10 @@ async function AsyncCreateOffering (props: any){
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Max units:</label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control'/>
+                                    <div className='input-group bootstrap-touchspin'>
+                                        <input type='text' className='form-control'/>
+                                        <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
+                                    </div>
                                     <span className='help-block'>
                                         <small>Used to specify maximum units of service that will be supplied. Can be empty.</small>
                                     </span>
@@ -143,10 +152,13 @@ async function AsyncCreateOffering (props: any){
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Max suspend time:</label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control' placeholder='1800 dec'/>
+                                    <div className='input-group bootstrap-touchspin'>
+                                        <input type='text' className='form-control' placeholder='1800'/>
+                                        <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
+                                    </div>
                                     <span className='help-block'>
                                         <small>Maximum time service can be in Suspended status due to payment log.
-                                            After this time period service will be terminated, if no sufficient payment was recieved.
+                                            After this time period service will be terminated, if no sufficient payment was received.
                                             Period is specified in seconds.</small>
                                     </span>
                                 </div>
@@ -154,7 +166,10 @@ async function AsyncCreateOffering (props: any){
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Max inactive time:</label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control' placeholder='60 sec'/>
+                                    <div className='input-group bootstrap-touchspin'>
+                                        <input type='text' className='form-control' placeholder='60'/>
+                                        <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
+                                    </div>
                                     <span className='help-block'>
                                         <small>Maximum time without service usage.
                                             Agent will consider that Client will not use service and stop providing it.
@@ -194,9 +209,12 @@ async function AsyncCreateOffering (props: any){
                                 </div>
                             </div>
                             <div className='form-group row'>
-                                <label className='col-2 col-form-label'>
-                                    Average publication time: <span id='averagePublicationTime'>2 min</span>
-                                </label>
+                                <div className='col-12 col-form-label'>
+                                    <strong>Average publication time: <span id='averagePublicationTime'>2 min</span></strong>
+                                </div>
+                                <div className='col-12 col-form-label'>
+                                    <strong>More information: <a href='#' onClick={openEthGasStation}>https://ethgasstation.info/</a></strong>
+                                </div>
                             </div>
                         </div>
                         <div className='form-group row'>
