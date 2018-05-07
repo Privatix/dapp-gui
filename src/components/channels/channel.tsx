@@ -7,12 +7,23 @@ export default function(props:any){
 
 const channel = JSON.parse(props.match.params.channel);
 
-    return <div> channel workplace<br />
-        <ChannelView channel={channel} />
-        <hr />
-        <ChannelTools channel={channel} />
-        <hr />
-        <h3>Sessions</h3>
+    return <div>
+        <div className='container-fluid'>
+            <div className='row'>
+                <div className='col-sm-12 m-b-15'>
+                    <h3 className='page-title'>Service</h3>
+                </div>
+            </div>
+            <div className='row'>
+                <ChannelView channel={channel} />
+                <ChannelTools channel={channel} />
+            </div>
+            <div className='row'>
+                <div className='col-sm-12 m-b-15'>
+                    <h3 className='page-title'>Sessions</h3>
+                </div>
+            </div>
+        </div>
         <SessionList channel={channel.id}/>
     </div>;
 

@@ -38,29 +38,43 @@ async function AsyncSessions (props:any){
     return <div className='container-fluid'>
 
         <div className='row'>
+            <div className='col-sm-12 col-xs-12'>
+                <div className='card m-b-20'>
+                    <h5 className='card-header'>Total Statistics</h5>
+                    <div className='col-md-4 col-sm-12 col-xs-12 p-0'>
+                        <div className='card-body'>
+                            <table className='table table-striped'>
+                                <tbody>
+                                <tr><td>Total usage:</td><td>13 Gb</td></tr>
+                                <tr><td>Total income:</td><td>82 PRIX</td></tr>
+                                <tr><td>Session count:</td><td>123</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div className='row'>
             <div className='col-12'>
-                <div className='card-box'>
-                    <h3>Total Statistics</h3>
-                    <table>
-                        <tbody>
-                            <tr><td>Total usage:</td><td>13 Gb</td></tr>
-                            <tr><td>Total income:</td><td>82 PRIX</td></tr>
-                            <tr><td>Session count:</td><td>123</td></tr>
-                        </tbody>
-                    </table>
-                    <hr />
-                    <h3>Detailed Statistics</h3><br />
-                    <button onClick={exportToFile}>Export to a file</button><br />
-                    <table className='table table-bordered table-striped'>
-                        <thead>
-                            <tr>
-                            <td>Id</td><td>Started</td><td>Stopped</td><td>Usage</td><td>Last Usage Time</td><td>Client Ip</td>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {sessionsDOM}
-                        </tbody>
-                    </table>
+                <div className='card m-b-20'>
+                    <h5 className='card-header'>Detailed Statistics</h5>
+                    <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
+                        <div className='card-body'>
+                            <button className='btn btn-default btn-custom waves-effect waves-light m-b-20' onClick={exportToFile}>Export to a file</button>
+                            <table className='table table-bordered table-striped'>
+                                <thead>
+                                <tr>
+                                    <th>Id</th><th>Started</th><th>Stopped</th><th>Usage</th><th>Last Usage Time</th><th>Client Ip</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                {sessionsDOM}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

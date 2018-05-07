@@ -1,6 +1,6 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
 import { withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 export default withRouter(function(props:any){
     /*
@@ -14,6 +14,7 @@ export default withRouter(function(props:any){
     };
 
     const elem = <tr onClick={onClick}>
+        <td><Link to={`/channels/${JSON.stringify(props.channel)}/`}>{props.channel.id}</Link></td>
         <td>[[ server ]]</td>
         <td>{props.channel.client}</td>
         <td>[[ contract status ]]</td>
@@ -21,7 +22,6 @@ export default withRouter(function(props:any){
         <td>[[ usage ]]</td>
         <td>[[ income PRIX ]]</td>
         <td>{props.channel.serviceChangedTime}</td>
-        <td>info</td>
     </tr>;
     return (elem);
 });

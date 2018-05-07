@@ -46,7 +46,14 @@ async function AsyncChannels (props:any){
                         <table className='table table-bordered table-striped'>
                             <thead>
                                 <tr>
-                                <td>Server</td><td>Client</td><td>Contract Status</td><td>Service Status</td><td>Usage</td><td>Income (PRIX)</td><td>Service Changed Time</td><td>info</td>
+                                    <th>Id</th>
+                                    <th>Server</th>
+                                    <th>Client</th>
+                                    <th>Contract Status</th>
+                                    <th>Service Status</th>
+                                    <th>Usage</th>
+                                    <th>Income (PRIX)</th>
+                                    <th>Service Changed Time</th>
                                 </tr>
                             </thead>
                             <tbody>
