@@ -42,3 +42,16 @@ fieldset legend {
     border-bottom-left-radius: 4px;
     padding-left: 40px;
 }
+
+.cardHoverBgWarning,
+.cardHoverBgDanger{
+    transition: background-color 0.2s linear, color 0.2s linear;
+}
+.cardHoverBgWarning:hover{
+    background: #ffbd4a;
+    color: #fff;
+}
+.cardHoverBgDanger:hover{
+    background: #f05050;
+    color: #fff;
+}
