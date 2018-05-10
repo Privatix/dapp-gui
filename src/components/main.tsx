@@ -12,7 +12,7 @@ export default function (props: any) {
       <Link to={'/sessions/all'}>sessions</Link> */}
         <div className='row'>
             <div className='col-sm-12 m-b-20'>
-                <h3 className='page-title'>Total income: 120 PRIX</h3>
+                <h3 className='page-title'>Total income: [[ 120 ]] PRIX</h3>
             </div>
         </div>
         <div className='row'>

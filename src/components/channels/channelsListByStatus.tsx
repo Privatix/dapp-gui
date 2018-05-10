@@ -14,12 +14,8 @@ async function AsyncChannels (props:any){
 
     let endpoint;
 
-    if(props.offering){
-        endpoint = '/channels' + (props.offering === 'all' ? '' : `?offeringId=${props.offering}`);
-    }else{
-        endpoint = '/channels' + (props.match.params.offering === 'all' ? '' : `?offeringId=${props.match.params.offering}`);
-    }
-
+    endpoint = `/channels?serviceStatus=${props.match.params.status}`;
+    console.log('CHANNELS BY STATUS!!!', props.match.params.status);
 
 //    const endpoint = '/channels' + (props.match.params.offering === 'all' ? '' : `?offeringId=${props.match.params.offering}`);
     const channels = await fetch(endpoint, {method: 'GET'});
@@ -37,7 +33,7 @@ async function AsyncChannels (props:any){
     return <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12 m-b-15'>
-                <h3 className='page-title'>All Services</h3>
+                <h3 className='page-title'>{props.match.params.status === 'active'  ? 'Active Services' : 'History'}</h3>
             </div>
         </div>
             <div className='row'>

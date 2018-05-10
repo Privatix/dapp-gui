@@ -1,7 +1,10 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Link } from 'react-router-dom';
-
+import ChannelUsage from './channelUsage';
+import LinkToProductByOfferingId from '../products/linkToProductByOfferingId';
+import ProductNameByOffering from '../products/productNameByOffering';
+import PgTime from '../utils/pgTime';
 export default withRouter(function(props:any){
     /*
     const elem = <li>
@@ -9,19 +12,16 @@ export default withRouter(function(props:any){
         <ChannelStatus channelId={props.channel.id} /> | <Link to={`/endpoint/${props.channel.id}`}>Endpoint</Link> | <Link to={`/sessions/${props.channel.id}`}>Sessions</Link>
     </li>;
    */
-    const onClick = function(evt: any){
-        props.history.push(`/channel/${JSON.stringify(props.channel)}`);
-    };
 
-    const elem = <tr onClick={onClick}>
-        <td><Link to={`/channels/${JSON.stringify(props.channel)}/`}>{props.channel.id}</Link></td>
-        <td>[[ server ]]</td>
+    const elem = <tr>
+        <td><Link to={`/channel/${JSON.stringify(props.channel)}/`}>{props.channel.id}</Link></td>
+        <td><LinkToProductByOfferingId offeringId={props.channel.offering} ><ProductNameByOffering offeringId={props.channel.offering} /></LinkToProductByOfferingId></td>
         <td>{props.channel.client}</td>
-        <td>[[ contract status ]]</td>
+        <td>{props.channel.channelStatus}</td>
         <td>{props.channel.serviceStatus}</td>
-        <td>[[ usage ]]</td>
-        <td>[[ income PRIX ]]</td>
-        <td>{props.channel.serviceChangedTime}</td>
+        <td><ChannelUsage channelId={props.channel.id} /></td>
+        <td>{props.channel.totalDeposit}</td>
+        <td><PgTime time={props.channel.serviceChangedTime} /></td>
     </tr>;
     return (elem);
 });

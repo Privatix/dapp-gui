@@ -1,4 +1,7 @@
 import * as React from 'react';
+import ChannelUsage from './channelUsage';
+import AccessInfo from '../endpoints/accessInfo';
+import ProductNameByOffering from '../products/productnameByOffering';
 // import ChannelStatus from './channelStatus';
 // import EndpointView from '../endpoints/endpointView';
 
@@ -17,13 +20,13 @@ export default function(props:any){
                     <table className='table table-striped'>
                         <tbody>
                             <tr><td width='30%'>Id:</td><td>{props.channel.id}</td></tr>
-                            <tr><td>Server:</td><td>[[ server ]]</td></tr>
+                            <tr><td>Server:</td><td><ProductNameByOffering offeringId={props.channel.offering} /></td></tr>
                             <tr><td>Offering:</td><td>{props.channel.offering}</td></tr>
                             <tr><td>Contract Status:</td><td>{props.channel.channelStatus}</td></tr>
                             <tr><td>Service Status:</td><td>{props.channel.serviceStatus}</td></tr>
-                            <tr><td>Usage:</td><td>[[ 120 Mb ]]</td></tr>
-                            <tr><td>Income:</td><td>[[ 14 PRIX ]]</td></tr>
-                            <tr><td>Deposit:</td><td>{props.channel.totalDeposit}</td></tr>
+                            <tr><td>Usage:</td><td><ChannelUsage channelId={props.channel.id} />Mb</td></tr>
+                            <tr><td>Income:</td><td>{props.channel.receiptBalance} PRIX</td></tr>
+                            <tr><td>Deposit:</td><td>{props.channel.totalDeposit} PRIX</td></tr>
                         </tbody>
                     </table>
                 </div>
@@ -34,13 +37,7 @@ export default function(props:any){
             <h5 className='card-header'>Access info</h5>
             <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                 <div className='card-body'>
-                    <table className='table table-striped'>
-                        <tbody>
-                            <tr><td width='30%'>Country:</td><td><img src='images/country/ua.png' width='30px'/></td></tr>
-                            <tr><td>Hostname:</td><td>[[ ip ]]</td></tr>
-                            <tr><td>port:</td><td>[[ 443 ]]</td></tr>
-                        </tbody>
-                    </table>
+                    <AccessInfo channelId={props.channel.id} />
                 </div>
             </div>
         </div>

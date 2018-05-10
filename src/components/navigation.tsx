@@ -15,8 +15,8 @@ export default function(props:any){
                         <li className='has_sub'>
                             <NavLink to='/channels/all' activeClassName='active' className='waves-effect'><i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span></NavLink>
                             <ul className='list-unstyled'>
-                                <li><NavLink exact to='/sessions' activeClassName='active' className='waves-effect'>Active</NavLink></li>
-                                <li><NavLink exact to='/sessions' activeClassName='active' className='waves-effect'>Archive</NavLink></li>
+                                <li><NavLink exact to='/channelsListByStatus/active' activeClassName='active' className='waves-effect'>Active</NavLink></li>
+                                <li><NavLink exact to='/channelsListByStatus/terminated' activeClassName='active' className='waves-effect'>Archive</NavLink></li>
                                 <li><NavLink exact to='/sessions/all' activeClassName='active' className='waves-effect'>Sessions</NavLink></li>
                             </ul>
                         </li>

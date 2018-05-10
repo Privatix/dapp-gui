@@ -1,5 +1,7 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
+import LinkToProductByOfferingId from '../products/linkToProductByOfferingId';
+import ProductNameByOffering from '../products/productNameByOffering';
 
 export default function(props:any){
 
@@ -10,7 +12,7 @@ export default function(props:any){
                 <div className='form-group row m-b-0'>
                     <label className='col-3 col-form-label'>Server: </label>
                     <div className='col-9 col-form-label'>
-                        <Link to={`/server/`}>Some server</Link>
+                        <LinkToProductByOfferingId offeringId={props.offering.id} ><ProductNameByOffering offeringId={props.offering.id} /></LinkToProductByOfferingId>
                     </div>
                 </div>
             </div>

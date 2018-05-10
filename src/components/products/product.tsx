@@ -4,7 +4,7 @@ import ProductTools from './productTools';
 import { Link } from 'react-router-dom';
 
 export default function(props:any){
-    const product = JSON.parse(props.match.params.product);
+    const product = JSON.parse(props.src ? props.src : props.match.params.product);
     return <div className='container-fluid'>
         <div className='card-box'>
             <div className='row'>

@@ -21,7 +21,7 @@ async function AsyncSessions (props:any){
     }
 
     const sessions = await fetch(endpoint, {method: 'GET'});
-
+    const usage = (sessions as any).reduce((usage, session) => {return usage + session.unitsUsed;}, 0);
     const sessionsDOM = (sessions as any).map((session: any) => <SessionItem session={session} />);
     /*
     return <div>
@@ -45,9 +45,9 @@ async function AsyncSessions (props:any){
                         <div className='card-body'>
                             <table className='table table-striped'>
                                 <tbody>
-                                <tr><td>Total usage:</td><td>13 Gb</td></tr>
-                                <tr><td>Total income:</td><td>82 PRIX</td></tr>
-                                <tr><td>Session count:</td><td>123</td></tr>
+                                <tr><td>Total usage:</td><td>{(usage/1000).toFixed(3)} Gb</td></tr>
+                                <tr><td>Total income:</td><td>[[ 82 ]] PRIX</td></tr>
+                                <tr><td>Session count:</td><td>{(sessions as any).length}</td></tr>
                                 </tbody>
                             </table>
                         </div>

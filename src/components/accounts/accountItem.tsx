@@ -8,8 +8,8 @@ export default function(props:any){
         <td>{props.account.ethBalance}</td>
         <td>{props.account.ptcBalance}</td>
         <td>{props.account.pscBalance}</td>
-        <td>{props.account.inUse}</td>
-        <td>{props.account.isDefault}</td>
+        <td>{String(props.account.inUse)}</td>
+        <td>{String(props.account.isDefault)}</td>
     </tr>;
     return (elem);
 }

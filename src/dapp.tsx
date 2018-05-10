@@ -11,12 +11,14 @@ import Header from './components/header';
 import Settings from './components/settings';
 import Products from './components/products/products';
 import Product from './components/products/product';
+import ProductById from './components/products/productById';
 import CreateProduct from './components/products/addProduct';
-import OfferingsList from './components/offerings/offeringsList';
+import Offerings from './components/offerings/offerings';
 import Offering from './components/offerings/offering';
 import CreateOffering from './components/offerings/createOffering';
 import FilledOffering from './components/offerings/filledOffering';
 import ChannelsList from './components/channels/channelsList';
+import ChannelsListByStatus from './components/channels/channelsListByStatus';
 import Channel from './components/channels/channel';
 import SessionsList from './components/sessions/sessionsList';
 import Session from './components/sessions/session';
@@ -125,11 +127,13 @@ const app = <Router history={MemoryHistory as any}>
                             <Route path='/accounts' component={AccountsList} />
                             <Route path='/account/:account' component={Account} />
                             <Route path='/product/:product' component={Product} />
-                            <Route path='/offerings/:product' component={OfferingsList} />
+                            <Route path='/productById/:productId' component={ProductById} />
+                            <Route path='/offerings/:product' component={Offerings} />
                             <Route path='/offering/:offering' component={Offering} />
                             <Route path='/createOffering/' component={CreateOffering} />
                             <Route path='/filledOffering/:offering' component={FilledOffering} />
                             <Route path='/channels/:offering' component={ChannelsList} />
+                            <Route path='/channelsListByStatus/:status' component={ChannelsListByStatus} />
                             <Route path='/channel/:channel' component={Channel} />
                             <Route path='/sessions/:channel' component={SessionsList} />
                             <Route path='/session/:session' component={Session} />

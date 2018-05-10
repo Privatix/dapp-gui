@@ -21,7 +21,7 @@ const mocks = [
    ]}
 //   ,{endpoint: /\/offerings\?/, method: 'get', res: [{title: 'second offering', id: 2}, {title: 'third offering', id: 3}]}
 //   ,{endpoint: /\/offerings\/\d+\/status/, method: 'get', res: {code: 200, status: 'OK!'}}
-     ,{endpoint: /\/offerings/, method: 'get', res: [ { id: '9251aead-1e7e-4735-aa2e-04c925394ac4',
+/*   ,{endpoint: /\/offerings/, method: 'get', res: [ { id: '9251aead-1e7e-4735-aa2e-04c925394ac4',
     is_local: true,
     template: '0815b4d3-f442-4c06-aff3-fbe868ed242a',
     product: '02c3fbff-37b5-4ad1-9e18-08f753cb1338',
@@ -49,7 +49,8 @@ const mocks = [
     freeUnits: 1,
     nonce: '40802098-229d-46d6-9152-df67fb2cd131',
     additionalParams: 'e30=' } ]}
-
+*/
+/*
    ,{endpoint: /\/channels/, method: 'get', res: [ { id: 'f0e7bfa8-93f0-4127-8346-44f789eb471a',
     isLocal: false,
     agent: 'a5020d791fb405bd2           ',
@@ -60,14 +61,17 @@ const mocks = [
     serviceStatus: 'active',
     serviceChangedTime: '2018-05-04T04:58:39.252326+03:00',
     totalDeposit: 1000000 } ]}
+   */
    ,{endpoint: /\/product\/.*\/status/, method: 'get', res: {code: 200, status: 'mocked!!!'}}
-   ,{endpoint: /\/products/, method: 'get', res: [ { id: '02c3fbff-37b5-4ad1-9e18-08f753cb1338',
+/*   ,{endpoint: /\/products/, method: 'get', res: [ { id: '02c3fbff-37b5-4ad1-9e18-08f753cb1338',
     name: 'DEVELOP PRODUCT',
     offerTplID: '0815b4d3-f442-4c06-aff3-fbe868ed242a',
     offerAccessID: '362acc10-6ef2-4339-839c-ff77ee213a62',
     usageRepType: 'total',
     isServer: true } ]}
+   */
 //   ,{endpoint: /\/endpoints/, method: 'get', res: {id: 17, src: '{"test_prop": "test_val"}'}}
+   /*
    ,{endpoint: /\/settings/, method: 'get', res:[ { key: 'first setting',
     value: 'first value',
     description: 'first description' },
@@ -77,9 +81,10 @@ const mocks = [
   { key: 'third setting',
     value: 'third value',
     description: 'third description' } ]}
+   */
 //   ,{endpoint: /\/channels\?/, method: 'get', res: [{title: 'second channel', id: 2}, {title: 'third channel', id: 3}]}
 //   ,{endpoint: /\/channels/, method: 'get', res: [{title: 'first channel', id: 1}, {title: 'second channel', id: 2}, {title: 'third channel', id: 3}]}
-   ,{endpoint: /\/sessions/, method: 'get', res: [ { id: '82f35bf5-ebab-4c63-9887-561548d78ca5',
+/*   ,{endpoint: /\/sessions/, method: 'get', res: [ { id: '82f35bf5-ebab-4c63-9887-561548d78ca5',
     channel: 'f0e7bfa8-93f0-4127-8346-44f789eb471a',
     started: '2018-05-04T06:47:55.502453+03:00',
     stopped: '2018-05-04T06:47:55.502453+03:00',
@@ -90,6 +95,7 @@ const mocks = [
     serverPort: 443,
     clientIP: '127.0.0.1',
     clientPort: 8080 } ]}
+   */
  //  ,{endpoint: /\/products/, method: 'get', res: [{title: 'first product', id: 1}, {title: 'second product', id: 2}, {title: 'third product', id: 3}]}
 
 ];
