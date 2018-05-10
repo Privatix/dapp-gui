@@ -15,13 +15,21 @@ export default function(props:any){
         </div>
         <nav className='navbar-custom'>
 
+                <div>
+                    <span>ETH Balance: 0.4</span>
+                    <span>Exchange Balance: 35</span>
+                    <span>Service balance: 35</span>
+                    <span>Active Services: 2</span>
+                    <span> Status:</span>
+                </div>
+
             <ul className='list-inline float-right mb-0'>
+
                 <li className='list-inline-item notification-list'>
-                    <a className='nav-link waves-light waves-effect' href='#' id='btn-fullscreen'>
-                        <i className='dripicons-expand noti-icon'></i>
+                    <a className='nav-link waves-light waves-effect' href='#'>
+                        <i className='dripicons-bell noti-icon'></i>
                     </a>
                 </li>
-
 
                 <li className='list-inline-item dropdown notification-list'>
                     <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
@@ -39,9 +47,12 @@ export default function(props:any){
                             <NavLink to='/settings' className='dropdown-item notify-item'>
                                 <i className='md md-settings'></i> <span>Settings</span>
                             </NavLink>
-
                         </div>
                 </li>
+
+                <a className='nav-link waves-light waves-effect' href='#' id='btn-fullscreen'>
+                    <i className='dripicons-expand noti-icon'></i>
+                </a>
             </ul>
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>
