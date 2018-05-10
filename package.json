@@ -21,7 +21,7 @@
     "pretest": "",
     "test": "mocha -R xunit-file tests/spec.js",
     "posttest": "",
-    "build": "rm -rf ./build && mkdir ./build && tslint -c ./configs/tslint.json -p ./configs/tsconfig.json && webpack --mode development --config configs/webpack.config.js && cp -R assets/* ./build/"
+    "build": "shx rm -rf ./build && shx mkdir ./build && tslint -c ./configs/tslint.json -p ./configs/tsconfig.json && webpack --mode development --config configs/webpack.config.js && shx cp -R assets/* ./build/"
   },
   "dependencies": {
     "@types/colors": "^1.1.3",
