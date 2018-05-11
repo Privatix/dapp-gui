@@ -20,7 +20,7 @@ export default withRouter(function(props:any){
         <td>{props.channel.channelStatus}</td>
         <td>{props.channel.serviceStatus}</td>
         <td><ChannelUsage channelId={props.channel.id} /></td>
-        <td>{props.channel.totalDeposit}</td>
+        <td>{props.channel.receiptBalance}</td>
         <td><PgTime time={props.channel.serviceChangedTime} /></td>
     </tr>;
     return (elem);

@@ -1,8 +1,24 @@
 import * as React from 'react';
+import {fetch} from 'utils/fetch';
+import {asyncReactor} from 'async-reactor';
 import ChannelsList from './channels/channelsList';
 import OfferingsList from './offerings/offeringsList';
 
-export default function (props: any) {
+function Loader() {
+
+  return (<h2>Loading sessions ...</h2>);
+
+}
+
+async function AsyncMain (props:any){
+
+    const sessions = await fetch(`/sessions`, {method: 'GET'});
+    const income = await (sessions as any).reduce(async (income, session) => {
+        const channels = await fetch(`/channels?id=${session.channel}`, {method: 'GET'});
+        // const offerings = await fetch(`/offerings?id=${channels[0].offering}`, {method: 'GET'});
+        // const price = offerings[0].unitPrice;
+        return income + (channels as any).reduce((income, channel) => {return income + channel.receiptBalance;}, 0);
+    }, 0);
     return <div className='container-fluid'>
         {/* <Link to={'/settings'}>settings</Link><br/>
       <Link to={'/templates'}>templates</Link><br/>
@@ -12,7 +28,7 @@ export default function (props: any) {
       <Link to={'/sessions/all'}>sessions</Link> */}
         <div className='row'>
             <div className='col-sm-12 m-b-20'>
-                <h3 className='page-title'>Total income: [[ 120 ]] PRIX</h3>
+                <h3 className='page-title'>Total income: {income} PRIX</h3>
             </div>
         </div>
         <div className='row'>
@@ -37,3 +53,5 @@ export default function (props: any) {
         </div>
     </div>;
 }
+
+export default asyncReactor(AsyncMain, Loader);

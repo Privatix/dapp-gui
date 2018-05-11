@@ -22,6 +22,13 @@ async function AsyncSessions (props:any){
 
     const sessions = await fetch(endpoint, {method: 'GET'});
     const usage = (sessions as any).reduce((usage, session) => {return usage + session.unitsUsed;}, 0);
+    const income = await (sessions as any).reduce(async (income, session) => {
+        const channels = await fetch(`/channels?id=${session.channel}`, {method: 'GET'});
+        const offerings = await fetch(`/offerings?id=${channels[0].offering}`, {method: 'GET'});
+        const price = offerings[0].unitPrice;
+        return income + session.unitsUsed*price;
+    }, 0);
+    console.log('INCOME!!!', income);
     const sessionsDOM = (sessions as any).map((session: any) => <SessionItem session={session} />);
     /*
     return <div>
@@ -46,7 +53,7 @@ async function AsyncSessions (props:any){
                             <table className='table table-striped'>
                                 <tbody>
                                 <tr><td>Total usage:</td><td>{(usage/1000).toFixed(3)} Gb</td></tr>
-                                <tr><td>Total income:</td><td>[[ 82 ]] PRIX</td></tr>
+                                <tr><td>Total income:</td><td>{income} PRIX</td></tr>
                                 <tr><td>Session count:</td><td>{(sessions as any).length}</td></tr>
                                 </tbody>
                             </table>

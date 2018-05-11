@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+// import * as ReactDOM from 'react-dom';
 import * as uuid from 'uuid/v4';
 import {asyncReactor} from 'async-reactor';
 import {fetch} from 'utils/fetch';
@@ -25,8 +25,8 @@ async function AsyncAddProduct(props:any){
             usageRepType: (document.getElementById('usagePerType') as HTMLInputElement).value
         };
         fetch('/products', {method: 'post', body}).then(res => {
-            ReactDOM.unmountComponentAtNode(document.getElementById('product'));
-            document.getElementById('product').innerHTML = 'product added!!!';
+            // ReactDOM.unmountComponentAtNode(document.getElementById('product'));
+            // document.getElementById('product').innerHTML = 'product added!!!';
         });
     };
 

@@ -10,11 +10,33 @@ function Loader() {
 }
 
 async function AsyncCreateOffering (props: any){
-/*
-    const onSubmit = ({formData}) => {
-        // 
+
+    const onSubmit = (evt:any) => {
+        evt.preventDefault();
+        const selectProduct = document.getElementById('selectProduct');
+        const product = (selectProduct as any).options[(selectProduct as any).selectedIndex].value;
+        const offeringName = (document.getElementById('offeringName') as any).value;
+        const offeringDescription = (document.getElementById('offeringDescription') as any).value;
+        const offeringCountry = (document.getElementById('offeringCountry') as any).value;
+        const offeringSupply = (document.getElementById('offeringSupply') as any).value;
+
+        const offeringPriceMb = (document.getElementById('offeringPricePerUnit') as any).value;
+        const offeringMaxBillingLag = (document.getElementById('offeringMaxBillingLag') as any).value;
+        const offeringMinUnits = (document.getElementById('offeringMinUnits') as any).value;
+        const deposit = offeringPriceMb * offeringMinUnits;
+        const offeringMaxUnits = (document.getElementById('offeringMaxUnits') as any).value;
+
+        const offeringMaxSuspendTime = (document.getElementById('offeringMaxSuspendTime') as any).value;
+        const offeringMaxInactiveTime = (document.getElementById('offeringMaxInactiveTime') as any).value;
+
+        const selectAccount = document.getElementById('selectAccount');
+        const account = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
+
+        const gasPrice = (document.getElementById('gasRange') as any).value;
+
+        console.log('SUBMIT!!!', {product, offeringName, offeringDescription, offeringCountry, offeringSupply, offeringPriceMb, offeringMaxBillingLag, offeringMinUnits, offeringMaxUnits, offeringMaxSuspendTime, offeringMaxInactiveTime, account, deposit, gasPrice});
     };
-*/
+
     const shell = require('electron').shell;
     const products = await fetch('/products', {method: 'get'});
     const accounts = await fetch('/accounts/', {method: 'get'});
@@ -23,11 +45,11 @@ async function AsyncCreateOffering (props: any){
     template.raw = JSON.parse(atob(template.raw));
     console.log(products, template);
 
-    const selectProduct = <select className='form-control'>
+    const selectProduct = <select className='form-control' id='selectProduct'>
         {(products as any).map((product:any) => <option key={product.id} value={product.id}>{product.name}</option>) }
     </select>;
 
-    const selectAccount = <select className='form-control'>
+    const selectAccount = <select className='form-control' id='selectAccount'>
         {(accounts as any).map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
     </select>;
 
@@ -63,25 +85,25 @@ async function AsyncCreateOffering (props: any){
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Name: </label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control' placeholder='VPN Japan'/>
+                                    <input type='text' className='form-control' placeholder={template.raw.schema.properties.serviceName.title} id='offeringName' />
                                 </div>
                             </div>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Description: </label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control' placeholder='My very fist Offering'/>
+                                    <input type='text' className='form-control' placeholder={'description'} id='offeringDescription' />
                                 </div>
                             </div>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Country: </label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control' placeholder='Japan'/>
+                                    <input type='text' className='form-control' placeholder={template.raw.uiSchema.country['ui:help']} id='offeringCountry' />
                                 </div>
                             </div>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Supply: </label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control autonumber' placeholder='3' data-v-max='999' data-v-min='0'/>
+                                    <input type='text' className='form-control autonumber' placeholder='3' data-v-max='999' data-v-min='0' id='offeringSupply' />
                                     <span className='help-block'>
                                         <small>
                                             Maximum supply of services according to service offerings.
@@ -105,7 +127,7 @@ async function AsyncCreateOffering (props: any){
                                 <label className='col-2 col-form-label'>Price per Mb:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='0.03'/>
+                                        <input type='text' className='form-control' placeholder='0.03' id='offeringPricePerUnit' />
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                 </div>
@@ -114,7 +136,7 @@ async function AsyncCreateOffering (props: any){
                                 <label className='col-2 col-form-label'>Max billing unit lag:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='3'/>
+                                        <input type='text' className='form-control' placeholder='3' id='offeringMaxBillingLag' />
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
                                     </div>
                                     <span className='help-block'>
@@ -126,7 +148,7 @@ async function AsyncCreateOffering (props: any){
                                 <label className='col-2 col-form-label'>Min units:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='100'/>
+                                        <input type='text' className='form-control' placeholder='100' id='offeringMinUnits' />
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
                                     </div>
                                     <span className='help-block'>
@@ -138,7 +160,7 @@ async function AsyncCreateOffering (props: any){
                                 <label className='col-2 col-form-label'>Max units:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control'/>
+                                        <input type='text' className='form-control' id='offeringMaxUnits' />
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
                                     </div>
                                     <span className='help-block'>
@@ -153,7 +175,7 @@ async function AsyncCreateOffering (props: any){
                                 <label className='col-2 col-form-label'>Max suspend time:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='1800'/>
+                                        <input type='text' className='form-control' placeholder='1800' id='offeringMaxSuspendTime' />
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                     </div>
                                     <span className='help-block'>
@@ -167,7 +189,7 @@ async function AsyncCreateOffering (props: any){
                                 <label className='col-2 col-form-label'>Max inactive time:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='60'/>
+                                        <input type='text' className='form-control' placeholder='60' id='offeringMaxInactiveTime' />
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                     </div>
                                     <span className='help-block'>
@@ -192,7 +214,7 @@ async function AsyncCreateOffering (props: any){
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Deposit:</label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control' value='' placeholder='3 PRIX' readOnly/>
+                                    <input type='text' className='form-control' value='' placeholder='PRIX' readOnly/>
                                     <span className='help-block'>
                                         <small>This deposit will be locked while offering is active.
                                             To return deposit close your offering</small>
@@ -219,7 +241,7 @@ async function AsyncCreateOffering (props: any){
                         </div>
                         <div className='form-group row'>
                             <div className='col-md-8'>
-                                <button type='submit' className='btn btn-default btn-block waves-effect waves-light'>Create and Publish</button>
+                                <button type='submit' onClick={onSubmit} className='btn btn-default btn-block waves-effect waves-light'>Create and Publish</button>
                             </div>
                         </div>
                     </form>

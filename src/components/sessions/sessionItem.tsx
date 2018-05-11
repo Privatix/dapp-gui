@@ -7,7 +7,7 @@ export default function(props:any){
                      <td>{props.session.id}</td>
                      <td><PgTime time={props.session.started} /></td>
                      <td><PgTime time={props.session.stopped} /></td>
-                     <td>{props.session.unitsUsed}</td>
+                     <td>{props.session.unitsUsed} Mb</td>
                      <td><PgTime time={props.session.lastUsageTime} /></td>
                      <td>{props.session.clientIP}</td>
                  </tr>;
