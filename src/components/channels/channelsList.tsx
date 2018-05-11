@@ -43,23 +43,25 @@ async function AsyncChannels (props:any){
             <div className='row'>
                 <div className='col-12'>
                     <div className='card-box'>
-                        <table className='table table-bordered table-striped'>
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Server</th>
-                                    <th>Client</th>
-                                    <th>Contract Status</th>
-                                    <th>Service Status</th>
-                                    <th>Usage</th>
-                                    <th>Income (PRIX)</th>
-                                    <th>Service Changed Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {channelsDOM}
-                            </tbody>
-                        </table>
+                        <div className='table-responsive'>
+                            <table className='table table-bordered table-striped'>
+                                <thead>
+                                    <tr>
+                                        <th>Id</th>
+                                        <th>Server</th>
+                                        <th>Client</th>
+                                        <th>Contract Status</th>
+                                        <th>Service Status</th>
+                                        <th>Usage</th>
+                                        <th>Income (PRIX)</th>
+                                        <th>Service Changed Time</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {channelsDOM}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
           </div>

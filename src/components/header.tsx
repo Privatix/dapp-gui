@@ -16,12 +16,12 @@ export default function(props:any){
         <nav className='navbar-custom'>
 
             <ul className='list-inline float-right mb-0'>
+
                 <li className='list-inline-item notification-list'>
-                    <a className='nav-link waves-light waves-effect' href='#' id='btn-fullscreen'>
-                        <i className='dripicons-expand noti-icon'></i>
+                    <a className='nav-link waves-light waves-effect' href='#'>
+                        <i className='dripicons-bell noti-icon'></i>
                     </a>
                 </li>
-
 
                 <li className='list-inline-item dropdown notification-list'>
                     <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
@@ -39,10 +39,22 @@ export default function(props:any){
                             <NavLink to='/settings' className='dropdown-item notify-item'>
                                 <i className='md md-settings'></i> <span>Settings</span>
                             </NavLink>
-
                         </div>
                 </li>
+
+                <a className='nav-link waves-light waves-effect' href='#' id='btn-fullscreen'>
+                    <i className='dripicons-expand noti-icon'></i>
+                </a>
             </ul>
+
+            <ul className='list-inline float-right mb-0 topPanel'>
+                <li className='list-inline-item'>ETH Balance: 0.4</li>
+                <li className='list-inline-item'>Exchange Balance: 35</li>
+                <li className='list-inline-item'>Service balance: 35</li>
+                <li className='list-inline-item'>Active Services: 2</li>
+                <li className='list-inline-item'> Status:</li>
+            </ul>
+
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>
                     <button className='button-menu-mobile open-left waves-light waves-effect'>
