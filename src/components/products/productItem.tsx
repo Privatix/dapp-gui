@@ -15,7 +15,7 @@ export default function(props:any){
                      <td>template</td>
                      <td>endpoint</td>
                      <td>count</td>
-                     <td><Link className='btn btn-default waves-effect waves-light' to={'/createOffering'}>Create an Offering</Link></td>
+                     <td><Link className='btn btn-default waves-effect waves-light btn-block' to={'/createOffering'}>Create an Offering</Link></td>
                  </tr>;
     return elem;
 }
