@@ -27,7 +27,7 @@ export default function(props:any){
                     <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
                        href='#' role='button'
                        aria-haspopup='false' aria-expanded='false'>
-                        <img src='images/avatar-1.jpg' alt='user' className='rounded-circle' />
+                        <img src='images/PrivatixIcon.jpg' alt='user' className='rounded-circle' />
                     </a>
                         <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
                             <NavLink to='/accounts' className='dropdown-item notify-item'>
