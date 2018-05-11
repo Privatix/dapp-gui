@@ -3,7 +3,7 @@ import * as React from 'react';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import LogItem from './logItem';
-
+declare const jQuery;
 
 function Loader() {
 
@@ -33,6 +33,11 @@ async function AsyncLogs(props:any){
         // 
     };
 
+    jQuery(document).ready(() => {
+        jQuery('#dateFrom').datepicker();
+        jQuery('#dateTo').datepicker();
+    });
+
     return (
         <div className='container-fluid'>
             <div className='row'>
@@ -57,15 +62,15 @@ async function AsyncLogs(props:any){
                             </div>
                         </div>
                         <div className='row m-b-20'>
-                            <div className='col-md-3'>
-                                <button onClick={selectInfo} className='btn btn-success btn-rounded waves-effect waves-light w-md m-r-10'>Info</button>
-                                <button onClick={selectWarnings} className='btn btn-warning btn-rounded waves-effect waves-light w-md m-r-10'>warning</button>
-                                <button onClick={selectErrors} className='btn btn-danger btn-rounded waves-effect waves-light w-md m-r-10'>error</button>
+                            <div className='col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 button-list m-b-10'>
+                                <button onClick={selectInfo} className='btn btn-success btn-rounded waves-effect waves-light w-md'>Info</button>
+                                <button onClick={selectWarnings} className='btn btn-warning btn-rounded waves-effect waves-light w-md'>warning</button>
+                                <button onClick={selectErrors} className='btn btn-danger btn-rounded waves-effect waves-light w-md'>error</button>
                             </div>
-                            <div className='col-md-3'>
+                            <div className='col-xl-3 col-lg-5 col-md-5 col-sm-5 col-xs-10 col-10'>
                                 <div className='form-group row'>
-                                    <label className='col-md-2 col-form-label'>From:</label>
-                                    <div className='col-md-10'>
+                                    <label className='col-md-2 col-2 col-form-label text-right'>From:</label>
+                                    <div className='col-md-10 col-10'>
                                         <div className='input-group'>
                                             <input type='text' className='form-control' placeholder='mm/dd/yyyy' id='dateFrom' />
                                             <div className='input-group-append'>
@@ -75,10 +80,10 @@ async function AsyncLogs(props:any){
                                     </div>
                                 </div>
                             </div>
-                            <div className='col-md-3'>
+                            <div className='col-xl-3 col-lg-5 col-md-5 col-sm-5 col-xs-10 col-10'>
                                 <div className='form-group row'>
-                                    <label className='col-md-2 col-form-label'>To:</label>
-                                    <div className='col-md-10'>
+                                    <label className='col-md-2 col-2 col-form-label text-right'>To:</label>
+                                    <div className='col-md-10 col-10'>
                                         <div className='input-group'>
                                             <input type='text' className='form-control' placeholder='mm/dd/yyyy' id='dateTo' />
                                             <div className='input-group-append'>
@@ -88,8 +93,8 @@ async function AsyncLogs(props:any){
                                     </div>
                                 </div>
                             </div>
-                            <div className='col-md-2'>
-                                <button className='btn btn-white waves-effect' onClick={setNow}>Now</button>
+                            <div className='col-xl-1 col-lg-2 col-md-2 col-xs-2 col-xs-2 col-2'>
+                                <button className='btn btn-white waves-effect p-t-7 p-b-8' onClick={setNow}>Now</button>
                             </div>
                         </div>
                         <table className='table table-bordered table-striped footable'>
@@ -97,7 +102,7 @@ async function AsyncLogs(props:any){
                                 <tr>
                                     <th className='footable-sortable'>Severity<span className='fooicon fa-sort'></span></th>
                                     <th className='footable-sortable'>Date<span className='fooicon fa-sort'></span></th>
-                                    <th className='footable-sortable'>Event</th>
+                                    <th>Event</th>
                                 </tr>
                             </thead>
                             <tbody>
