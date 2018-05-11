@@ -55,3 +55,11 @@ fieldset legend {
     background: #f05050;
     color: #fff;
 }
+
+.topPanel{
+    margin-right: 30px;
+}
+.topPanel li{
+    line-height: 70px;
+    color: rgba(255, 255, 255, 0.8);
+}

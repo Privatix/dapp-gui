@@ -4,12 +4,6 @@ import OfferingsList from './offerings/offeringsList';
 
 export default function (props: any) {
     return <div className='container-fluid'>
-        {/* <Link to={'/settings'}>settings</Link><br/>
-      <Link to={'/templates'}>templates</Link><br/>
-      <Link to={'/products'}>products</Link><br />
-      <Link to={'/offerings/all'}>offerings</Link><br />
-      <Link to={'/channels/all'}>channels</Link><br />
-      <Link to={'/sessions/all'}>sessions</Link> */}
         <div className='row'>
             <div className='col-sm-12 m-b-20'>
                 <h3 className='page-title'>Total income: 120 PRIX</h3>
