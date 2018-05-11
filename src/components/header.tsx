@@ -15,14 +15,6 @@ export default function(props:any){
         </div>
         <nav className='navbar-custom'>
 
-                <div>
-                    <span>ETH Balance: 0.4</span>
-                    <span>Exchange Balance: 35</span>
-                    <span>Service balance: 35</span>
-                    <span>Active Services: 2</span>
-                    <span> Status:</span>
-                </div>
-
             <ul className='list-inline float-right mb-0'>
 
                 <li className='list-inline-item notification-list'>
@@ -54,6 +46,15 @@ export default function(props:any){
                     <i className='dripicons-expand noti-icon'></i>
                 </a>
             </ul>
+
+            <ul className='list-inline float-right mb-0 topPanel'>
+                <li className='list-inline-item'>ETH Balance: 0.4</li>
+                <li className='list-inline-item'>Exchange Balance: 35</li>
+                <li className='list-inline-item'>Service balance: 35</li>
+                <li className='list-inline-item'>Active Services: 2</li>
+                <li className='list-inline-item'> Status:</li>
+            </ul>
+
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>
                     <button className='button-menu-mobile open-left waves-light waves-effect'>
