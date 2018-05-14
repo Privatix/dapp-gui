@@ -9,7 +9,7 @@ import {fetch} from 'utils/fetch';
 import * as ReactTooltip from 'react-tooltip';
 
 const createPrivateKey = function(){
-    return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
+    return Buffer.from('11111111111111111111111111111111').toString('base64');
 };
 
 var isDefault = false;
@@ -39,10 +39,11 @@ const handler = async (evt: any, privateKey, history: any) => {
                      ,isDefault
                      ,inUse: true
                      ,name
+                     ,type: 'generate_new'
         };
-        const res = await fetch('/accounts', {method: 'post', body});
+        const res = await fetch('/accounts/', {method: 'POST', body});
         console.log(res);
-        history.push(props.default ? '/' : '/accounts'); 
+        // history.push(props.default ? '/' : '/accounts'); 
     }else{
         // TODO incorrect private key message
     }

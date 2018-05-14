@@ -1,8 +1,8 @@
 const mocks = [
     {endpoint: /\/logs/, method: 'get', res: [{severity: 'warning', date: '5:30 PM 09-Apr-18', event: 'low balance'}, {severity: 'error', date: '5:30 PM 09-Apr-18', event: 'connection error'}, {severity: 'info', date: '5:30 PM 09-Apr-18', event: 'channel created'}]}
    ,{endpoint: /\/auth/, method: 'post', res: [true]}
-   ,{endpoint: /\/accounts/, method: 'get', res: [{id: '0815b4d3-f442-4c06-aff3-fbe868ed242a', name: 'test account', ethAddr: '17E5DEB23d5a0ca1379d1d240cD9ba54EbEE4c63', ethBalance: 100000, ptcBalance: 4573, pscBalance: 893, inUse: true, isDefault: true}]}
-   ,{endpoint: /\/accounts/, method: 'post', res: [true]}
+//   ,{endpoint: /\/accounts/, method: 'get', res: [{id: '0815b4d3-f442-4c06-aff3-fbe868ed242a', name: 'test account', ethAddr: '17E5DEB23d5a0ca1379d1d240cD9ba54EbEE4c63', ethBalance: 100000, ptcBalance: 4573, pscBalance: 893, inUse: true, isDefault: true}]}
+//   ,{endpoint: /\/accounts/, method: 'post', res: [true]}
    ,{endpoint: /\/transactions/, method: 'get', res: [{date: 'some date', ethAddr: '17E5DEB23d5a0ca1379d1d240cD9ba54EbEE4c63'}, {date: 'another date', ethAddr: '17E5DEB23d5a0ca1379d1d240cD9ba54EbEE4c63'}]}
 //   ,{endpoint: /\/accounts/, method: 'post', res: [true]}
 /*   ,{endpoint: /\/templates/, method: 'get', res: [ { id: '0815b4d3-f442-4c06-aff3-fbe868ed242a',

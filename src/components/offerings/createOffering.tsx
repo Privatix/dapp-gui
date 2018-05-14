@@ -13,28 +13,40 @@ async function AsyncCreateOffering (props: any){
 
     const onSubmit = (evt:any) => {
         evt.preventDefault();
+        const payload = {} as any;
         const selectProduct = document.getElementById('selectProduct');
-        const product = (selectProduct as any).options[(selectProduct as any).selectedIndex].value;
-        const offeringName = (document.getElementById('offeringName') as any).value;
-        const offeringDescription = (document.getElementById('offeringDescription') as any).value;
-        const offeringCountry = (document.getElementById('offeringCountry') as any).value;
-        const offeringSupply = (document.getElementById('offeringSupply') as any).value;
+        payload.product = (selectProduct as any).options[(selectProduct as any).selectedIndex].value;
+        payload.serviceName = (document.getElementById('offeringName') as any).value;
+        payload.description = (document.getElementById('offeringDescription') as any).value;
+        payload.country = (document.getElementById('offeringCountry') as any).value;
+        payload.supply = parseInt((document.getElementById('offeringSupply') as any).value, 10);
 
-        const offeringPriceMb = (document.getElementById('offeringPricePerUnit') as any).value;
-        const offeringMaxBillingLag = (document.getElementById('offeringMaxBillingLag') as any).value;
-        const offeringMinUnits = (document.getElementById('offeringMinUnits') as any).value;
-        const deposit = offeringPriceMb * offeringMinUnits;
-        const offeringMaxUnits = (document.getElementById('offeringMaxUnits') as any).value;
+        payload.unitName = 'Mb';
+        payload.unitType = 'units';
+        payload.billingType = 'prepaid';
+        payload.billingInterval = 1;
+        payload.setupPrice = 0;
+        payload.freeUnits = 0;
+        payload.template = '0815b4d3-f442-4c06-aff3-fbe868ed242a';
+        // payload.agent = 'uuid';
+        payload.additionalParams = Buffer.from('{}').toString('base64');
 
-        const offeringMaxSuspendTime = (document.getElementById('offeringMaxSuspendTime') as any).value;
-        const offeringMaxInactiveTime = (document.getElementById('offeringMaxInactiveTime') as any).value;
+        payload.unitPrice = Math.floor(1e8 * (document.getElementById('offeringPricePerUnit') as any).value);
+        payload.maxBillingUnitLag = parseInt((document.getElementById('offeringMaxBillingLag') as any).value, 10);
+        payload.minUnits = parseInt((document.getElementById('offeringMinUnits') as any).value, 10);
+        payload.deposit = payload.unitPrice * payload.minUnits;
+        payload.maxUnits = parseInt((document.getElementById('offeringMaxUnits') as any).value, 10);
+
+        payload.maxSuspendTime = parseInt((document.getElementById('offeringMaxSuspendTime') as any).value, 10);
+        payload.maxInactiveTimeSec = parseInt((document.getElementById('offeringMaxInactiveTime') as any).value, 10);
 
         const selectAccount = document.getElementById('selectAccount');
-        const account = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
+        payload.agent = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
 
-        const gasPrice = (document.getElementById('gasRange') as any).value;
+        payload.gasPrice = (document.getElementById('gasRange') as any).value;
 
-        console.log('SUBMIT!!!', {product, offeringName, offeringDescription, offeringCountry, offeringSupply, offeringPriceMb, offeringMaxBillingLag, offeringMinUnits, offeringMaxUnits, offeringMaxSuspendTime, offeringMaxInactiveTime, account, deposit, gasPrice});
+        console.log('SUBMIT!!!', payload);
+        fetch('/offerings/', {method: 'post', body: payload});
     };
 
     const shell = require('electron').shell;

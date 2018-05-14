@@ -4,7 +4,7 @@ import {asyncReactor} from 'async-reactor';
 
 function Loader() {
 
-  return (<h2>Loading sessions ...</h2>);
+  return (<h2>Loading data ...</h2>);
 
 }
 

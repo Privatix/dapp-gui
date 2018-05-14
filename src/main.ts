@@ -35,22 +35,24 @@ var password = '';
         console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;
         event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
-    }else if(req.endpoint === '/accounts' && req.options.method === 'post'){
+    }else if(req.endpoint === '/accounts/' && req.options.method === 'post'){
         req.options.body = JSON.stringify(req.options.body);
-        /*
+        req.options.headers = {};
+        req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
+
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 console.log('accounts!!!', res);
                 return res.json();
             })
             .then(json => {
-           */
-           const json = true;
+           
+                  // const json = true;
                   console.log('accounts!!!', json);
                   settings.firstStart = false;
                   fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
-            // });
+           });
     }else {
         if(/\/templates/.test(req.endpoint) && req.options.method === 'post') { // DO NOT REMOVE!!! 
             // console.log(req);
@@ -64,6 +66,11 @@ var password = '';
         }
         console.log(req);
         req.options.body = JSON.stringify(req.options.body);
+        if(!req.options.headers){
+            req.options.headers = {};
+        }
+
+        req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 console.log('RESPONSE!!!', res);
