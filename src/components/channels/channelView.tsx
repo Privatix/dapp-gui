@@ -1,7 +1,13 @@
 import * as React from 'react';
+
 import ChannelUsage from './channelUsage';
 import AccessInfo from '../endpoints/accessInfo';
 import ProductNameByOffering from '../products/productnameByOffering';
+
+import ChannelStatusStyle from './channelStatusStyle';
+import ContractStatus from './contractStatus';
+// import ChannelStatus from './channelStatus';
+// import EndpointView from '../endpoints/endpointView';
 
 export default function(props:any){
 
@@ -10,18 +16,20 @@ export default function(props:any){
             <h5 className='card-header'>General info</h5>
             <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                 <div className='card-body'>
-                    <table className='table table-striped'>
-                        <tbody>
-                            <tr><td width='30%'>Id:</td><td>{props.channel.id}</td></tr>
-                            <tr><td>Server:</td><td><ProductNameByOffering offeringId={props.channel.offering} /></td></tr>
-                            <tr><td>Offering:</td><td>{props.channel.offering}</td></tr>
-                            <tr><td>Contract Status:</td><td>{props.channel.channelStatus}</td></tr>
-                            <tr><td>Service Status:</td><td>{props.channel.serviceStatus}</td></tr>
-                            <tr><td>Usage:</td><td><ChannelUsage channelId={props.channel.id} /></td></tr>
-                            <tr><td>Income:</td><td>{(props.channel.receiptBalance/1e8).toFixed(3)} PRIX</td></tr>
-                            <tr><td>Deposit:</td><td>{(props.channel.totalDeposit/1e8).toFixed(3)} PRIX</td></tr>
-                        </tbody>
-                    </table>
+                    <div className='table-responsive'>
+                        <table className='table table-striped'>
+                            <tbody>
+                                <tr><td width='30%'>Id:</td><td>{props.channel.id}</td></tr>
+                                <tr><td>Server:</td><td><ProductNameByOffering offeringId={props.channel.offering} /></td></tr>
+                                <tr><td>Offering:</td><td>{props.channel.offering}</td></tr>
+                                <tr><td>Contract Status:</td><td><ContractStatus contractStatus={props.channel.channelStatus} /></td></tr>
+                                <tr><td>Service Status:</td><td><ChannelStatusStyle serviceStatus={props.channel.serviceStatus} /></td></tr>
+                                <tr><td>Usage:</td><td><ChannelUsage channelId={props.channel.id} /></td></tr>
+                                <tr><td>Income:</td><td>{(props.channel.receiptBalance/1e8).toFixed(3)} PRIX</td></tr>
+                                <tr><td>Deposit:</td><td>{(props.channel.totalDeposit/1e8).toFixed(3)} PRIX</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>

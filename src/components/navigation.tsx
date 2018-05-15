@@ -32,11 +32,6 @@ export default function(props:any){
                             <i className='md md-toc'></i><span> Servers </span>
                         </NavLink>
                     </li>
-                    <li className=''>
-                        <NavLink exact to='/logs' activeClassName='active' className='waves-effect'>
-                            <i className='dripicons-blog'></i><span> Logs </span>
-                        </NavLink>
-                    </li>
                 </ul>
                 <div className='clearfix'></div>
             </div>

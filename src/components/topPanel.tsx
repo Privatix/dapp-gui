@@ -35,6 +35,6 @@ export default function(props:any){
         <li className='list-inline-item'>Exchange Balance: <span id='topPanelExchangeBalance'></span></li>
         <li className='list-inline-item'>Service balance: <span id='topPanelPSCBalance'></span></li>
         <li className='list-inline-item'>Active Services: <span id='topPanelServicesCount'></span></li>
-        <li className='list-inline-item'> Status:</li>
+        <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={'statusWrap statusWrap-' + status}><i className={'fa fa-toggle-' + status}></i></span></li>
     </ul>;
 }

@@ -25,7 +25,7 @@ async function AsyncProductItem(props:any){
                      <td>{offerTemplate.raw.schema.title}</td>
                      <td>{accessTemplate.raw.schema.title}</td>
                      <td>{(offerings as any).length}</td>
-                     <td><Link className='btn btn-default waves-effect waves-light' to={'/createOffering'}>Create an Offering</Link></td>
+                     <td><Link className='btn btn-default waves-effect waves-light btn-block' to={'/createOffering'}>Create an Offering</Link></td>
                  </tr>;
     return elem;
 }
