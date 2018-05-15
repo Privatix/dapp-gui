@@ -25,3 +25,65 @@ fieldset legend {
 .acExchange button {
     margin-left:10px;
 }
+
+ul.default {
+	list-style-type: disc !important;
+	padding-left:40px !important;
+	margin-bottom: 16px !important;
+}
+
+ul.default li {
+	display: list-item !important;
+}
+
+.searchInputGroup .input-group-prepend{
+    position: absolute;
+    z-index: 100;
+    top: 1px;
+    left: 1px;
+}
+.searchInputGroup .input-group-prepend .input-group-text{
+    border: none;
+    background: #fff;
+    padding: 8px 12px 9px;
+}
+.searchInputGroup .form-control:not(:first-child){
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+    padding-left: 40px;
+}
+
+.warningAreaCard{
+    border: 1px solid #e83546;
+}
+
+.topPanel{
+    margin-right: 30px;
+}
+.topPanel li{
+    line-height: 70px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.topPanelStatusLi{
+    position: relative;
+    padding-right: 32px;
+}
+.topPanelStatusLi .statusWrap{
+    font-size: 23px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.topPanelStatusLi .statusWrap-off{
+    color: #e83546;
+}
+.topPanelStatusLi .statusWrap-on{
+    color: #81c868;
+}
+@media only screen and (max-width: 1170px) {
+    .topPanel li:not(:last-child){
+        display: none;
+    }
+}

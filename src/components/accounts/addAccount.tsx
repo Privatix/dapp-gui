@@ -9,7 +9,7 @@ import {fetch} from 'utils/fetch';
 import * as ReactTooltip from 'react-tooltip';
 
 const createPrivateKey = function(){
-    return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
+    return Buffer.from('11111111111111111111111111111111').toString('base64');
 };
 
 var isDefault = false;
@@ -33,16 +33,16 @@ export default withRouter(function(props: any){
 const handler = async (evt: any, privateKey, history: any) => {
     const name = props.default ? 'default' : trim((document.getElementById('accountName') as any).value);
     evt.preventDefault();
-    console.log('BUTTON!');
     if(keyIsCorrect(privateKey)){
         const body = {privateKey
                      ,isDefault
                      ,inUse: true
                      ,name
+                     ,type: 'generate_new'
         };
-        const res = await fetch('/accounts', {method: 'post', body});
+        const res = await fetch('/accounts/', {method: 'POST', body});
         console.log(res);
-        history.push(props.default ? '/' : '/accounts'); 
+        // history.push(props.default ? '/' : '/accounts'); 
     }else{
         // TODO incorrect private key message
     }
@@ -75,10 +75,7 @@ const UseThisButton = withRouter(
     };
 
     isDefault = props.default;
-/* <li>
-                <span></span>
-                <span><a data-tip='Link to the<br />user guide' data-html={true}> ? </a></span>
-            </li> */
+
     return <div className='container-fluid'>
         <div className='card-box'>
         <div className='row'>

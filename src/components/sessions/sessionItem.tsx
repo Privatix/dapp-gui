@@ -1,9 +1,15 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+import PgTime from '../utils/pgTime';
 
 export default function(props:any){
-    const elem = <li>
-        <Link to={`/session/${JSON.stringify(props.session)}`}>{props.session.id}</Link>
-    </li>;
+
+    const elem = <tr>
+                     <td>{props.session.id}</td>
+                     <td><PgTime time={props.session.started} /></td>
+                     <td><PgTime time={props.session.stopped} /></td>
+                     <td>{props.session.unitsUsed} Mb</td>
+                     <td><PgTime time={props.session.lastUsageTime} /></td>
+                     <td>{props.session.clientIP}</td>
+                 </tr>;
     return (elem);
 }

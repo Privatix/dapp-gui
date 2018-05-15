@@ -2,6 +2,7 @@ import * as React from 'react';
 import {fetch} from 'utils/fetch';
 
 export default function(props:any){
+
     const id = `channel${props.channelId}Status`;
     const status = <span id={id}></span>;
     const handler = () => {
