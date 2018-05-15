@@ -5,7 +5,7 @@ import 'free-jqgrid';
 
 
 import Main from './components/main';
-import Start from './components/start';
+import Start from './client_components/start';
 import Navigation from './components/navigation';
 import Header from './components/header';
 import Settings from './components/settings';
@@ -24,7 +24,11 @@ import Endpoint from './components/endpoints/endpoint';
 
 import TemplatesList from './components/templates/templatesList';
 import Template from './components/templates/template';
-import SetAccount from './components/auth/setAccount';
+import SetAccount from './client_components/auth/setAccount';
+import GenerateKey from './client_components/auth/generateKey';
+import Backup from './client_components/auth/backup';
+import importHexKey from './client_components/auth/importHexKey';
+import importJsonKey from './client_components/auth/importJsonKey';
 import AddAccount from './components/accounts/addAccount';
 import Login from './components/auth/login';
 
@@ -97,11 +101,15 @@ let goBack = (e:any) => {
 };
 */
 const auth = <Router history={MemoryHistory as any}>
-    <div className='wrapper-page'>
+    <div className='wrapper-page' style={{width:'700px'}}>
         <Switch>
             <Route exact path='/' component={Start} />
             <Route path='/auth' component={Login} />
             <Route path='/setAccount' component={SetAccount} />
+            <Route path='/generateKey' component={GenerateKey} />
+            <Route path='/backup' component={Backup} />
+            <Route path='/importHexKey' component={importHexKey} />
+            <Route path='/importJsonKey' component={importJsonKey} />
         </Switch>
 </div>
 </Router>;
@@ -144,6 +152,10 @@ let lastRender = 'auth';
         switch (location.pathname) {
             case '/setAccount':
             case '/auth':
+            case '/generateKey':
+            case '/backup':
+            case '/importHexKey':
+            case '/importJsonKey':
             case '/':
                 if (lastRender!=='auth') {
                     lastRender = 'auth';
@@ -165,8 +177,8 @@ let lastRender = 'auth';
     });
 
 
-    // render(auth, document.getElementById('app'));
-    render(app, document.getElementById('app'));
+    render(auth, document.getElementById('app'));
+    // render(app, document.getElementById('app'));
 
 
 
