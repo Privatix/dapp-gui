@@ -41,7 +41,7 @@ export default function(props:any){
                     <form className='form-horizontal m-t-20'>
                         <fieldset className='form-group'>
                             <legend className=''>Address</legend>
-                            0x{account.ethAddr}
+                            0x{Buffer.from(account.ethAddr, 'base64').toString('hex')}
                         </fieldset>
                     </form>
                     <form className='form-horizontal m-t-20'>

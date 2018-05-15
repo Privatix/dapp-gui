@@ -26,6 +26,12 @@ var password = '';
     if(mocks.has(req)){
         const res = mocks.get(req);
         event.sender.send('api-reply', JSON.stringify({req: msg, res}));
+    }else if(req.endpoint === '/saveAs'){
+        console.log('SAVE AS!!!', req.options.body);
+        fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
+            // TODO handling
+        });
+        
     }else if(req.endpoint === '/isItFirstStart'){
         event.sender.send('api-reply', JSON.stringify({req: msg, res: settings.firstStart}));
     }else if(req.endpoint === '/isAuthorized'){
@@ -73,11 +79,11 @@ var password = '';
         req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
-                console.log('RESPONSE!!!', res);
+                // console.log('RESPONSE!!!', res);
                 return res.json();
             })
             .then(json => {
-                  console.log('RESPONSE!!!', json);
+                  // console.log('RESPONSE!!!', json);
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
             });
     }

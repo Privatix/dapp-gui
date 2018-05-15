@@ -14,7 +14,7 @@ const listen = function(msg: string) {
 const fetchFactory = function(ipcRenderer: any){
 
     ipcRenderer.on('api-reply', (event, arg) => {
-        console.log(arg); // prints "pong"
+        // console.log(arg); // prints "pong"
         const response = JSON.parse(arg);
         if(response.req in queue){
             const handler = queue[response.req].pop();

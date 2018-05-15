@@ -33,7 +33,6 @@ export default withRouter(function(props: any){
 const handler = async (evt: any, privateKey, history: any) => {
     const name = props.default ? 'default' : trim((document.getElementById('accountName') as any).value);
     evt.preventDefault();
-    console.log('BUTTON!');
     if(keyIsCorrect(privateKey)){
         const body = {privateKey
                      ,isDefault
@@ -76,10 +75,7 @@ const UseThisButton = withRouter(
     };
 
     isDefault = props.default;
-/* <li>
-                <span></span>
-                <span><a data-tip='Link to the<br />user guide' data-html={true}> ? </a></span>
-            </li> */
+
     return <div className='container-fluid'>
         <div className='card-box'>
         <div className='row'>

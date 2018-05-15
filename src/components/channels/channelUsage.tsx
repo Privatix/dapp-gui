@@ -9,12 +9,11 @@ function Loader() {
 }
 
 async function AsyncChannelUsage (props:any){
-    // console.log(new Date(Date.parse(props.time)));
+
     const endpoint = `/sessions?channelId=${props.channelId}`;
     const sessions = await fetch(endpoint, {method: 'GET'});
-    console.log('SESSIONS for CHANNEL USAGE!!!', sessions);
     const usage = (sessions as any).reduce( (usage, session) => {return usage + session.unitsUsed;}, 0);
-    return <span>{usage}</span>;
+    return <span>{usage} Mb</span>;
 }
 
 export default asyncReactor(AsyncChannelUsage, Loader);

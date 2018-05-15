@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
 import ChannelToolClose from './channelToolClose';
 
 export default function(props:any){

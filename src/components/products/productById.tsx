@@ -11,9 +11,11 @@ function Loader() {
 }
 
 async function AsyncProducts(props:any){
+
     const endpoint = '/products';
     const products = await fetch(endpoint, {method: 'GET'});
     const product = (products as any).filter(product => product.id === props.match.params.productId)[0];
+
     return (
         <Product src={JSON.stringify(product)} />
     );

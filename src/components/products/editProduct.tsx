@@ -22,7 +22,9 @@ async function AsyncEditProduct(props:any){
             name: (document.getElementById('productName') as HTMLInputElement).value,
             offerTplID: (document.getElementById('offerTplId') as HTMLInputElement).value,
             offerAccessID: (document.getElementById('offerAccessId') as HTMLInputElement).value,
-            usageRepType: (document.getElementById('usagePerType') as HTMLInputElement).value
+            usageRepType: (document.getElementById('usagePerType') as HTMLInputElement).value,
+            clientIdent: 'by_channel_id',
+            config: props.product.config
         };
         fetch('/products', {method: 'put', body}).then(res => {
             document.getElementById('editProductMessage').innerHTML = 'Product edited';
@@ -48,8 +50,7 @@ async function AsyncEditProduct(props:any){
 
     const offersSelect = offers.map(offer => <option key={offer.id} value={offer.id}>{JSON.parse(atob(offer.raw)).schema.title}</option>);
     const accessSelect = access.map(access => <option key={access.id} value={access.id}>{JSON.parse(atob(access.raw)).schema.title}</option>);
-    console.log(accessSelect);
-// export default function(props:any){
+
     return <form className='form-horizontal m-t-20'>
         <div className='form-group row'>
             <label className='col-3 col-form-label'>Product name: </label>

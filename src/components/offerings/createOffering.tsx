@@ -11,6 +11,21 @@ function Loader() {
 
 async function AsyncCreateOffering (props: any){
 
+    const depositChanged = function(){
+        let price = (document.getElementById('offeringPricePerUnit') as any).value;
+        let units = parseInt((document.getElementById('offeringMinUnits') as any).value, 10);
+        price = price ? price : 0;
+        units = units ? units : 0;
+        (document.getElementById('offeringDeposit') as any).placeholder = `${price*units} PRIX`;
+    };
+
+    const onChangeAccount = async function(){
+        const selectAccount = document.getElementById('selectAccount');
+        const accountId = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
+        const account = await fetch(`/accounts?id=${accountId}`, {method: 'get'}) as any;
+        document.getElementById('accountBalance').innerHTML = `${(account[0].ptcBalance/1e8).toFixed(3)} PRIX / ${(account[0].ethBalance/1e8).toFixed(3)} ETH`;
+    };
+
     const onSubmit = (evt:any) => {
         evt.preventDefault();
         const payload = {} as any;
@@ -28,14 +43,13 @@ async function AsyncCreateOffering (props: any){
         payload.setupPrice = 0;
         payload.freeUnits = 0;
         payload.template = '0815b4d3-f442-4c06-aff3-fbe868ed242a';
-        // payload.agent = 'uuid';
         payload.additionalParams = Buffer.from('{}').toString('base64');
 
         payload.unitPrice = Math.floor(1e8 * (document.getElementById('offeringPricePerUnit') as any).value);
         payload.maxBillingUnitLag = parseInt((document.getElementById('offeringMaxBillingLag') as any).value, 10);
         payload.minUnits = parseInt((document.getElementById('offeringMinUnits') as any).value, 10);
         payload.deposit = payload.unitPrice * payload.minUnits;
-        payload.maxUnits = parseInt((document.getElementById('offeringMaxUnits') as any).value, 10);
+        payload.maxUnit = parseInt((document.getElementById('offeringMaxUnits') as any).value, 10);
 
         payload.maxSuspendTime = parseInt((document.getElementById('offeringMaxSuspendTime') as any).value, 10);
         payload.maxInactiveTimeSec = parseInt((document.getElementById('offeringMaxInactiveTime') as any).value, 10);
@@ -45,7 +59,6 @@ async function AsyncCreateOffering (props: any){
 
         payload.gasPrice = (document.getElementById('gasRange') as any).value;
 
-        console.log('SUBMIT!!!', payload);
         fetch('/offerings/', {method: 'post', body: payload});
     };
 
@@ -61,7 +74,7 @@ async function AsyncCreateOffering (props: any){
         {(products as any).map((product:any) => <option key={product.id} value={product.id}>{product.name}</option>) }
     </select>;
 
-    const selectAccount = <select className='form-control' id='selectAccount'>
+    const selectAccount = <select className='form-control' id='selectAccount' onChange={onChangeAccount}>
         {(accounts as any).map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
     </select>;
 
@@ -139,7 +152,7 @@ async function AsyncCreateOffering (props: any){
                                 <label className='col-2 col-form-label'>Price per Mb:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='0.03' id='offeringPricePerUnit' />
+                                        <input type='text' className='form-control' placeholder='0.03' id='offeringPricePerUnit' onChange={depositChanged} />
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                 </div>
@@ -160,7 +173,7 @@ async function AsyncCreateOffering (props: any){
                                 <label className='col-2 col-form-label'>Min units:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='100' id='offeringMinUnits' />
+                                        <input type='text' className='form-control' placeholder='100' id='offeringMinUnits' onChange={depositChanged} />
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
                                     </div>
                                     <span className='help-block'>
@@ -220,13 +233,13 @@ async function AsyncCreateOffering (props: any){
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    Balance: <span id='accountBalance'>4125 PRIX / 5 ETH</span>
+                                    Balance: <span id='accountBalance'>{(accounts[0].ptcBalance).toFixed(3)} PRIX / {(accounts[0].ethBalance/1e8).toFixed(3)} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Deposit:</label>
                                 <div className='col-6'>
-                                    <input type='text' className='form-control' value='' placeholder='PRIX' readOnly/>
+                                    <input id='offeringDeposit' type='text' className='form-control' value='' placeholder='PRIX' readOnly/>
                                     <span className='help-block'>
                                         <small>This deposit will be locked while offering is active.
                                             To return deposit close your offering</small>

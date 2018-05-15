@@ -1,17 +1,6 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
-// import OfferingToolPublish from './offeringToolPublish';
 import OfferingToolPopUp from './offeringToolPopUp';
 import OfferingToolRemove from './offeringToolRemove';
-// import OfferingToolDeactivate from './offeringToolDeactivate';
-// import OfferingToolDublicate from './offeringToolDublicate';
-
-
-/*
-        <OfferingToolPublish offeringId={props.offering.id} /> |
-        <OfferingToolDeactivate offeringId={props.offering.id} /> |
-        <OfferingToolDublicate offering={props.offering}/> |
-*/
 
 export default function(props:any){
 

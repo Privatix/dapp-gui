@@ -1,7 +1,6 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
-
+import TopPanel from './topPanel';
 
 export default function(props:any){
     return <div className='topbar'>
@@ -47,13 +46,7 @@ export default function(props:any){
                 </a>
             </ul>
 
-            <ul className='list-inline float-right mb-0 topPanel'>
-                <li className='list-inline-item'>ETH Balance: 0.4</li>
-                <li className='list-inline-item'>Exchange Balance: 35</li>
-                <li className='list-inline-item'>Service balance: 35</li>
-                <li className='list-inline-item'>Active Services: 2</li>
-                <li className='list-inline-item'> Status:</li>
-            </ul>
+            <TopPanel />
 
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>

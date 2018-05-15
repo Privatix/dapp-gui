@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import * as ReactDOM from 'react-dom';
 import * as uuid from 'uuid/v4';
 import {asyncReactor} from 'async-reactor';
 import {fetch} from 'utils/fetch';
@@ -22,7 +21,9 @@ async function AsyncAddProduct(props:any){
             name: (document.getElementById('productName') as HTMLInputElement).value,
             offerTplID: (document.getElementById('offerTplId') as HTMLInputElement).value,
             offerAccessID: (document.getElementById('offerAccessId') as HTMLInputElement).value,
-            usageRepType: (document.getElementById('usagePerType') as HTMLInputElement).value
+            usageRepType: (document.getElementById('usagePerType') as HTMLInputElement).value,
+            clientIdent: 'by_channel_id',
+            config: Buffer.from('{}').toString('base64')
         };
         fetch('/products', {method: 'post', body}).then(res => {
             // ReactDOM.unmountComponentAtNode(document.getElementById('product'));
@@ -31,7 +32,6 @@ async function AsyncAddProduct(props:any){
     };
 
     const templates = await fetch('/templates', {method: 'GET'});
-    console.log('TEMPLATES!!!', templates);
     const offers = (templates as any).filter(template => template.kind === 'offer');
     const access = (templates as any).filter(template => template.kind === 'access');
 

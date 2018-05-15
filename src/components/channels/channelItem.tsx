@@ -6,12 +6,6 @@ import LinkToProductByOfferingId from '../products/linkToProductByOfferingId';
 import ProductNameByOffering from '../products/productNameByOffering';
 import PgTime from '../utils/pgTime';
 export default withRouter(function(props:any){
-    /*
-    const elem = <li>
-        <Link to={`/channel/${JSON.stringify(props.channel)}`}>{props.channel.id}</Link> |
-        <ChannelStatus channelId={props.channel.id} /> | <Link to={`/endpoint/${props.channel.id}`}>Endpoint</Link> | <Link to={`/sessions/${props.channel.id}`}>Sessions</Link>
-    </li>;
-   */
 
     const elem = <tr>
         <td><Link to={`/channel/${JSON.stringify(props.channel)}/`}>{props.channel.id}</Link></td>
@@ -20,7 +14,7 @@ export default withRouter(function(props:any){
         <td>{props.channel.channelStatus}</td>
         <td>{props.channel.serviceStatus}</td>
         <td><ChannelUsage channelId={props.channel.id} /></td>
-        <td>{props.channel.receiptBalance}</td>
+        <td>{(props.channel.receiptBalance/1e8).toFixed(3)}</td>
         <td><PgTime time={props.channel.serviceChangedTime} /></td>
     </tr>;
     return (elem);

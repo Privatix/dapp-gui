@@ -1,6 +1,4 @@
 import * as React from 'react';
-// import Form from 'react-jsonschema-form';
-// import { Link } from 'react-router-dom';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 
@@ -12,37 +10,30 @@ function Loader() {
 
 async function AsyncSettings(props:any){
 
+    const saveOptions = function(evt:any){
+        evt.preventDefault();
+        const inputs = document.getElementById('optionsForm').querySelectorAll('input');
+        const payload = [].slice.call(inputs, 0).map(option => ({
+            key: option.id
+           ,value: option.value
+           ,description: option.dataset.desc
+           ,name: option.dataset.name
+        }));
+        fetch('/settings', {method: 'put', body: payload});
+    };
+
     return await fetch('/settings', {method: 'GET'}).then(options => {
 
-        const schema = {
-        'schema': {
-          'title': 'edit settings',
-          'type': 'object',
-          'properties': {
-          }
-        },
-        'uiSchema': {
-        }
-      };
-
-        (options as any).forEach((option: any) => {
-            schema.schema.properties[option.key] = {'type': 'string', 'default': option.value};
-            schema.uiSchema[option.key] = {'ui:help': option.description};
-        });
-        
-        // const onSubmit = ({formData}) => {
-        //     const settings = Object.keys(formData).map(key => { return {key, 'value': formData[key], 'description': schema.uiSchema[key]['ui:help']}; });
-        //     fetch('/settings', {method: 'put', body: settings}).then(res => {
-        //         // ReactDOM.unmountComponentAtNode(document.getElementById('template'));
-        //     });
-        // };
-        // return <div><Form schema={schema.schema} uiSchema={schema.uiSchema} onSubmit={onSubmit}>
-        //     <div>
-        //       <button type='submit'>save</button>
-        //       <Link to={'/'}>Cancel</Link>
-        //     </div>
-        // </Form></div>;
-
+        const optionsDOM = (options as any).map(option => <tr>
+                                        <td>{option.name}:</td>
+                                        <td>
+                                            <div className='form-control text-right'>
+                                                <input id={option.key} type='text' defaultValue={option.value} data-desc={option.description} data-name={option.name}/>
+                                                <label htmlFor={option.key} className='m-b-15'></label>
+                                            </div>
+                                        </td>
+                                        <td>{option.description}</td>
+                                    </tr>);
         return (
             <div className='container-fluid'>
                 <div className='row'>
@@ -63,7 +54,7 @@ async function AsyncSettings(props:any){
                                     </div>
                                 </div>
                             </div>
-                            <form>
+                            <form id='optionsForm'>
                                 <table className='table table-bordered table-striped'>
                                     <thead>
                                     <tr>
@@ -73,53 +64,10 @@ async function AsyncSettings(props:any){
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    <tr>
-                                        <td>Notifications:</td>
-                                        <td>
-                                            <div className='checkbox checkbox-custom text-center'>
-                                                <input id='checkbox1' type='checkbox' />
-                                                <label htmlFor='checkbox1' className='m-b-15'></label>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Do not store history:</td>
-                                        <td>
-                                            <div className='checkbox checkbox-custom text-center'>
-                                                <input id='checkbox2' type='checkbox' />
-                                                <label htmlFor='checkbox2' className='m-b-15'></label>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Ask a password after idle:</td>
-                                        <td>
-                                            <div className='checkbox checkbox-custom text-center'>
-                                                <input id='checkbox3' type='checkbox' />
-                                                <label htmlFor='checkbox3' className='m-b-15'></label>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                    </tr>
-                                    <tr>
-                                        <td>Idle time (min):</td>
-                                        <td>
-                                            <div className='input-group bootstrap-touchspin'>
-                                                <span className='input-group-btn'>
-                                                    <button className='btn btn-default bootstrap-touchspin-down' type='button'>-</button>
-                                                </span>
-                                                <input id='demo2' type='text' value='10' name='demo2' className='form-control text-center' />
-                                                <span className='input-group-btn'>
-                                                    <button className='btn btn-default bootstrap-touchspin-up' type='button'>+</button>
-                                                </span>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                    </tr>
+                                        {optionsDOM}
                                     </tbody>
                                 </table>
+                                <button className='btn btn-default waves-effect waves-light' onClick={saveOptions}>Save</button>
                             </form>
                         </div>
                     </div>

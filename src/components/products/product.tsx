@@ -14,7 +14,7 @@ export default function(props:any){
                             <Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an Offering</Link>
                         </div>
                     </div>
-                    <h3 className='page-title'>Product info</h3>
+                    <h3 className='page-title'>Server info</h3>
                 </div>
             </div>
                 <div className='row'>

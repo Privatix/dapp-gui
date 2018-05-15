@@ -21,19 +21,9 @@ async function AsyncChannels (props:any){
     }
 
 
-//    const endpoint = '/channels' + (props.match.params.offering === 'all' ? '' : `?offeringId=${props.match.params.offering}`);
     const channels = await fetch(endpoint, {method: 'GET'});
     const channelsDOM = (channels as any).map((channel: any) => <ChannelItem channel={channel} />);
-    /*
-    return <div>
-        <h3>Active Services</h3>
-        {title}
-        <hr />
-        {channelsDOM}
-        <hr />
-        <Link to={'/'}>back</Link>
-    </div>;
-   */
+
     return <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12 m-b-15'>

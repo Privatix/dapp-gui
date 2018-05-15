@@ -10,13 +10,7 @@ function Loader() {
 }
 
 async function AsyncProductItem(props:any){
-    /*
-    const elem = <li>
-        <Link to={`/product/${JSON.stringify(props.product)}`}>{props.product.name}</Link> | 
-        <Link to={`/offerings/${props.product.id}`}>view offerings</Link> |
-        status: <ProductStatus productId={props.product.id} />
-    </li>;
-   */
+
     const offerings = await fetch(`/offerings?product=${props.product.id}`, {method: 'GET'});
     const offerTemplates = await fetch(`/templates?id=${props.product.offerTplID}`, {method: 'get'});
     const offerTemplate = offerTemplates[0];

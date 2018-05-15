@@ -1,8 +1,7 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
+import ChannelItem from './channelItem';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
-import ChannelItem from './channelItem';
 
 function Loader() {
 
@@ -12,31 +11,13 @@ function Loader() {
 
 async function AsyncChannels (props:any){
 
-    let endpoint;
+    const endpoint = `/channels?serviceStatus=${props.status}`;
 
-    endpoint = `/channels?serviceStatus=${props.match.params.status}`;
-    console.log('CHANNELS BY STATUS!!!', props.match.params.status);
-
-//    const endpoint = '/channels' + (props.match.params.offering === 'all' ? '' : `?offeringId=${props.match.params.offering}`);
     const channels = await fetch(endpoint, {method: 'GET'});
+
     const channelsDOM = (channels as any).map((channel: any) => <ChannelItem channel={channel} />);
-    /*
-    return <div>
-        <h3>Active Services</h3>
-        {title}
-        <hr />
-        {channelsDOM}
-        <hr />
-        <Link to={'/'}>back</Link>
-    </div>;
-   */
-    return <div className='container-fluid'>
-        <div className='row'>
-            <div className='col-sm-12 m-b-15'>
-                <h3 className='page-title'>{props.match.params.status === 'active'  ? 'Active Services' : 'History'}</h3>
-            </div>
-        </div>
-            <div className='row'>
+
+    return <div className='row'>
                 <div className='col-12'>
                     <div className='card-box'>
                         <table className='table table-bordered table-striped'>
@@ -58,8 +39,7 @@ async function AsyncChannels (props:any){
                         </table>
                     </div>
                 </div>
-          </div>
-        </div>;
+          </div>;
 }
 
 export default asyncReactor(AsyncChannels, Loader);

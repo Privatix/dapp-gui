@@ -1,11 +1,9 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
 import LinkToProductByOfferingId from '../products/linkToProductByOfferingId';
 import ProductNameByOffering from '../products/productNameByOffering';
 
 export default function(props:any){
 
-    // const offeringPropsDom = Object.keys(props.offering).map(key => <tr><td>{key}</td><td>{props.offering[key]}</td></tr>);
     return <div className='col-lg-9 col-md-8'>
         <div className='card-box'>
             <div className='card m-b-20 card-body'>

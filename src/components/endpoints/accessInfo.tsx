@@ -16,12 +16,14 @@ async function AsyncAccessInfo (props:any){
     const channel = channels[0];
     const offerings = await fetch(`/offerings/`, {method: 'GET'});
     const offering = (offerings as any).filter(offering => offering.id === channel.offering)[0];
-    console.log('ENDPOINTS!!!', endpoints, channels, offerings, offering);
+    var host, port;
+    [host, port] = endpoint.serviceEndpointAddress.split(':');
+
     return <table className='table table-striped'>
         <tbody>
             <tr><td width='30%'>Country:</td><td><img src={`images/country/${offering.country.toLowerCase()}.png`} width='30px'/></td></tr>
-            <tr><td>Hostname:</td>{endpoint.ipAddress}<td></td></tr>
-            <tr><td>port:</td><td>[[ 443 ]]</td></tr>
+            <tr><td>Hostname:</td>{host}<td></td></tr>
+            <tr><td>port:</td><td>{port}</td></tr>
         </tbody>
     </table>;
 }

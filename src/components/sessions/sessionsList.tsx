@@ -1,5 +1,6 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
+import {remote} from 'electron';
+const {dialog} = remote;
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import SessionItem from './sessionItem';
@@ -28,18 +29,26 @@ async function AsyncSessions (props:any){
         const price = offerings[0].unitPrice;
         return income + session.unitsUsed*price;
     }, 0);
-    console.log('INCOME!!!', income);
+
     const sessionsDOM = (sessions as any).map((session: any) => <SessionItem session={session} />);
-    /*
-    return <div>
-        <hr />
-        {sessionsDOM}
-        <hr />
-        <Link to={'/'}>back</Link>
-    </div>;
-*/
+
     const exportToFile = function(){
-        // 
+
+        (dialog.showSaveDialog as any)(null, {title: 'saving sessions', defaultPath: 'sessions.csv'}, (fileName: string) => {
+            if(fileName != null){
+                const headers = ['session id', 'channel id', 'started', 'stopped', 'units used', 'client IP', 'client port'];
+                const data = (sessions as any).map(session => [session.id
+                                                              ,session.channel
+                                                              ,session.started
+                                                              ,session.stopped
+                                                              ,session.unitsUsed
+                                                              ,session.clientIP
+                                                              ,session.clientPort
+                ]);
+                data.unshift(headers);
+                fetch('/saveAs', {body: {fileName, data: data.map(row => row.join()).join('\n')}});
+            }
+        });
     };
 
     return <div className='container-fluid'>
@@ -52,8 +61,8 @@ async function AsyncSessions (props:any){
                         <div className='card-body'>
                             <table className='table table-striped'>
                                 <tbody>
-                                <tr><td>Total usage:</td><td>{(usage/1000).toFixed(3)} Gb</td></tr>
-                                <tr><td>Total income:</td><td>{income} PRIX</td></tr>
+                                <tr><td>Total usage:</td><td>{(usage/1024).toFixed(3)} Gb</td></tr>
+                                <tr><td>Total income:</td><td>{(income/1e8).toFixed(3)} PRIX</td></tr>
                                 <tr><td>Session count:</td><td>{(sessions as any).length}</td></tr>
                                 </tbody>
                             </table>
