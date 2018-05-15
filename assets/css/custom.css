@@ -43,15 +43,37 @@ fieldset legend {
     padding-left: 40px;
 }
 
-.cardHoverBgWarning,
-.cardHoverBgDanger{
-    transition: background-color 0.2s linear, color 0.2s linear;
+.warningAreaCard{
+    border: 1px solid #e83546;
 }
-.cardHoverBgWarning:hover{
-    background: #ffbd4a;
-    color: #fff;
+
+.topPanel{
+    margin-right: 30px;
 }
-.cardHoverBgDanger:hover{
-    background: #f05050;
-    color: #fff;
+.topPanel li{
+    line-height: 70px;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.topPanelStatusLi{
+    position: relative;
+    padding-right: 32px;
+}
+.topPanelStatusLi .statusWrap{
+    font-size: 23px;
+    display: inline-block;
+    position: absolute;
+    top: 0;
+    right: 0;
+}
+.topPanelStatusLi .statusWrap-off{
+    color: #e83546;
+}
+.topPanelStatusLi .statusWrap-on{
+    color: #81c868;
+}
+@media only screen and (max-width: 1170px) {
+    .topPanel li:not(:last-child){
+        display: none;
+    }
 }

@@ -4,8 +4,15 @@ import { NavLink } from 'react-router-dom';
 
 
 export default function(props:any){
-    return <div className='topbar'>
 
+    /* Draft status logic (Need to change incomeStatus by real status) */
+    let status = 'on';
+    let incomeStatus = 1;
+    if (incomeStatus !== 1) {
+        status = 'off';
+    }
+
+    return <div className='topbar'>
 
         <div className='topbar-left'>
             <div className='text-center'>
@@ -16,12 +23,6 @@ export default function(props:any){
         <nav className='navbar-custom'>
 
             <ul className='list-inline float-right mb-0'>
-                <li className='list-inline-item notification-list'>
-                    <a className='nav-link waves-light waves-effect' href='#' id='btn-fullscreen'>
-                        <i className='dripicons-expand noti-icon'></i>
-                    </a>
-                </li>
-
 
                 <li className='list-inline-item dropdown notification-list'>
                     <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
@@ -39,10 +40,25 @@ export default function(props:any){
                             <NavLink to='/settings' className='dropdown-item notify-item'>
                                 <i className='md md-settings'></i> <span>Settings</span>
                             </NavLink>
-
+                            <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
+                                <i className='dripicons-blog'></i><span>Logs</span>
+                            </NavLink>
                         </div>
                 </li>
+
+                <a className='nav-link waves-light waves-effect' href='#' id='btn-fullscreen'>
+                    <i className='dripicons-expand noti-icon'></i>
+                </a>
             </ul>
+
+            <ul className='list-inline float-right mb-0 topPanel'>
+                <li className='list-inline-item m-r-20'>ETH Balance: 0.4</li>
+                <li className='list-inline-item m-r-20'>Exchange Balance: 35</li>
+                <li className='list-inline-item m-r-20'>Service balance: 35</li>
+                <li className='list-inline-item m-r-20'>Active Services: 2</li>
+                <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={'statusWrap statusWrap-' + status}><i className={'fa fa-toggle-' + status}></i></span></li>
+            </ul>
+
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>
                     <button className='button-menu-mobile open-left waves-light waves-effect'>

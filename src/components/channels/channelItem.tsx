@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import ChannelStatusStyle from './channelStatusStyle';
+import ContractStatus from './contractStatus';
 
 export default withRouter(function(props:any){
     /*
@@ -13,12 +15,15 @@ export default withRouter(function(props:any){
         props.history.push(`/channel/${JSON.stringify(props.channel)}`);
     };
 
+    // Need to use real Contract status
+    const contractRealStatus = 'in_challenge';
+
     const elem = <tr onClick={onClick}>
         <td><Link to={`/channels/${JSON.stringify(props.channel)}/`}>{props.channel.id}</Link></td>
         <td>[[ server ]]</td>
         <td>{props.channel.client}</td>
-        <td>[[ contract status ]]</td>
-        <td>{props.channel.serviceStatus}</td>
+        <td>[[ <ContractStatus contractStatus={contractRealStatus} /> ]]</td>
+        <td><ChannelStatusStyle serviceStatus={props.channel.serviceStatus} /></td>
         <td>[[ usage ]]</td>
         <td>[[ income PRIX ]]</td>
         <td>{props.channel.serviceChangedTime}</td>
