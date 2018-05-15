@@ -34,7 +34,14 @@ cd dapp-gui
 git checkout master
 ```
 
+If Windows is a target OS, install `windows-build-tools`:
+
+```
+npm install --global --production windows-build-tools
+```
+
 Install dependencies:
+
 ```
 npm install
 ```
