@@ -1,11 +1,11 @@
 import * as React from 'react';
 // import { Link } from 'react-router-dom';
 // import OfferingToolPublish from './offeringToolPublish';
-import OfferingToolPopUp from './offeringToolPopUp';
-import OfferingToolRemove from './offeringToolRemove';
+// import OfferingToolPopUp from './offeringToolPopUp';
+// import OfferingToolRemove from './offeringToolRemove';
+import ConfirmPopupSwal from '../confirmPopupSwal';
 // import OfferingToolDeactivate from './offeringToolDeactivate';
 // import OfferingToolDublicate from './offeringToolDublicate';
-
 
 /*
         <OfferingToolPublish offeringId={props.offering.id} /> |
@@ -19,14 +19,28 @@ export default function(props:any){
         <div className='card m-b-20 card-body text-xs-center'>
             <form>
                 <p className='card-text'>A click on an update will pop up your offering in the blockchain. You need to pay a gas to perform this operation</p>
-                <p className='text-center'><OfferingToolPopUp offeringId={props.offering.id} /></p>
+                <ConfirmPopupSwal
+                    endpoint={`/offerings/${props.offering.id}/status`}
+                    options={{method: 'put', body: {action: 'popup'}}}
+                    title={'Popup'}
+                    class={'btn btn-primary btn-custom btn-block'}
+                    swalType='warning'
+                    swalConfirmBtnText='Yes, popup!'
+                    swalTitle='Are you sure?' />
             </form>
         </div>
         <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
             <form>
                 <h5 className='card-title'>Warning Area</h5>
                 <p className='card-text'>This operation will remove the offering from SOMC</p>
-                <p className='text-center'><OfferingToolRemove offeringId={props.offering.id} /></p>
+                <ConfirmPopupSwal
+                    endpoint={`/offerings/${props.offering.id}/status`}
+                    options={{method: 'put', body: {action: 'remove'}}}
+                    title={'Remove'}
+                    class={'btn btn-danger btn-custom btn-block'}
+                    swalType='danger'
+                    swalConfirmBtnText='Yes, remove!'
+                    swalTitle='Are you sure?' />
             </form>
         </div>
     </div>;

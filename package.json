@@ -38,6 +38,7 @@
     "node-fetch": "^2.0.0",
     "popper.js": "^1.14.3",
     "react": "^16.2.0",
+    "react-bootstrap-sweetalert": "^4.4.1",
     "react-dom": "^16.2.0",
     "react-jsonschema-form": "^1.0.2",
     "react-router": "^4.2.0",
