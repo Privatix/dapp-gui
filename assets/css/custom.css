@@ -26,6 +26,16 @@ fieldset legend {
     margin-left:10px;
 }
 
+ul.default {
+	list-style-type: disc !important;
+	padding-left:40px !important;
+	margin-bottom: 16px !important;
+}
+
+ul.default li {
+	display: list-item !important;
+}
+
 .searchInputGroup .input-group-prepend{
     position: absolute;
     z-index: 100;
