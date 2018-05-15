@@ -2,7 +2,7 @@ import * as React from 'react';
 
 import ChannelUsage from './channelUsage';
 import AccessInfo from '../endpoints/accessInfo';
-import ProductNameByOffering from '../products/productnameByOffering';
+import ProductNameByOffering from '../products/productNameByOffering';
 
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
