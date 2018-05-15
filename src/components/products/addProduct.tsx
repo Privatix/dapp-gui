@@ -31,11 +31,13 @@ async function AsyncAddProduct(props:any){
     };
 
     const templates = await fetch('/templates', {method: 'GET'});
+    console.log('TEMPLATES!!!', templates);
     const offers = (templates as any).filter(template => template.kind === 'offer');
     const access = (templates as any).filter(template => template.kind === 'access');
 
     const offersSelect = offers.map(offer => <option value={offer.id}>{JSON.parse(atob(offer.raw)).schema.title}</option>);
     const accessSelect = access.map(access => <option value={access.id}>{JSON.parse(atob(access.raw)).schema.title}</option>);
+    console.log(offersSelect, accessSelect);
     return <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12 m-b-15'>

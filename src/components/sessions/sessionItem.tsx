@@ -1,9 +1,14 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 
 export default function(props:any){
-    const elem = <li>
-        <Link to={`/session/${JSON.stringify(props.session)}`}>{props.session.id}</Link>
-    </li>;
+
+    const elem = <tr>
+                     <td>{props.session.id}</td>
+                     <td>{props.session.started}</td>
+                     <td>{props.session.stopped}</td>
+                     <td>[[ USAGE ]]</td>
+                     <td>{props.session.lastUsageTime}</td>
+                     <td>{props.session.clientIP}</td>
+                 </tr>;
     return (elem);
 }

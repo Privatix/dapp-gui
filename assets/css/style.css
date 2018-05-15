@@ -160,6 +160,14 @@ a:focus {
   padding-bottom: 10px !important;
 }
 
+.p-t-7 {
+  padding-top: 7px !important;
+}
+
+.p-b-8 {
+  padding-bottom: 8px !important;
+}
+
 .p-l-r-10 {
   padding-left: 10px;
   padding-right: 10px;
@@ -179,6 +187,14 @@ a:focus {
 
 .m-r-15 {
   margin-right: 15px !important;
+}
+
+.m-r-20 {
+  margin-right: 20px !important;
+}
+
+.m-r-25 {
+  margin-right: 25px !important;
 }
 
 .m-l-5 {

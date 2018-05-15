@@ -36,16 +36,18 @@ async function AsyncProducts(props:any){
             <div className='row'>
                 <div className='col-12'>
                     <div className='card-box'>
-                        <table className='table table-bordered table-striped'>
-                            <thead>
-                                <tr>
-                                <td>Name</td><td>Template</td><td>End Point</td><td>Offering Count</td><td></td>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {list}
-                            </tbody>
-                        </table>
+                        <div className='table-responsive'>
+                            <table className='table table-bordered table-striped'>
+                                <thead>
+                                    <tr>
+                                    <td>Name</td><td>Template</td><td>End Point</td><td>Offering Count</td><td></td>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {list}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
           </div>
