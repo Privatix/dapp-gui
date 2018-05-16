@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import ReactSweetAlert from 'react-bootstrap-sweetalert';
+import ReactSweetAlert from 'react-sweetalert-vilan';
 import {fetch} from 'utils/fetch';
 
 export default function(props:any) {
@@ -13,13 +13,14 @@ export default function(props:any) {
                 show={true}
                 type={props.swalType}
                 showCancel
+                closeOnClickOutside={false}
                 confirmBtnText={props.swalConfirmBtnText}
-                confirmBtnBsStyle='danger'
-                cancelBtnBsStyle='default'
+                confirmBtnCssClass='swal2-styled'
+                cancelBtnCssClass='swal2-styled'
                 title={props.swalTitle}
                 onConfirm={confirmHandler}
                 onCancel={cancelHandler}
-            ></ReactSweetAlert>, document.getElementById('swalModal')
+            >{props.text}</ReactSweetAlert>, document.getElementById('swalModal')
         );
     }
 

@@ -14,9 +14,11 @@ export default function(props:any){
                     endpoint={`/channels/${props.channelId}/status`}
                     options={{method: 'put', body: {action: 'terminate'}}}
                     title={'Terminate contract'}
+                    text={<span>This operation will terminate the service and call the "Uncooperative close" procedure.<br />
+                            You can't undo this.</span>}
                     class={'btn btn-danger btn-custom btn-block'}
                     swalType='danger'
-                    swalConfirmBtnText='Yes, terminate!'
+                    swalConfirmBtnText='Yes, terminate it!'
                     swalTitle='Are you sure?' />
             </form>
         </div>

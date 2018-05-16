@@ -23,9 +23,11 @@ export default function(props:any){
                     endpoint={`/offerings/${props.offering.id}/status`}
                     options={{method: 'put', body: {action: 'popup'}}}
                     title={'Popup'}
+                    text={<span>This operation will pop up your offering in the blockchain.<br />
+                        You need to pay a gas from your ETH account to perform this operation.</span>}
                     class={'btn btn-primary btn-custom btn-block'}
                     swalType='warning'
-                    swalConfirmBtnText='Yes, popup!'
+                    swalConfirmBtnText='Yes, pop up it!'
                     swalTitle='Are you sure?' />
             </form>
         </div>
@@ -37,9 +39,11 @@ export default function(props:any){
                     endpoint={`/offerings/${props.offering.id}/status`}
                     options={{method: 'put', body: {action: 'remove'}}}
                     title={'Remove'}
+                    text={<span>This operation will permanently remove the offering from SOMC.<br />
+                        You can't undo this.</span>}
                     class={'btn btn-danger btn-custom btn-block'}
                     swalType='danger'
-                    swalConfirmBtnText='Yes, remove!'
+                    swalConfirmBtnText='Yes, remove it!'
                     swalTitle='Are you sure?' />
             </form>
         </div>

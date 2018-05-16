@@ -77,3 +77,58 @@ fieldset legend {
         display: none;
     }
 }
+
+.sweet-alert .swal2-styled{
+    border: 0;
+    border-radius: 3px;
+    box-shadow: none;
+    color: #fff;
+    cursor: pointer;
+    font-size: 17px !important;
+    font-weight: 500;
+    margin: 0 5px;
+    padding: 10px 32px;
+}
+.sweet-alert .swal2-styled:hover,
+.sweet-alert .swal2-styled:focus{
+    box-shadow: none;
+    color: #fff;
+}
+.sweet-alert .btn-primary{
+    background: rgb(79, 167, 243) !important;
+    border-left-color: rgb(79, 167, 243);
+    border-right-color: rgb(79, 167, 243);
+}
+.sweet-alert .btn-link{
+    background-color: rgb(213, 113, 113);
+}
+.sweet-alert .btn-primary:hover{
+    background: rgb(63, 134, 194) !important;
+}
+.sweet-alert .btn-link:hover{
+    background-color: rgb(170, 90, 90);
+    text-decoration: none;
+}
+.sweet-alert h2{
+    color: #595959;
+    font-size: 28px;
+    text-align: center;
+    font-weight: 600;
+    text-transform: none;
+    position: relative;
+    margin: 0;
+    padding: 0;
+    line-height: 60px;
+    display: block;
+}
+.sweet-alert .lead{
+    font-size: 16px !important;
+    text-align: center;
+    font-weight: 300;
+    position: relative;
+    float: none;
+    margin: 0;
+    padding: 0;
+    line-height: normal;
+    color: #545454 !important;
+}
