@@ -1,5 +1,5 @@
 {
-  "name": "GUI",
+  "name": "DappctrlGUI",
   "version": "0.1.0",
   "main": "build/main.js",
   "devDependencies": {
@@ -31,7 +31,6 @@
     "btoa": "^1.2.1",
     "colors": "^1.1.2",
     "cors": "^2.8.4",
-    "free-jqgrid": "^4.15.3",
     "history": "^4.7.2",
     "jquery": "^3.3.1",
     "keythereum": "^1.0.3",
