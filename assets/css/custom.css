@@ -121,7 +121,7 @@ fieldset legend {
     line-height: 60px;
     display: block;
 }
-.sweet-alert .lead{
+.sweet-alert .lead {
     font-size: 16px !important;
     text-align: center;
     font-weight: 300;
@@ -131,4 +131,27 @@ fieldset legend {
     padding: 0;
     line-height: normal;
     color: #545454 !important;
+}
+
+.bootstrap-table #sortableTable > thead > tr > th{
+    background: none;
+}
+
+.bootstrap-table-sortable{
+    border: 1px solid #ebeff2;
+    border-radius: 3px;
+}
+.bootstrap-table-sortable .table > thead > tr > th,
+.bootstrap-table-sortable .table > tbody > tr > td{
+    padding: 10px 12px !important;
+}
+.bootstrap-table-sortable .table > thead > tr > th > i{
+    float: right;
+    margin-top: 4px;
+    font-size: 16px;
+    color: #d6d6d6;
+}
+.bootstrap-table-sortable .table > thead > tr > th > i.fa-sort-asc,
+.bootstrap-table-sortable .table > thead > tr > th > i.fa-sort-desc{
+    color: #7A80DD;
 }

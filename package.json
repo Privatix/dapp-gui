@@ -42,6 +42,7 @@
     "react-jsonschema-form": "^1.0.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-sortable-table": "github:Vitold55/react-sortable-table",
     "react-sweetalert-vilan": "^1.0.0",
     "react-toggle": "^4.0.2",
     "react-tooltip": "^3.5.0",
