@@ -146,118 +146,99 @@ async function AsyncCreateOffering (props: any){
                                     <option value='Mb'>Mb</option>
                                 </select>
                             </div>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Price per Mb:</label>
-                                <div className='col-6'>
-                                    <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='0.03' id='offeringPricePerUnit' onChange={depositChanged} />
-                                        <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
-                                    </div>
+                        </div>
+                        <div className='form-group row'>
+                            <label className='col-2 col-form-label'>Price per Mb:</label>
+                            <div className='col-6'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' className='form-control' placeholder='0.03' id='offeringPricePerUnit' onChange={depositChanged} />
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                 </div>
                             </div>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Max billing unit lag:</label>
-                                <div className='col-6'>
-                                    <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='3' id='offeringMaxBillingLag' />
-                                        <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
-                                    </div>
-                                    <span className='help-block'>
-                                        <small>Maximum payment lag in units after which Agent will suspend service usage.</small>
-                                    </span>
+                        </div>
+                        <div className='form-group row'>
+                            <label className='col-2 col-form-label'>Max billing unit lag:</label>
+                            <div className='col-6'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' className='form-control' placeholder='3' id='offeringMaxBillingLag' />
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
                                 </div>
                                 <span className='help-block'>
                                     <small>Maximum payment lag in units after which Agent will suspend service usage.</small>
                                 </span>
                             </div>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Min units:</label>
-                                <div className='col-6'>
-                                    <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='100' id='offeringMinUnits' onChange={depositChanged} />
-                                        <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
-                                    </div>
-                                    <span className='help-block'>
-                                        <small>Used to calculate minimum deposit required.</small>
-                                    </span>
+                        </div>
+                        <div className='form-group row'>
+                            <label className='col-2 col-form-label'>Min units:</label>
+                            <div className='col-6'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' className='form-control' placeholder='100' id='offeringMinUnits' onChange={depositChanged} />
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
                                 </div>
                                 <span className='help-block'>
                                     <small>Used to calculate minimum deposit required.</small>
                                 </span>
                             </div>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Max units:</label>
-                                <div className='col-6'>
-                                    <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' id='offeringMaxUnits' />
-                                        <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
-                                    </div>
-                                    <span className='help-block'>
-                                        <small>Used to specify maximum units of service that will be supplied. Can be empty.</small>
-                                    </span>
+                        </div>
+                        <div className='form-group row'>
+                            <label className='col-2 col-form-label'>Max units:</label>
+                            <div className='col-6'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' className='form-control' id='offeringMaxUnits' />
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
                                 </div>
                                 <span className='help-block'>
                                     <small>Used to specify maximum units of service that will be supplied. Can be empty.</small>
                                 </span>
                             </div>
                         </div>
-                        <div className='card m-b-20 card-body'>
-                            <h5 className='card-title'>Connection info</h5>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Max suspend time:</label>
-                                <div className='col-6'>
-                                    <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='1800' id='offeringMaxSuspendTime' />
-                                        <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
-                                    </div>
-                                    <span className='help-block'>
-                                        <small>Maximum time service can be in Suspended status due to payment log.
-                                            After this time period service will be terminated, if no sufficient payment was received.
-                                            Period is specified in seconds.</small>
-                                    </span>
+                    </div>
+                    <div className='card m-b-20 card-body'>
+                        <h5 className='card-title'>Connection info</h5>
+                        <div className='form-group row'>
+                            <label className='col-2 col-form-label'>Max suspend time:</label>
+                            <div className='col-6'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' className='form-control' placeholder='1800' id='offeringMaxSuspendTime' />
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                 </div>
-                            </div>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Max inactive time:</label>
-                                <div className='col-6'>
-                                    <div className='input-group bootstrap-touchspin'>
-                                        <input type='text' className='form-control' placeholder='60' id='offeringMaxInactiveTime' />
-                                        <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
-                                    </div>
-                                    <span className='help-block'>
-                                        <small>Maximum time without service usage.
-                                            Agent will consider that Client will not use service and stop providing it.
-                                            Period is specified in seconds.</small>
-                                    </span>
-                                </div>
+                                <span className='help-block'>
+                                    <small>Maximum time service can be in Suspended status due to payment log.
+                                        After this time period service will be terminated, if no sufficient payment was received.
+                                        Period is specified in seconds.</small>
+                                </span>
                             </div>
                         </div>
-                        <div className='card m-b-20 card-body'>
-                            <h5 className='card-title'>Publication price:</h5>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Account:</label>
-                                <div className='col-6'>
-                                    {selectAccount}
+                        <div className='form-group row'>
+                            <label className='col-2 col-form-label'>Max inactive time:</label>
+                            <div className='col-6'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' className='form-control' placeholder='60' id='offeringMaxInactiveTime' />
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                 </div>
-                                <div className='col-4 col-form-label'>
-                                    Balance: <span id='accountBalance'>{(accounts[0].ptcBalance).toFixed(3)} PRIX / {(accounts[0].ethBalance/1e8).toFixed(3)} ETH</span>
-                                </div>
+                                <span className='help-block'>
+                                    <small>Maximum time without service usage.
+                                        Agent will consider that Client will not use service and stop providing it.
+                                        Period is specified in seconds.</small>
+                                </span>
                             </div>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Deposit:</label>
-                                <div className='col-6'>
-                                    <input id='offeringDeposit' type='text' className='form-control' value='' placeholder='PRIX' readOnly/>
-                                    <span className='help-block'>
-                                        <small>This deposit will be locked while offering is active.
-                                            To return deposit close your offering</small>
-                                    </span>
-                                </div>
+                        </div>
+                    </div>
+                    <div className='card m-b-20 card-body'>
+                        <h5 className='card-title'>Publication price:</h5>
+                        <div className='form-group row'>
+                            <label className='col-2 col-form-label'>Account:</label>
+                            <div className='col-6'>
+                                {selectAccount}
+                            </div>
+                            <div className='col-4 col-form-label'>
+                                Balance: <span id='accountBalance'>{(accounts[0].ptcBalance).toFixed(3)} PRIX / {(accounts[0].ethBalance/1e8).toFixed(3)} ETH</span>
                             </div>
                         </div>
                         <div className='form-group row'>
                             <label className='col-2 col-form-label'>Deposit:</label>
                             <div className='col-6'>
-                                <input type='text' className='form-control' value='' placeholder='3 PRIX' readOnly/>
+                                <input id='offeringDeposit' type='text' className='form-control' value='' placeholder='PRIX' readOnly/>
                                 <span className='help-block'>
                                     <small>This deposit will be locked while offering is active.
                                         To return deposit close your offering</small>

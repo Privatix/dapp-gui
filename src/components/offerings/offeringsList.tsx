@@ -22,7 +22,17 @@ async function AsyncOfferings (props: any){
     }
 
 
-    const offerings = await fetch(endpoint, {method: 'GET'});
+    const offeringsRequest = fetch(endpoint, {method: 'GET'});
+    const productsRequest = fetch('/products', {});
+    let offerings, products;
+    [offerings, products] = await Promise.all([offeringsRequest, productsRequest]);
+
+    const resolveTable = (products as any).reduce((table, product) => {
+        table[product.id] = product.name;
+        return table;
+    });
+
+    offerings = (offerings as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
 
     const offeringsDOM = (offerings as any).map((offering: any) => <OfferingItem offering={offering} />);
 
