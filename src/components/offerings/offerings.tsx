@@ -13,7 +13,7 @@ export default function(props:any){
         <div className='row'>
             <div className='col-sm-12 m-b-20'>
                 <div className='btn-group m-t-5'>
-                    <Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an offering</Link>
+                    <Link to={'/createOffering'} className='btn btn-default btn-custom waves-effect waves-light'>Create an offering</Link>
                 </div>
             </div>
         </div>
