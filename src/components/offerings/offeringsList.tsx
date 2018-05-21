@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {asyncReactor} from 'async-reactor';
-// import OfferingItem from './offeringItem';
 import { Link } from 'react-router-dom';
 import {fetch} from 'utils/fetch';
 
@@ -35,14 +34,12 @@ async function AsyncOfferings (props: any){
 
     offerings = (offerings as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
 
-    // const offeringsDOM = (offerings as any).map((offering: any) => <OfferingItem offering={offering} />);
-
     const offeringsDataArr = [];
     (offerings as any).map((offering: any) => {
         let row = {
             id: <Link to={`/offering/${JSON.stringify(offering)}/`}>{offering.id}</Link>,
             serviceName: offering.serviceName,
-            server: '[[ server ]]',
+            server: <Link to={`/productById/${offering.product}`}>{offering.productName}</Link>,
             status: <OfferingStatus offeringId={offering.id} />,
             freeUnits: offering.freeUnits,
             maxUnits: offering.maxUnit
@@ -87,32 +84,6 @@ async function AsyncOfferings (props: any){
     return <div className='row'>
         <div className='col-12'>
             <div className='card-box'>
-
-                {/*<table id='sortableTable' data-classes='' className='table table-bordered table-striped'>*/}
-                    {/*<thead>*/}
-                        {/*<tr>*/}
-                            {/*<th data-field='id' data-sortable='true'>Id</th>*/}
-                            {/*<th data-sortable='true'>Service name</th>*/}
-                            {/*<th data-sortable='true'>Server</th>*/}
-                            {/*<th data-sortable='true'>Status</th>*/}
-                            {/*<th data-sortable='true'>Free Units</th>*/}
-                            {/*<th data-sortable='true'>Max Units</th>*/}
-                        {/*</tr>*/}
-                    {/*</thead>*/}
-                    {/*<tbody>*/}
-                        {/*{offeringsDOM}*/}
-                    {/*</tbody>*/}
-                {/*</table>*/}
-
-
-                {/*<BootstrapTable data={offeringsDataArr} striped hover>*/}
-                    {/*<TableHeaderColumn isKey dataField='id'>ID</TableHeaderColumn>*/}
-                    {/*<TableHeaderColumn dataField='serviceName'>Service name</TableHeaderColumn>*/}
-                    {/*<TableHeaderColumn dataField='server'>Server</TableHeaderColumn>*/}
-                    {/*<TableHeaderColumn dataField='status'>Status</TableHeaderColumn>*/}
-                    {/*<TableHeaderColumn dataField='freeUnits'>Free Units</TableHeaderColumn>*/}
-                    {/*<TableHeaderColumn dataField='maxUnits'>Max Units</TableHeaderColumn>*/}
-                {/*</BootstrapTable>*/}
 
                 <div className='bootstrap-table bootstrap-table-sortable'>
                     <SortableTable
