@@ -34,7 +34,7 @@ import Login from './components/auth/login';
 
 
 import AccountsList from './components/accounts/accountsList';
-import Account from './components/accounts/accountView';
+import Account from './components/accounts/account';
 
 import Logs from './components/logs/logs';
 

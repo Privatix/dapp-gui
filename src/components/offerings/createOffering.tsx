@@ -2,6 +2,8 @@ import * as React from 'react';
 // import Form from 'react-jsonschema-form';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
+import ExternalLink from '../utils/externalLink';
+import GasRange from '../utils/gasRange';
 
 function Loader() {
 
@@ -62,7 +64,6 @@ async function AsyncCreateOffering (props: any){
         fetch('/offerings/', {method: 'post', body: payload});
     };
 
-    const shell = require('electron').shell;
     const products = await fetch('/products', {method: 'get'});
     const accounts = await fetch('/accounts/', {method: 'get'});
     const templates = await fetch(`/templates?id=${products[0].offerTplID}`, {method: 'get'});
@@ -77,15 +78,6 @@ async function AsyncCreateOffering (props: any){
     const selectAccount = <select className='form-control' id='selectAccount' onChange={onChangeAccount}>
         {(accounts as any).map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
     </select>;
-
-    const changeGasPrice = (any:any) => {
-        (document.getElementById('gasPrice') as HTMLInputElement).innerHTML = (document.getElementById('gasRange') as HTMLInputElement).value;
-    };
-
-    const openEthGasStation = (evt:any) => {
-        evt.preventDefault();
-        shell.openExternal('https://ethgasstation.info/');
-    };
 
     return <div className='container-fluid'>
         <div className='row'>
@@ -248,7 +240,7 @@ async function AsyncCreateOffering (props: any){
                         <div className='form-group row'>
                             <label className='col-2 col-form-label'>Gas price</label>
                             <div className='col-md-6'>
-                                <input className='form-control' id='gasRange' onChange={changeGasPrice} type='range' name='range' min='0' max='20'/>
+                                <GasRange />
                             </div>
                             <div className='col-4 col-form-label'>
                                 <span id='gasPrice'>20</span> Gwei
@@ -259,7 +251,7 @@ async function AsyncCreateOffering (props: any){
                                 <strong>Average publication time: <span id='averagePublicationTime'>2 min</span></strong>
                             </div>
                             <div className='col-12 col-form-label'>
-                                <strong>More information: <a href='#' onClick={openEthGasStation}>https://ethgasstation.info/</a></strong>
+                                <strong>More information: <ExternalLink href='https://ethgasstation.info/' text='https://ethgasstation.info/' /></strong>
                             </div>
                         </div>
                     </div>

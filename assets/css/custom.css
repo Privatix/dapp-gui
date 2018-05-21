@@ -76,10 +76,10 @@ ul.default li {
     top: 0;
     right: 0;
 }
-.topPanelStatusLi .statusWrap-off{
+.statusWrap-off{
     color: #e83546;
 }
-.topPanelStatusLi .statusWrap-on{
+.statusWrap-on{
     color: #81c868;
 }
 @media only screen and (max-width: 1170px) {
@@ -151,6 +151,9 @@ ul.default li {
     border: 1px solid #ebeff2;
     border-radius: 3px;
 }
+.bootstrap-table-sortable .table > thead > tr > th:not(:last-child){
+    border-right: 1px solid #e4e4e4;
+}
 .bootstrap-table-sortable .table > thead > tr > th,
 .bootstrap-table-sortable .table > tbody > tr > td{
     padding: 10px 12px !important;
@@ -164,4 +167,11 @@ ul.default li {
 .bootstrap-table-sortable .table > thead > tr > th > i.fa-sort-asc,
 .bootstrap-table-sortable .table > thead > tr > th > i.fa-sort-desc{
     color: #7A80DD;
+}
+
+.fieldStatusLabel{
+    font-size: 23px;
+}
+.fieldStatus-on{
+    color: #81c868;
 }
