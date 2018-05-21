@@ -1,8 +1,7 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
-import LogItem from './logItem';
+import SortableTable from 'react-sortable-table';
 declare const jQuery;
 
 function Loader() {
@@ -15,7 +14,75 @@ async function AsyncLogs(props:any){
 
     const endpoint = '/logs';
     const logs = await fetch(endpoint, {method: 'GET'});
-    const list = (logs as any).map((log:any) => <LogItem log={log} /> );
+
+    const logsDataArr = [];
+    (logs as any).map((log: any) => {
+        let severity = 'label label-';
+        switch (log.severity) {
+            case 'warning':
+                severity += 'warning'; break;
+            case 'error':
+                severity += 'danger'; break;
+            case 'info':
+                severity += 'success'; break;
+        }
+
+        let row = {
+            severity: <span className={severity}>{log.severity}</span>,
+            date: log.date,
+            event: log.event
+        };
+
+        logsDataArr.push(row);
+    });
+
+    function getFamilyName(name: any) {
+        return name.props.children;
+    }
+    const FamilyNameSorter = {
+        desc: (data, key) => {
+            let res = data.sort((_a, _b) => {
+                const a = getFamilyName(_a[key]);
+                const b = getFamilyName(_b[key]);
+                console.log('A = B', a, b);
+                if ( a <= b ) {
+                    return 1;
+                } else if ( a > b) {
+                    return -1;
+                }
+            });
+            return res;
+        },
+
+        asc: (data, key) => {
+            return data.sort((_a, _b) => {
+                const a = getFamilyName(_a[key]);
+                const b = getFamilyName(_b[key]);
+                if ( a >= b ) {
+                    return 1;
+                } else if ( a < b) {
+                    return -1;
+                }
+            });
+        }
+    };
+
+    const columns = [
+        {
+            header: 'Severity',
+            key: 'severity',
+            descSortFunction: FamilyNameSorter.desc,
+            ascSortFunction: FamilyNameSorter.asc
+        },
+        {
+            header: 'Date',
+            key: 'date'
+        },
+        {
+            header: 'Event',
+            key: 'event'
+        }
+    ];
 
     const exportToFile = function(){
         // 
@@ -97,18 +164,13 @@ async function AsyncLogs(props:any){
                                 <button className='btn btn-white waves-effect p-t-7 p-b-8' onClick={setNow}>Now</button>
                             </div>
                         </div>
-                        <table className='table table-bordered table-striped footable'>
-                            <thead>
-                                <tr>
-                                    <th className='footable-sortable'>Severity<span className='fooicon fa-sort'></span></th>
-                                    <th className='footable-sortable'>Date<span className='fooicon fa-sort'></span></th>
-                                    <th>Event</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {list}
-                            </tbody>
-                        </table>
+
+                        <div className='bootstrap-table bootstrap-table-sortable'>
+                            <SortableTable
+                                data={logsDataArr}
+                                columns={columns} />
+                        </div>
+
                     </div>
                 </div>
           </div>
