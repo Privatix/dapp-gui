@@ -2,6 +2,7 @@ import * as React from 'react';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import SortableTable from 'react-sortable-table';
+import { HtmlElSorter } from '../utils/sortingHtmlEl';
 declare const jQuery;
 
 function Loader() {
@@ -36,43 +37,12 @@ async function AsyncLogs(props:any){
         logsDataArr.push(row);
     });
 
-    function getFamilyName(name: any) {
-        return name.props.children;
-    }
-    const FamilyNameSorter = {
-        desc: (data, key) => {
-            let res = data.sort((_a, _b) => {
-                const a = getFamilyName(_a[key]);
-                const b = getFamilyName(_b[key]);
-                console.log('A = B', a, b);
-                if ( a <= b ) {
-                    return 1;
-                } else if ( a > b) {
-                    return -1;
-                }
-            });
-            return res;
-        },
-
-        asc: (data, key) => {
-            return data.sort((_a, _b) => {
-                const a = getFamilyName(_a[key]);
-                const b = getFamilyName(_b[key]);
-                if ( a >= b ) {
-                    return 1;
-                } else if ( a < b) {
-                    return -1;
-                }
-            });
-        }
-    };
-
     const columns = [
         {
             header: 'Severity',
             key: 'severity',
-            descSortFunction: FamilyNameSorter.desc,
-            ascSortFunction: FamilyNameSorter.asc
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
         },
         {
             header: 'Date',

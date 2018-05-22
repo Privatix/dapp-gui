@@ -5,6 +5,7 @@ import {fetch} from 'utils/fetch';
 
 import OfferingStatus from './offeringStatus';
 import SortableTable from 'react-sortable-table';
+import { HtmlElSorter } from '../utils/sortingHtmlEl';
 
 function Loader() {
 
@@ -51,7 +52,9 @@ async function AsyncOfferings (props: any){
     const columns = [
         {
             header: 'ID',
-            key: 'id'
+            key: 'id',
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
         },
         {
             header: 'Service name',
@@ -59,13 +62,17 @@ async function AsyncOfferings (props: any){
         },
         {
             header: 'Server',
-            key: 'server'
+            key: 'server',
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
         },
         {
             header: 'Status',
             key: 'status',
             headerStyle: {textAlign: 'center'},
             dataProps: {className: 'text-center'},
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
         },
         {
             header: 'Free Units',
