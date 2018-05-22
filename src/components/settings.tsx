@@ -1,6 +1,7 @@
 import * as React from 'react';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
+import { withRouter } from 'react-router-dom';
 
 function Loader() {
 
@@ -19,7 +20,10 @@ async function AsyncSettings(props:any){
            ,description: option.dataset.desc
            ,name: option.dataset.name
         }));
-        fetch('/settings', {method: 'put', body: payload});
+        fetch('/settings', {method: 'put', body: payload}).then(res => {
+            // TODO notice?
+            props.history.push('/app');
+        });
     };
 
     return await fetch('/settings', {method: 'GET'}).then(options => {
@@ -58,8 +62,8 @@ async function AsyncSettings(props:any){
                                 <table className='table table-bordered table-striped'>
                                     <thead>
                                     <tr>
-                                        <th width='30%'>Name</th>
-                                        <th width='10%'>Value</th>
+                                        <th>Name</th>
+                                        <th>Value</th>
                                         <th>Description</th>
                                     </tr>
                                     </thead>
@@ -77,4 +81,4 @@ async function AsyncSettings(props:any){
     });
 }
 
-export default asyncReactor(AsyncSettings, Loader);
+export default withRouter(asyncReactor(AsyncSettings, Loader));

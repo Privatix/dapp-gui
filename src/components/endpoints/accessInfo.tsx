@@ -22,7 +22,7 @@ async function AsyncAccessInfo (props:any){
     return <div className='table-responsive'>
         <table className='table table-striped'>
             <tbody>
-                <tr><td width='30%'>Country:</td><td><img src={`images/country/${offering.country.toLowerCase()}.png`} width='30px'/></td></tr>
+                <tr><td>Country:</td><td><img src={`images/country/${offering.country.toLowerCase()}.png`} width='30px'/></td></tr>
                 <tr><td>Hostname:</td>{host}<td></td></tr>
                 <tr><td>port:</td><td>{port}</td></tr>
             </tbody>

@@ -3,6 +3,8 @@ import ProductView from './productView';
 import ProductTools from './productTools';
 import { Link } from 'react-router-dom';
 
+declare const Custombox: any;
+
 export default function(props:any){
     const product = JSON.parse(props.src ? props.src : props.match.params.product);
     return <div className='container-fluid'>
@@ -17,18 +19,18 @@ export default function(props:any){
                     <h3 className='page-title'>Server info</h3>
                 </div>
             </div>
-                <div className='row'>
-                    <div className='col-9'>
-                        <ProductView product={product} />
-                        <div id='editProduct'></div>
-                    </div>
-                    <div className='col-3'>
-                        <ProductTools product={product} />
-                    </div>
+            <div className='row'>
+                <div className='col-9'>
+                    <ProductView product={product} />
+                    <div id='editProduct'></div>
                 </div>
+                <div className='col-3'>
+                    <ProductTools product={product} />
+                </div>
+            </div>
         </div>
         <div id='custom-modal' className='modal-demo'>
-            <button type='button' className='close' onClick='Custombox.close();'>
+            <button type='button' className='close' onClick={() => Custombox.close()}>
                 <span>&times;</span><span className='sr-only'>Close</span>
             </button>
             <div className='custom-modal-text' id='editProductMessage'>Product edited</div>

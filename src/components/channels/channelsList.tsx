@@ -6,7 +6,7 @@ import ChannelItem from './channelItem';
 
 function Loader() {
 
-  return (<h2>Loading channels ...</h2>);
+  return (<b>Loading channels ...</b>);
 
 }
 

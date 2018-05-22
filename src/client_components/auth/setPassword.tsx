@@ -48,12 +48,12 @@ export default function(props: any){
                         
                         <div className='form-group'>
                             <div className='col-12'>
-                                <input className='form-control' type='password' id='pwd' required='' placeholder='Password' />
+                                <input className='form-control' type='password' id='pwd' required={true} placeholder='Password' />
                             </div>
                         </div>
                         <div className='form-group'>
                             <div className='col-12'>
-                                <input className='form-control' type='password' id='pwd1' required='' placeholder='Confirmation' />
+                                <input className='form-control' type='password' id='pwd1' required={true} placeholder='Confirmation' />
                             </div>
                         </div>
                         <div className='form-group text-right m-t-40'>

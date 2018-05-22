@@ -48,7 +48,7 @@ export default function(props: any){
             <form className='form-horizontal m-t-20' onSubmit={submit}>
                 <div className='form-group'>
                     <div className='col-12'>
-                        <input className='form-control' type='password' id='pwd' required='' placeholder='Password' />
+                        <input className='form-control' type='password' id='pwd' required={true} placeholder='Password' />
                     </div>
                 </div>
 

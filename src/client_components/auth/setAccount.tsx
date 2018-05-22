@@ -70,7 +70,7 @@ export default function(props: any){
                         <div className='row'>
                             <div className='col-12'>
                                 <div className='custom-control custom-radio'>
-                                    <input type='radio' name='keyType' id='keyType1' defaultChecked='checked' className='custom-control-input' value='generate' onChange={handleChange}/>
+                                    <input type='radio' name='keyType' id='keyType1' defaultChecked={true} className='custom-control-input' value='generate' onChange={handleChange}/>
                                     <label className='custom-control-label' htmlFor='keyType1'>Generate new (recommended)</label>
                                 </div>
                                 <div className='custom-control custom-radio'>

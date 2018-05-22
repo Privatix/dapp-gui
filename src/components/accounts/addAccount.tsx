@@ -97,7 +97,7 @@ const UseThisButton = withRouter(
             <div className='form-group row'>
                 <label className='col-3 col-form-label'>Is default:</label>
                 <div className='col-9'>
-                    <Toggle defaultChecked={false} onChange={handleToggleChange} />
+                    <Toggle defaultChecked={'checked'} onChange={handleToggleChange} />
                 </div>
             </div></div>
         }
@@ -113,7 +113,7 @@ const UseThisButton = withRouter(
             <div className='form-group'>
                 <div className='col-12'>
                     <label>Private key:</label>
-                    <textarea className='form-control' id='privateKey' required='' placeholder='Private key' />
+                    <textarea className='form-control' id='privateKey' required={true} placeholder='Private key' />
                 </div>
             </div>
         <UseThisButton />

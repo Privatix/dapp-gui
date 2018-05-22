@@ -1,5 +1,6 @@
 import * as React from 'react';
 import * as uuid from 'uuid/v4';
+import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
 import {fetch} from 'utils/fetch';
 import { Link } from 'react-router-dom';
@@ -10,7 +11,7 @@ function Loader() {
 
 }
 
-async function AsyncAddProduct(props:any){
+const AsyncAddProduct = async (props:any) => {
 
     const onSubmit = (evt:any) => {
         evt.preventDefault();
@@ -28,6 +29,7 @@ async function AsyncAddProduct(props:any){
         fetch('/products', {method: 'post', body}).then(res => {
             // ReactDOM.unmountComponentAtNode(document.getElementById('product'));
             // document.getElementById('product').innerHTML = 'product added!!!';
+            props.history.push('/products');
         });
     };
 
@@ -82,6 +84,6 @@ async function AsyncAddProduct(props:any){
             </div>
         </div>
     </div>;
-}
+};
 
-export default asyncReactor(AsyncAddProduct, Loader);
+export default  withRouter(asyncReactor(AsyncAddProduct, Loader));
