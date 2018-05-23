@@ -1,5 +1,5 @@
 {
-  "name": "DappctrlGUI",
+  "name": "dappctrl_gui",
   "version": "0.1.0",
   "main": "build/main.js",
   "devDependencies": {
