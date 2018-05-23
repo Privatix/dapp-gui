@@ -142,6 +142,10 @@ ul.default li {
     line-height: normal;
     color: #545454 !important;
 }
+#swalModal .sweet-alert{
+    top: 100px !important;
+    margin-top: 0 !important;
+}
 
 .bootstrap-table #sortableTable > thead > tr > th{
     background: none;
@@ -174,4 +178,29 @@ ul.default li {
 }
 .fieldStatus-on{
     color: #81c868;
+}
+
+.modal-content .modal-header h4.modal-title{
+    margin: 0;
+}
+.modal-content .modal-body{
+    overflow-y:auto;
+    height: 90%
+}
+#modalWrap>div>div{
+    right: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: block !important;
+}
+#modalWrap>div>div>div:first-child{
+    margin: 50px auto;
+    position: relative;
+}
+#modalWrap>div>div>div:last-child{
+    position: relative !important;
+    width: 0 !important;
+    height: 0 !important;
 }

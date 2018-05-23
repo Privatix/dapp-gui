@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import SortableTable from 'react-sortable-table';
+import ModalWindow from '../modalWindow';
+import Account from './account';
 
 function Loader() {
 
@@ -22,7 +24,7 @@ async function AsyncAccounts (props: any){
         let isDefault = account.isDefault === true ? 'on' : 'off';
 
         let row = {
-            name: <Link to={`/account/${JSON.stringify(account)}`}>{account.name}</Link>,
+            name: <ModalWindow data={account} class={''} text={account.name} component={<Account account={account} />} />,
             ethereumAddress: `0x${Buffer.from(account.ethAddr, 'base64').toString('hex')}`,
             eth: (account.ethBalance/1e8).toFixed(3),
             exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
