@@ -1,6 +1,7 @@
 import * as React from 'react';
 import OfferingsList from './offeringsList';
-import { Link } from 'react-router-dom';
+import ModalWindow from '../modalWindow';
+import CreateOffering from './createOffering';
 
 export default function(props:any){
 
@@ -13,7 +14,7 @@ export default function(props:any){
         <div className='row'>
             <div className='col-sm-12 m-b-20'>
                 <div className='btn-group m-t-5'>
-                    <Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an offering</Link>
+                    <ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering />} />
                 </div>
             </div>
         </div>

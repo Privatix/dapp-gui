@@ -76,10 +76,10 @@ ul.default li {
     top: 0;
     right: 0;
 }
-.topPanelStatusLi .statusWrap-off{
+.statusWrap-off{
     color: #e83546;
 }
-.topPanelStatusLi .statusWrap-on{
+.statusWrap-on{
     color: #81c868;
 }
 @media only screen and (max-width: 1170px) {
@@ -142,6 +142,10 @@ ul.default li {
     line-height: normal;
     color: #545454 !important;
 }
+#swalModal .sweet-alert{
+    top: 100px !important;
+    margin-top: 0 !important;
+}
 
 .bootstrap-table #sortableTable > thead > tr > th{
     background: none;
@@ -150,6 +154,12 @@ ul.default li {
 .bootstrap-table-sortable{
     border: 1px solid #ebeff2;
     border-radius: 3px;
+}
+.bootstrap-table-sortable .table > thead > tr > th:not(:last-child){
+    border-right: 1px solid #e4e4e4;
+}
+.bootstrap-table-sortable .table > thead > tr > th{
+    vertical-align: middle;
 }
 .bootstrap-table-sortable .table > thead > tr > th,
 .bootstrap-table-sortable .table > tbody > tr > td{
@@ -164,4 +174,36 @@ ul.default li {
 .bootstrap-table-sortable .table > thead > tr > th > i.fa-sort-asc,
 .bootstrap-table-sortable .table > thead > tr > th > i.fa-sort-desc{
     color: #7A80DD;
+}
+
+.fieldStatusLabel{
+    font-size: 23px;
+}
+.fieldStatus-on{
+    color: #81c868;
+}
+
+.modal-content .modal-header h4.modal-title{
+    margin: 0;
+}
+.modal-content .modal-body{
+    overflow-y:auto;
+    height: 90%
+}
+.modalWrap>div>div{
+    right: 0;
+    bottom: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    background-color: rgba(0, 0, 0, 0.6);
+    display: block !important;
+}
+.modalWrap>div>div>div:first-child{
+    margin: 50px auto;
+    position: relative;
+}
+.modalWrap>div>div>div:last-child{
+    position: relative !important;
+    width: 0 !important;
+    height: 0 !important;
 }
