@@ -6,6 +6,8 @@ import {fetch} from 'utils/fetch';
 import OfferingStatus from './offeringStatus';
 import SortableTable from 'react-sortable-table';
 import { HtmlElSorter } from '../utils/sortingHtmlEl';
+import ModalWindow from '../modalWindow';
+import Offering from './offering';
 
 function Loader() {
 
@@ -38,7 +40,7 @@ async function AsyncOfferings (props: any){
     const offeringsDataArr = [];
     (offerings as any).map((offering: any) => {
         let row = {
-            id: <Link to={`/offering/${JSON.stringify(offering)}/`}>{offering.id}</Link>,
+            id: <ModalWindow customClass='' modalTitle='Offering' text={offering.id} component={<Offering offering={offering} />} />,
             serviceName: offering.serviceName,
             server: <Link to={`/productById/${offering.product}`}>{offering.productName}</Link>,
             status: <OfferingStatus offeringId={offering.id} />,
@@ -52,9 +54,7 @@ async function AsyncOfferings (props: any){
     const columns = [
         {
             header: 'ID',
-            key: 'id',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+            key: 'id'
         },
         {
             header: 'Service name',
@@ -91,7 +91,6 @@ async function AsyncOfferings (props: any){
     return <div className='row'>
         <div className='col-12'>
             <div className='card-box'>
-
                 <div className='bootstrap-table bootstrap-table-sortable'>
                     <SortableTable
                         data={offeringsDataArr}

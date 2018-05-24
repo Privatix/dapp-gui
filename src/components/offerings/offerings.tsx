@@ -4,7 +4,7 @@ import ModalWindow from '../modalWindow';
 import CreateOffering from './createOffering';
 
 export default function(props:any){
-    
+
     return <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12 m-b-15'>
@@ -14,7 +14,7 @@ export default function(props:any){
         <div className='row'>
             <div className='col-sm-12 m-b-20'>
                 <div className='btn-group m-t-5'>
-                    <ModalWindow data={null} class='btn btn-default btn-custom waves-effect waves-light' text='Create an offering' component={<CreateOffering />} />
+                    <ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering />} />
                 </div>
             </div>
         </div>

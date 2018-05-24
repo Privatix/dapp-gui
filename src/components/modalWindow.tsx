@@ -6,11 +6,13 @@ export default function(props:any) {
 
     function closeModal(event: any) {
         event.preventDefault();
-        ReactDOM.unmountComponentAtNode(document.getElementById('modalWrap'));
+        document.body.classList.remove('modal-open');
+        ReactDOM.unmountComponentAtNode(document.querySelector('.modalWrap'));
     }
 
     function showModal(event: any) {
         event.preventDefault();
+        document.body.classList.add('modal-open');
 
         ReactDOM.render(
             <Modal
@@ -21,22 +23,21 @@ export default function(props:any) {
             >
                 <div className='modal-content'>
                     <div className='modal-header'>
-                        <h4 className='modal-title'>Account</h4>
+                        <h4 className='modal-title'>{props.modalTitle}</h4>
                         <button type='button' className='close' onClick={closeModal}>×</button>
                     </div>
                     <div className='modal-body'>
-                        {/*<Account account={account}/>*/}
                         {props.component}
                     </div>
                 </div>
-            </Modal>, document.getElementById('modalWrap')
+            </Modal>, document.querySelector('.modalWrap')
         );
     }
 
     return (
         <div>
-            <a href='#' onClick={showModal} data-data={props.data} className={props.class}>{props.text}</a>
-            <div id='modalWrap'></div>
+            <a href='#' onClick={showModal} className={props.customClass}>{props.text}</a>
+            <div className='modalWrap'></div>
         </div>
     );
 }

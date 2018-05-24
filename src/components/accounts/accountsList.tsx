@@ -24,7 +24,7 @@ async function AsyncAccounts (props: any){
         let isDefault = account.isDefault === true ? 'on' : 'off';
 
         let row = {
-            name: <ModalWindow data={account} class={''} text={account.name} component={<Account account={account} />} />,
+            name: <ModalWindow customClass='' modalTitle='Account' text={account.name} component={<Account account={account} />} />,
             ethereumAddress: `0x${Buffer.from(account.ethAddr, 'base64').toString('hex')}`,
             eth: (account.ethBalance/1e8).toFixed(3),
             exchangeBalance: (account.ptcBalance/1e8).toFixed(3),

@@ -158,6 +158,9 @@ ul.default li {
 .bootstrap-table-sortable .table > thead > tr > th:not(:last-child){
     border-right: 1px solid #e4e4e4;
 }
+.bootstrap-table-sortable .table > thead > tr > th{
+    vertical-align: middle;
+}
 .bootstrap-table-sortable .table > thead > tr > th,
 .bootstrap-table-sortable .table > tbody > tr > td{
     padding: 10px 12px !important;
@@ -187,7 +190,7 @@ ul.default li {
     overflow-y:auto;
     height: 90%
 }
-#modalWrap>div>div{
+.modalWrap>div>div{
     right: 0;
     bottom: 0;
     overflow-x: hidden;
@@ -195,11 +198,11 @@ ul.default li {
     background-color: rgba(0, 0, 0, 0.6);
     display: block !important;
 }
-#modalWrap>div>div>div:first-child{
+.modalWrap>div>div>div:first-child{
     margin: 50px auto;
     position: relative;
 }
-#modalWrap>div>div>div:last-child{
+.modalWrap>div>div>div:last-child{
     position: relative !important;
     width: 0 !important;
     height: 0 !important;
