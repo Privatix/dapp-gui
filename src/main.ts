@@ -26,6 +26,19 @@ var password = '';
     if(mocks.has(req)){
         const res = mocks.get(req);
         event.sender.send('api-reply', JSON.stringify({req: msg, res}));
+    }else if(req.endpoint === '/auth' && req.options.method === 'post' ){
+        const pwd = req.options.body.password;
+        req.options.body = JSON.stringify(req.options.body);
+        fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
+            .then(res => {
+                // console.log('auth!!!', res, res.status);
+                if(res.status === 201){
+                    password = pwd;
+                    event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+                }else {
+                    // TODO error handling
+                }
+            });
     }else if(req.endpoint === '/saveAs'){
         console.log('SAVE AS!!!', req.options.body);
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
@@ -44,7 +57,7 @@ var password = '';
     }else if(req.endpoint === '/accounts/' && req.options.method === 'post'){
         req.options.body = JSON.stringify(req.options.body);
         req.options.headers = {};
-        req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
+        req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
 
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
@@ -75,8 +88,8 @@ var password = '';
         if(!req.options.headers){
             req.options.headers = {};
         }
-
-        req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
+        // $2a$10$wGvke93v2KVo1VWS23kZMO/Gnp8nawHmgpHL65D9zzOPvrx0WBI3e
+        req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 // console.log('RESPONSE!!!', res);

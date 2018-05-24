@@ -12,8 +12,10 @@ const NextButton = withRouter(({ history }) => <button
     id='NextBut'
     onClick={async (evt: any) => {
         evt.preventDefault();
-        console.log('BUTTON!');
-        const res = await fetch('/auth', {method: 'post'});
+        const pwd = (document.getElementById('pwd') as any).value;
+        const conf = (document.getElementById('pwd1') as any).value;
+        console.log('BUTTON!', pwd, conf);
+        const res = await fetch('/auth', {method: 'post', body: {password: pwd}});
         console.log(res);
         history.push('/setAccount'); 
       }
