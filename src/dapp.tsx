@@ -1,11 +1,14 @@
 // tslint:disable-next-line
 import * as React from 'react';
 // tslint:disable-next-line
-import { Route, Router, Switch, Redirect} from 'react-router';
 
-import { createMemoryHistory } from 'history';
+// import { Route, Router, Switch, Redirect} from 'react-router';
+
+// import { createMemoryHistory } from 'history';
 
 import { render } from 'react-dom';
+import Start from 'client_components/start';
+/*
 import Main from './components/main';
 import Start from './components/start';
 import Navigation from './components/navigation';
@@ -37,10 +40,10 @@ import AccountsList from './components/accounts/accountsList';
 import Account from './components/accounts/accountView';
 
 import Logs from './components/logs/logs';
+*/
 
-
-let MemoryHistory = createMemoryHistory();
-
+// let MemoryHistory = createMemoryHistory();
+/*
 const auth = <Router history={MemoryHistory as any}>
     <div className='wrapper-page'>
         <Switch>
@@ -86,6 +89,7 @@ const app = <Router history={MemoryHistory as any}>
         </div>
     </div>
 </Router>;
+
 let lastRender = 'auth';
     MemoryHistory.listen((location, action) => {
         console.log(location);
@@ -108,8 +112,8 @@ let lastRender = 'auth';
                 break;
         }
     });
-
-    render(app, document.getElementById('app'));
+*/
+    render(Start, document.getElementById('app'));
 
 
 
