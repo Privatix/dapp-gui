@@ -32,7 +32,7 @@
     "btoa": "^1.2.1",
     "colors": "^1.1.2",
     "cors": "^2.8.4",
-    "electron": "^1.8.2",
+    "electron": "^1.8.4",
     "history": "^4.7.2",
     "jquery": "^3.3.1",
     "keythereum": "^1.0.3",
