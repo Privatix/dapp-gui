@@ -43,7 +43,7 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
         };
         const res = await fetch('/accounts', {method: 'post', body});
         console.log(res);
-        history.push('/backup');
+        history.push('/login');
       }
     }
   >

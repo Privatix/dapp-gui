@@ -32,7 +32,7 @@ class Channels extends React.Component<Props, any> {
 
     static getDerivedStateFromProps(nextProps: Props, prevState: any){
         console.log('PROPS!!!', nextProps, prevState);
-        return {status: nextProps.match.params.status};
+        return {status: nextProps.match.params.status ? nextProps.match.params.status : prevState.status};
     }
 
     render (){

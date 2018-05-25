@@ -53,6 +53,10 @@ var password = '';
     } else if(req.endpoint === '/login'){
         console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;
+        if(settings.firstStart){
+            settings.firstStart = false;
+            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+        }
         event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
     }else if(req.endpoint === '/accounts/' && req.options.method === 'post'){
         req.options.body = JSON.stringify(req.options.body);

@@ -122,7 +122,7 @@ const app = <Router history={MemoryHistory as any}>
         <div className='content-page'>
             <div className='content'>
                         <Switch>
-                            <Route exact path='/app' component={Main} />
+                            <Route exact path='/' component={Main} />
                             <Route path='/templates' component={TemplatesList} />
                             <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />

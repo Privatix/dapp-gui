@@ -8,7 +8,7 @@ export default function(props:any){
             <div id='sidebar-menu'>
                 <ul>
                     <li className=''>
-                        <NavLink exact to='/app' activeClassName='active' className='waves-effect'>
+                        <NavLink exact to='/' activeClassName='active' className='waves-effect'>
                             <i className='ti-home'></i><span> Dashboard </span>
                         </NavLink>
                     </li>
