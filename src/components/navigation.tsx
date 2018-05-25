@@ -1,9 +1,19 @@
 import * as React from 'react';
+import {asyncReactor} from 'async-reactor';
+import {fetch} from 'utils/fetch';
 import { NavLink } from 'react-router-dom';
 
-export default function(props:any){
+function Loader() {
 
-    return (<div className='left side-menu'>
+  return (<b>check mode ...</b>);
+
+}
+
+async function AsyncNavigation(props:any){
+
+    const localSettings = await fetch('/localSettings', {});
+
+    return (localSettings as any).mode === 'agent' ? <div className='left side-menu'>
         <div className='sidebar-inner slimscrollleft'>
             <div id='sidebar-menu'>
                 <ul>
@@ -37,6 +47,42 @@ export default function(props:any){
             </div>
             <div className='clearfix'></div>
         </div>
-    </div>);
+    </div>
+    : <div className='left side-menu'>
+        <div className='sidebar-inner slimscrollleft'>
+            <div id='sidebar-menu'>
+                <ul>
+                    <li className=''>
+                        <NavLink exact to='/' activeClassName='active' className='waves-effect'>
+                            <i className='ti-home'></i><span> Client Dashboard </span>
+                        </NavLink>
+                    </li>
+                    <li className='has_sub'>
+                        <NavLink to='/channels/all' activeClassName='active' className='waves-effect'>
+                            <i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span>
+                        </NavLink>
+                        <ul className='list-unstyled'>
+                            <li><NavLink exact to='/channelsByStatus/active' activeClassName='active' className='waves-effect'>Active</NavLink></li>
+                            <li><NavLink exact to='/channelsByStatus/terminated' activeClassName='active' className='waves-effect'>Archive</NavLink></li>
+                            <li><NavLink exact to='/sessions/all' activeClassName='active' className='waves-effect'>Sessions</NavLink></li>
+                        </ul>
+                    </li>
+                    <li className=''>
+                        <NavLink exact to='/offerings/all' activeClassName='active' className='waves-effect'>
+                            <i className='md md-toc'></i><span> Offerings </span>
+                        </NavLink>
+                    </li>
+                    <li className=''>
+                        <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
+                            <i className='md md-toc'></i><span> Servers </span>
+                        </NavLink>
+                    </li>
+                </ul>
+                <div className='clearfix'></div>
+            </div>
+            <div className='clearfix'></div>
+        </div>
+    </div>;
 }
 
+export default asyncReactor(AsyncNavigation, Loader);

@@ -50,7 +50,9 @@ var password = '';
     }else if(req.endpoint === '/isAuthorized'){
         console.log('isAuthorized', password !== '');
         event.sender.send('api-reply', JSON.stringify({req: msg, res: password !== ''}));
-    } else if(req.endpoint === '/login'){
+    }else if(req.endpoint === '/localSettings'){
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
+    }else if(req.endpoint === '/login'){
         console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;
         if(settings.firstStart){
