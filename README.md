@@ -1,3 +1,4 @@
+[![npm version](https://badge.fury.io/js/dappctrlgui.svg)](https://badge.fury.io/js/dappctrlgui)
 [![Dependency Status](https://david-dm.org/Privatix/dapp-gui.svg)](https://david-dm.org/Privatix/dapp-gui)
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2FPrivatix%2Fdapp-gui.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2FPrivatix%2Fdapp-gui?ref=badge_shield)
 [![Maintainability](https://api.codeclimate.com/v1/badges/36cd4ddf298a54226e1a/maintainability)](https://codeclimate.com/github/Privatix/dapp-gui/maintainability)
