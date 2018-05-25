@@ -1,5 +1,5 @@
 // import * as $ from 'jquery';
-import 'free-jqgrid';
+// import 'free-jqgrid';
 // import {ipcRenderer} from 'electron';
 // import {fetchFactory} from './fetch';
 
