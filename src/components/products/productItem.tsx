@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ModalWindow from '../modalWindow';
 import CreateOffering from '../offerings/createOffering';
+import Product from './product';
 
 function Loader() {
 
@@ -17,13 +18,14 @@ async function AsyncProductItem(props:any){
     const offerTemplates = await fetch(`/templates?id=${props.product.offerTplID}`, {method: 'get'});
     const offerTemplate = offerTemplates[0];
     offerTemplate.raw = JSON.parse(atob(offerTemplate.raw));
-    console.log(offerTemplate);
+
     const accessTemplates = await fetch(`/templates?id=${props.product.offerAccessID}`, {method: 'get'});
     const accessTemplate = accessTemplates[0];
     accessTemplate.raw = JSON.parse(atob(accessTemplate.raw));
-    console.log(offerTemplate, accessTemplate);
+
     const elem = <tr>
-                     <td><Link to={`/product/${JSON.stringify(props.product)}`}>{props.product.name}</Link></td>
+                     {/*<td><Link to={`/product/${JSON.stringify(props.product)}`}>{props.product.name}</Link></td>*/}
+                     <td><ModalWindow customClass='' modalTitle='Server info' text={props.product.name} component={<Product product={props.product} />} /></td>
                      <td>{offerTemplate.raw.schema.title}</td>
                      <td>{accessTemplate.raw.schema.title}</td>
                      <td>{(offerings as any).length}</td>
