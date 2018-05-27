@@ -101,11 +101,6 @@ async function AsyncCreateOffering (props: any){
         (document.getElementById('averagePublicationTime') as HTMLInputElement).innerHTML = averageTime(parseInt(val, 10));
     };
 
-    const openEthGasStation = (evt:any) => {
-        evt.preventDefault();
-        shell.openExternal('https://ethgasstation.info/');
-    };
-
     return <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12'>

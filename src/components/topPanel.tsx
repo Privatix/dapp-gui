@@ -1,17 +1,9 @@
 import * as React from 'react';
-import {asyncReactor} from 'async-reactor';
 import {fetch} from 'utils/fetch';
 
-function Loader() {
+export default function TopPanel(props:any){
 
-  return (<b>check mode ...</b>);
-
-}
-
-async function AsyncTopPanel(props:any){
-
-    const localSettings = await fetch('/localSettings', {});
-    if((localSettings as any).mode === 'agent'){
+    if(props.mode === undefined || props.mode === 'agent'){
         const handler = () => {
             fetch('/channels?serviceStatus=active', {}).then(res => {
                 const servicesCountHolder = document.getElementById('topPanelServicesCount');
@@ -56,5 +48,3 @@ async function AsyncTopPanel(props:any){
         </ul>;
     }
 }
-
-export default asyncReactor(AsyncTopPanel, Loader);

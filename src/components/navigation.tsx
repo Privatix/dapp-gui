@@ -1,19 +1,9 @@
 import * as React from 'react';
-import {asyncReactor} from 'async-reactor';
-import {fetch} from 'utils/fetch';
 import { NavLink } from 'react-router-dom';
 
-function Loader() {
+export default function AsyncNavigation(props:any){
 
-  return (<b>check mode ...</b>);
-
-}
-
-async function AsyncNavigation(props:any){
-
-    const localSettings = await fetch('/localSettings', {});
-
-    return (localSettings as any).mode === 'agent' ? <div className='left side-menu'>
+    return props.mode === undefined || props.mode === 'agent' ? <div className='left side-menu'>
         <div className='sidebar-inner slimscrollleft'>
             <div id='sidebar-menu'>
                 <ul>
@@ -84,5 +74,3 @@ async function AsyncNavigation(props:any){
         </div>
     </div>;
 }
-
-export default asyncReactor(AsyncNavigation, Loader);

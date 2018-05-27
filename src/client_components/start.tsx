@@ -12,7 +12,7 @@ import ImportHexKey from './auth/importHexKey';
 import ImportJsonKey from './auth/importJsonKey';
 import Backup from './auth/backup';
 import Login from './auth/login';
-import App from '../components/app';
+import App from '../components/asyncApp';
 
 function Loader() {
 
