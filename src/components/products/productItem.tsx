@@ -2,6 +2,8 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
+import ModalWindow from '../modalWindow';
+import CreateOffering from '../offerings/createOffering';
 
 function Loader() {
 
@@ -25,7 +27,7 @@ async function AsyncProductItem(props:any){
                      <td>{offerTemplate.raw.schema.title}</td>
                      <td>{accessTemplate.raw.schema.title}</td>
                      <td>{(offerings as any).length}</td>
-                     <td><Link className='btn btn-default waves-effect waves-light btn-block' to={'/createOffering'}>Create an Offering</Link></td>
+                     <td><ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering />} /></td>
                  </tr>;
     return elem;
 }

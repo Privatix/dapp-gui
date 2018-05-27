@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 import ChannelUsage from './channelUsage';
 import LinkToProductByOfferingId from '../products/linkToProductByOfferingId';
@@ -8,11 +7,13 @@ import ProductNameByOffering from '../products/productNameByOffering';
 import PgTime from '../utils/pgTime';
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
+import Channel from './channel';
+import ModalWindow from '../modalWindow';
 
 export default withRouter(function(props:any){
 
     const elem = <tr>
-        <td><Link to={`/channel/${JSON.stringify(props.channel)}/`}>{props.channel.id}</Link></td>
+        <td><ModalWindow customClass='' modalTitle='Service' text={props.channel.id} component={<Channel channel={props.channel} />} /></td>
         <td><LinkToProductByOfferingId offeringId={props.channel.offering} ><ProductNameByOffering offeringId={props.channel.offering} /></LinkToProductByOfferingId></td>
         <td>{props.channel.client}</td>
         <td> <ContractStatus contractStatus={props.channel.channelStatus} /></td>

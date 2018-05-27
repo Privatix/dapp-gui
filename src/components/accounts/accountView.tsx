@@ -1,82 +1,143 @@
 import * as React from 'react';
 import Transactions from '../transactions/transactionsList';
-import { Link } from 'react-router-dom';
+
+import ConfirmPopupSwal from '../confirmPopupSwal';
+import ExternalLink from '../utils/externalLink';
+import GasRange from '../utils/gasRange';
 
 export default function(props:any){
 
-    const transferToServiceBalance = function(evt:any){
+    const changeTransferType = (evt) => {
         evt.preventDefault();
-        console.log('TRANSFER TO SERVICE!!!');
+        let prixValue = evt.target[evt.target.selectedIndex].value;
+        let transferToOld = evt.target[evt.target.selectedIndex].textContent;
+        let transferTo = 'Exchange balance';
+
+        if (transferToOld === 'Exchange balance') {
+            transferTo = 'Service balance';
+        }
+
+        document.getElementById('accountBalance').innerHTML = prixValue;
+        (document.getElementById('transferToInput') as HTMLInputElement).value = transferTo;
     };
 
-    const transferToExchangeBalance = function(evt:any){
-        evt.preventDefault();
-        console.log('TRANSFER TO EXCHANGE!!!');
-    };
-
-    const setAsDefault = function(evt:any){
-        evt.preventDefault();
-        console.log('SET AS DEFAULT!!!');
-    };
-
-    const deleteAccount = function(evt:any){
-        evt.preventDefault();
-        console.log('DELETE ACCOUNT!!!');
-    };
-
-    const account = JSON.parse(props.match.params.account);
-
-    return <div className='container-fluid'>
-        <div className='card-box'>
-            <div className='row'>
-                <div className='col-sm-12 m-b-15'>
-                    <div className='btn-group pull-right'>
-                        <Link to={'/accounts'} className='btn btn-default waves-effect waves-light'>&lt;&lt;&lt; Back</Link>
+    return <div className='col-lg-9 col-md-8'>
+        <div className='card m-b-20'>
+            <h5 className='card-header'>General Info</h5>
+            <div className='card-body'>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Name:</label>
+                    <div className='col-9'>
+                        <input type='text' className='form-control' value={props.account.name} readOnly/>
                     </div>
-                    <h3 className='page-title'>Account</h3>
+                </div>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Address:</label>
+                    <div className='col-9'>
+                        <input type='text' className='form-control' value={`0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`} readOnly/>
+                    </div>
                 </div>
             </div>
-            <div className='row justify-content-between'>
-                <div className='col-md-6'>
-                    <form className='form-horizontal m-t-20'>
-                        <fieldset className='form-group'>
-                            <legend className=''>Address</legend>
-                            0x{Buffer.from(account.ethAddr, 'base64').toString('hex')}
-                        </fieldset>
-                    </form>
-                    <form className='form-horizontal m-t-20'>
-                        <button type='button' className='btn btn-default waves-effect waves-light' onClick={setAsDefault}>Set as default</button>
-                    </form>
+        </div>
+        <div className='card m-b-20'>
+            <h5 className='card-header'>Balance Info</h5>
+            <div className='card-body'>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Exchange balance:</label>
+                    <div className='col-9'>
+                        <div className='input-group bootstrap-touchspin'>
+                            <input type='text' className='form-control' value={props.account.ptcBalance} readOnly/>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                        </div>
+                    </div>
                 </div>
-                <div className='col-md-4 col-sm-3 col-4 col-xl-3'>
-                    <form className='form-horizontal m-t-20'>
-                        <fieldset className='form-group text-center'>
-                            <legend>Warning area</legend>
-                            <button type='button' className='btn btn-danger waves-effect waves-light' onClick={deleteAccount}>Delete</button>
-                        </fieldset>
-                    </form>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Service balance:</label>
+                    <div className='col-9'>
+                        <div className='input-group bootstrap-touchspin'>
+                            <input type='text' className='form-control' value={props.account.psc_balance} readOnly/>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <form className='form-horizontal m-t-20'>
-                <div className='form-group row acExchange'>
-                        <label className=''>Exchange balance</label>
-                        <input type='text' id='fromExchangeBalance' />
-                        <label className=''>transfer to Service balance</label>
-                        <input type='text' id='toServiceBalance' />
-                        <button type='button' className='btn btn-default waves-effect waves-light' onClick={transferToServiceBalance}>Transfer</button>
+        </div>
+        <div className='card m-b-20'>
+            <h5 className='card-header'>Transfer</h5>
+            <div className='card-body'>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>From:</label>
+                    <div className='col-9'>
+                        <div className='row'>
+                            <div className='col-8'>
+                                <select className='form-control' id='selectProduct' onChange={changeTransferType}>
+                                    <option key={props.account.ptcBalance} value={props.account.ptcBalance}>Exchange balance</option>
+                                    <option key={props.account.psc_balance} value={props.account.psc_balance}>Service balance</option>
+                                </select>
+                            </div>
+                            <div className='col-4 col-form-label'>
+                                <span id='accountBalance'>{props.account.ptcBalance}</span> PRIX
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
-            <form className='form-horizontal m-t-20'>
-                <div className='form-group row acExchange'>
-                    <label>Service balance</label>
-                    <input type='text' id='fromServiceBalance' />
-                    <label>transfer to Exchange balance</label><input type='text' id='toExchangeBalance' />
-                    <button type='button' className='btn btn-default waves-effect waves-light' onClick={transferToExchangeBalance}>Transfer</button>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>To:</label>
+                    <div className='col-9'>
+                        <input type='text' className='form-control' id='transferToInput' value='Service balance' readOnly/>
+                    </div>
                 </div>
-            </form>
-            <h3 className='text-center'>Transaction Log</h3>
-            <Transactions account={account.id} />
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Amount:</label>
+                    <div className='col-9'>
+                        <div className='input-group bootstrap-touchspin'>
+                            <input type='text' className='form-control'/>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                        </div>
+                    </div>
+                </div>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Gas price</label>
+                    <div className='col-9'>
+                        <div className='row'>
+                            <div className='col-md-8'>
+                                <GasRange />
+                            </div>
+                            <div className='col-4 col-form-label'>
+                                <span id='gasPrice'>20</span> Gwei
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div className='form-group row'>
+                    <div className='col-12 col-form-label'>
+                        <strong>Average publication time: <span id='averagePublicationTime'>2 min</span></strong>
+                    </div>
+                    <div className='col-12 col-form-label'>
+                        <strong>More information: <ExternalLink href='https://ethgasstation.info/' text='https://ethgasstation.info/' /></strong>
+                    </div>
+                </div>
+                <div className='form-group row'>
+                    <div className='col-12'>
+                        <ConfirmPopupSwal
+                            endpoint={'#'}
+                            options={{method: 'put', body: {action: 'transfer'}}}
+                            title={'Transfer'}
+                            text={<span>This action will transfer your tokens from Service balance to Exchange balance.<br />
+                                This operation takes time and gas.<br /><br />You can monitor transaction status in the Transaction log.</span>}
+                            class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
+                            swalType='warning'
+                            swalConfirmBtnText='Yes, transfer!'
+                            swalTitle='Are you sure?' />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className='card m-t-30'>
+            <h5 className='card-header'>Transaction Log</h5>
+            <div className='card-body'>
+                <Transactions account={props.account.id} />
+            </div>
         </div>
     </div>;
 }

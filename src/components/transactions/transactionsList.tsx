@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {fetch} from 'utils/fetch';
 import {asyncReactor} from 'async-reactor';
-import TransactionItem from './transactionItem';
-
+import ExternalLink from '../utils/externalLink';
+import SortableTable from 'react-sortable-table';
 
 function Loader() {
 
@@ -14,18 +14,37 @@ async function AsyncTransactions (props: any){
 
     const endpoint = '/transactions' + (props.account === 'all' ? '' : `?account=${props.account}`);
     const transactions = await fetch(endpoint, {method: 'GET'});
-    const transactionsDOM = (transactions as any).map((transaction: any) => <TransactionItem transaction={transaction} account={props.account}/>);
+
+    const transactionsDataArr = [];
+    (transactions as any).map((transaction: any) => {
+        let row = {
+            date: transaction.date,
+            ethereumLink: <ExternalLink href={`https://etherscan.io/address/0x${transaction.ethAddr}`} text={`0x${transaction.ethAddr}`} />
+        };
+
+        transactionsDataArr.push(row);
+    });
+
+    const columns = [
+        {
+            header: 'Date',
+            key: 'date'
+        },
+        {
+            header: 'Ethereum link',
+            key: 'ethereumLink',
+            sortable: false
+        }
+    ];
+
     return <div className='row'>
-        <table  className='table table-bordered table-striped'>
-            <thead>
-                <tr>
-                <td>Date</td><td>Ethereum link</td>
-                </tr>
-            </thead>
-            <tbody>
-                {transactionsDOM}
-            </tbody>
-        </table>
+        <div className='col-12'>
+            <div className='bootstrap-table bootstrap-table-sortable'>
+                <SortableTable
+                    data={transactionsDataArr}
+                    columns={columns} />
+            </div>
+        </div>
     </div>;
 }
 
