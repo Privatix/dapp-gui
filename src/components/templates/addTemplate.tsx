@@ -1,6 +1,6 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import {fetch} from 'utils/fetch';
+import {fetch} from 'Utils/fetch';
 
 export default function(props:any){
 

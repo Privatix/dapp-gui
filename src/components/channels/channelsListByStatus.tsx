@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {fetch} from 'utils/fetch';
+import {fetch} from 'Utils/fetch';
 import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
 import ChannelsListPure from './channelsListPure';

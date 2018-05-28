@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-import {fetch} from 'utils/fetch';
+import {fetch} from 'Utils/fetch';
 
 import * as ReactTooltip from 'react-tooltip';
 

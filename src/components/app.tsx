@@ -2,7 +2,7 @@
 import * as React from 'react';
 // tslint:disable-next-line
 
-import {fetch} from 'utils/fetch';
+import {fetch} from 'Utils/fetch';
 import { Route, Router, Switch} from 'react-router';
 
 import { createMemoryHistory } from 'history';

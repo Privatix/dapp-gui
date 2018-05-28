@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 import {asyncReactor} from 'async-reactor';
-import {fetch} from 'utils/fetch';
+import {fetch} from 'Utils/fetch';
 
 declare const Custombox;
 

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {fetch} from 'utils/fetch';
+import {fetch} from 'Utils/fetch';
 
 export default function TopPanel(props:any){
 

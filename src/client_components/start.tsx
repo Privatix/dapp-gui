@@ -3,7 +3,7 @@ import { Route, Router, Switch} from 'react-router';
 // import { Link /*, withRouter */ } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import {asyncReactor} from 'async-reactor';
-import {fetch} from 'utils/fetch';
+import {fetch} from 'Utils/fetch';
 
 import SetPassword from './auth/setPassword';
 import SetAccount from './auth/setAccount';
@@ -34,7 +34,7 @@ const wisard = <Router history={MemoryHistory as any}>
         <Route path='/generateKey' component={GenerateKey} />
         <Route path='/importHexKey' component={ImportHexKey} />
         <Route path='/importJsonKey' component={ImportJsonKey} />
-        <Route path='/backup' component={Backup} />
+        <Route path='/backup/:privateKey' component={Backup} />
         <Route path='/login' component={Login} />
         <Route path='/app' component={App} />
     </Switch>

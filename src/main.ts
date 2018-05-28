@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import fetch from 'node-fetch';
 import mocks from './mocks';
 import * as  btoa from 'btoa';
+import * as keythereum from 'keythereum';
 
 const settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
 var password = '';
@@ -27,6 +28,7 @@ var password = '';
         const res = mocks.get(req);
         event.sender.send('api-reply', JSON.stringify({req: msg, res}));
     }else if(req.endpoint === '/auth' && req.options.method === 'post' ){
+        // password = req.options.body.password;
         const pwd = req.options.body.password;
         req.options.body = JSON.stringify(req.options.body);
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
@@ -39,6 +41,24 @@ var password = '';
                     // TODO error handling
                 }
             });
+    }else if(req.endpoint === '/backup'){
+        console.log('BACKUP!!!', req.options.body);
+        const options = {
+          kdf: 'pbkdf2',
+          cipher: 'aes-128-ctr',
+          kdfparams: {
+            c: 262144,
+            dklen: 32,
+            prf: 'hmac-sha256'
+          }
+        };
+        const pk = JSON.parse(req.options.body.pk);
+        console.log(pk);
+        const keyObject = keythereum.dump(password, Buffer.from(pk.privateKey.data), Buffer.from(pk.salt.data), Buffer.from(pk.iv.data), options);
+        fs.writeFile(req.options.body.fileName, JSON.stringify(keyObject), {encoding: 'utf8'}, (err:any) => {
+            // TODO handling
+        });
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
     }else if(req.endpoint === '/saveAs'){
         console.log('SAVE AS!!!', req.options.body);
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
@@ -64,8 +84,9 @@ var password = '';
         settings.mode = settings.mode === 'agent' ? 'client' : 'agent';
         fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
         event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
-    }else if(req.endpoint === '/accounts/' && req.options.method === 'post'){
+    }else if(req.endpoint === '/accounts' && req.options.method === 'post'){
         req.options.body = JSON.stringify(req.options.body);
+        console.log('SET ACCOUNT!!!', req.options.body, password);
         req.options.headers = {};
         req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
 

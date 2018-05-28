@@ -1,11 +1,14 @@
 import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-import {fetch} from 'utils/fetch';
-
+import {fetch} from 'Utils/fetch';
+import * as keythereum from 'keythereum';
 
 const createPrivateKey = function(){
-    return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
+    // return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
+    const params = { keyBytes: 32, ivBytes: 16 };
+    const dk = keythereum.create(params);
+    return dk;
 };
 
 const PreviousButton = withRouter(({ history }) => <button
@@ -34,7 +37,7 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
         };
         const res = await fetch('/accounts', {method: 'post', body});
         console.log(res);
-        history.push('/backup');
+        history.push(`/backup/${JSON.stringify(privateKey)}`);
       }
     }
   >

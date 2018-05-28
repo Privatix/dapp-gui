@@ -3,7 +3,7 @@ import * as React from 'react';
 // tslint:disable-next-line
 
 import {asyncReactor} from 'async-reactor';
-import {fetch} from 'utils/fetch';
+import {fetch} from 'Utils/fetch';
 
 import App from './app';
 
