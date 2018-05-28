@@ -37,6 +37,9 @@ export default function(props:any){
                             <NavLink to='#' className='dropdown-item notify-item'>
                                 <i className='md md-help'></i> <span>Help</span>
                             </NavLink>
+                            <NavLink to='#' onClick={props.onSwitchMode} className='dropdown-item notify-item'>
+                                <i className='md md-settings'></i> <span>Switch to {props.mode === undefined || props.mode === 'agent' ? 'Client' : 'Agent'}</span>
+                            </NavLink>
                             <NavLink to='/settings' className='dropdown-item notify-item'>
                                 <i className='md md-settings'></i> <span>Settings</span>
                             </NavLink>
@@ -51,7 +54,7 @@ export default function(props:any){
                 </a>
             </ul>
 
-            <TopPanel />
+            <TopPanel mode={props.mode} />
 
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>

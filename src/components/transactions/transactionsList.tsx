@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ExternalLink from '../utils/externalLink';
 import SortableTable from 'react-sortable-table';

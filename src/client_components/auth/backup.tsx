@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 import { remote } from 'electron';
 
 
@@ -12,10 +12,6 @@ function saveDialog(e: any){
   (document.getElementById('fileName') as HTMLInputElement).value = fileName;
 }
 
-
-const createPrivateKey = function(){
-    return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
-};
 
 const PreviousButton = withRouter(({ history }) => <button
     className='btn btn-secondary text-uppercase waves-effect waves-light'
@@ -30,30 +26,29 @@ const PreviousButton = withRouter(({ history }) => <button
   </button>
 );
 
-const GenerateNewAccButton = withRouter(({ history }) => <button
-    className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        const privateKey = createPrivateKey();
-        const body = {privateKey
-                     ,isDefault: true
-                     ,inUse: true
-                     ,name: 'default'
-        };
-        const res = await fetch('/accounts', {method: 'post', body});
-        console.log(res);
-        history.push('/backup');
-      }
-    }
-  >
-    Next
-  </button>
-);
+
 
 
 
 export default function(props: any){
+
+    const GenerateNewAccButton = withRouter(({ history }) => <button
+        className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
+        type='button'
+        onClick={async (evt: any) => {
+            const fileName = (document.getElementById('fileName') as HTMLInputElement).value;
+            evt.preventDefault();
+            console.log(props.match.params.privateKey );
+            // const pk = JSON.parse(props.match.params.privateKey);
+            fetch('/backup', {body: {pk: props.match.params.privateKey, fileName}});
+            history.push('/login');
+          }
+        }
+      >
+        Next
+      </button>
+    );
+
     return <div className='card-box'>
         <div className='panel-heading'>
             <h4 className='text-center'> Backup Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>

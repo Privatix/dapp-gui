@@ -19,7 +19,7 @@ export default function(props:any){
                     <div className='table-responsive'>
                         <table className='table table-striped'>
                             <tbody>
-                                <tr><td width='30%'>Id:</td><td>{props.channel.id}</td></tr>
+                                <tr><td>Id:</td><td>{props.channel.id}</td></tr>
                                 <tr><td>Server:</td><td><ProductNameByOffering offeringId={props.channel.offering} /></td></tr>
                                 <tr><td>Offering:</td><td>{props.channel.offering}</td></tr>
                                 <tr><td>Contract Status:</td><td><ContractStatus contractStatus={props.channel.channelStatus} /></td></tr>

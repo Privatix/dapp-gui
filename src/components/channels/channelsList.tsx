@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ChannelUsage from './channelUsage';
 import LinkToProductByOfferingId from '../products/linkToProductByOfferingId';
@@ -14,7 +14,7 @@ import ModalWindow from '../modalWindow';
 
 function Loader() {
 
-  return (<h2>Loading channels ...</h2>);
+  return (<b>Loading channels ...</b>);
 
 }
 

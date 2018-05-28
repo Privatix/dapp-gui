@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ChannelsListByStatus from './channels/channelsListByStatus';
 import OfferingsList from './offerings/offeringsList';
@@ -29,7 +29,7 @@ async function AsyncMain (props:any){
                     <h5 className='card-header'>Active Services</h5>
                     <div className='card-body'>
                         <form>
-                            <ChannelsListByStatus status='active'/>
+                            <ChannelsListByStatus status={'active'}/>
                         </form>
                     </div>
                 </div>
@@ -37,7 +37,7 @@ async function AsyncMain (props:any){
                     <h5 className='card-header'>Active Offerings</h5>
                     <div className='card-body'>
                         <form>
-                            <OfferingsList product='all'/>
+                            <OfferingsList product={'all'}/>
                         </form>
                     </div>
                 </div>

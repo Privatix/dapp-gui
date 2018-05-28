@@ -7,6 +7,7 @@ import * as fs from 'fs';
 import fetch from 'node-fetch';
 import mocks from './mocks';
 import * as  btoa from 'btoa';
+import * as keythereum from 'keythereum';
 
 const settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
 var password = '';
@@ -26,6 +27,43 @@ var password = '';
     if(mocks.has(req)){
         const res = mocks.get(req);
         event.sender.send('api-reply', JSON.stringify({req: msg, res}));
+    }else if(req.endpoint === '/auth' && req.options.method === 'post' ){
+        // password = req.options.body.password;
+        const pwd = req.options.body.password;
+        req.options.body = JSON.stringify(req.options.body);
+        fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
+            .then(res => {
+                // console.log('auth!!!', res, res.status);
+                if(res.status === 201){
+                    password = pwd;
+                    event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+                }else {
+                    // TODO error handling
+                }
+            });
+    }else if(req.endpoint === '/backup'){
+        console.log('BACKUP!!!', req.options.body);
+        const options = {
+          kdf: 'pbkdf2',
+          cipher: 'aes-128-ctr',
+          kdfparams: {
+            c: 262144,
+            dklen: 32,
+            prf: 'hmac-sha256'
+          }
+        };
+        const pk = JSON.parse(req.options.body.pk);
+        console.log(pk);
+        const keyObject = keythereum.dump(password, Buffer.from(pk.privateKey.data), Buffer.from(pk.salt.data), Buffer.from(pk.iv.data), options);
+        fs.writeFile(req.options.body.fileName, JSON.stringify(keyObject), {encoding: 'utf8'}, (err:any) => {
+            // TODO handling
+        });
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+    }else if(req.endpoint === '/readFile'){
+        const file = fs.readFileSync(req.options.body.fileName, {encoding: 'utf8'});
+        // const privateKey = keythereum.recover(req.options.body.pwd, keyObject);
+        // console.log(privateKey);
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: {file}}));
     }else if(req.endpoint === '/saveAs'){
         console.log('SAVE AS!!!', req.options.body);
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
@@ -37,14 +75,25 @@ var password = '';
     }else if(req.endpoint === '/isAuthorized'){
         console.log('isAuthorized', password !== '');
         event.sender.send('api-reply', JSON.stringify({req: msg, res: password !== ''}));
-    } else if(req.endpoint === '/login'){
+    }else if(req.endpoint === '/localSettings'){
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
+    }else if(req.endpoint === '/login'){
         console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;
+        if(settings.firstStart){
+            settings.firstStart = false;
+            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+        }
         event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
-    }else if(req.endpoint === '/accounts/' && req.options.method === 'post'){
+    }else if(req.endpoint === '/switchMode'){
+        settings.mode = settings.mode === 'agent' ? 'client' : 'agent';
+        fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+    }else if(req.endpoint === '/accounts' && req.options.method === 'post'){
         req.options.body = JSON.stringify(req.options.body);
+        console.log('SET ACCOUNT!!!', req.options.body, password);
         req.options.headers = {};
-        req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
+        req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
 
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
@@ -55,8 +104,10 @@ var password = '';
            
                   // const json = true;
                   console.log('accounts!!!', json);
-                  settings.firstStart = false;
-                  fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+                  if(settings.firstStart){
+                      settings.firstStart = false;
+                      fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+                  }
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
            });
     }else {
@@ -75,8 +126,8 @@ var password = '';
         if(!req.options.headers){
             req.options.headers = {};
         }
-
-        req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
+        // $2a$10$wGvke93v2KVo1VWS23kZMO/Gnp8nawHmgpHL65D9zzOPvrx0WBI3e
+        req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 // console.log('RESPONSE!!!', res);
