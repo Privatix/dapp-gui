@@ -1,12 +1,8 @@
 import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-// import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 
-
-// const createPrivateKey = function(){
-//     return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
-// };
 
 const PreviousButton = withRouter(({ history }) => <button
     className='btn btn-secondary text-uppercase waves-effect waves-light'
@@ -26,15 +22,21 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
     type='button'
     onClick={async (evt: any) => {
         evt.preventDefault();
-        /*const privateKey = createPrivateKey();
-        const body = {privateKey
+
+        const pwd = (document.getElementById('JsonKeyPwd') as any).value;
+        const fileName = (document.getElementById('JsonKeyFile') as any).files[0].path;
+        const name = (document.getElementById('JsonKeyAccName') as any).value;
+        const file = await fetch('/readFile', {method: 'post', body: {fileName}});
+        console.log(pwd, fileName, file);
+        const body = {jsonKeyStoreRaw: file
+                     ,jsonKeyStorePassword: pwd
                      ,isDefault: true
                      ,inUse: true
-                     ,name: 'default'
+                     ,name
+                     ,type: 'import_json'
         };
-        const res = await fetch('/accounts', {method: 'post', body});
-        console.log(res);*/
-        history.push('/backup');
+        await fetch('/accounts', {method: 'post', body});
+        history.push(`/login`);
       }
     }
   >
@@ -55,18 +57,18 @@ export default function(props: any){
                     <section>
                        <div className='form-group row'>
                             <label className='col-2 col-form-label'>Name:</label>
-                            <div className='col-8'><input type='text' name='name' className='form-control' /></div>
+                            <div className='col-8'><input id='JsonKeyAccName' type='text' name='name' className='form-control' /></div>
                        </div>
                        <div className='form-group row'>
                         <div className='col-12'>
                             <label>Path to JSON Keystore File:</label>
-                            <input type='file' className='form-control' />
+                            <input id='JsonKeyFile' type='file' className='form-control' />
                           </div>
                        </div>
                        <div className='form-group row'>
                         <div className='col-12'>
                             <label>Password (will be used to decrypt JSON)</label>
-                            <input type='password' className='form-control' />
+                            <input id='JsonKeyPwd' type='password' className='form-control' />
                           </div>
                        </div>
                        <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>More information about Ethereum Private Key</a>

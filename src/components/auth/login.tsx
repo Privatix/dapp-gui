@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 // import keythereum = require('keythereum');
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 
 // import * as ReactTooltip from 'react-tooltip';
 const pwdIsCorrect = function(pwd: string){
@@ -48,7 +48,7 @@ export default function(props: any){
             <form className='form-horizontal m-t-20' onSubmit={submit}>
                 <div className='form-group'>
                     <div className='col-12'>
-                        <input className='form-control' type='password' id='pwd' required='' placeholder='Password' />
+                        <input className='form-control' type='password' id='pwd' required={true} placeholder='Password' />
                     </div>
                 </div>
 

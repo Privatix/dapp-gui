@@ -1,6 +1,7 @@
 import * as React from 'react';
 // import Form from 'react-jsonschema-form';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
+import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
 import ExternalLink from '../utils/externalLink';
 import GasRange from '../utils/gasRange';
@@ -61,7 +62,9 @@ async function AsyncCreateOffering (props: any){
 
         payload.gasPrice = (document.getElementById('gasRange') as any).value;
 
-        fetch('/offerings/', {method: 'post', body: payload});
+        fetch('/offerings/', {method: 'post', body: payload}).then(res => {
+            props.history.push('/offerings/all');
+        });
     };
 
     const products = await fetch('/products', {method: 'get'});
@@ -78,6 +81,25 @@ async function AsyncCreateOffering (props: any){
     const selectAccount = <select className='form-control' id='selectAccount' onChange={onChangeAccount}>
         {(accounts as any).map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
     </select>;
+
+    const averageTime = function(price: number){
+        const table = {0: '∞', 5: '< 30 min', 6: '< 5min', 10: '< 2 min'};
+        let res;
+        for(let i=price; i>=0; i--){
+            if(table[i] !== undefined){
+                res = table[i];
+                if(i <= price){
+                    return res;
+                }
+            }
+        }
+        return res;
+    };
+    const changeGasPrice = (any:any) => {
+        const val = (document.getElementById('gasRange') as HTMLInputElement).value;
+        (document.getElementById('gasPrice') as HTMLInputElement).innerHTML = val;
+        (document.getElementById('averagePublicationTime') as HTMLInputElement).innerHTML = averageTime(parseInt(val, 10));
+    };
 
     return <div className='container-fluid'>
         <div className='row'>
@@ -242,7 +264,7 @@ async function AsyncCreateOffering (props: any){
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Gas price</label>
                                 <div className='col-md-6'>
-                                    <GasRange />
+                                    <GasRange onChange={changeGasPrice} />
                                 </div>
                                 <div className='col-4 col-form-label'>
                                     <span id='gasPrice'>20</span> Gwei
@@ -270,4 +292,4 @@ async function AsyncCreateOffering (props: any){
 
 }
 
-export default asyncReactor(AsyncCreateOffering, Loader);
+export default withRouter(asyncReactor(AsyncCreateOffering, Loader));

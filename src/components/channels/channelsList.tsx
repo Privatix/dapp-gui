@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ChannelUsage from './channelUsage';
 import ProductByOffering from '../products/productByOffering';
@@ -14,7 +14,7 @@ import Product from '../products/product';
 
 function Loader() {
 
-  return (<h2>Loading channels ...</h2>);
+  return (<b>Loading channels ...</b>);
 
 }
 

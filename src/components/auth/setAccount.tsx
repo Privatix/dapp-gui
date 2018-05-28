@@ -2,7 +2,7 @@ import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 // import keythereum = require('keythereum');
 
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 
 import * as ReactTooltip from 'react-tooltip';
 
@@ -95,7 +95,7 @@ export default function(props: any){
                 <div className='form-group'>
                     <div className='col-12'>
                         <label>Private key:</label>
-                        <textarea className='form-control' id='privateKey' required='' placeholder='Private key' />
+                        <textarea className='form-control' id='privateKey' required={true} placeholder='Private key' />
                     </div>
                 </div>
                 <UseThisButton />

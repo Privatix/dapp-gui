@@ -1,45 +1,45 @@
 import * as React from 'react';
-import ChannelItem from './channelItem';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
+import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
+import ChannelsListPure from './channelsListPure';
 
 function Loader() {
 
-  return (<h2>Loading channels ...</h2>);
+  return (<b>Loading channels ...</b>);
 
 }
 
-async function AsyncChannels (props:any){
+const AsyncChannels = async function(props: any){
+        console.log('AsyncChannels!!!', props);
+        const endpoint = `/channels?serviceStatus=${props.status}`;
 
-    const endpoint = `/channels?serviceStatus=${props.status}`;
+        const channels = await fetch(endpoint, {method: 'GET'});
 
-    const channels = await fetch(endpoint, {method: 'GET'});
+        return <ChannelsListPure channels={channels} />;
+    };
 
-    const channelsDOM = (channels as any).map((channel: any) => <ChannelItem channel={channel} />);
+interface Props {
+    status: string;
+    history: any;
+    match: any;
+}
+class Channels extends React.Component<Props, any> {
+    constructor(props: Props) {
+        super(props);
+        this.state = {status: props.status};
+    }
 
-    return <div className='row'>
-                <div className='col-12'>
-                    <div className='card-box'>
-                        <table className='table table-bordered table-striped'>
-                            <thead>
-                                <tr>
-                                    <th>Id</th>
-                                    <th>Server</th>
-                                    <th>Client</th>
-                                    <th>Contract Status</th>
-                                    <th>Service Status</th>
-                                    <th>Usage</th>
-                                    <th>Income (PRIX)</th>
-                                    <th>Service Changed Time</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {channelsDOM}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-          </div>;
+    static getDerivedStateFromProps(nextProps: Props, prevState: any){
+        console.log('PROPS!!!', nextProps, prevState);
+        return {status: nextProps.match.params.status ? nextProps.match.params.status : prevState.status};
+    }
+
+    render (){
+        const Helper = asyncReactor(AsyncChannels, Loader);
+        console.log('RENDER!!!', this.state.status);
+        return <Helper status={this.state.status} />;
+    }
 }
 
-export default asyncReactor(AsyncChannels, Loader);
+export default withRouter(Channels);

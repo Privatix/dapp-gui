@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-// import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 
 
 // const createPrivateKey = function(){
@@ -26,15 +26,17 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
     type='button'
     onClick={async (evt: any) => {
         evt.preventDefault();
-        /*const privateKey = createPrivateKey();
+        const privateKey = (document.getElementById('importHexKey') as any).value;
+        const name = (document.getElementById('importHexKeyName') as any).value;
         const body = {privateKey
                      ,isDefault: true
                      ,inUse: true
-                     ,name: 'default'
+                     ,name
+                     ,type: 'import_hex'
         };
-        const res = await fetch('/accounts', {method: 'post', body});
-        console.log(res);*/
-        history.push('/backup');
+        const res = await fetch('/accounts/', {method: 'post', body});
+        console.log(res);
+        history.push(`/login`);
       }
     }
   >
@@ -55,13 +57,13 @@ export default function(props: any){
                     <section>
                        <div className='form-group row'>
                             <label className='col-2 col-form-label'>Name:</label>
-                            <div className='col-8'><input type='text' name='name' className='form-control' /></div>
+                            <div className='col-8'><input id='importHexKeyName' type='text' name='name' className='form-control' /></div>
                        </div>
                        <p>Please, input hex representation of your Private Key for address, that holds PRIX</p>
                        <div className='form-group row'>
                         <div className='col-12'>
                             <label>Private key:</label>
-                            <textarea className='form-control'></textarea>
+                            <textarea id='importHexKey' className='form-control'></textarea>
                           </div>
                        </div>
                        <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>More information about Ethereum Private Key</a>

@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 
 function Loader() {
 
-  return (<h2>Loading data ...</h2>);
+  return (<b>Loading data ...</b>);
 
 }
 

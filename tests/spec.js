@@ -25,8 +25,8 @@ describe('Application launch', function () {
   it('shows an initial window', function () {
       return me.app.client.getWindowCount().then(function(count){
          return me.app.client.windowByIndex(count-1).then(function() {
-          return me.app.client.getHTML('#h').then(function (hHtml) {
-              assert.equal('<span id="h">Privatix</span>', hHtml)
+          return me.app.client.getTitle().then(function (title) {
+              assert.equal('Privatix service app', title)
             })
         });
       })

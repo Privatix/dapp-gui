@@ -1,6 +1,6 @@
 import * as React from 'react';
 // import { Link } from 'react-router-dom';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ModalWindow from '../modalWindow';
 import CreateOffering from '../offerings/createOffering';
