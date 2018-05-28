@@ -38,7 +38,7 @@ export default function(props:any){
                                 <i className='md md-help'></i> <span>Help</span>
                             </NavLink>
                             <NavLink to='#' onClick={props.onSwitchMode} className='dropdown-item notify-item'>
-                                <i className='md md-settings'></i> <span>Switch to {props.mode === undefined || props.mode === 'agent' ? 'Client' : 'Agent'}</span>
+                                <i className='ion-arrow-swap'></i> <span>Switch to {props.mode === undefined || props.mode === 'agent' ? 'Client' : 'Agent'}</span>
                             </NavLink>
                             <NavLink to='/settings' className='dropdown-item notify-item'>
                                 <i className='md md-settings'></i> <span>Settings</span>
