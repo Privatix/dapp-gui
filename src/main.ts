@@ -59,6 +59,11 @@ var password = '';
             // TODO handling
         });
         event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+    }else if(req.endpoint === '/readFile'){
+        const file = fs.readFileSync(req.options.body.fileName, {encoding: 'utf8'});
+        // const privateKey = keythereum.recover(req.options.body.pwd, keyObject);
+        // console.log(privateKey);
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: {file}}));
     }else if(req.endpoint === '/saveAs'){
         console.log('SAVE AS!!!', req.options.body);
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
@@ -99,8 +104,10 @@ var password = '';
            
                   // const json = true;
                   console.log('accounts!!!', json);
-                  settings.firstStart = false;
-                  fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+                  if(settings.firstStart){
+                      settings.firstStart = false;
+                      fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+                  }
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
            });
     }else {

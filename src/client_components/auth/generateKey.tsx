@@ -29,13 +29,15 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
     type='button'
     onClick={async (evt: any) => {
         evt.preventDefault();
+        const name = (document.getElementById('generateKeyAccountName') as any).value;
         const privateKey = createPrivateKey();
-        const body = {privateKey
+        const body = {privateKey: privateKey.privateKey.toString('base64')
                      ,isDefault: true
                      ,inUse: true
-                     ,name: 'default'
+                     ,name
+                     ,type: 'generate_new'
         };
-        const res = await fetch('/accounts', {method: 'post', body});
+        const res = await fetch('/accounts/', {method: 'post', body});
         console.log(res);
         history.push(`/backup/${JSON.stringify(privateKey)}`);
       }
@@ -58,7 +60,7 @@ export default function(props: any){
                     <section>
                        <div className='form-group row'>
                             <label className='col-2 col-form-label'>Name:</label>
-                            <div className='col-8'><input type='text' name='name' className='form-control' /></div>
+                            <div className='col-8'><input id='generateKeyAccountName' type='text' name='name' className='form-control' /></div>
                        </div>
                        <p>While next button will be pressed, we will generate a new account.</p>
                        <p>If you lose the password you use to encrypt your account, you will not be able to access that account</p>

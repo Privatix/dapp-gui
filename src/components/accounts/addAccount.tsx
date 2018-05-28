@@ -2,14 +2,17 @@ import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import Toggle from 'react-toggle';
 import { Link } from 'react-router-dom';
-// import keythereum = require('keythereum');
+import keythereum = require('keythereum');
 
 import {fetch} from 'Utils/fetch';
 
 import * as ReactTooltip from 'react-tooltip';
 
 const createPrivateKey = function(){
-    return Buffer.from('11111111111111111111111111111111').toString('base64');
+    // return Buffer.from('11111111111111111111111111111111').toString('base64');
+    const params = { keyBytes: 32, ivBytes: 16 };
+    const dk = keythereum.create(params);
+    return dk;
 };
 
 var isDefault = false;
@@ -31,10 +34,10 @@ const keyIsCorrect = function(key: string){
 export default withRouter(function(props: any){
 
 const handler = async (evt: any, privateKey, history: any) => {
-    const name = props.default ? 'default' : trim((document.getElementById('accountName') as any).value);
+    const name = trim((document.getElementById('accountName') as any).value);
     evt.preventDefault();
     if(keyIsCorrect(privateKey)){
-        const body = {privateKey
+        const body = {privateKey: privateKey.privateKey.toString('base64')
                      ,isDefault
                      ,inUse: true
                      ,name
@@ -42,7 +45,7 @@ const handler = async (evt: any, privateKey, history: any) => {
         };
         const res = await fetch('/accounts/', {method: 'POST', body});
         console.log(res);
-        // history.push(props.default ? '/' : '/accounts'); 
+        history.push('/accounts'); 
     }else{
         // TODO incorrect private key message
     }
@@ -62,9 +65,19 @@ const GenerateNewAccButton = withRouter(
 const UseThisButton = withRouter(
     ({ history }) => <button type='button'
         className='btn btn-pink btn-block text-uppercase waves-effect waves-light'
-        onClick={(evt: any) => {
+        onClick={async (evt: any) => {
         const privateKey = trim((document.getElementById('privateKey') as any).value);
-        handler(evt, privateKey, history);
+        const name = trim((document.getElementById('accountName') as any).value);
+
+        const body = {privateKey
+                     ,isDefault: true
+                     ,inUse: true
+                     ,name
+                     ,type: 'import_hex'
+        };
+        const res = await fetch('/accounts', {method: 'post', body});
+        console.log(res);
+        history.push(`/accounts`);
     }}>
         Use this
     </button>
