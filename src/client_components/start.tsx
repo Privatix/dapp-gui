@@ -3,7 +3,7 @@ import { Route, Router, Switch} from 'react-router';
 // import { Link /*, withRouter */ } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import {asyncReactor} from 'async-reactor';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../utils/fetch';
 
 import SetPassword from './auth/setPassword';
 import SetAccount from './auth/setAccount';

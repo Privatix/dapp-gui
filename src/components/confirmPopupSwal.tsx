@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import ReactSweetAlert from 'react-sweetalert-vilan';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../utils/fetch';
 
 export default function(props:any) {
 

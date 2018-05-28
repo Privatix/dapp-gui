@@ -53,9 +53,6 @@ const electronRendererConfig = {
         plugins: [new TsconfigPathsPlugin({configFile: __dirname + '/tsconfig.json', baseUrl: __dirname + '/src/'})],
         extensions: ['.ts', '.tsx', '.js', '.json', '.node', '.html'],
         modules: ['node_modules'],
-        alias: {
-            Utils: path.resolve(__dirname, '../src/utils/'),
-        }
     },
     module: {
         rules:[

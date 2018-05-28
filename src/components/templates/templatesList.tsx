@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { render } from 'react-dom';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import TemplateItem from './templateItem';
 import AddTemplate from './addTemplate';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {asyncReactor} from 'async-reactor';
 import { Link } from 'react-router-dom';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 
 import OfferingStatus from './offeringStatus';
 import SortableTable from 'react-sortable-table';

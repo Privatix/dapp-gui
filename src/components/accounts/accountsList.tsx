@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import SortableTable from 'react-sortable-table';
 import ModalWindow from '../modalWindow';

@@ -4,7 +4,7 @@ import Toggle from 'react-toggle';
 import { Link } from 'react-router-dom';
 import keythereum = require('keythereum');
 
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 
 import * as ReactTooltip from 'react-tooltip';
 

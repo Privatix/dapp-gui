@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ChannelsListByStatus from './channels/channelsListByStatus';
 import OfferingsList from './offerings/offeringsList';

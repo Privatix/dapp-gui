@@ -1,7 +1,7 @@
 import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 
 
 // const createPrivateKey = function(){

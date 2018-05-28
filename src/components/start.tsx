@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import { Link /*, withRouter */ } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../utils/fetch';
 
 import SetPassword from './auth/setPassword';
 import Login from './auth/login';

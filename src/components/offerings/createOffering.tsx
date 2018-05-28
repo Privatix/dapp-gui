@@ -1,6 +1,6 @@
 import * as React from 'react';
 // import Form from 'react-jsonschema-form';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
 import ExternalLink from '../utils/externalLink';

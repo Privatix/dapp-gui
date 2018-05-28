@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {remote} from 'electron';
 const {dialog} = remote;
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import SessionItem from './sessionItem';
 

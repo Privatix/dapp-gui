@@ -2,7 +2,7 @@ import * as React from 'react';
 import * as uuid from 'uuid/v4';
 import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 import { Link } from 'react-router-dom';
 
 function Loader() {

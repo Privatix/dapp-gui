@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 // import keythereum = require('keythereum');
-import {fetch} from 'Utils/fetch';
+import {fetch} from '../../utils/fetch';
 
 // import * as ReactTooltip from 'react-tooltip';
 const pwdIsCorrect = function(pwd: string){
