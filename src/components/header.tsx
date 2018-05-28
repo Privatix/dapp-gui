@@ -4,14 +4,33 @@ import TopPanel from './topPanel';
 
 export default function(props:any){
 
-    /* Draft status logic (Need to change incomeStatus by real status) */
-    /*
-    let status = 'on';
-    let incomeStatus = 1;
-    if (incomeStatus !== 1) {
-        status = 'off';
-    }
-*/
+    const launchFullscreen  = function(element: any) {
+      if(element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if(element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      }
+    };
+
+    const exitFullscreen = function() {
+      if(document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      }
+    };
+
+    const toggleFullScreen = function() {
+      var fullscreenEnabled = (document as any).fullscreenEnabled || (document as any).webkitFullscreenEnabled;
+      if(fullscreenEnabled) {
+        if(!(document as any).fullscreenElement && !(document as any).webkitFullscreenElement) {
+          launchFullscreen(document.documentElement);
+        } else{
+          exitFullscreen();
+        }
+      }
+    };
+
     return <div className='topbar'>
 
         <div className='topbar-left'>
@@ -49,7 +68,7 @@ export default function(props:any){
                         </div>
                 </li>
 
-                <a className='nav-link waves-light waves-effect' href='#' id='btn-fullscreen'>
+                <a className='nav-link waves-light waves-effect' href='#' onClick={toggleFullScreen} >
                     <i className='dripicons-expand noti-icon'></i>
                 </a>
             </ul>
