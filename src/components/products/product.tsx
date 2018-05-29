@@ -1,32 +1,35 @@
 import * as React from 'react';
 import ProductView from './productView';
-import ProductTools from './productTools';
-import { Link } from 'react-router-dom';
+// import ProductTools from './productTools';
+// import { Link } from 'react-router-dom';
+import ModalWindow from '../modalWindow';
+import CreateOffering from '../offerings/createOffering';
 
 declare const Custombox: any;
 
 export default function(props:any){
-    const product = JSON.parse(props.src ? props.src : props.match.params.product);
+    // const product = JSON.parse(props.src ? props.src : props.match.params.product);
+    const product = props.src ? JSON.parse(props.src) : props.product;
+
     return <div className='container-fluid'>
         <div className='card-box'>
             <div className='row'>
-                <div className='col-sm-12 m-b-15'>
-                    <div className='btn-group pull-right col-3'>
-                        <div className='text-center col-12'>
-                            <Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an Offering</Link>
-                        </div>
+                <div className='col-sm-12 m-b-20'>
+                    <div className='btn-group'>
+                        {/*<Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an Offering</Link>*/}
+                        <ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering />} />
                     </div>
-                    <h3 className='page-title'>Server info</h3>
+                    {/*<h3 className='page-title'>Server info</h3>*/}
                 </div>
             </div>
             <div className='row'>
-                <div className='col-9'>
+                <div className='col-12'>
                     <ProductView product={product} />
                     <div id='editProduct'></div>
                 </div>
-                <div className='col-3'>
-                    <ProductTools product={product} />
-                </div>
+                {/*<div className='col-3'>*/}
+                    {/*<ProductTools product={product} />*/}
+                {/*</div>*/}
             </div>
         </div>
         <div id='custom-modal' className='modal-demo'>

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ProductItem from './productItem';
@@ -20,10 +20,10 @@ async function AsyncProducts(props:any){
         <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12 m-b-15'>
-                <div className='btn-group pull-right m-t-15'>
-                    <Link to={'createProduct'} className='btn btn-default waves-effect waves-light'>Create a product</Link>
-                </div>
-                <h3 className='page-title'>Products list</h3>
+                <h3 className='page-title'>Servers list</h3>
+                {/*<div className='btn-group m-t-15 m-b-20'>*/}
+                    {/*<Link to={'createProduct'} className='btn btn-default btn-custom waves-effect waves-light'>Create a server</Link>*/}
+                {/*</div>*/}
             </div>
         </div>
             <div className='row'>
@@ -33,7 +33,11 @@ async function AsyncProducts(props:any){
                             <table className='table table-bordered table-striped'>
                                 <thead>
                                     <tr>
-                                    <td>Name</td><td>Template</td><td>End Point</td><td>Offering Count</td><td></td>
+                                        <th>Name</th>
+                                        <th>Template</th>
+                                        <th>End Point</th>
+                                        <th>Offering Count</th>
+                                        <th></th>
                                     </tr>
                                 </thead>
                                 <tbody>
