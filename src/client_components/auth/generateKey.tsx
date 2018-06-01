@@ -31,7 +31,8 @@ const GenerateNewAccButton = withRouter(({ history }) => <button
         evt.preventDefault();
         const name = (document.getElementById('generateKeyAccountName') as any).value;
         const privateKey = createPrivateKey();
-        const body = {privateKey: privateKey.privateKey.toString('base64')
+        const key = privateKey.privateKey.toString('base64').split('+').join('-').split('/').join('_');
+        const body = {privateKey: key
                      ,isDefault: true
                      ,inUse: true
                      ,name

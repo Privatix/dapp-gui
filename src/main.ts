@@ -121,7 +121,6 @@ var password = '';
                 };
             }
         }
-        console.log(req);
         req.options.body = JSON.stringify(req.options.body);
         if(!req.options.headers){
             req.options.headers = {};
@@ -131,6 +130,7 @@ var password = '';
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 // console.log('RESPONSE!!!', res);
+                console.log(req, res);
                 return res.json();
             })
             .then(json => {

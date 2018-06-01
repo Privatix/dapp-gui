@@ -1,7 +1,7 @@
 import * as React from 'react';
 // import Form from 'react-jsonschema-form';
 import {fetch} from '../../utils/fetch';
-import { withRouter } from 'react-router-dom';
+// import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
 import ExternalLink from '../utils/externalLink';
 import GasRange from '../utils/gasRange';
@@ -11,6 +11,10 @@ function Loader() {
   return (<h2>Loading data ...</h2>);
 
 }
+
+let ethBalance = 0;
+let prixBalance = 0;
+let  globalTemplate = '';
 
 async function AsyncCreateOffering (props: any){
 
@@ -26,7 +30,10 @@ async function AsyncCreateOffering (props: any){
         const selectAccount = document.getElementById('selectAccount');
         const accountId = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
         const account = await fetch(`/accounts?id=${accountId}`, {method: 'get'}) as any;
+        ethBalance = account[0].ethBalance;
+        prixBalance = account[0].ptcBalance;
         document.getElementById('accountBalance').innerHTML = `${(account[0].ptcBalance/1e8).toFixed(3)} PRIX / ${(account[0].ethBalance/1e8).toFixed(3)} ETH`;
+
     };
 
     const onSubmit = (evt:any) => {
@@ -45,7 +52,7 @@ async function AsyncCreateOffering (props: any){
         payload.billingInterval = 1;
         payload.setupPrice = 0;
         payload.freeUnits = 0;
-        payload.template = '0815b4d3-f442-4c06-aff3-fbe868ed242a';
+        payload.template = globalTemplate;
         payload.additionalParams = Buffer.from('{}').toString('base64');
 
         payload.unitPrice = Math.floor(1e8 * (document.getElementById('offeringPricePerUnit') as any).value);
@@ -53,34 +60,55 @@ async function AsyncCreateOffering (props: any){
         payload.minUnits = parseInt((document.getElementById('offeringMinUnits') as any).value, 10);
         payload.deposit = payload.unitPrice * payload.minUnits;
         payload.maxUnit = parseInt((document.getElementById('offeringMaxUnits') as any).value, 10);
-
+        if(payload.maxUnit && payload.maxUnit < payload.minUnits){
+            console.log('maxUnits must be more or equal minUnits');
+            return;
+        }
         payload.maxSuspendTime = parseInt((document.getElementById('offeringMaxSuspendTime') as any).value, 10);
         payload.maxInactiveTimeSec = parseInt((document.getElementById('offeringMaxInactiveTime') as any).value, 10);
 
         const selectAccount = document.getElementById('selectAccount');
+        if(ethBalance === 0 || prixBalance === 0){
+            console.log('select account with non zero balance');
+            return;
+        }
         payload.agent = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
-
         payload.gasPrice = (document.getElementById('gasRange') as any).value;
 
         fetch('/offerings/', {method: 'post', body: payload}).then(res => {
-            props.history.push('/offerings/all');
+            console.log('offering created', res);
+            fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: parseInt(payload.gasPrice, 10)}}).then(res => {
+                console.log('offering published', res);
+               props.done();
+            // props.history.push('/offerings/all');
+            });
         });
     };
 
     const products = await fetch('/products', {method: 'get'});
     const accounts = await fetch('/accounts/', {method: 'get'});
     const templates = await fetch(`/templates?id=${products[0].offerTplID}`, {method: 'get'});
+    globalTemplate = products[0].offerTplID;
+
+    console.log(products, accounts, templates);
     const template = templates[0];
     template.raw = JSON.parse(atob(template.raw));
-    console.log(products, template);
+    console.log(products, template, 'accounts', accounts);
 
     const selectProduct = <select className='form-control' id='selectProduct'>
-        {(products as any).map((product:any) => <option key={product.id} value={product.id}>{product.name}</option>) }
+        {(products as any).map((product:any) => <option selected={props.product && props.product === product.id ? true : false } key={product.id} value={product.id}>{product.name}</option>) }
     </select>;
 
-    const selectAccount = <select className='form-control' id='selectAccount' onChange={onChangeAccount}>
-        {(accounts as any).map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
-    </select>;
+    let selectAccount;
+    if((accounts as any).length){
+        ethBalance = accounts[0].ethBalance;
+        prixBalance = accounts[0].ptcBalance;
+        selectAccount =  <select className='form-control' id='selectAccount' onChange={onChangeAccount}>
+            {(accounts as any).map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
+        </select>;
+    }else{
+        selectAccount = [];
+    }
 
     const averageTime = function(price: number){
         const table = {0: '∞', 5: '< 30 min', 6: '< 5min', 10: '< 2 min'};
@@ -248,7 +276,7 @@ async function AsyncCreateOffering (props: any){
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    Balance: <span id='accountBalance'>{(accounts[0].ptcBalance).toFixed(3)} PRIX / {(accounts[0].ethBalance/1e8).toFixed(3)} ETH</span>
+                                    Balance: <span id='accountBalance'>{(accounts as any).length ? (accounts[0].ptcBalance).toFixed(3) : 0} PRIX / {(accounts as any).length ? (accounts[0].ethBalance/1e8).toFixed(3) : 0} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>
@@ -292,4 +320,4 @@ async function AsyncCreateOffering (props: any){
 
 }
 
-export default withRouter(asyncReactor(AsyncCreateOffering, Loader));
+export default asyncReactor(AsyncCreateOffering, Loader);

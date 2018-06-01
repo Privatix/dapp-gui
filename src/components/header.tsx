@@ -4,6 +4,7 @@ import TopPanel from './topPanel';
 
 export default function(props:any){
 
+
     const launchFullscreen  = function(element: any) {
       if(element.requestFullscreen) {
         element.requestFullscreen();
@@ -29,6 +30,38 @@ export default function(props:any){
           exitFullscreen();
         }
       }
+    };
+
+function toggle_slimscroll(item: any){
+const $ = (document as any).jQuery;
+    if($('#wrapper').hasClass('enlarged')){
+      $(item).css('overflow','inherit').parent().css('overflow','inherit');
+      $(item). siblings('.slimScrollBar').css('visibility','hidden');
+    }else{
+      $(item).css('overflow','hidden').parent().css('overflow','hidden');
+      $(item). siblings('.slimScrollBar').css('visibility','visible');
+    }
+}
+
+    const openLeftBar = function() {
+const $ = (document as any).jQuery;
+      $('#wrapper').toggleClass('enlarged');
+      $('#wrapper').addClass('forced');
+
+      if($('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left')) {
+        $('body').removeClass('fixed-left').addClass('fixed-left-void');
+      } else if(!$('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left-void')) {
+        $('body').removeClass('fixed-left-void').addClass('fixed-left');
+      }
+      
+      if($('#wrapper').hasClass('enlarged')) {
+        $('.left ul').removeAttr('style');
+      } else {
+        $('.subdrop').siblings('ul:first').show();
+      }
+      
+      toggle_slimscroll('.slimscrollleft');
+      $('body').trigger('resize');
     };
 
     return <div className='topbar'>
@@ -77,7 +110,7 @@ export default function(props:any){
 
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>
-                    <button className='button-menu-mobile open-left waves-light waves-effect'>
+                    <button onClick={openLeftBar} className='button-menu-mobile open-left waves-light waves-effect'>
                         <i className='dripicons-menu'></i>
                     </button>
                 </li>

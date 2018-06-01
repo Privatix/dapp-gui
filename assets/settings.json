@@ -1,5 +1,5 @@
 {
     "firstStart": true
-   ,"apiEndpoint": "http://localhost:3000/ui"
+   ,"apiEndpoint": "http://localhost:3000"
    ,"mode": "agent"
 }

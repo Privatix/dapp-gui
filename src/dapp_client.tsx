@@ -59,7 +59,7 @@ const auth = <Router history={MemoryHistory as any}>
 const app = <Router history={MemoryHistory as any}>
     <div id='wrapper'>
         <Header />
-        <Navigation />
+        <Navigation mode='agent' />
         <div className='content-page'>
             <div className='content'>
                         <Switch>

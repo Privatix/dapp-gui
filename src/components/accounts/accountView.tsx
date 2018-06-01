@@ -5,9 +5,25 @@ import ConfirmPopupSwal from '../confirmPopupSwal';
 import ExternalLink from '../utils/externalLink';
 import GasRange from '../utils/gasRange';
 
-export default function(props:any){
+class AccountView extends React.Component<any, any> {
 
-    const changeTransferType = (evt) => {
+    constructor(props: any) {
+        super(props);
+        this.state = {amount: 0, destination: 'psc'};
+    }
+
+    onTransferAmount(evt: any){
+        console.log('onChange', evt, (document as any).getElementById('transferAmount').value);
+        let amount = parseFloat((document as any).getElementById('transferAmount').value);
+        if(amount !== amount){
+            amount = 0;
+        }
+        amount = Math.floor(amount * 1e8);
+        console.log(amount);
+        this.setState({amount});
+    }
+
+    changeTransferType(evt: any){
         evt.preventDefault();
         let prixValue = evt.target[evt.target.selectedIndex].value;
         let transferToOld = evt.target[evt.target.selectedIndex].textContent;
@@ -15,11 +31,17 @@ export default function(props:any){
 
         if (transferToOld === 'Exchange balance') {
             transferTo = 'Service balance';
+            this.setState({destination: 'ptc'});
+        }else{
+            this.setState({destination: 'psc'});
         }
 
         document.getElementById('accountBalance').innerHTML = prixValue;
+        // amount = prixValue;
         (document.getElementById('transferToInput') as HTMLInputElement).value = transferTo;
-    };
+    }
+
+    render(){
 
     return <div className='col-lg-9 col-md-8'>
         <div className='card m-b-20'>
@@ -28,13 +50,13 @@ export default function(props:any){
                 <div className='form-group row'>
                     <label className='col-3 col-form-label'>Name:</label>
                     <div className='col-9'>
-                        <input type='text' className='form-control' value={props.account.name} readOnly/>
+                        <input type='text' className='form-control' value={this.props.account.name} readOnly/>
                     </div>
                 </div>
                 <div className='form-group row'>
                     <label className='col-3 col-form-label'>Address:</label>
                     <div className='col-9'>
-                        <input type='text' className='form-control' value={`0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`} readOnly/>
+                        <input type='text' className='form-control' value={`0x${Buffer.from(this.props.account.ethAddr, 'base64').toString('hex')}`} readOnly/>
                     </div>
                 </div>
             </div>
@@ -46,7 +68,7 @@ export default function(props:any){
                     <label className='col-3 col-form-label'>Exchange balance:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value={props.account.ptcBalance} readOnly/>
+                            <input type='text' className='form-control' value={this.props.account.ptcBalance} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -55,7 +77,7 @@ export default function(props:any){
                     <label className='col-3 col-form-label'>Service balance:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value={props.account.psc_balance} readOnly/>
+                            <input type='text' className='form-control' value={this.props.account.psc_balance} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -70,13 +92,13 @@ export default function(props:any){
                     <div className='col-9'>
                         <div className='row'>
                             <div className='col-8'>
-                                <select className='form-control' id='selectProduct' onChange={changeTransferType}>
-                                    <option key={props.account.ptcBalance} value={props.account.ptcBalance}>Exchange balance</option>
-                                    <option key={props.account.psc_balance} value={props.account.psc_balance}>Service balance</option>
+                                <select className='form-control' id='selectProduct' onChange={this.changeTransferType.bind(this)}>
+                                    <option key={this.props.account.ptcBalance} value={this.props.account.ptcBalance}>Exchange balance</option>
+                                    <option key={this.props.account.psc_balance} value={this.props.account.psc_balance}>Service balance</option>
                                 </select>
                             </div>
                             <div className='col-4 col-form-label'>
-                                <span id='accountBalance'>{props.account.ptcBalance}</span> PRIX
+                                <span id='accountBalance'>{this.props.account.ptcBalance}</span> PRIX
                             </div>
                         </div>
                     </div>
@@ -91,7 +113,7 @@ export default function(props:any){
                     <label className='col-3 col-form-label'>Amount:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control'/>
+                            <input type='text' id='transferAmount' onChange={this.onTransferAmount.bind(this)} className='form-control'/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -120,8 +142,8 @@ export default function(props:any){
                 <div className='form-group row'>
                     <div className='col-12'>
                         <ConfirmPopupSwal
-                            endpoint={'#'}
-                            options={{method: 'put', body: {action: 'transfer'}}}
+                            endpoint={`/accounts/${this.props.account.id}/status`}
+                            options={{method: 'put', body: {action: 'transfer', amount: this.state.amount, destination: this.state.destination }}}
                             title={'Transfer'}
                             text={<span>This action will transfer your tokens from Service balance to Exchange balance.<br />
                                 This operation takes time and gas.<br /><br />You can monitor transaction status in the Transaction log.</span>}
@@ -136,8 +158,11 @@ export default function(props:any){
         <div className='card m-t-30'>
             <h5 className='card-header'>Transaction Log</h5>
             <div className='card-body'>
-                <Transactions account={props.account.id} />
+                <Transactions account={this.props.account.id} />
             </div>
         </div>
     </div>;
 }
+}
+
+export default AccountView;

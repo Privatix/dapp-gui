@@ -26,6 +26,7 @@ export default function(props:any) {
 
     function confirmHandler() {
         const options = props.options;
+        console.log('POPUP!!!', props.endpoint, props.options);
         fetch(props.endpoint, options);
         ReactDOM.unmountComponentAtNode(document.getElementById('swalModal'));
     }
