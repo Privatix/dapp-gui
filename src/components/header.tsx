@@ -4,14 +4,66 @@ import TopPanel from './topPanel';
 
 export default function(props:any){
 
-    /* Draft status logic (Need to change incomeStatus by real status) */
-    /*
-    let status = 'on';
-    let incomeStatus = 1;
-    if (incomeStatus !== 1) {
-        status = 'off';
+
+    const launchFullscreen  = function(element: any) {
+      if(element.requestFullscreen) {
+        element.requestFullscreen();
+      } else if(element.webkitRequestFullscreen) {
+        element.webkitRequestFullscreen();
+      }
+    };
+
+    const exitFullscreen = function() {
+      if(document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      }
+    };
+
+    const toggleFullScreen = function() {
+      var fullscreenEnabled = (document as any).fullscreenEnabled || (document as any).webkitFullscreenEnabled;
+      if(fullscreenEnabled) {
+        if(!(document as any).fullscreenElement && !(document as any).webkitFullscreenElement) {
+          launchFullscreen(document.documentElement);
+        } else{
+          exitFullscreen();
+        }
+      }
+    };
+
+function toggle_slimscroll(item: any){
+const $ = (document as any).jQuery;
+    if($('#wrapper').hasClass('enlarged')){
+      $(item).css('overflow','inherit').parent().css('overflow','inherit');
+      $(item). siblings('.slimScrollBar').css('visibility','hidden');
+    }else{
+      $(item).css('overflow','hidden').parent().css('overflow','hidden');
+      $(item). siblings('.slimScrollBar').css('visibility','visible');
     }
-*/
+}
+
+    const openLeftBar = function() {
+const $ = (document as any).jQuery;
+      $('#wrapper').toggleClass('enlarged');
+      $('#wrapper').addClass('forced');
+
+      if($('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left')) {
+        $('body').removeClass('fixed-left').addClass('fixed-left-void');
+      } else if(!$('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left-void')) {
+        $('body').removeClass('fixed-left-void').addClass('fixed-left');
+      }
+      
+      if($('#wrapper').hasClass('enlarged')) {
+        $('.left ul').removeAttr('style');
+      } else {
+        $('.subdrop').siblings('ul:first').show();
+      }
+      
+      toggle_slimscroll('.slimscrollleft');
+      $('body').trigger('resize');
+    };
+
     return <div className='topbar'>
 
         <div className='topbar-left'>
@@ -49,7 +101,7 @@ export default function(props:any){
                         </div>
                 </li>
 
-                <a className='nav-link waves-light waves-effect' href='#' id='btn-fullscreen'>
+                <a className='nav-link waves-light waves-effect' href='#' onClick={toggleFullScreen} >
                     <i className='dripicons-expand noti-icon'></i>
                 </a>
             </ul>
@@ -58,7 +110,7 @@ export default function(props:any){
 
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>
-                    <button className='button-menu-mobile open-left waves-light waves-effect'>
+                    <button onClick={openLeftBar} className='button-menu-mobile open-left waves-light waves-effect'>
                         <i className='dripicons-menu'></i>
                     </button>
                 </li>

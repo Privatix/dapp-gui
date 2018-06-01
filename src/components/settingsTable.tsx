@@ -3,6 +3,23 @@ import { withRouter } from 'react-router-dom';
 import ReactTable from 'react-table';
 
 // export default withRouter(function AsyncSettings(props:any){
+class SettingsCell extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props);
+        this.state = {key: props.key, value: props.value, description: props.description, name: props.name};
+    }
+
+    static getDerivedStateFromProps(props: any, prevState: any){
+        return {key: props.key, value: props.value, description: props.description, name: props.name};
+    }
+
+    render(){
+        return <div className='form-control text-right'>
+                    <input id={this.state.key} type='text' defaultValue={this.state.value} data-desc={this.state.description} data-name={this.state.name}/>
+                    <label htmlFor={this.state.key} className='m-b-15'></label>
+                </div>;
+    }
+}
 class SettingsTable extends React.Component<any, any> {
 
     constructor(props: any) {
@@ -74,10 +91,10 @@ class SettingsTable extends React.Component<any, any> {
   }, {
     Header: 'Val',
     accessor: 'value',
-    Cell: props => <div className='form-control text-right'>
+    Cell: <SettingsCell /> /* props => <div className='form-control text-right'>
                         <input id={props.key} type='text' defaultValue={props.value} data-desc={props.description} data-name={props.name}/>
                         <label htmlFor={props.key} className='m-b-15'></label>
-                    </div>,
+                    </div> */,
     filterAll: true
   }, {
     Header: 'desc',
@@ -93,7 +110,7 @@ class SettingsTable extends React.Component<any, any> {
               id: 'all',
               width: 0,
               resizable: false,
-              sortable: false,
+              sortable: true,
               Filter: () => { /* */ },
               getProps: () => {
                 return {
@@ -150,12 +167,13 @@ class SettingsTable extends React.Component<any, any> {
                                     columns={columns}
                                     showPagination={false}
                                     defaultPageSize={(this.state.data as any).length}
-                                    filterable={true}
+                                    filterable={false}
                                     filtered={this.state.filtered}
                                     ref={r => (this as any).reactTable = r}
                                     onFilteredChange={this.onFilteredChange.bind(this)}
 
                                 />
+                                <hr />
                                 <table className='table table-bordered table-striped'>
                                     <thead>
                                     <tr>
