@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Steps from './steps';
+import {LocalSettings} from '../../typings/settings';
 import { withRouter } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
 
@@ -17,6 +18,9 @@ const NextButton = withRouter(({ history }) => <button
         console.log('BUTTON!', pwd, conf);
         const res = await fetch('/auth', {method: 'post', body: {password: pwd}});
         console.log(res);
+        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        settings.firstStart = false;
+        await fetch('/localSettings', {method: 'post', body: settings});
         history.push('/setAccount'); 
       }
     }

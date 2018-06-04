@@ -33,9 +33,13 @@ import Endpoint from './endpoints/endpoint';
 import TemplatesList from './templates/templatesList';
 import Template from './templates/template';
 // import SetAccount from './components/auth/setAccount';
-import AddAccount from './accounts/addAccount';
+// import AddAccount from './accounts/addAccount';
 // import Login from './components/auth/login';
-
+import SetAccount from '../client_components/auth/setAccount';
+import GenerateKey from '../client_components/auth/generateKey';
+import ImportHexKey from '../client_components/auth/importHexKey';
+import ImportJsonKey from '../client_components/auth/importJsonKey';
+import Backup from '../client_components/auth/backup';
 
 import AccountsList from './accounts/accountsList';
 import Account from './accounts/accountView';
@@ -93,7 +97,11 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/sessions/:channel' component={SessionsList} />
                             <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
-                            <Route path='/addAccount' render={() => <AddAccount default={false} />} />
+                            <Route path='/addAccount' render={() => <SetAccount default={false} />} />
+                            <Route path='/generateKey/:default' component={GenerateKey} />
+                            <Route path='/importHexKey' component={ImportHexKey} />
+                            <Route path='/importJsonKey' component={ImportJsonKey} />
+                            <Route path='/backup/:privateKey' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} /> } />
                             <Route path='/logs' component={Logs} />
                         </Switch>
                     </div>

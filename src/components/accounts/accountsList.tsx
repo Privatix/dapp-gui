@@ -16,6 +16,10 @@ export default class AsyncAccounts extends React.Component<any, any> {
         this.refresh();
     }
 
+    done(){
+        this.setState({visible: false});
+    }
+
     refresh(){
 
         const endpoint = '/accounts';
@@ -35,9 +39,10 @@ export default class AsyncAccounts extends React.Component<any, any> {
 
             let isUse = account.inUse === true ? 'on' : 'off';
             let isDefault = account.isDefault === true ? 'on' : 'off';
+            const ethereumAddress = `0x${Buffer.from(account.ethAddr, 'base64').toString('hex')}`;
             return {
-                name: <ModalWindow customClass='' modalTitle='Account' text={account.name} component={<Account account={account} />} />,
-                ethereumAddress: `0x${Buffer.from(account.ethAddr, 'base64').toString('hex')}`,
+                name: <ModalWindow key={ethereumAddress} visible={false} customClass='' modalTitle='Account' text={account.name} component={<Account account={account} done={this.done.bind(this)} />} />,
+                ethereumAddress,
                 eth: (account.ethBalance/1e18).toFixed(3),
                 exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
                 serviceBalance: (account.psc_balance/1e8).toFixed(3),

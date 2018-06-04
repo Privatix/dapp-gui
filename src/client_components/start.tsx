@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { Route, Router, Switch} from 'react-router';
-// import { Link /*, withRouter */ } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 import {asyncReactor} from 'async-reactor';
 import {fetch} from '../utils/fetch';
-
+import {LocalSettings} from '../typings/settings';
 import SetPassword from './auth/setPassword';
 import SetAccount from './auth/setAccount';
 import GenerateKey from './auth/generateKey';
@@ -22,32 +21,42 @@ function Loader() {
 
 async function AsyncStart (props:any){
 
-    const firstStart = await fetch('/isItFirstStart', {method: 'get'});
-    // const isAuthorized = await fetch('/isAuthorized', {method: 'get'});
-    console.log('FIRST START: ', firstStart);
+    const settings = (await fetch('/localSettings', {})) as LocalSettings;
 
 let MemoryHistory = createMemoryHistory();
-const wisard = <Router history={MemoryHistory as any}>
+const wizard = <Router history={MemoryHistory as any}>
     <Switch>
         <Route exact path='/' component={SetPassword} />
-        <Route path='/setAccount' component={SetAccount} />
-        <Route path='/generateKey' component={GenerateKey} />
+        <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
+        <Route path='/generateKey/:default' component={GenerateKey} />
         <Route path='/importHexKey' component={ImportHexKey} />
         <Route path='/importJsonKey' component={ImportJsonKey} />
-        <Route path='/backup/:privateKey' component={Backup} />
+        <Route path='/backup/:privateKey' render={(props: any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} />} />
         <Route path='/login' component={Login} />
+        <Route path='/app' component={App} />
+    </Switch>
+</Router>;
+
+const setAccount = <Router history={MemoryHistory as any}>
+    <Switch>
+        <Route exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />
+        <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
+        <Route path='/generateKey/:default' component={GenerateKey} />
+        <Route path='/importHexKey' component={ImportHexKey} />
+        <Route path='/importJsonKey' component={ImportJsonKey} />
+        <Route path='/backup/:privateKey' render={ (props:any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} /> } />
         <Route path='/app' component={App} />
     </Switch>
 </Router>;
 
 const login = <Router history={MemoryHistory as any}>
     <Switch>
-        <Route exact path='/' component={Login} />
+        <Route exact path='/' render={() => <Login entryPoint={'/app'} />} />
         <Route path='/app' component={App} />
     </Switch>
 </Router>;
 
-     return firstStart ? wisard : login;
+     return settings.firstStart ? wizard : settings.accountCreated ? login : setAccount;
 }
 
 export default asyncReactor(AsyncStart, Loader);

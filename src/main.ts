@@ -9,13 +9,12 @@ import mocks from './mocks';
 import * as  btoa from 'btoa';
 import * as keythereum from 'keythereum';
 
-const settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
-var password = '';
+let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
+let password = '';
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
   }
-// const api = 'http://localhost:3000/ui';
 
   ipcMain.on('api', (event, msg) => {
     const req = JSON.parse(msg);
@@ -69,14 +68,14 @@ var password = '';
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
             // TODO handling
         });
-        
-    }else if(req.endpoint === '/isItFirstStart'){
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings.firstStart}));
-    }else if(req.endpoint === '/isAuthorized'){
-        console.log('isAuthorized', password !== '');
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: password !== ''}));
     }else if(req.endpoint === '/localSettings'){
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
+        if (req.options.method === 'get'){
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
+        }else{
+            settings = req.options.body;
+            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+        }
     }else if(req.endpoint === '/login'){
         console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;

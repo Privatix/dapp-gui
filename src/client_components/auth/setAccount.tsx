@@ -5,30 +5,7 @@ import { withRouter } from 'react-router-dom';
 
 let keyType = 'generate';
 
-const UseThisButton = withRouter(({ history }) => <button
-    className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        switch(keyType){
-            case 'generate':
-                console.log('/generateKey');
-                history.push('/generateKey');
-            break;
-            case 'importHex':
-                history.push('/importHexKey');
-            break;
-            case 'importJson':
-                history.push('/importJsonKey');
-            break;
-        }
-        // console.log(document.getElementsByName('keyType')[0].value);
-      }
-    }
-  >
-    Next
-  </button>
-);
+
 
 const PreviousButton = withRouter(({ history }) => <button
     className='btn btn-secondary text-uppercase waves-effect waves-light'
@@ -50,6 +27,32 @@ function handleChange(e:any) {
 
 
 export default function(props: any){
+
+    const UseThisButton = withRouter(({ history }) => <button
+        className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
+        type='button'
+        onClick={async (evt: any) => {
+            evt.preventDefault();
+            switch(keyType){
+                case 'generate':
+                    console.log('/generateKey', props);
+                    history.push(`/generateKey/${props.default}`);
+                break;
+                case 'importHex':
+                    history.push('/importHexKey');
+                break;
+                case 'importJson':
+                    history.push('/importJsonKey');
+                break;
+            }
+            // console.log(document.getElementsByName('keyType')[0].value);
+          }
+        }
+      >
+        Next
+      </button>
+    );
+
     return <div className='card-box'>
         <div className='panel-heading'>
             <h4 className='text-center'> Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>

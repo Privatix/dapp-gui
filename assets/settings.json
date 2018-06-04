@@ -1,5 +1,6 @@
 {
     "firstStart": true
+   ,"accountCreated": false
    ,"apiEndpoint": "http://localhost:3000"
    ,"mode": "agent"
 }

@@ -5,7 +5,6 @@ import {fetch} from '../../utils/fetch';
 import * as keythereum from 'keythereum';
 
 const createPrivateKey = function(){
-    // return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
     const params = { keyBytes: 32, ivBytes: 16 };
     const dk = keythereum.create(params);
     return dk;
@@ -24,32 +23,35 @@ const PreviousButton = withRouter(({ history }) => <button
   </button>
 );
 
-const GenerateNewAccButton = withRouter(({ history }) => <button
-    className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        const name = (document.getElementById('generateKeyAccountName') as any).value;
-        const privateKey = createPrivateKey();
-        const key = privateKey.privateKey.toString('base64').split('+').join('-').split('/').join('_');
-        const body = {privateKey: key
-                     ,isDefault: true
-                     ,inUse: true
-                     ,name
-                     ,type: 'generate_new'
-        };
-        const res = await fetch('/accounts/', {method: 'post', body});
-        console.log(res);
-        history.push(`/backup/${JSON.stringify(privateKey)}`);
-      }
-    }
-  >
-    Next
-  </button>
-);
+
 
 
 export default function(props: any){
+
+    const GenerateNewAccButton = withRouter(({ history }) => <button
+        className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
+        type='button'
+        onClick={async (evt: any) => {
+            evt.preventDefault();
+            const name = (document.getElementById('generateKeyAccountName') as any).value;
+            const privateKey = createPrivateKey();
+            const key = privateKey.privateKey.toString('base64').split('+').join('-').split('/').join('_');
+            const body = {privateKey: key
+                         ,isDefault: props.match.params.default === 'true'
+                         ,inUse: true
+                         ,name
+                         ,type: 'generate_new'
+            };
+            const res = await fetch('/accounts/', {method: 'post', body});
+            console.log(res);
+            history.push(`/backup/${JSON.stringify(privateKey)}`);
+          }
+        }
+      >
+        Next
+      </button>
+    );
+
     return <div className='card-box'>
         <div className='panel-heading'>
             <h4 className='text-center'> Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>
