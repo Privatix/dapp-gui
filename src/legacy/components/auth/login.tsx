@@ -29,7 +29,7 @@ export default function(props: any){
                 const body = {pwd};
                 const res = await fetch('/login', {method: 'post', body});
                 console.log(res, body);
-                history.push(props.entryPoint);
+                history.push('/app');
             }else{
                 // TODO incorrect password
             }

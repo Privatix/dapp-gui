@@ -44,6 +44,9 @@ export default function(props: any){
             };
             const res = await fetch('/accounts/', {method: 'post', body});
             console.log(res);
+            const settings = await fetch('/localSettings', {}) as any;
+            settings.accountCreated = true;
+            await fetch('/localSettings', {method: 'put', body: settings});
             history.push(`/backup/${JSON.stringify(privateKey)}`);
           }
         }

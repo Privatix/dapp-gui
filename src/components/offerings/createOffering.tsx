@@ -73,7 +73,7 @@ async function AsyncCreateOffering (props: any){
             return;
         }
         payload.agent = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
-        payload.gasPrice = (document.getElementById('gasRange') as any).value;
+        payload.gasPrice = parseInt((document.getElementById('gasRange') as any).value, 10) * 10e9;
 
         fetch('/offerings/', {method: 'post', body: payload}).then(res => {
             console.log('offering created', res);
