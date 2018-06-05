@@ -39,6 +39,11 @@ import AddAccount from './accounts/addAccount';
 
 import AccountsList from './accounts/accountsList';
 import Account from './accounts/accountView';
+import ClientDashboardStart from '../client_components/dashboard/startVPNBtn';
+import ClientDashboardConnecting from '../client_components/dashboard/connecting';
+import ClientDashboardActive from '../client_components/dashboard/active';
+import ClientDashboardPaused from '../client_components/dashboard/paused';
+import VPNList from '../client_components/vpn_list/list';
 
 import Logs from './logs/logs';
 
@@ -95,6 +100,12 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/endpoint/:channel' component={Endpoint} />
                             <Route path='/addAccount' render={() => <AddAccount default={false} />} />
                             <Route path='/logs' component={Logs} />
+
+                            <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
+                            <Route exact path='/client-dashboard-connecting' component={ClientDashboardConnecting} />
+                            <Route exact path='/client-dashboard-active' component={ClientDashboardActive} />
+                            <Route exact path='/client-dashboard-paused' component={ClientDashboardPaused} />
+                            <Route exact path='/client-vpn-list' component={VPNList} />
                         </Switch>
                     </div>
                 </div>
