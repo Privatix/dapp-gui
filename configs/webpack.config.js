@@ -27,8 +27,7 @@ const electronMainConfig = {
         rules:[
             /*  {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: './configs/tslint.json'}}
             , */ {test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
-            {test: /\.node$/, use: 'node-loader'},
-            {test: /\.css$/, use: 'css-loader'}
+            {test: /\.node$/, use: 'node-loader'}
         ]
     }
 
@@ -60,7 +59,7 @@ const electronRendererConfig = {
             /* {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: './configs/tslint.json'}}
            , */ {test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
            {test: /\.node$/, use: 'node-loader'},
-            {test: /\.css$/, use: 'css-loader'}
+            {test: /\.css$/, use: ['style-loader', 'css-loader']}
         ]
     }
 
