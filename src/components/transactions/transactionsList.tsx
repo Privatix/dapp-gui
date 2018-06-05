@@ -17,9 +17,10 @@ async function AsyncTransactions (props: any){
 
     const transactionsDataArr = [];
     (transactions as any).map((transaction: any) => {
+        const tx = `0x${Buffer.from(transaction.hash, 'base64').toString('hex')}`;
         let row = {
             date: transaction.date,
-            ethereumLink: <ExternalLink href={`https://etherscan.io/address/0x${transaction.ethAddr}`} text={`0x${transaction.ethAddr}`} />
+            ethereumLink: <ExternalLink href={`https://etherscan.io/tx/${tx}`} text={tx} />
         };
 
         transactionsDataArr.push(row);
