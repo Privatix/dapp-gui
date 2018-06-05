@@ -207,3 +207,73 @@ ul.default li {
     width: 0 !important;
     height: 0 !important;
 }
+
+
+.loadingIconBl{
+    position: relative;
+    display: inline-block;
+    margin-right: 5px;
+}
+.loadingIconBl i{
+    position: absolute;
+    top: -18px;
+    left: -25px;
+    font-size: 24px;
+}
+
+.remainingText{
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+    margin-bottom: 0;
+}
+
+/*********** Loader styles **********/
+.lds-dual-ring {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+}
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 46px;
+    height: 46px;
+    margin: 1px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    border-color: #878787 transparent #878787 transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/*********** END Loader styles **********/
+
+.font-25{
+    font-size: 25px !important;
+}
+
+/*********** Price range styles **********/
+.rc-slider-track {
+    background-color: #5fbeaa !important;
+}
+.rc-slider-handle {
+    border: solid 2px #5fbeaa !important;
+}
+.rc-slider-handle:hover {
+    border-color: #5fbeaa !important;
+}
+.rc-slider-handle:active {
+    border-color: #5fbeaa !important;
+    box-shadow: 0 0 5px #5fbeaa !important;
+}
+.rc-slider-handle:focus {
+    border-color: #5fbeaa !important;
+}
+/*********** END Price range styles **********/
