@@ -124,16 +124,14 @@ let password = '';
         if(!req.options.headers){
             req.options.headers = {};
         }
-        // $2a$10$wGvke93v2KVo1VWS23kZMO/Gnp8nawHmgpHL65D9zzOPvrx0WBI3e
         req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
-                // console.log('RESPONSE!!!', res);
-                console.log(req, res);
-                return res.json();
+                console.log(req.endpoint, res.headers.get('content-type'));
+                const contentType = res.headers.get('content-type');
+                return  (contentType !== null && contentType.includes('application/json')) || res.status === 201 ? res.json() : {};
             })
             .then(json => {
-                  // console.log('RESPONSE!!!', json);
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
             });
     }

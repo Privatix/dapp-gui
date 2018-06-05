@@ -2,14 +2,22 @@ import * as React from 'react';
 import Transactions from '../transactions/transactionsList';
 
 import ConfirmPopupSwal from '../confirmPopupSwal';
-import ExternalLink from '../utils/externalLink';
 import GasRange from '../utils/gasRange';
 
 class AccountView extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
-        this.state = {amount: 0, destination: 'psc', address: `0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`, account: props.account};
+        this.state = {gasPrice: 6*1e9
+                     ,amount: 0
+                     ,destination: 'psc'
+                     ,address: `0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`
+                     ,account: props.account
+        };
+    }
+
+    onGasPriceChanged(evt: any){
+        this.setState({gasPrice: Math.floor(evt.target.value*1e9)}); // Gwei = 1e9 wei
     }
 
     onTransferAmount(evt: any){
@@ -29,20 +37,7 @@ class AccountView extends React.Component<any, any> {
 
     changeTransferType(evt: any){
         evt.preventDefault();
-        let prixValue = evt.target[evt.target.selectedIndex].value;
-        let transferToOld = evt.target[evt.target.selectedIndex].textContent;
-        let transferTo = 'Exchange balance';
-
-        if (transferToOld === 'Exchange balance') {
-            transferTo = 'Service balance';
-            this.setState({destination: 'ptc'});
-        }else{
-            this.setState({destination: 'psc'});
-        }
-
-        document.getElementById(`${this.state.address}accountBalance`).innerHTML = prixValue;
-        // amount = prixValue;
-        (document.getElementById(`${this.state.address}transferToInput`) as HTMLInputElement).value = transferTo;
+        this.setState({destination: evt.target.value === 'psc' ? 'ptc' : 'psc'});
     }
 
     render(){
@@ -72,7 +67,7 @@ class AccountView extends React.Component<any, any> {
                     <label className='col-3 col-form-label'>Exchange balance:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value={this.state.account.ptcBalance} readOnly/>
+                            <input type='text' className='form-control' value={this.state.account.ptcBalance/1e8} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -81,7 +76,7 @@ class AccountView extends React.Component<any, any> {
                     <label className='col-3 col-form-label'>Service balance:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value={this.state.account.psc_balance} readOnly/>
+                            <input type='text' className='form-control' value={this.state.account.psc_balance/1e8} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -96,13 +91,13 @@ class AccountView extends React.Component<any, any> {
                     <div className='col-9'>
                         <div className='row'>
                             <div className='col-8'>
-                                <select className='form-control' onChange={this.changeTransferType.bind(this)}>
-                                    <option value={this.state.account.ptcBalance}>Exchange balance</option>
-                                    <option value={this.state.account.psc_balance}>Service balance</option>
+                                <select className='form-control' value={this.state.destination === 'psc' ? 'ptc' : 'psc'} onChange={this.changeTransferType.bind(this)}>
+                                    <option value='ptc' >Exchange balance</option>
+                                    <option value='psc' >Service balance</option>
                                 </select>
                             </div>
                             <div className='col-4 col-form-label'>
-                                <span id={`${this.state.address}accountBalance`}>{this.state.account.ptcBalance}</span> PRIX
+                                <span>{(this.state.destination === 'psc' ? this.state.account.psc_balance : this.state.account.ptcBalance)/1e8}</span> PRIX
                             </div>
                         </div>
                     </div>
@@ -110,7 +105,7 @@ class AccountView extends React.Component<any, any> {
                 <div className='form-group row'>
                     <label className='col-3 col-form-label'>To:</label>
                     <div className='col-9'>
-                        <input type='text' className='form-control' id='${this.state.address}transferToInput' value='Service balance' readOnly/>
+                        <input type='text' className='form-control' value={this.state.destination === 'psc' ? 'Service balance' : 'Exchange balance'} readOnly/>
                     </div>
                 </div>
                 <div className='form-group row'>
@@ -122,35 +117,14 @@ class AccountView extends React.Component<any, any> {
                         </div>
                     </div>
                 </div>
-                <div className='form-group row'>
-                    <label className='col-3 col-form-label'>Gas price</label>
-                    <div className='col-9'>
-                        <div className='row'>
-                            <div className='col-md-8'>
-                                <GasRange />
-                            </div>
-                            <div className='col-4 col-form-label'>
-                                <span id='gasPrice'>20</span> Gwei
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className='form-group row'>
-                    <div className='col-12 col-form-label'>
-                        <strong>Average publication time: <span id='averagePublicationTime'>2 min</span></strong>
-                    </div>
-                    <div className='col-12 col-form-label'>
-                        <strong>More information: <ExternalLink href='https://ethgasstation.info/' text='https://ethgasstation.info/' /></strong>
-                    </div>
-                </div>
+                <GasRange onChange={this.onGasPriceChanged.bind(this)} value={this.state.gasPrice/1e9} />
                 <div className='form-group row'>
                     <div className='col-12'>
                         <ConfirmPopupSwal
                             endpoint={`/accounts/${this.state.account.id}/status`}
-                            options={{method: 'put', body: {action: 'transfer', amount: this.state.amount, destination: this.state.destination }}}
-                            done={() => {/* */} }
+                            options={{method: 'put', body: {action: 'transfer', amount: Math.floor(this.state.amount*1e8), destination: this.state.destination , gasPrice: this.state.gasPrice}}}
                             title={'Transfer'}
-                            text={<span>This action will transfer your tokens from Service balance to Exchange balance.<br />
+                            text={<span>This action will transfer your tokens from {this.state.destination === 'ptc' ? 'Service' :'Exchange' } balance to {this.state.destination === 'psc' ? 'Service' :'Exchange' } balance.<br />
                                 This operation takes time and gas.<br /><br />You can monitor transaction status in the Transaction log.</span>}
                             class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
                             swalType='warning'

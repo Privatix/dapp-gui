@@ -3,7 +3,6 @@ import * as React from 'react';
 import {fetch} from '../../utils/fetch';
 // import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
-import ExternalLink from '../utils/externalLink';
 import GasRange from '../utils/gasRange';
 
 function Loader() {
@@ -14,7 +13,8 @@ function Loader() {
 
 let ethBalance = 0;
 let prixBalance = 0;
-let  globalTemplate = '';
+let globalTemplate = '';
+let gasPrice = 6*1e9;
 
 async function AsyncCreateOffering (props: any){
 
@@ -32,7 +32,7 @@ async function AsyncCreateOffering (props: any){
         const account = await fetch(`/accounts?id=${accountId}`, {method: 'get'}) as any;
         ethBalance = account[0].ethBalance;
         prixBalance = account[0].ptcBalance;
-        document.getElementById('accountBalance').innerHTML = `${(account[0].ptcBalance/1e8).toFixed(3)} PRIX / ${(account[0].ethBalance/1e8).toFixed(3)} ETH`;
+        document.getElementById('accountBalance').innerHTML = `${(account[0].ptcBalance/1e8).toFixed(3)} PRIX / ${(account[0].ethBalance/1e18).toFixed(3)} ETH`;
 
     };
 
@@ -73,13 +73,16 @@ async function AsyncCreateOffering (props: any){
             return;
         }
         payload.agent = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
-        payload.gasPrice = parseInt((document.getElementById('gasRange') as any).value, 10) * 10e9;
+        payload.gasPrice = gasPrice;
 
+        console.log('creating offering', payload);
         fetch('/offerings/', {method: 'post', body: payload}).then(res => {
             console.log('offering created', res);
-            fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: parseInt(payload.gasPrice, 10)}}).then(res => {
+            fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: payload.gasPrice}}).then(res => {
                 console.log('offering published', res);
-               props.done();
+               if(typeof props.done === 'function'){
+                   props.done();
+               }
             // props.history.push('/offerings/all');
             });
         });
@@ -110,23 +113,10 @@ async function AsyncCreateOffering (props: any){
         selectAccount = [];
     }
 
-    const averageTime = function(price: number){
-        const table = {0: '∞', 5: '< 30 min', 6: '< 5min', 10: '< 2 min'};
-        let res;
-        for(let i=price; i>=0; i--){
-            if(table[i] !== undefined){
-                res = table[i];
-                if(i <= price){
-                    return res;
-                }
-            }
-        }
-        return res;
-    };
-    const changeGasPrice = (any:any) => {
-        const val = (document.getElementById('gasRange') as HTMLInputElement).value;
-        (document.getElementById('gasPrice') as HTMLInputElement).innerHTML = val;
-        (document.getElementById('averagePublicationTime') as HTMLInputElement).innerHTML = averageTime(parseInt(val, 10));
+
+    const changeGasPrice = (evt:any) => {
+        // 
+        gasPrice = Math.floor(evt.target.value * 1e9);
     };
 
     return <div className='container-fluid'>
@@ -276,7 +266,7 @@ async function AsyncCreateOffering (props: any){
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    Balance: <span id='accountBalance'>{(accounts as any).length ? (accounts[0].ptcBalance).toFixed(3) : 0} PRIX / {(accounts as any).length ? (accounts[0].ethBalance/1e8).toFixed(3) : 0} ETH</span>
+                                    Balance: <span id='accountBalance'>{(accounts as any).length ? (accounts[0].ptcBalance/1e8).toFixed(3) : 0} PRIX / {(accounts as any).length ? (accounts[0].ethBalance/1e18).toFixed(3) : 0} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>
@@ -289,23 +279,7 @@ async function AsyncCreateOffering (props: any){
                                     </span>
                                 </div>
                             </div>
-                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Gas price</label>
-                                <div className='col-md-6'>
-                                    <GasRange onChange={changeGasPrice} />
-                                </div>
-                                <div className='col-4 col-form-label'>
-                                    <span id='gasPrice'>20</span> Gwei
-                                </div>
-                            </div>
-                            <div className='form-group row'>
-                                <div className='col-12 col-form-label'>
-                                    <strong>Average publication time: <span id='averagePublicationTime'>2 min</span></strong>
-                                </div>
-                                <div className='col-12 col-form-label'>
-                                    <strong>More information: <ExternalLink href='https://ethgasstation.info/' text='https://ethgasstation.info/' /></strong>
-                                </div>
-                            </div>
+                            <GasRange onChange={changeGasPrice} value={gasPrice/1e9} />
                         </div>
                     </div>
                     <div className='form-group row'>

@@ -16,12 +16,13 @@ export default class ConfirmPopupSwal extends React.Component<any, any>{
     }
 
     confirmHandler() {
+        console.log('CONFIRM: ', this.props);
         const options = this.props.options;
         fetch(this.props.endpoint, options).then((res: any) => {
             if('done' in this.props && typeof this.props.done === 'function'){
-                this.cancelHandler();
                 this.props.done();
             }
+            this.cancelHandler();
         });
     }
 
