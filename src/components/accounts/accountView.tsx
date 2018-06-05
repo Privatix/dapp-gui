@@ -9,7 +9,7 @@ class AccountView extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
-        this.state = {amount: 0, destination: 'psc', address: `0x${Buffer.from(this.props.account.ethAddr, 'base64').toString('hex')}`};
+        this.state = {amount: 0, destination: 'psc', address: `0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`, account: props.account};
     }
 
     onTransferAmount(evt: any){
@@ -21,6 +21,10 @@ class AccountView extends React.Component<any, any> {
         amount = Math.floor(amount * 1e8);
         console.log(amount);
         this.setState({amount});
+    }
+
+    static getDerivedStateFromProps(props: any, state: any) {
+        return {account: props.account};
     }
 
     changeTransferType(evt: any){
@@ -50,7 +54,7 @@ class AccountView extends React.Component<any, any> {
                 <div className='form-group row'>
                     <label className='col-3 col-form-label'>Name:</label>
                     <div className='col-9'>
-                        <input type='text' className='form-control' value={this.props.account.name} readOnly/>
+                        <input type='text' className='form-control' value={this.state.account.name} readOnly/>
                     </div>
                 </div>
                 <div className='form-group row'>
@@ -68,7 +72,7 @@ class AccountView extends React.Component<any, any> {
                     <label className='col-3 col-form-label'>Exchange balance:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value={this.props.account.ptcBalance} readOnly/>
+                            <input type='text' className='form-control' value={this.state.account.ptcBalance} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -77,7 +81,7 @@ class AccountView extends React.Component<any, any> {
                     <label className='col-3 col-form-label'>Service balance:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value={this.props.account.psc_balance} readOnly/>
+                            <input type='text' className='form-control' value={this.state.account.psc_balance} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -93,12 +97,12 @@ class AccountView extends React.Component<any, any> {
                         <div className='row'>
                             <div className='col-8'>
                                 <select className='form-control' onChange={this.changeTransferType.bind(this)}>
-                                    <option value={this.props.account.ptcBalance}>Exchange balance</option>
-                                    <option value={this.props.account.psc_balance}>Service balance</option>
+                                    <option value={this.state.account.ptcBalance}>Exchange balance</option>
+                                    <option value={this.state.account.psc_balance}>Service balance</option>
                                 </select>
                             </div>
                             <div className='col-4 col-form-label'>
-                                <span id={`${this.state.address}accountBalance`}>{this.props.account.ptcBalance}</span> PRIX
+                                <span id={`${this.state.address}accountBalance`}>{this.state.account.ptcBalance}</span> PRIX
                             </div>
                         </div>
                     </div>
@@ -142,7 +146,7 @@ class AccountView extends React.Component<any, any> {
                 <div className='form-group row'>
                     <div className='col-12'>
                         <ConfirmPopupSwal
-                            endpoint={`/accounts/${this.props.account.id}/status`}
+                            endpoint={`/accounts/${this.state.account.id}/status`}
                             options={{method: 'put', body: {action: 'transfer', amount: this.state.amount, destination: this.state.destination }}}
                             done={() => {/* */} }
                             title={'Transfer'}
@@ -159,7 +163,7 @@ class AccountView extends React.Component<any, any> {
         <div className='card m-t-30'>
             <h5 className='card-header'>Transaction Log</h5>
             <div className='card-body'>
-                <Transactions account={this.props.account.id} />
+                <Transactions account={this.state.account.id} />
             </div>
         </div>
     </div>;
