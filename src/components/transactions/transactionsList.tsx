@@ -13,7 +13,7 @@ function Loader() {
 
 async function AsyncTransactions (props: any){
 
-    const endpoint = '/transactions' + (props.account === 'all' ? '' : `?relatedId=${props.account}&relatedType=account`);
+    const endpoint = '/transactions' + (props.account === 'all' ? '' : `?relatedID=${props.account}&relatedType=account`);
     const transactions = await fetch(endpoint, {method: 'GET'});
     console.log(endpoint, transactions);
 
