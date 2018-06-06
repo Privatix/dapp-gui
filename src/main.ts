@@ -79,11 +79,13 @@ let password = '';
     }else if(req.endpoint === '/login'){
         console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;
-        if(settings.firstStart){
-            settings.firstStart = false;
-            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
-        }
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
+        const options = {method: 'get'} as any;
+        options.headers = {};
+        options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
+        fetch(`${settings.apiEndpoint}/products`, options)
+            .then(res => {
+                event.sender.send('api-reply', JSON.stringify({req: msg, res: res.status === 200}));
+            });
     }else if(req.endpoint === '/switchMode'){
         settings.mode = settings.mode === 'agent' ? 'client' : 'agent';
         fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
