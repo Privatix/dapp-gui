@@ -29,10 +29,10 @@ export default function(props:any){
                 holder.className = '';
                 holder.className = 'label label-table ' + statusLabelClass;
 
-                setTimeout(handler, 1000);
+                setTimeout(handler, 10000);
             }
         });
     };
-    setTimeout(handler, 1000);
+    setTimeout(handler, 10000);
     return status;
 }

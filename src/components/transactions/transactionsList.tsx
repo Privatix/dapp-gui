@@ -1,8 +1,9 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
-import ExternalLink from '../utils/externalLink';
 import SortableTable from 'react-sortable-table';
+import ExternalLink from '../utils/externalLink';
+import PgTime from '../utils/pgTime';
 
 function Loader() {
 
@@ -12,14 +13,16 @@ function Loader() {
 
 async function AsyncTransactions (props: any){
 
-    const endpoint = '/transactions' + (props.account === 'all' ? '' : `?account=${props.account}`);
+    const endpoint = '/transactions' + (props.account === 'all' ? '' : `?relatedID=${props.account}&relatedType=account`);
     const transactions = await fetch(endpoint, {method: 'GET'});
+    console.log(endpoint, transactions);
 
     const transactionsDataArr = [];
     (transactions as any).map((transaction: any) => {
+        const tx = `0x${Buffer.from(transaction.hash, 'base64').toString('hex')}`;
         let row = {
-            date: transaction.date,
-            ethereumLink: <ExternalLink href={`https://etherscan.io/address/0x${transaction.ethAddr}`} text={`0x${transaction.ethAddr}`} />
+            date: <PgTime time={transaction.issued} />,
+            ethereumLink: <ExternalLink href={`https://etherscan.io/tx/${tx}`} text={tx} />
         };
 
         transactionsDataArr.push(row);

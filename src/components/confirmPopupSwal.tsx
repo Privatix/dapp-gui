@@ -1,44 +1,55 @@
 import * as React from 'react';
-import * as ReactDOM from 'react-dom';
 
 import ReactSweetAlert from 'react-sweetalert-vilan';
 import {fetch} from '../utils/fetch';
 
-export default function(props:any) {
+export default class ConfirmPopupSwal extends React.Component<any, any>{
 
-    function showPopUpSwal(event: any) {
+    constructor(props: any) {
+        super(props);
+        this.state = {show: false};
+    }
+
+    showPopUpSwal(event: any) {
         event.preventDefault();
-        ReactDOM.render(
-            <ReactSweetAlert
-                show={true}
-                type={props.swalType}
-                showCancel
-                closeOnClickOutside={false}
-                confirmBtnText={props.swalConfirmBtnText}
-                confirmBtnCssClass='swal2-styled'
-                cancelBtnCssClass='swal2-styled'
-                title={props.swalTitle}
-                onConfirm={confirmHandler}
-                onCancel={cancelHandler}
-            >{props.text}</ReactSweetAlert>, document.getElementById('swalModal')
+        this.setState({show: true});
+    }
+
+    confirmHandler() {
+        console.log('CONFIRM: ', this.props);
+        const options = this.props.options;
+        fetch(this.props.endpoint, options).then((res: any) => {
+            if('done' in this.props && typeof this.props.done === 'function'){
+                this.props.done();
+            }
+            this.cancelHandler();
+        });
+    }
+
+    cancelHandler(event?: any) {
+        if(event && event.preventDefault){
+            event.preventDefault();
+        }
+        this.setState({show: false});
+    }
+
+    render(){
+        return (
+            <div>
+                <p><button onClick={this.showPopUpSwal.bind(this)} className={this.props.class}>{this.props.title}</button></p>
+                <ReactSweetAlert
+                    show={this.state.show}
+                    type={this.props.swalType}
+                    showCancel
+                    closeOnClickOutside={false}
+                    confirmBtnText={this.props.swalConfirmBtnText}
+                    confirmBtnCssClass='swal2-styled'
+                    cancelBtnCssClass='swal2-styled'
+                    title={this.props.swalTitle}
+                    onConfirm={this.confirmHandler.bind(this)}
+                    onCancel={this.cancelHandler.bind(this)}
+                >{this.props.text}</ReactSweetAlert>
+            </div>
         );
     }
-
-    function confirmHandler() {
-        const options = props.options;
-        fetch(props.endpoint, options);
-        ReactDOM.unmountComponentAtNode(document.getElementById('swalModal'));
-    }
-
-    function cancelHandler(event: any) {
-        event.preventDefault();
-        ReactDOM.unmountComponentAtNode(document.getElementById('swalModal'));
-    }
-
-    return (
-        <div>
-            <p><button onClick={showPopUpSwal} className={props.class}>{props.title}</button></p>
-            <div id='swalModal'></div>
-        </div>
-    );
 }

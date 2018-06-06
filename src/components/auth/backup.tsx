@@ -26,10 +26,6 @@ const PreviousButton = withRouter(({ history }) => <button
   </button>
 );
 
-
-
-
-
 export default function(props: any){
 
     const GenerateNewAccButton = withRouter(({ history }) => <button
@@ -38,10 +34,8 @@ export default function(props: any){
         onClick={async (evt: any) => {
             const fileName = (document.getElementById('fileName') as HTMLInputElement).value;
             evt.preventDefault();
-            console.log(props.match.params.privateKey );
-            // const pk = JSON.parse(props.match.params.privateKey);
-            fetch('/backup', {body: {pk: props.match.params.privateKey, fileName}});
-            history.push('/login');
+            fetch('/backup', {body: {pk: props.privateKey, fileName}});
+            history.push(props.entryPoint);
           }
         }
       >

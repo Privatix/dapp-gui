@@ -12,7 +12,7 @@ function Loader() {
 
 const AsyncChannels = async function(props: any){
         console.log('AsyncChannels!!!', props);
-        const endpoint = `/channels?serviceStatus=${props.status}`;
+        const endpoint = `/channels/?serviceStatus=${props.status}`;
 
         const channels = await fetch(endpoint, {method: 'GET'});
 
@@ -24,7 +24,9 @@ interface Props {
     history: any;
     match: any;
 }
+
 class Channels extends React.Component<Props, any> {
+
     constructor(props: Props) {
         super(props);
         this.state = {status: props.status};

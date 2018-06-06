@@ -17,7 +17,7 @@ export default function(props:any){
                 <div className='col-sm-12 m-b-20'>
                     <div className='btn-group'>
                         {/*<Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an Offering</Link>*/}
-                        <ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering />} />
+                        <ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={product.id} />} />
                     </div>
                     {/*<h3 className='page-title'>Server info</h3>*/}
                 </div>

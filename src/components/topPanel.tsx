@@ -8,6 +8,9 @@ export default function TopPanel(props:any){
             fetch('/channels?serviceStatus=active', {}).then(res => {
                 const servicesCountHolder = document.getElementById('topPanelServicesCount');
                 servicesCountHolder.innerHTML = (res as any).length;
+                const status = (res as any).length > 0 ? 'on' : 'off';
+                document.getElementById('topPanelStatus').classList.add('statusWrap-' + status);
+                document.getElementById('topPanelStatusIcon').classList.add('fa-toggle-' + status);
             });
             fetch('/accounts/', {}).then(res => {
                 const ethBalance = (res as any).reduce((balance, account) => {
@@ -36,7 +39,7 @@ export default function TopPanel(props:any){
             <li className='list-inline-item'>Exchange Balance: <span id='topPanelExchangeBalance'></span></li>
             <li className='list-inline-item'>Service balance: <span id='topPanelPSCBalance'></span></li>
             <li className='list-inline-item'>Active Services: <span id='topPanelServicesCount'></span></li>
-            <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={'statusWrap statusWrap-' + status}><i className={'fa fa-toggle-' + status}></i></span></li>
+            <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span id='topPanelStatus' className={'statusWrap'}><i id='topPanelStatusIcon' className={'fa'}></i></span></li>
         </ul>;
     }else{
         return <ul className='list-inline float-right mb-0 topPanel'>

@@ -1,5 +1,5 @@
 import Main from './components/main';
-import Start from './client_components/start';
+import Start from './components/start';
 import Navigation from './components/navigation';
 import Header from './components/header';
 import Settings from './components/settings';
@@ -18,11 +18,11 @@ import Endpoint from './components/endpoints/endpoint';
 
 import TemplatesList from './components/templates/templatesList';
 import Template from './components/templates/template';
-import SetAccount from './client_components/auth/setAccount';
-import GenerateKey from './client_components/auth/generateKey';
-import Backup from './client_components/auth/backup';
-import importHexKey from './client_components/auth/importHexKey';
-import importJsonKey from './client_components/auth/importJsonKey';
+import SetAccount from './components/auth/setAccount';
+import GenerateKey from './components/auth/generateKey';
+import Backup from './components/auth/backup';
+import importHexKey from './components/auth/importHexKey';
+import importJsonKey from './components/auth/importJsonKey';
 import AddAccount from './components/accounts/addAccount';
 import Login from './components/auth/login';
 
@@ -59,7 +59,7 @@ const auth = <Router history={MemoryHistory as any}>
 const app = <Router history={MemoryHistory as any}>
     <div id='wrapper'>
         <Header />
-        <Navigation />
+        <Navigation mode='agent' />
         <div className='content-page'>
             <div className='content'>
                         <Switch>

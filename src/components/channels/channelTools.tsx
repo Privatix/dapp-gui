@@ -11,7 +11,7 @@ export default function(props:any){
                 <h5 className='card-title'>Warning Area</h5>
                 <p className='card-text'>This operation will terminate the service and call the "Uncooperative close" procedure</p>
                 <ConfirmPopupSwal
-                    endpoint={`/channels/${props.channelId}/status`}
+                    endpoint={`/channels/${props.channel.id}/status`}
                     options={{method: 'put', body: {action: 'terminate'}}}
                     title={'Terminate contract'}
                     text={<span>This operation will terminate the service and call the "Uncooperative close" procedure.<br />
