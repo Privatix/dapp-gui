@@ -96,11 +96,11 @@ export default class Navigation extends React.Component<Props, any> {
                                 <i className='md md-toc'></i><span> VPN List </span>
                             </NavLink>
                         </li>
-                        <li className=''>
-                            <NavLink exact to='/accept-offering' activeClassName='active' className='waves-effect'>
-                                <i className='md md-toc'></i><span> Accept offering </span>
-                            </NavLink>
-                        </li>
+                        {/*<li className=''>*/}
+                            {/*<NavLink exact to='/vpn-history' activeClassName='active' className='waves-effect'>*/}
+                                {/*<i className='md md-toc'></i><span> Connection offering </span>*/}
+                            {/*</NavLink>*/}
+                        {/*</li>*/}
                         <li className=''>
                             <NavLink exact to='/client-history' activeClassName='active' className='waves-effect'>
                                 <i className='md md-toc'></i><span> History </span>
