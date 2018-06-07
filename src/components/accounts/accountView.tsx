@@ -97,7 +97,7 @@ class AccountView extends React.Component<any, any> {
                                 </select>
                             </div>
                             <div className='col-4 col-form-label'>
-                                <span>{(this.state.destination === 'psc' ? this.state.account.psc_balance : this.state.account.ptcBalance)/1e8}</span> PRIX
+                                <span>{(this.state.destination === 'psc' ? this.state.account.ptcBalance : this.state.account.psc_balance)/1e8}</span> PRIX
                             </div>
                         </div>
                     </div>
