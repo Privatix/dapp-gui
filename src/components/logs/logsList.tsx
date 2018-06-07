@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 import { HtmlElSorter } from '../utils/sortingHtmlEl';
 declare const jQuery;
 

@@ -4,7 +4,7 @@ import {asyncReactor} from 'async-reactor';
 import {fetch} from '../../utils/fetch';
 
 import OfferingStatus from './offeringStatus';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 import { HtmlElSorter } from '../utils/sortingHtmlEl';
 // import ModalWindow from '../modalWindow';
 // import Offering from './offering';
