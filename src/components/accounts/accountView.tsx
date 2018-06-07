@@ -122,7 +122,7 @@ class AccountView extends React.Component<any, any> {
                     <div className='col-12'>
                         <ConfirmPopupSwal
                             endpoint={`/accounts/${this.state.account.id}/status`}
-                            options={{method: 'put', body: {action: 'transfer', amount: Math.floor(this.state.amount*1e8), destination: this.state.destination , gasPrice: this.state.gasPrice}}}
+                            options={{method: 'put', body: {action: 'transfer', amount: this.state.amount, destination: this.state.destination , gasPrice: this.state.gasPrice}}}
                             title={'Transfer'}
                             text={<span>This action will transfer your tokens from {this.state.destination === 'ptc' ? 'Service' :'Exchange' } balance to {this.state.destination === 'psc' ? 'Service' :'Exchange' } balance.<br />
                                 This operation takes time and gas.<br /><br />You can monitor transaction status in the Transaction log.</span>}
