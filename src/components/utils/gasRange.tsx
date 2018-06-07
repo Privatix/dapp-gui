@@ -1,11 +1,22 @@
 import * as React from 'react';
 import ExternalLink from './externalLink';
+import * as _ from 'lodash';
 
 export default class GasRange extends React.Component<any, any> {
 
     constructor(props: any){
         super(props);
-        this.state = {value: props.value, gasPrice: props.value*1e9, averageTime: this.averageTime(props.value)};
+
+        const extLinkText = (_.isString(props.extLinkText)) ? props.extLinkText : 'https://ethgasstation.info/';
+        const averageTimeText = (_.isString(props.averageTimeText)) ? props.averageTimeText : 'publication';
+
+        this.state = {
+            value: props.value,
+            gasPrice: props.value*1e9,
+            averageTime: this.averageTime(props.value),
+            extLinkText,
+            averageTimeText
+        };
     }
 
     changeGasPrice(evt: any){
@@ -43,10 +54,10 @@ export default class GasRange extends React.Component<any, any> {
             </div>
             <div className='form-group row'>
                 <div className='col-12 col-form-label'>
-                    <strong>Average publication time: {this.state.averageTime} min</strong>
+                    <strong>Average {this.state.averageTimeText} time: {this.state.averageTime} min</strong>
                 </div>
                 <div className='col-12 col-form-label'>
-                    <strong>More information: <ExternalLink href='https://ethgasstation.info/' text='https://ethgasstation.info/' /></strong>
+                    <strong>More information:</strong> <ExternalLink href='https://ethgasstation.info/' text={this.state.extLinkText} />
                 </div>
             </div>
         </div>;

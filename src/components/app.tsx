@@ -41,6 +41,7 @@ import ClientDashboardConnecting from '../client_components/dashboard/connecting
 import ClientDashboardActive from '../client_components/dashboard/active';
 import ClientDashboardPaused from '../client_components/dashboard/paused';
 import VPNList from '../client_components/vpn_list/list';
+import AcceptOffering from '../client_components/vpn_list/acceptOffering';
 
 import Logs from './logs/logs';
 
@@ -107,6 +108,7 @@ export default class App extends React.Component<Props, any> {
                             <Route exact path='/client-dashboard-active' component={ClientDashboardActive} />
                             <Route exact path='/client-dashboard-paused' component={ClientDashboardPaused} />
                             <Route exact path='/client-vpn-list' component={VPNList} />
+                            <Route exact path='/accept-offering' component={AcceptOffering} />
                         </Switch>
                     </div>
                 </div>
