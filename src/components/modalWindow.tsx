@@ -9,19 +9,15 @@ export default class ModalWindow extends React.Component<any, any> {
         this.state = {visible: props.visible};
     }
 
-    static getDerivedStateFromProps(props: any, state: any){
-        return {visible: props.visible};
-    }
-
     closeModal(event: any) {
         event.preventDefault();
-        document.body.classList.remove('modal-open');
+        // document.body.classList.remove('modal-open');
         this.setState({visible: false});
     }
 
     showModal(event: any) {
         event.preventDefault();
-        document.body.classList.add('modal-open');
+        // document.body.classList.add('modal-open');
         this.setState({visible: true});
     }
 
