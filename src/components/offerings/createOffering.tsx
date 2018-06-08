@@ -437,7 +437,10 @@ class CreateOffering extends React.Component<any, any>{
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Deposit:</label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control' value={(this.state.payload.deposit/1e8).toFixed(4)} placeholder='PRIX' readOnly/>
+                                        <div className='input-group bootstrap-touchspin'>
+                                            <input type='text' className='form-control' value={(this.state.payload.deposit/1e8).toFixed(4)} placeholder='PRIX' readOnly/>
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                                        </div>
                                         <span className='help-block'>
                                             <small>This deposit will be locked while offering is active.
                                                 To return deposit close your offering</small>
