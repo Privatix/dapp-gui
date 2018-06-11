@@ -2,7 +2,7 @@ import * as React from 'react';
 // import {fetch} from '../../utils/fetch';
 import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 
 function Loader() {
     return (<h2>Loading data ...</h2>);
@@ -115,7 +115,6 @@ async function AsyncAcceptOffering (props:any){
                 </div>
             </div>
         </div>
-
     </div>;
 }
 

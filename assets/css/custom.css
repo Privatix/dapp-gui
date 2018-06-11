@@ -190,7 +190,7 @@ ul.default li {
     overflow-y:auto;
     height: 90%
 }
-.modalWrap>div>div{
+.modal-open .modalWrap>div>div{
     right: 0;
     bottom: 0;
     overflow-x: hidden;
@@ -327,3 +327,7 @@ input:checked + .slider:before {
     border-radius: 50%;
 }
 /*********** END Switcher checkbox styles **********/
+
+.flagImg{
+    width: 30px;
+}

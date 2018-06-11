@@ -1,6 +1,6 @@
 import * as React from 'react';
 // import {asyncReactor} from 'async-reactor';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 import 'rc-slider/assets/index.css';
 import Slider from 'rc-slider';
 import * as _ from 'lodash';
