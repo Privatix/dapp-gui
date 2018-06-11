@@ -6,7 +6,7 @@ import ProductByOffering from '../products/productByOffering';
 import PgTime from '../utils/pgTime';
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 import { HtmlElSorter } from '../utils/sortingHtmlEl';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';

@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
 // import {asyncReactor} from 'async-reactor';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 import ModalWindow from '../modalWindow';
 import Account from './account';
 

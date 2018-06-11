@@ -4,11 +4,11 @@ import {asyncReactor} from 'async-reactor';
 import {fetch} from '../../utils/fetch';
 
 import OfferingStatus from './offeringStatus';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 import { HtmlElSorter } from '../utils/sortingHtmlEl';
-// import ModalWindow from '../modalWindow';
-// import Offering from './offering';
-// import Product from '../products/product';
+import ModalWindow from '../modalWindow';
+import Offering from './offering';
+import Product from '../products/product';
 
 function Loader() {
 
@@ -40,11 +40,11 @@ async function AsyncOfferings (props: any){
 
     const offeringsDataArr = [];
     (offerings as any).map((offering: any) => {
-        // let product = (products as any).filter((product: any) => product.id === offering.product)[0];
+        let product = (products as any).filter((product: any) => product.id === offering.product)[0];
         let row = {
-            id: offering.id, /* <ModalWindow customClass='' modalTitle='Offering' text={offering.id} component={<Offering offering={offering} />} />, */
+            id: <ModalWindow customClass='' modalTitle='Offering' text={offering.id} component={<Offering offering={offering} />} />,
             serviceName: offering.serviceName,
-            server: 'server', /* <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />, */
+            server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
             status: <OfferingStatus offeringId={offering.id} />,
             freeUnits: offering.freeUnits,
             maxUnits: offering.maxUnit

@@ -18,6 +18,9 @@ let password = '';
 
   ipcMain.on('api', (event, msg) => {
     const req = JSON.parse(msg);
+    if(!req.options){
+        req.options = {};
+    }
     if(!req.options.method){
         req.options.method = 'get';
     }
@@ -130,8 +133,10 @@ let password = '';
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 console.log(req.endpoint, res.headers.get('content-type'));
-                const contentType = res.headers.get('content-type');
-                return  (contentType !== null && contentType.includes('application/json')) || res.status === 201 ? res.json() : {};
+                // const contentType = res.headers.get('content-type');
+                return res.json()
+                    .then(((res) =>  res), () => { return {}; });
+                // return  (contentType !== null && contentType.includes('application/json')) || res.status === 201 ? res.json() : {};
             })
             .then(json => {
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
