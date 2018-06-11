@@ -33,7 +33,7 @@ class CreateOffering extends React.Component<any, any>{
                 let products, accounts;
                 [products, accounts] = res;
                 const account = accounts.find((account: any) => account.isDefault);
-                console.log('Accounts retrieved!!!', accounts, account);
+                // console.log('Accounts retrieved!!!', accounts, account);
                 const payload = Object.assign({}, this.state.payload, {product: props.product ? props.product : products[0].id, agent: account.id});
                 this.setState({products, accounts, account, payload});
                 fetch(`/templates?id=${products[0].offerTplID}`)
@@ -41,11 +41,11 @@ class CreateOffering extends React.Component<any, any>{
 
                         const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
-                        console.log(products, accounts, templates);
+                        // console.log(products, accounts, templates);
                         const template = templates[0];
                         template.raw = JSON.parse(atob(template.raw));
                         this.setState({payload, template});
-                        console.log(products, template, 'accounts', accounts);
+                        // console.log(products, template, 'accounts', accounts);
                     });
             });
     }
@@ -60,7 +60,7 @@ class CreateOffering extends React.Component<any, any>{
         const accountId = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
         const account = this.state.accounts.find((account: any) => account.id === accountId);
         const payload = Object.assign({}, this.state.payload, {agent: accountId});
-        console.log(accountId, account, payload);
+        // console.log(accountId, account, payload);
         this.setState({account, payload});
         /*
         fetch(`/accounts?id=${accountId}`, {method: 'get'})

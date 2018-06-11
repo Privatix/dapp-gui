@@ -1,38 +1,30 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
 
-export default function(props:any){
-    const id = `offering${props.offeringId}Status`;
-    const status = <span id={id}></span>;
-    const handler = () => {
-        fetch(`/offerings/${props.offeringId}/status`, {}).then(res => {
-            const holder = document.getElementById(id);
-            if(holder){
-                let status = (res as any).status;
-                let statusLabelClass = 'label-';
-                holder.innerHTML = status;
+export default class OfferingStatus extends React.Component<any, any>{
 
-                switch (status) {
-                    case 'register':
-                        statusLabelClass += 'success';
-                        break;
-                    case 'remove':
-                        statusLabelClass += 'danger';
-                        break;
-                    case 'empty':
-                        statusLabelClass += 'warning';
-                        break;
-                    default:
-                        statusLabelClass += 'inverse';
-                }
+    constructor(props: any){
+        super(props);
+        this.state = {status: ''};
+        this.update();
+    }
 
-                holder.className = '';
-                holder.className = 'label label-table ' + statusLabelClass;
+    get classes() {
 
-                setTimeout(handler, 10000);
-            }
+        return {register: 'success', remove: 'danger', empty: 'warning'};
+    }
+
+    update(){
+        fetch(`/offerings/${this.props.offeringId}/status`, {}).then(res => {
+            const status = (res as any).status;
+            // let statusLabelClass = `label-${this.classes[status] ? this.classes[status] : 'inverse'}`;
+            this.setState({status});
+            setTimeout(this.update.bind(this), this.props.rate);
         });
-    };
-    setTimeout(handler, 10000);
-    return status;
+    }
+
+    render(){
+        const status = this.state.status;
+        return <span className={`label label-table label-${this.classes[status] ? this.classes[status] : 'inverse'}`} >{this.state.status}</span>;
+    }
 }

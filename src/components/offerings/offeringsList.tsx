@@ -30,11 +30,10 @@ async function AsyncOfferings (props: any){
     const productsRequest = fetch('/products', {});
     let offerings, products;
     [offerings, products] = await Promise.all([offeringsRequest, productsRequest]);
-
     const resolveTable = (products as any).reduce((table, product) => {
         table[product.id] = product.name;
         return table;
-    });
+    }, {});
 
     offerings = (offerings as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
 
@@ -45,7 +44,7 @@ async function AsyncOfferings (props: any){
             id: <ModalWindow customClass='' modalTitle='Offering' text={offering.id} component={<Offering offering={offering} />} />,
             serviceName: offering.serviceName,
             server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
-            status: <OfferingStatus offeringId={offering.id} />,
+            status: <OfferingStatus offeringId={offering.id} rate={3000} />,
             freeUnits: offering.freeUnits,
             maxUnits: offering.maxUnit
         };
