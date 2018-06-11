@@ -31,7 +31,7 @@ const fetchFactory = function(ipcRenderer: any){
         }
     });
 
-    return function(endpoint: string, options: any){
+    return function(endpoint: string, options?: any){
         const msg = JSON.stringify({endpoint, options});
         const promise = listen(msg);
         ipcRenderer.send('api', JSON.stringify({endpoint, options}));

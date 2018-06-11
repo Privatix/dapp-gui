@@ -7,11 +7,7 @@ import { Route, Router, Switch} from 'react-router';
 
 import { createMemoryHistory } from 'history';
 
-// import { render } from 'react-dom';
-// import Start from './client_components/start';
-
 import Main from './main';
-// import Start from './components/start';
 import Navigation from './navigation';
 import Header from './header';
 import Settings from './settings';
@@ -32,10 +28,11 @@ import Endpoint from './endpoints/endpoint';
 
 import TemplatesList from './templates/templatesList';
 import Template from './templates/template';
-// import SetAccount from './components/auth/setAccount';
-import AddAccount from './accounts/addAccount';
-// import Login from './components/auth/login';
-
+import SetAccount from './auth/setAccount';
+import GenerateKey from './auth/generateKey';
+import ImportHexKey from './auth/importHexKey';
+import ImportJsonKey from './auth/importJsonKey';
+import Backup from './auth/backup';
 
 import AccountsList from './accounts/accountsList';
 import Account from './accounts/accountView';
@@ -44,6 +41,8 @@ import ClientDashboardConnecting from '../client_components/dashboard/connecting
 import ClientDashboardActive from '../client_components/dashboard/active';
 import ClientDashboardPaused from '../client_components/dashboard/paused';
 import VPNList from '../client_components/vpn_list/list';
+import AcceptOffering from '../client_components/vpn_list/acceptOffering';
+import ClientHistory from '../client_components/vpn_list/history';
 
 import Logs from './logs/logs';
 
@@ -98,7 +97,11 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/sessions/:channel' component={SessionsList} />
                             <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
-                            <Route path='/addAccount' render={() => <AddAccount default={false} />} />
+                            <Route path='/addAccount' render={() => <SetAccount default={false} />} />
+                            <Route path='/generateKey/:default' component={GenerateKey} />
+                            <Route path='/importHexKey' component={ImportHexKey} />
+                            <Route path='/importJsonKey' component={ImportJsonKey} />
+                            <Route path='/backup/:privateKey' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} /> } />
                             <Route path='/logs' component={Logs} />
 
                             <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
@@ -106,6 +109,8 @@ export default class App extends React.Component<Props, any> {
                             <Route exact path='/client-dashboard-active' component={ClientDashboardActive} />
                             <Route exact path='/client-dashboard-paused' component={ClientDashboardPaused} />
                             <Route exact path='/client-vpn-list' component={VPNList} />
+                            <Route exact path='/accept-offering' component={AcceptOffering} />
+                            <Route exact path='/client-history' component={ClientHistory} />
                         </Switch>
                     </div>
                 </div>

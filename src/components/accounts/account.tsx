@@ -4,12 +4,10 @@ import AccountTools from './accountTools';
 
 export default function(props:any){
 
-    const account = props.account;
-
     return <div className='container-fluid'>
         <div className='row'>
-            <AccountView account={account} />
-            <AccountTools account={account} />
+            <AccountView account={props.account} />
+            <AccountTools {...props} />
         </div>
     </div>;
 }

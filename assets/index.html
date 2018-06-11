@@ -48,15 +48,21 @@
       const dapp = require('./dapp.js');
       window.$ = window.jQuery = require('./js/jquery.min.js');
       const bootstrap = require('./js/bootstrap.min.js');
+      require('./js/plugins/notify.js')(window, window.$);
   </script>
+
+  <script src="js/plugins/notify.js"></script>
+  <script src="js/plugins/notify-metro.js"></script>
 
   <script src="js/jquery.slimscroll.js"></script>
   <script src="js/wow.min.js"></script>
-  <script src="js/jquery.app.js"></script>
+  <script defer src="js/jquery.app.js"></script>
 
   <script src="js/custombox.min.js"></script>
 
   <script src="js/moment.js"></script>
   <script src="js/bootstrap-datepicker.min.js"></script>
+
+
   </body>
 </html>

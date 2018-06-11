@@ -9,16 +9,18 @@ import mocks from './mocks';
 import * as  btoa from 'btoa';
 import * as keythereum from 'keythereum';
 
-const settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
-var password = '';
+let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
+let password = '';
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
   }
-// const api = 'http://localhost:3000/ui';
 
   ipcMain.on('api', (event, msg) => {
     const req = JSON.parse(msg);
+    if(!req.options){
+        req.options = {};
+    }
     if(!req.options.method){
         req.options.method = 'get';
     }
@@ -69,22 +71,24 @@ var password = '';
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
             // TODO handling
         });
-        
-    }else if(req.endpoint === '/isItFirstStart'){
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings.firstStart}));
-    }else if(req.endpoint === '/isAuthorized'){
-        console.log('isAuthorized', password !== '');
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: password !== ''}));
     }else if(req.endpoint === '/localSettings'){
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
+        if (req.options.method === 'get'){
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
+        }else{
+            settings = req.options.body;
+            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+        }
     }else if(req.endpoint === '/login'){
         console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;
-        if(settings.firstStart){
-            settings.firstStart = false;
-            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
-        }
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
+        const options = {method: 'get'} as any;
+        options.headers = {};
+        options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
+        fetch(`${settings.apiEndpoint}/products`, options)
+            .then(res => {
+                event.sender.send('api-reply', JSON.stringify({req: msg, res: res.status === 200}));
+            });
     }else if(req.endpoint === '/switchMode'){
         settings.mode = settings.mode === 'agent' ? 'client' : 'agent';
         fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
@@ -121,20 +125,20 @@ var password = '';
                 };
             }
         }
-        console.log(req);
         req.options.body = JSON.stringify(req.options.body);
         if(!req.options.headers){
             req.options.headers = {};
         }
-        // $2a$10$wGvke93v2KVo1VWS23kZMO/Gnp8nawHmgpHL65D9zzOPvrx0WBI3e
         req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
-                // console.log('RESPONSE!!!', res);
-                return res.json();
+                console.log(req.endpoint, res.headers.get('content-type'));
+                // const contentType = res.headers.get('content-type');
+                return res.json()
+                    .then(((res) =>  res), () => { return {}; });
+                // return  (contentType !== null && contentType.includes('application/json')) || res.status === 201 ? res.json() : {};
             })
             .then(json => {
-                  // console.log('RESPONSE!!!', json);
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
             });
     }

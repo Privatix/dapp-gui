@@ -4,7 +4,7 @@ import {asyncReactor} from 'async-reactor';
 import {fetch} from '../../utils/fetch';
 
 import OfferingStatus from './offeringStatus';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 import { HtmlElSorter } from '../utils/sortingHtmlEl';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
@@ -21,9 +21,9 @@ async function AsyncOfferings (props: any){
     let endpoint;
 
     if(props.product){
-        endpoint = '/offerings' + (props.product === 'all' ? '' : `?product=${props.product}`);
+        endpoint = '/offerings/' + (props.product === 'all' ? '' : `?product=${props.product}`);
     }else{
-        endpoint = '/offerings' + (props.match.params.product === 'all' ? '' : `?product=${props.match.params.product}`);
+        endpoint = '/offerings/' + (props.match.params.product === 'all' ? '' : `?product=${props.match.params.product}`);
     }
 
     const offeringsRequest = fetch(endpoint, {method: 'GET'});

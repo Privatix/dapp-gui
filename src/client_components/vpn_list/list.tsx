@@ -1,6 +1,6 @@
 import * as React from 'react';
 // import {asyncReactor} from 'async-reactor';
-import SortableTable from 'react-sortable-table';
+import SortableTable from 'react-sortable-table-vilan';
 import 'rc-slider/assets/index.css';
 import Slider from 'rc-slider';
 import * as _ from 'lodash';
@@ -12,27 +12,62 @@ export default class AsyncList extends React.Component<any,any> {
         const data = [
             {
                 id: '1111',
-                country: 'Ukraine',
+                country: 'Canada',
                 price: 0.05,
                 publishTime: '31.05.2018'
             },
             {
                 id: '3333',
-                country: 'Russia',
+                country: 'Germany',
                 price: 0.33,
                 publishTime: '19.04.2018'
             },
             {
                 id: '2224',
-                country: 'Israel',
+                country: 'Netherlands',
                 price: 0.12,
                 publishTime: '01.06.2018'
             },
             {
                 id: '74543',
-                country: 'USA',
+                country: 'Germany',
                 price: 0.65,
                 publishTime: '18.05.2018'
+            }
+        ];
+
+        const countries = [
+            {
+                name: 'Afganistan',
+                defShow: 0
+            },
+            {
+                name: 'Albania',
+                defShow: 0
+            },
+            {
+                name: 'Canada',
+                defShow: 1
+            },
+            {
+                name: 'Germany',
+                defShow: 1
+            },
+            {
+                name: 'Japan',
+                defShow: 1
+            },
+            {
+                name: 'Netherlands',
+                defShow: 1
+            },
+            {
+                name: 'Romania',
+                defShow: 1
+            },
+            {
+                name: 'Russia',
+                defShow: 0
             }
         ];
 
@@ -42,6 +77,10 @@ export default class AsyncList extends React.Component<any,any> {
             spinner: true,
             changePriceInput: false,
             data,
+            countries,
+            filteredCountries: countries.slice(),
+            // defCountries,
+            showAllCountries: false,
             filtered: data.slice(),
             columns: [
                 {
@@ -74,6 +113,8 @@ export default class AsyncList extends React.Component<any,any> {
     shouldComponentUpdate(nextProps:any, nextState:any) {
         return (this.state.spinner !== nextState.spinner)
             || (this.state.changePriceInput !== nextState.changePriceInput)
+            || (this.state.showAllCountries !== nextState.showAllCountries)
+            || (this.state.filteredCountries !== nextState.filteredCountries)
             || !(_.isEqual(nextState.filtered, this.state.filtered));
     }
 
@@ -119,16 +160,7 @@ export default class AsyncList extends React.Component<any,any> {
         });
 
         const handler = setTimeout(() => {
-            let filteredByPrice = this.state.data.filter((item) => {
-                if (item.price >= from && item.price <= to) {
-                    return true;
-                }
-                return false;
-            });
-
-            this.setState({
-                filtered: filteredByPrice
-            });
+            this.filter();
         }, 200);
 
         if (this.state.handler !== null) {
@@ -138,9 +170,83 @@ export default class AsyncList extends React.Component<any,any> {
         this.setState({handler});
     }
 
+    showCountriesHandler() {
+        this.setState({filteredCountries: this.state.countries});
+        if (this.state.showAllCountries) {
+            this.setState({showAllCountries: false});
+        } else {
+            this.setState({showAllCountries: true});
+        }
+    }
+
+    filterCountries(e:any) {
+        const searchText = e.target.value;
+        let patt = new RegExp(searchText, 'i');
+        let filteredCountries = this.state.countries.filter((item) => {
+            return patt.test(item.name);
+        });
+
+        this.setState({
+            filteredCountries: filteredCountries
+        });
+    }
+
+    filterByCountryHandler() {
+        this.filter();
+    }
+
+    filter() {
+        // filter by price
+        let from = (document.getElementById('priceFrom') as HTMLInputElement).value;
+        let to = (document.getElementById('priceTo') as HTMLInputElement).value;
+        let filtered = this.state.data.filter((item) => {
+            if (item.price >= from && item.price <= to) {
+                return true;
+            }
+            return false;
+        });
+
+        // filter by countries
+        const checkedCountries = document.querySelectorAll('input[name=checkboxCountry]:checked');
+        let checkedCountriesArr = [];
+        for (let i = 0; i < checkedCountries.length; i++) {
+            checkedCountriesArr.push((checkedCountries[i] as HTMLInputElement).value);
+        }
+
+        if (checkedCountriesArr.length > 0) {
+            filtered = filtered.filter((item) => {
+                if (checkedCountriesArr.includes(item.country)) {
+                    return true;
+                }
+                return false;
+            });
+        }
+
+        this.setState({
+            filtered: filtered
+        });
+    }
+
     render() {
         const createSliderWithTooltip = Slider.createSliderWithTooltip;
         const Range = createSliderWithTooltip(Slider.Range);
+
+        let buttonText = 'show all...';
+        let searchHtml = null;
+        if (this.state.showAllCountries) {
+            buttonText = 'hide';
+            searchHtml = <div className='form-group row'>
+                <div className='col-md-12 m-t-10 m-b-10'>
+                    <div className='input-group searchInputGroup'>
+                        <div className='input-group-prepend'>
+                            <span className='input-group-text'><i className='fa fa-search'></i></span>
+                        </div>
+                        <input className='form-control' type='search' name='search' placeholder='search'
+                            onChange={this.filterCountries.bind(this)} />
+                    </div>
+                </div>
+            </div>;
+        }
 
         return this.state.spinner ? <div className='container-fluid'>
             <div className='row m-t-20'>
@@ -174,7 +280,8 @@ export default class AsyncList extends React.Component<any,any> {
                                         <div className='input-group-prepend'>
                                             <span className='input-group-text' id='priceFromLabel'>from</span>
                                         </div>
-                                        <input type='number' step='0.01' className='form-control' placeholder='0' id='priceFrom' value={this.state.from} onChange={(e) => this.changeMinPriceInput(e)} />
+                                        <input type='number' step='0.01' className='form-control' placeholder='0'
+                                               id='priceFrom' value={this.state.from} onChange={(e) => this.changeMinPriceInput(e)} />
                                     </div>
                                 </div>
                                 <div className='col-6'>
@@ -182,7 +289,8 @@ export default class AsyncList extends React.Component<any,any> {
                                         <div className='input-group-prepend'>
                                             <span className='input-group-text' id='priceToLabel'>to</span>
                                         </div>
-                                        <input type='number' step='0.01' className='form-control' placeholder='1' id='priceTo' value={this.state.to} onChange={(e) => this.changeMaxPriceInput(e)} />
+                                        <input type='number' step='0.01' className='form-control' placeholder='1'
+                                               id='priceTo' value={this.state.to} onChange={(e) => this.changeMaxPriceInput(e)} />
                                     </div>
                                 </div>
                             </div>
@@ -198,25 +306,26 @@ export default class AsyncList extends React.Component<any,any> {
                     <div className='card m-t-15 m-b-20'>
                         <h5 className='card-header'>Country</h5>
                         <div className='card-body'>
-                            <div className='checkbox checkbox-custom'>
-                                <input id='checkbox1' type='checkbox'/>
-                                <label htmlFor='checkbox1'>Netherlands</label>
-                            </div>
-                            <div className='checkbox checkbox-custom'>
-                                <input id='checkbox2' type='checkbox'/>
-                                <label htmlFor='checkbox2'>Germany</label>
-                            </div>
-                            <div className='checkbox checkbox-custom'>
-                                <input id='checkbox3' type='checkbox'/>
-                                <label htmlFor='checkbox3'>Romania</label>
-                            </div>
-                            <div className='checkbox checkbox-custom'>
-                                <input id='checkbox4' type='checkbox'/>
-                                <label htmlFor='checkbox4'>Japan</label>
-                            </div>
-                            <div className='checkbox checkbox-custom'>
-                                <input id='checkbox5' type='checkbox'/>
-                                <label htmlFor='checkbox5'>Canada</label>
+                            {searchHtml}
+
+                            {this.state.filteredCountries.map((country) => {
+                                let countryCheckboxHtml = <div className='checkbox checkbox-custom'>
+                                    <input id={country.name} type='checkbox' name='checkboxCountry' value={country.name}
+                                           onChange={this.filterByCountryHandler.bind(this)} />
+                                    <label htmlFor={country.name}>{country.name}</label>
+                                </div>;
+                                if (!this.state.showAllCountries) {
+                                    if (country.defShow === 1) {
+                                        return countryCheckboxHtml;
+                                    }
+                                } else {
+                                    return countryCheckboxHtml;
+                                }
+                            })}
+
+                            <div className='text-center'>
+                                <button type='button' className='btn btn-link waves-effect'
+                                        onClick={this.showCountriesHandler.bind(this)}>{buttonText}</button>
                             </div>
                         </div>
                     </div>
