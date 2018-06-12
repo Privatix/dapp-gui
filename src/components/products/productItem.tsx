@@ -1,55 +1,56 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
-import {asyncReactor} from 'async-reactor';
 import { withRouter } from 'react-router-dom';
 import ModalWindow from '../modalWindow';
 import CreateOffering from '../offerings/createOffering';
 import Product from './product';
 
-function Loader() {
+class AsyncProductItem extends React.Component<any, any>{
 
-  return (<h2>Loading server info ...</h2>);
-
-}
-
-async function AsyncProductItem(props:any){
-
-    const templates = await fetch(`/templates`, {method: 'GET'});
-    const offerings = await fetch(`/offerings/?product=${props.product.id}`, {method: 'GET'});
-    console.log(templates, offerings);
-    let offerTemplate;
-    let accessTemplate;
-    if((templates as any).length){
-        (templates as any).forEach(template => {
-            if(template.kind === 'offer'){
-                offerTemplate = template;
-            }
-        });
-        (templates as any).forEach(template => {
-            if(template.kind === 'access'){
-                accessTemplate = template;
-            }
-        });
-        offerTemplate.raw = JSON.parse(atob(offerTemplate.raw));
-        accessTemplate.raw = JSON.parse(atob(accessTemplate.raw));
-
+    constructor(props:any){
+        super(props);
+        this.state = {visible: false, offerings: []};
+        fetch(`/templates`, {})
+            .then((templates: any) => {
+                let offerTemplate, accessTemplate;
+                    if((templates as any).length){
+                        (templates as any).forEach(template => {
+                            if(template.kind === 'offer'){
+                                offerTemplate = template;
+                            }
+                        });
+                        (templates as any).forEach(template => {
+                            if(template.kind === 'access'){
+                                accessTemplate = template;
+                            }
+                        });
+                        offerTemplate.raw = JSON.parse(atob(offerTemplate.raw));
+                        accessTemplate.raw = JSON.parse(atob(accessTemplate.raw));
+                        this.setState({offerTemplate, accessTemplate});
+                    }
+            });
+        fetch(`/offerings/?product=${props.product.id}`, {})
+            .then((offerings: any) => {
+                this.setState({offerings});
+            });
     }
 
-    const onOfferingCreated = function(){
-        props.history.push('/offerings/all');
-    };
 
-    const elem = <tr>
-                     {/*<td><Link to={`/product/${JSON.stringify(props.product)}`}>{props.product.name}</Link></td>*/}
-                     <td>{ <ModalWindow customClass='' modalTitle='Server info' text={props.product.name} component={<Product product={props.product} />} /> }</td>
-                     <td>{offerTemplate.raw.schema.title}</td>
-                     <td>{accessTemplate.raw.title}</td>
-                     <td>{(offerings as any).length ? (offerings as any).length : 0}</td>
-                     <td>{<ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={props.product.id} done={onOfferingCreated}/>} />}</td>
-                 </tr>;
-                 console.log(elem);
-    return elem;
+    onOfferingCreated(){
+        this.setState({visible: false});
+        this.props.history.push('/offerings/all');
+    }
+
+    render(){
+        const elem = <tr>
+             <td>{ <ModalWindow customClass='' modalTitle='Server info' text={this.props.product.name} component={<Product product={this.props.product} />} /> }</td>
+             <td>{this.state.offerTemplate? this.state.offerTemplate.raw.schema.title : ''}</td>
+             <td>{this.state.accessTemplate ? this.state.accessTemplate.raw.title : ''}</td>
+             <td>{(this.state.offerings as any).length}</td>
+             <td>{<ModalWindow visible={this.state.visible} customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={this.props.product.id} done={this.onOfferingCreated.bind(this)}/>} />}</td>
+         </tr>;
+        return elem;
+    }
 }
 
-export default withRouter(asyncReactor(AsyncProductItem, Loader));
+export default withRouter(AsyncProductItem);
