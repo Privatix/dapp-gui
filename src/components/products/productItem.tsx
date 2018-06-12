@@ -9,6 +9,7 @@ class AsyncProductItem extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
+
         this.state = {visible: false, offerings: []};
         fetch(`/templates`, {})
             .then((templates: any) => {
@@ -42,12 +43,16 @@ class AsyncProductItem extends React.Component<any, any>{
     }
 
     render(){
+        const showCreateOfferingModalProp = this.props.match.params.showCreateOfferingModal;
+        const productIdProp = this.props.match.params.productId;
+        const showCreateOfferingModal = (typeof(showCreateOfferingModalProp) !== 'undefined' && productIdProp === this.props.product.id) ? true : false;
+
         const elem = <tr>
              <td>{ <ModalWindow customClass='' modalTitle='Server info' text={this.props.product.name} component={<Product product={this.props.product} />} /> }</td>
              <td>{this.state.offerTemplate? this.state.offerTemplate.raw.schema.title : ''}</td>
              <td>{this.state.accessTemplate ? this.state.accessTemplate.raw.title : ''}</td>
              <td>{(this.state.offerings as any).length}</td>
-             <td>{<ModalWindow visible={this.state.visible} customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={this.props.product.id} done={this.onOfferingCreated.bind(this)}/>} />}</td>
+             <td>{<ModalWindow visible={showCreateOfferingModal ? showCreateOfferingModal : this.state.visible} customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={this.props.product.id} done={this.onOfferingCreated.bind(this)}/>} />}</td>
          </tr>;
         return elem;
     }

@@ -44,7 +44,7 @@
     "popper.js": "^1.14.3",
     "rc-slider": "^8.6.1",
     "react": "^16.2.0",
-    "react-awesome-modal": "^2.0.3",
+    "react-awesome-modal-perfected": "^1.1.1",
     "react-countdown-now": "^1.3.0",
     "react-dom": "^16.2.0",
     "react-jsonschema-form": "^1.0.2",

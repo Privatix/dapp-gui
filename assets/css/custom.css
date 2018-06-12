@@ -192,11 +192,11 @@ ul.default li {
 }
 .modal-open .modalWrap>div>div{
     right: 0;
-    bottom: 0;
+    top: 50px;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: block !important;
+    /*background-color: rgba(0, 0, 0, 0.6);*/
+    /*display: block !important;*/
 }
 .modalWrap>div>div>div:first-child{
     margin: 50px auto;

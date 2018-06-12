@@ -81,7 +81,7 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/templates' component={TemplatesList} />
                             <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />
-                            <Route path='/products' component={Products} />
+                            <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
                             <Route path='/createProduct' component={CreateProduct} />
                             <Route path='/accounts' component={AccountsList} />
                             <Route path='/account/:account' component={Account} />

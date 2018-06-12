@@ -3,6 +3,6 @@ import ProductsList from './productsList';
 
 export default function(props:any){
     return (
-          <ProductsList />
-   );
+        <ProductsList {...props} />
+    );
 }
