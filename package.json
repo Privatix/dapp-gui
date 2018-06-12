@@ -50,6 +50,7 @@
     "react-jsonschema-form": "^1.0.2",
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
+    "react-select": "^1.2.1",
     "react-sortable-table-vilan": "^1.0.0",
     "react-sweetalert-vilan": "^1.0.0",
     "react-table": "^6.8.5",

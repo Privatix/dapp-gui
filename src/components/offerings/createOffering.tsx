@@ -1,4 +1,5 @@
 import * as React from 'react';
+import Select from 'react-select';
 import {fetch} from '../../utils/fetch';
 import GasRange from '../utils/gasRange';
 // import notice from '../../utils/notice';
@@ -27,25 +28,29 @@ class CreateOffering extends React.Component<any, any>{
 
         this.state = {payload, products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9};
 
+    }
+
+    componentDidMount(){
+
         Promise.all([fetch('/products'), fetch('/accounts/')])
             .then((res: any) => {
                 // TODO check products length
                 let products, accounts;
                 [products, accounts] = res;
                 const account = accounts.find((account: any) => account.isDefault);
-                console.log('Accounts retrieved!!!', accounts, account);
-                const payload = Object.assign({}, this.state.payload, {product: props.product ? props.product : products[0].id, agent: account.id});
+                // console.log('Accounts retrieved!!!', accounts, account);
+                const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
                 this.setState({products, accounts, account, payload});
                 fetch(`/templates?id=${products[0].offerTplID}`)
                     .then((templates: any) => {
 
                         const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
-                        console.log(products, accounts, templates);
+                        // console.log(products, accounts, templates);
                         const template = templates[0];
                         template.raw = JSON.parse(atob(template.raw));
                         this.setState({payload, template});
-                        console.log(products, template, 'accounts', accounts);
+                        // console.log(products, template, 'accounts', accounts);
                     });
             });
     }
@@ -54,22 +59,22 @@ class CreateOffering extends React.Component<any, any>{
         this.setState({gasPrice: Math.floor(evt.target.value * 1e9)});
     }
 
-    onAccountChanged(evt: any) {
-        console.log('ACCOUNT CHANGED!!!', evt.target);
-        const selectAccount = evt.target; // document.getElementById('selectAccount');
-        const accountId = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
-        const account = this.state.accounts.find((account: any) => account.id === accountId);
-        const payload = Object.assign({}, this.state.payload, {agent: accountId});
-        console.log(accountId, account, payload);
+    onProductChanged(product: any){
+        if(product){
+            const payload = Object.assign({}, this.state.payload, {product: product.value});
+            this.setState({payload});
+        }
+    }
+
+    onAccountChanged(selectedAccount: any) {
+
+        // console.log('ACCOUNT CHANGED!!!', evt.target);
+        // const selectAccount = evt.target; // document.getElementById('selectAccount');
+        // const accountId = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
+        const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
+        const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
+        // console.log(accountId, account, payload);
         this.setState({account, payload});
-        /*
-        fetch(`/accounts?id=${accountId}`, {method: 'get'})
-            .then((account: any) => {
-                ethBalance = account[0].ethBalance;
-                prixBalance = account[0].ptcBalance;
-                document.getElementById('accountBalance').innerHTML = `${(account[0].ptcBalance/1e8).toFixed(3)} PRIX / ${(account[0].ethBalance/1e18).toFixed(3)} ETH`;
-            });
-           */
 
     }
 
@@ -208,74 +213,28 @@ class CreateOffering extends React.Component<any, any>{
         
         console.log(payload);
         return;
-        /*
-        const payload = {} as any;
-        const selectProduct = document.getElementById('selectProduct');
-        payload.product = (selectProduct as any).options[(selectProduct as any).selectedIndex].value;
-        payload.serviceName = (document.getElementById('offeringName') as any).value;
-        payload.description = (document.getElementById('offeringDescription') as any).value;
-        payload.country = (document.getElementById('offeringCountry') as any).value;
-        payload.supply = parseInt((document.getElementById('offeringSupply') as any).value, 10);
 
-
-        payload.setupPrice = 0;
-        payload.freeUnits = 0;
-        payload.template = this.state.payload.template;
-
-        payload.unitPrice = Math.floor(1e8 * (document.getElementById('offeringPricePerUnit') as any).value);
-        payload.maxBillingUnitLag = parseInt((document.getElementById('offeringMaxBillingLag') as any).value, 10);
-        payload.minUnits = parseInt((document.getElementById('offeringMinUnits') as any).value, 10);
-        payload.deposit = payload.unitPrice * payload.minUnits;
-        payload.maxUnit = parseInt((document.getElementById('offeringMaxUnits') as any).value, 10);
-        if(payload.maxUnit && payload.maxUnit < payload.minUnits){
-            console.log('maxUnits must be more or equal minUnits');
-            return;
-        }
-        payload.maxSuspendTime = parseInt((document.getElementById('offeringMaxSuspendTime') as any).value, 10);
-        payload.maxInactiveTimeSec = parseInt((document.getElementById('offeringMaxInactiveTime') as any).value, 10);
-
-        const selectAccount = document.getElementById('selectAccount');
-        if(this.state.account.ethBalance === 0 || this.state.account.ptcBalance === 0){
-            console.log('select account with non zero balance');
-            return;
-        }
-        payload.agent = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
-        payload.gasPrice = this.state.payload.gasPrice;
-
-        console.log('creating offering', payload);
-        fetch('/offerings/', {method: 'post', body: payload}).then(res => {
-            console.log('offering created', res);
-            fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: payload.gasPrice}}).then(res => {
-                console.log('offering published', res);
-               if(typeof this.props.done === 'function'){
-                   this.props.done();
-               }
-            // props.history.push('/offerings/all');
-            });
-        });
-       */
     }
 
     render(){
 
-
-
-        const selectProduct = <select className='form-control' id='selectProduct'>
-            {this.state.products.map((product:any) => <option selected={this.state.payload.product && this.state.payload.product === product.id ? true : false } key={product.id} value={product.id}>{product.name}</option>) }
-        </select>;
-/*
-        let selectAccount;
-        if((accounts as any).length){
-            // ethBalance = accounts[0].ethBalance;
-            // prixBalance = accounts[0].ptcBalance;
-            
-        }else{
-            selectAccount = [];
-        }
+        const selectProduct = <Select className='form-control'
+            value={this.state.payload.product}
+            searchable={false}
+            clearable={false}
+            options={this.state.products.map((product: any) => ({value: product.id, label: product.name})) }
+            onChange={this.onProductChanged.bind(this)} />;
+        /*
+            {this.state.products.map((product:any) => <option key={product.id} value={product.id}>{product.name}</option>) }
+        </Select>;
 */
-        const selectAccount =  <select className='form-control' onChange={this.onAccountChanged.bind(this)}>
-            {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
-        </select>;
+        const selectAccount =  <Select className='form-control'
+            value={this.state.payload.agent}
+            searchable={false}
+            clearable={false}
+            options={this.state.accounts.map((account:any) => ({value: account.id, label: account.name}))}
+            onChange={this.onAccountChanged.bind(this)} />;
+            // {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
 
         const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
         const countryComment = this.state.template ? this.state.template.raw.uiSchema.country['ui:help'] : '';
@@ -287,7 +246,6 @@ class CreateOffering extends React.Component<any, any>{
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12'>
-                    <form action='' id='addOffering'>
                         <div className='card m-b-20 card-body'>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Server:</label>
@@ -457,7 +415,6 @@ class CreateOffering extends React.Component<any, any>{
                             <hr />
                             <div>{this.state.errMsg}</div>
                         </div>
-                    </form>
                 </div>
             </div>
         </div>;

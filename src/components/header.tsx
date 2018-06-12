@@ -106,7 +106,7 @@ const $ = (document as any).jQuery;
                 </a>
             </ul>
 
-            <TopPanel mode={props.mode} />
+            <TopPanel mode={props.mode} rate={3000} />
 
             <ul className='list-inline menu-left mb-0'>
                 <li className='float-left'>
