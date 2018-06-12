@@ -9,7 +9,7 @@ import Product from './product';
 
 function Loader() {
 
-  return (<h2>Loading product info ...</h2>);
+  return (<h2>Loading server info ...</h2>);
 
 }
 

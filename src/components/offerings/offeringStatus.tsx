@@ -3,10 +3,12 @@ import {fetch} from '../../utils/fetch';
 
 export default class OfferingStatus extends React.Component<any, any>{
 
+    handler: number;
+
     constructor(props: any){
         super(props);
         this.state = {status: ''};
-        this.update();
+        this.handler = setTimeout(this.update.bind(this), 100);
     }
 
     get classes() {
@@ -18,9 +20,18 @@ export default class OfferingStatus extends React.Component<any, any>{
         fetch(`/offerings/${this.props.offeringId}/status`, {}).then(res => {
             const status = (res as any).status;
             // let statusLabelClass = `label-${this.classes[status] ? this.classes[status] : 'inverse'}`;
-            this.setState({status});
-            setTimeout(this.update.bind(this), this.props.rate);
+            if(this.handler){
+                this.setState({status});
+                this.handler = setTimeout(this.update.bind(this), this.props.rate);
+            }
         });
+    }
+
+    componentWillUnmount(){
+        if(this.handler){
+            clearTimeout(this.handler);
+            this.handler = null;
+        }
     }
 
     render(){

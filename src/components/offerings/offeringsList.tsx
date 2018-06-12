@@ -76,13 +76,13 @@ async function AsyncOfferings (props: any){
             ascSortFunction: HtmlElSorter.asc
         },
         {
-            header: 'Free Units',
+            header: 'Free Services',
             key: 'freeUnits',
             headerStyle: {textAlign: 'center'},
             dataProps: { className: 'text-center'},
         },
         {
-            header: 'Max Units',
+            header: 'Supply',
             key: 'maxUnits',
             headerStyle: {textAlign: 'center'},
             dataProps: { className: 'text-center'},

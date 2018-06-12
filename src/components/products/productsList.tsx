@@ -6,7 +6,7 @@ import ProductItem from './productItem';
 
 function Loader() {
 
-  return (<h2>Loading products ...</h2>);
+  return (<h2>Loading servers ...</h2>);
 
 }
 
