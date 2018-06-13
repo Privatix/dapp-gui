@@ -1,9 +1,9 @@
 import * as React from 'react';
 import ProductView from './productView';
 // import ProductTools from './productTools';
-// import { Link } from 'react-router-dom';
-import ModalWindow from '../modalWindow';
-import CreateOffering from '../offerings/createOffering';
+import { Link } from 'react-router-dom';
+// import ModalWindow from '../modalWindow';
+// import CreateOffering from '../offerings/createOffering';
 
 declare const Custombox: any;
 
@@ -16,8 +16,8 @@ export default function(props:any){
             <div className='row'>
                 <div className='col-sm-12 m-b-20'>
                     <div className='btn-group'>
-                        {/*<Link to={'/createOffering'} className='btn btn-default waves-effect waves-light'>Create an Offering</Link>*/}
-                        <ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={product.id} />} />
+                        <Link to={`/products/createOfferingModal/${product.id}`} className='btn btn-default btn-custom waves-effect waves-light'>Create an Offering</Link>
+                        {/*<ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={product.id} />} />*/}
                     </div>
                     {/*<h3 className='page-title'>Server info</h3>*/}
                 </div>

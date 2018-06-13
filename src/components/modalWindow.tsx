@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Modal from 'react-awesome-modal';
+import Modal from 'react-awesome-modal-perfected';
 
 export default class ModalWindow extends React.Component<any, any> {
 
@@ -15,13 +15,20 @@ export default class ModalWindow extends React.Component<any, any> {
         this.setState({visible: false});
     }
 
+    static getDerivedStateFromProps(props: any, state:any){
+        return 'visible' in props ? {visible: props.visible} : null;
+    }
+
     showModal(event: any) {
         event.preventDefault();
-        document.body.classList.add('modal-open');
         this.setState({visible: true});
     }
 
     render(){
+        if (this.state.visible === true) {
+            document.body.classList.add('modal-open');
+        }
+        
         return (
             <div>
                 <a href='#' onClick={this.showModal.bind(this)} className={this.props.customClass}>{this.props.text}</a>
