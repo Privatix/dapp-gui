@@ -9,7 +9,7 @@ class AsyncProductItem extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-        this.state = {visible: false, offerings: []};
+        this.state = {offerings: []};
         fetch(`/templates`, {})
             .then((templates: any) => {
                 let offerTemplate, accessTemplate;
@@ -37,7 +37,6 @@ class AsyncProductItem extends React.Component<any, any>{
 
 
     onOfferingCreated(){
-        this.setState({visible: false});
         this.props.history.push('/offerings/all');
     }
 
@@ -47,7 +46,7 @@ class AsyncProductItem extends React.Component<any, any>{
              <td>{this.state.offerTemplate? this.state.offerTemplate.raw.schema.title : ''}</td>
              <td>{this.state.accessTemplate ? this.state.accessTemplate.raw.title : ''}</td>
              <td>{(this.state.offerings as any).length}</td>
-             <td>{<ModalWindow visible={this.state.visible} customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={this.props.product.id} done={this.onOfferingCreated.bind(this)}/>} />}</td>
+             <td>{<ModalWindow visible={false} customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={this.props.product.id} done={this.onOfferingCreated.bind(this)}/>} />}</td>
          </tr>;
         return elem;
     }

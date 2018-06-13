@@ -68,12 +68,8 @@ class CreateOffering extends React.Component<any, any>{
 
     onAccountChanged(selectedAccount: any) {
 
-        // console.log('ACCOUNT CHANGED!!!', evt.target);
-        // const selectAccount = evt.target; // document.getElementById('selectAccount');
-        // const accountId = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
         const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
         const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
-        // console.log(accountId, account, payload);
         this.setState({account, payload});
 
     }
@@ -203,10 +199,12 @@ class CreateOffering extends React.Component<any, any>{
                 console.log('offering created', res);
                 fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: this.state.gasPrice}}).then(res => {
                     console.log('offering published', res);
+                    if(typeof this.props.closeModal === 'function'){
+                        this.props.closeModal();
+                    }
                     if(typeof this.props.done === 'function'){
                        this.props.done();
                     }
-                    this.props.history.push('/offerings/all');
                 });
             });
         }

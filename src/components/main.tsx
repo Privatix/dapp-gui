@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {fetch} from '../utils/fetch';
+import {fetchOfferings} from './offerings/utils';
 import {asyncReactor} from 'async-reactor';
 import ChannelsListByStatus from './channels/channelsListByStatus';
 import OfferingsList from './offerings/offeringsList';
@@ -17,6 +18,9 @@ async function AsyncMain (props:any){
         const channels = await fetch(`/channels?id=${session.channel}`, {method: 'GET'});
         return income + (channels as any).reduce((income, channel) => {return income + channel.receiptBalance;}, 0);
     }, 0);
+
+    const {offerings, products} = await fetchOfferings('all');
+
     return <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12 m-b-20'>
@@ -37,7 +41,7 @@ async function AsyncMain (props:any){
                     <h5 className='card-header'>Active Offerings</h5>
                     <div className='card-body'>
                         <form>
-                            <OfferingsList product={'all'}/>
+                            <OfferingsList offerings={offerings} products={products} />
                         </form>
                     </div>
                 </div>

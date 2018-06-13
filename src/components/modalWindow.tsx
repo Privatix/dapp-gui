@@ -10,7 +10,9 @@ export default class ModalWindow extends React.Component<any, any> {
     }
 
     closeModal(event: any) {
-        event.preventDefault();
+        if(event){
+            event.preventDefault();
+        }
         // document.body.classList.remove('modal-open');
         this.setState({visible: false});
     }
@@ -44,7 +46,7 @@ export default class ModalWindow extends React.Component<any, any> {
                                 <button type='button' className='close' onClick={this.closeModal.bind(this)}>×</button>
                             </div>
                             <div className='modal-body'>
-                                {this.props.component}
+                                {React.cloneElement(this.props.component, {closeModal: this.closeModal.bind(this)})}
                             </div>
                         </div>
                     </Modal>
