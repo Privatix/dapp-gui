@@ -4,6 +4,7 @@ import {fetch} from '../../utils/fetch';
 import GasRange from '../utils/gasRange';
 // import notice from '../../utils/notice';
 import { withRouter } from 'react-router';
+import notice from '../../utils/notice';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -190,6 +191,7 @@ class CreateOffering extends React.Component<any, any>{
                 }
             }
             this.setState({errMsg: msg});
+            notice({level: 'error', header: 'Attention!', msg: msg});
         }else{
             payload.unitPrice = Math.floor(payload.unitPrice * 1e8);
             payload.billingInterval = 1;

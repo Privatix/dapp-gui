@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 export default function(props: any){
 
 	return <div className='steps clearfix'>
-                <div id='noticeHolder'></div>
                 <ul role='tablist'>
                     <li role='tab' className={props.step>1?'first done':'first current'} style={{width:'auto'}}>
                         <Link id='steps-uid-0-t-0' to='#'>

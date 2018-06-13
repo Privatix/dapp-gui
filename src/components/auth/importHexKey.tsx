@@ -17,7 +17,7 @@ export default function(props: any){
                 privateKey = privateKey.substr(2);
             }
             if(privateKey.length !== 64){
-                notice(document.getElementById('noticeHolder'), {level: 'error', header: 'Attention!', msg: 'private key must have 64 hex symbols'});
+                notice({level: 'error', header: 'Attention!', msg: 'private key must have 64 hex symbols'});
                 return;
             }
             const pk = new Buffer(privateKey, 'hex');

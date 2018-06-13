@@ -190,13 +190,13 @@ ul.default li {
     overflow-y:auto;
     height: 90%
 }
-.modalWrap>div>div{
+.modal-open .modalWrap>div>div{
     right: 0;
-    bottom: 0;
+    top: 50px;
     overflow-x: hidden;
     overflow-y: auto;
-    background-color: rgba(0, 0, 0, 0.6);
-    display: block !important;
+    /*background-color: rgba(0, 0, 0, 0.6);*/
+    /*display: block !important;*/
 }
 .modalWrap>div>div>div:first-child{
     margin: 50px auto;
@@ -206,4 +206,132 @@ ul.default li {
     position: relative !important;
     width: 0 !important;
     height: 0 !important;
+}
+
+
+.loadingIconBl{
+    position: relative;
+    display: inline-block;
+    margin-right: 5px;
+}
+.loadingIconBl i{
+    position: absolute;
+    top: -18px;
+    left: -25px;
+    font-size: 24px;
+}
+
+.remainingText{
+    font-size: 24px;
+    font-weight: 500;
+    line-height: 32px;
+    margin-bottom: 0;
+}
+
+/*********** Loader styles **********/
+.lds-dual-ring {
+    display: inline-block;
+    width: 64px;
+    height: 64px;
+}
+.lds-dual-ring:after {
+    content: " ";
+    display: block;
+    width: 46px;
+    height: 46px;
+    margin: 1px;
+    border-radius: 50%;
+    border: 5px solid #fff;
+    border-color: #878787 transparent #878787 transparent;
+    animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+/*********** END Loader styles **********/
+
+.font-25{
+    font-size: 25px !important;
+}
+
+/*********** Price range styles **********/
+.rc-slider-track {
+    background-color: #5fbeaa !important;
+}
+.rc-slider-handle {
+    border: solid 2px #5fbeaa !important;
+}
+.rc-slider-handle:hover {
+    border-color: #5fbeaa !important;
+}
+.rc-slider-handle:active {
+    border-color: #5fbeaa !important;
+    box-shadow: 0 0 5px #5fbeaa !important;
+}
+.rc-slider-handle:focus {
+    border-color: #5fbeaa !important;
+}
+/*********** END Price range styles **********/
+
+
+/*********** Switcher checkbox styles **********/
+.switch {
+    position: relative;
+    display: inline-block;
+    width: 56px;
+    height: 30px;
+}
+.switch input {display:none;}
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 26px;
+    width: 26px;
+    left: 2px;
+    bottom: 2px;
+    background-color: white;
+    -webkit-transition: .4s;
+    transition: .4s;
+}
+input:checked + .slider {
+    background-color: #5fbeaa;
+}
+input:focus + .slider {
+    box-shadow: 0 0 1px #5fbeaa;
+}
+input:checked + .slider:before {
+    -webkit-transform: translateX(26px);
+    -ms-transform: translateX(26px);
+    transform: translateX(26px);
+}
+.slider.round {
+    border-radius: 34px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}
+/*********** END Switcher checkbox styles **********/
+
+.flagImg{
+    width: 30px;
+}
+#noticeHolder .notifyjs-corner {
+    z-index: 10005;
+    margin: 5px 15px 0 0;
 }

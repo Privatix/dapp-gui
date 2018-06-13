@@ -36,6 +36,13 @@ import Backup from './auth/backup';
 
 import AccountsList from './accounts/accountsList';
 import Account from './accounts/accountView';
+import ClientDashboardStart from '../client_components/dashboard/startVPNBtn';
+import ClientDashboardConnecting from '../client_components/dashboard/connecting';
+import ClientDashboardActive from '../client_components/dashboard/active';
+import ClientDashboardPaused from '../client_components/dashboard/paused';
+import VPNList from '../client_components/vpn_list/list';
+import AcceptOffering from '../client_components/vpn_list/acceptOffering';
+import ClientHistory from '../client_components/vpn_list/history';
 
 import Logs from './logs/logs';
 
@@ -74,7 +81,7 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/templates' component={TemplatesList} />
                             <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />
-                            <Route path='/products' component={Products} />
+                            <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
                             <Route path='/createProduct' component={CreateProduct} />
                             <Route path='/accounts' component={AccountsList} />
                             <Route path='/account/:account' component={Account} />
@@ -96,6 +103,14 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/importJsonKey' component={ImportJsonKey} />
                             <Route path='/backup/:privateKey' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} /> } />
                             <Route path='/logs' component={Logs} />
+
+                            <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
+                            <Route exact path='/client-dashboard-connecting' component={ClientDashboardConnecting} />
+                            <Route exact path='/client-dashboard-active' component={ClientDashboardActive} />
+                            <Route exact path='/client-dashboard-paused' component={ClientDashboardPaused} />
+                            <Route exact path='/client-vpn-list' component={VPNList} />
+                            <Route exact path='/accept-offering' component={AcceptOffering} />
+                            <Route exact path='/client-history' component={ClientHistory} />
                         </Switch>
                     </div>
                 </div>

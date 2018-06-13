@@ -1,5 +1,5 @@
 import * as React from 'react';
-import Modal from 'react-awesome-modal';
+import Modal from 'react-awesome-modal-perfected';
 
 export default class ModalWindow extends React.Component<any, any> {
 
@@ -10,10 +10,13 @@ export default class ModalWindow extends React.Component<any, any> {
     }
 
     closeModal(event: any) {
+
         if(event){
             event.preventDefault();
         }
-        // document.body.classList.remove('modal-open');
+
+        document.body.classList.remove('modal-open');
+
         this.setState({visible: false});
     }
 
@@ -24,12 +27,17 @@ export default class ModalWindow extends React.Component<any, any> {
 
     showModal(event: any) {
         event.preventDefault();
-        // document.body.classList.add('modal-open');
         this.setState({visible: true});
     }
 
     render(){
+
         console.log('modalWindow:', this.props, this.state);
+
+        if (this.state.visible === true) {
+            document.body.classList.add('modal-open');
+        }
+        
         return (
             <div>
                 <a href='#' onClick={this.showModal.bind(this)} className={this.props.customClass}>{this.props.text}</a>
