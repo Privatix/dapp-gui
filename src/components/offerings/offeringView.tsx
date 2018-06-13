@@ -57,12 +57,12 @@ export default function(props:any){
                     <label className='col-3 col-form-label'>Unit type:</label>
                     <div className='col-9'>
                         <select className='form-control' disabled>
-                            <option value='Mb'>Mb</option>
+                            <option value='Mb'>MB</option>
                         </select>
                     </div>
                 </div>
                 <div className='form-group row'>
-                    <label className='col-3 col-form-label'>Price per Mb:</label>
+                    <label className='col-3 col-form-label'>Price per MB:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
                             <input type='text' className='form-control' value={props.offering.unitPrice} readOnly/>
@@ -75,7 +75,7 @@ export default function(props:any){
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
                             <input type='text' className='form-control' value={props.offering.maxBillingUnitLag} readOnly/>
-                            <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                         </div>
                         <span className='help-block'>
                             <small>Maximum payment lag in units after which Agent will suspend service usage.</small>
@@ -87,7 +87,7 @@ export default function(props:any){
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
                             <input type='text' className='form-control' value={props.offering.minUnits} readOnly/>
-                            <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                         </div>
                         <span className='help-block'>
                             <small>Used to calculate minimum deposit required.</small>
@@ -99,7 +99,7 @@ export default function(props:any){
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
                             <input type='text' className='form-control' value={props.offering.maxUnit} readOnly/>
-                            <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                         </div>
                         <span className='help-block'>
                             <small>Used to specify maximum units of service that will be supplied. Can be empty.</small>
