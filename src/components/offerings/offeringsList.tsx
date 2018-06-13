@@ -23,8 +23,7 @@ export default class OfferingsList extends React.Component<any, any>{
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
                 status: <OfferingStatus offeringId={offering.id} rate={3000} />,
-                freeUnits: offering.freeUnits,
-                maxUnits: offering.maxUnit
+                supply: offering.supply,
             };
 
             offeringsDataArr.push(row);
