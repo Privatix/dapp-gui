@@ -296,15 +296,15 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Unit type:</label>
                                     <div className='col-6'>
                                         <select className='form-control' disabled>
-                                            <option value='Mb'>Mb</option>
+                                            <option value='Mb'>MB</option>
                                         </select>
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>Price per Mb:</label>
+                                    <label className='col-2 col-form-label'>Price per MB:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='0.03' onChange={onUserInput} data-payload-value='unitPrice' />
+                                            <input type='text' className='form-control' placeholder='0.001' onChange={onUserInput} data-payload-value='unitPrice' />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                         </div>
                                     </div>
@@ -314,7 +314,7 @@ class CreateOffering extends React.Component<any, any>{
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text' className='form-control' placeholder='3' onChange={onUserInput} data-payload-value='maxBillingUnitLag' />
-                                            <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
                                             <small>Maximum payment lag in units after which Agent will suspend service usage.</small>
@@ -326,7 +326,7 @@ class CreateOffering extends React.Component<any, any>{
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text' className='form-control' placeholder='100'  onChange={onUserInput} data-payload-value='minUnits' />
-                                            <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
                                             <small>Used to calculate minimum deposit required.</small>
@@ -338,7 +338,7 @@ class CreateOffering extends React.Component<any, any>{
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text' className='form-control' onChange={onUserInput} data-payload-value='maxUnit' />
-                                            <span className='input-group-addon bootstrap-touchspin-postfix'>Mb</span>
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
                                             <small>Used to specify maximum units of service that will be supplied. Can be empty.</small>
@@ -368,7 +368,7 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max inactive time:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='60' onChange={onUserInput} data-payload-value='maxInactiveTimeSec' />
+                                            <input type='text' className='form-control' placeholder='1800' onChange={onUserInput} data-payload-value='maxInactiveTimeSec' />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                         </div>
                                         <span className='help-block'>
