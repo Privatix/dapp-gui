@@ -2,7 +2,9 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 // declare var $: any;
 
-export default function(target:any, notice: any, delay?: number){
+export default function(notice: any, delay?: number){
+
+    const target = document.getElementById('noticeHolder');
 
     const fa = {
        info: 'md md-album'

@@ -331,3 +331,7 @@ input:checked + .slider:before {
 .flagImg{
     width: 30px;
 }
+#noticeHolder .notifyjs-corner {
+    z-index: 10005;
+    margin: 5px 15px 0 0;
+}

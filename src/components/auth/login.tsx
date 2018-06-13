@@ -31,7 +31,7 @@ export default function(props: any){
                 if(res){
                     history.push(props.entryPoint);
                 }else{
-                    notice(document.getElementById('noticeHolder'), {level: 'error', header: 'Attention!', msg: 'access denied, possibly wrong password'});
+                    notice({level: 'error', header: 'Attention!', msg: 'access denied, possibly wrong password'});
                     console.log('access denied!!!');
                 }
             }else{
@@ -48,7 +48,6 @@ export default function(props: any){
         <div className='panel-heading'>
             <h4 className='text-center'> Login to <strong className='text-custom'>Privatix</strong></h4>
         </div>
-        <div id='noticeHolder'></div>
         <div className='p-20'>
             <form className='form-horizontal m-t-20' onSubmit={submit}>
                 <div className='form-group'>
