@@ -191,7 +191,7 @@ class CreateOffering extends React.Component<any, any>{
                 }
             }
             this.setState({errMsg: msg});
-            notice({level: 'error', header: 'Attention!', msg: msg});
+            notice({level: 'error', header: 'Attention!', msg});
         }else{
             payload.unitPrice = Math.floor(payload.unitPrice * 1e8);
             payload.billingInterval = 1;
