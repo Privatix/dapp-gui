@@ -2,50 +2,45 @@ import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
-
-
-// const createPrivateKey = function(){
-//     return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
-// };
-
-const PreviousButton = withRouter(({ history }) => <button
-    className='btn btn-secondary text-uppercase waves-effect waves-light'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        history.push('/setAccount');
-      }
-    }
-  >
-    Previous
-  </button>
-);
-
-const GenerateNewAccButton = withRouter(({ history }) => <button
-    className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        const privateKey = (document.getElementById('importHexKey') as any).value;
-        const name = (document.getElementById('importHexKeyName') as any).value;
-        const body = {privateKey
-                     ,isDefault: true
-                     ,inUse: true
-                     ,name
-                     ,type: 'import_hex'
-        };
-        const res = await fetch('/accounts/', {method: 'post', body});
-        console.log(res);
-        history.push(`/login`);
-      }
-    }
-  >
-    Next
-  </button>
-);
-
+import {PreviousButton, createPrivateKey} from './utils';
+import notice from '../../utils/notice';
 
 export default function(props: any){
+
+    const GenerateNewAccButton = withRouter(({ history }) => <button
+        className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
+        type='button'
+        onClick={async (evt: any) => {
+            evt.preventDefault();
+            let privateKey = (document.getElementById('importHexKey') as any).value.trim();
+            if(privateKey.substr(0,2) === '0x'){
+                privateKey = privateKey.substr(2);
+            }
+            if(privateKey.length !== 64){
+                notice(document.getElementById('noticeHolder'), {level: 'error', header: 'Attention!', msg: 'private key must have 64 hex symbols'});
+                return;
+            }
+            const pk = new Buffer(privateKey, 'hex');
+            const key = pk.toString('base64').split('+').join('-').split('/').join('_');
+            const name = (document.getElementById('importHexKeyName') as any).value;
+            const body = {privateKey: key
+                         ,isDefault: props.match.params.default === 'true'
+                         ,inUse: true
+                         ,name
+                         ,type: 'generate_new'
+            };
+            const res = await fetch('/accounts/', {method: 'post', body});
+            const dk = createPrivateKey();
+            console.log(res, dk);
+            const newKeyObject = Object.assign({}, dk, {privateKey: pk});
+            history.push(`/backup/${JSON.stringify(newKeyObject)}`);
+          }
+        }
+      >
+        Next
+      </button>
+    );
+
     return <div className='card-box'>
         <div className='panel-heading'>
             <h4 className='text-center'> Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>

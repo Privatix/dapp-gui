@@ -2,29 +2,7 @@ import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
-import * as keythereum from 'keythereum';
-
-const createPrivateKey = function(){
-    const params = { keyBytes: 32, ivBytes: 16 };
-    const dk = keythereum.create(params);
-    return dk;
-};
-
-const PreviousButton = withRouter(({ history }) => <button
-    className='btn btn-secondary text-uppercase waves-effect waves-light'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        history.push('/setAccount');
-      }
-    }
-  >
-    Previous
-  </button>
-);
-
-
-
+import {PreviousButton, createPrivateKey} from './utils';
 
 export default function(props: any){
 
@@ -34,20 +12,21 @@ export default function(props: any){
         onClick={async (evt: any) => {
             evt.preventDefault();
             const name = (document.getElementById('generateKeyAccountName') as any).value;
-            const privateKey = createPrivateKey();
-            const key = privateKey.privateKey.toString('base64').split('+').join('-').split('/').join('_');
+            const dk = createPrivateKey();
+            const key = dk.privateKey.toString('base64').split('+').join('-').split('/').join('_');
             const body = {privateKey: key
                          ,isDefault: props.match.params.default === 'true'
                          ,inUse: true
                          ,name
                          ,type: 'generate_new'
             };
+            console.log('GENERATE!!!', body);
             const res = await fetch('/accounts/', {method: 'post', body});
             console.log(res);
             const settings = await fetch('/localSettings', {}) as any;
             settings.accountCreated = true;
             await fetch('/localSettings', {method: 'put', body: settings});
-            history.push(`/backup/${JSON.stringify(privateKey)}`);
+            history.push(`/backup/${JSON.stringify(dk)}`);
           }
         }
       >
@@ -74,11 +53,9 @@ export default function(props: any){
                             <PreviousButton />
                             <GenerateNewAccButton />
                        </div>
-                            
                     </section>
                 </div>
             </div>
         </form>
-        
     </div>;
 }
