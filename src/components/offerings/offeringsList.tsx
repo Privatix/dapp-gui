@@ -54,14 +54,8 @@ export default class OfferingsList extends React.Component<any, any>{
                 ascSortFunction: HtmlElSorter.asc
             },
             {
-                header: 'Free Services',
-                key: 'freeUnits',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-            },
-            {
                 header: 'Supply',
-                key: 'maxUnits',
+                key: 'supply',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
             }
