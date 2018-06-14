@@ -1,23 +1,21 @@
 import * as React from 'react';
 
-export default function(props:any) {
-    let incomingStatus = props.serviceStatus;
-    let serviceStatus;
-
-    switch (incomingStatus) {
-        case 'pending':
-            serviceStatus = 'primary';
-            break;
-        case 'active':
-            serviceStatus = 'success';
-            break;
-        case 'suspended':
-            serviceStatus = 'warning';
-            break;
-        case 'terminated':
-            serviceStatus = 'inverse';
-            break;
+export default class ChannelStatusStyle extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props);
     }
 
-    return <span className={'label label-table label-' + serviceStatus}>{incomingStatus}</span>;
+    get classes() {
+        return {
+            pending: 'primary',
+            active: 'success',
+            suspended: 'warning',
+            terminated: 'inverse'
+        };
+    }
+
+    render() {
+        const status = this.props.serviceStatus;
+        return <span className={`label label-table label-${this.classes[status]}`}>{status}</span>;
+    }
 }

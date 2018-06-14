@@ -37,7 +37,7 @@ async function AsyncMain (props:any){
                     <h5 className='card-header'>Active Offerings</h5>
                     <div className='card-body'>
                         <form>
-                            <OfferingsList product={'all'}/>
+                            <OfferingsList product={'all'} rate={3000} />
                         </form>
                     </div>
                 </div>
