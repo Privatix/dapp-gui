@@ -35,6 +35,10 @@ export default class Backup extends React.Component<any, any>{
             type='button'
             onClick={async (evt: any) => {
                 evt.preventDefault();
+                if(this.state.fileName === ''){
+                    notice({level: 'warning', header: 'Attention!', msg: 'Please backup your account before start working.'});
+                    return;
+                }
                 fetch('/backup', {body: {pk: this.props.privateKey, fileName: this.state.fileName}})
                     .then((res:any) => {
                         if(res.err){
