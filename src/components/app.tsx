@@ -87,7 +87,7 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/account/:account' component={Account} />
                             <Route path='/product/:product' component={Product} />
                             <Route path='/productById/:productId' component={ProductById} />
-                            <Route path='/offerings/:product' component={Offerings} />
+                            <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
                             <Route path='/offering/:offering' component={Offering} />
                             <Route path='/createOffering/' component={CreateOffering} />
                             <Route path='/filledOffering/:offering' component={FilledOffering} />
@@ -97,11 +97,11 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/sessions/:channel' component={SessionsList} />
                             <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
-                            <Route path='/addAccount' render={() => <SetAccount default={false} />} />
+                            <Route path='/setAccount' render={() => <SetAccount default={false} />} />
                             <Route path='/generateKey/:default' component={GenerateKey} />
                             <Route path='/importHexKey' component={ImportHexKey} />
                             <Route path='/importJsonKey' component={ImportJsonKey} />
-                            <Route path='/backup/:privateKey' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} /> } />
+                            <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
                             <Route path='/logs' component={Logs} />
 
                             <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />

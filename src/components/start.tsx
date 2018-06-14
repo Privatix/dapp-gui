@@ -31,7 +31,7 @@ const wizard = <Router history={MemoryHistory as any}>
         <Route path='/generateKey/:default' component={GenerateKey} />
         <Route path='/importHexKey' component={ImportHexKey} />
         <Route path='/importJsonKey' component={ImportJsonKey} />
-        <Route path='/backup/:privateKey' render={(props: any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} />} />
+        <Route path='/backup/:privateKey/:from' render={(props: any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} from={props.match.params.from}/>} />
         <Route path='/login' component={Login} />
         <Route path='/app' component={App} />
     </Switch>
@@ -44,7 +44,7 @@ const setAccount = <Router history={MemoryHistory as any}>
         <Route path='/generateKey/:default' component={GenerateKey} />
         <Route path='/importHexKey' component={ImportHexKey} />
         <Route path='/importJsonKey' component={ImportJsonKey} />
-        <Route path='/backup/:privateKey' render={ (props:any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} /> } />
+        <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
         <Route path='/app' component={App} />
     </Switch>
 </Router>;

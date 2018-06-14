@@ -2,20 +2,7 @@ import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
 
-let keyType = 'generate';
-
-const PreviousButton = withRouter(({ history }) => <button
-    className='btn btn-secondary text-uppercase waves-effect waves-light'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        history.push('/');
-      }
-    }
-  >
-    Previous
-  </button>
-);
+let keyType = 'generateKey';
 
 function handleChange(e:any) {
     keyType = e.target.value;
@@ -30,19 +17,7 @@ export default function(props: any){
         type='button'
         onClick={async (evt: any) => {
             evt.preventDefault();
-            switch(keyType){
-                case 'generate':
-                    console.log('/generateKey', props);
-                    history.push(`/generateKey/${props.default}`);
-                break;
-                case 'importHex':
-                    history.push('/importHexKey');
-                break;
-                case 'importJson':
-                    history.push('/importJsonKey');
-                break;
-            }
-            // console.log(document.getElementsByName('keyType')[0].value);
+            history.push(`/${keyType}/${props.default}`);
           }
         }
       >
@@ -71,28 +46,25 @@ export default function(props: any){
                         <div className='row'>
                             <div className='col-12'>
                                 <div className='custom-control custom-radio'>
-                                    <input type='radio' name='keyType' id='keyType1' defaultChecked={true} className='custom-control-input' value='generate' onChange={handleChange}/>
+                                    <input type='radio' name='keyType' id='keyType1' defaultChecked={keyType==='generateKey'} className='custom-control-input' value='generateKey' onChange={handleChange}/>
                                     <label className='custom-control-label' htmlFor='keyType1'>Generate new (recommended)</label>
                                 </div>
                                 <div className='custom-control custom-radio'>
-                                    <input type='radio' name='keyType' id='keyType2' className='custom-control-input' value='importHex' onChange={handleChange}/>
+                                    <input type='radio' name='keyType' id='keyType2' defaultChecked={keyType==='importHexKey'} className='custom-control-input' value='importHexKey' onChange={handleChange}/>
                                     <label className='custom-control-label' htmlFor='keyType2'>Import a Private Key in hex format</label>
                                 </div>
                                 <div className='custom-control custom-radio'>
-                                    <input type='radio' name='keyType' id='keyType3' className='custom-control-input' value='importJson' onChange={handleChange}/>
+                                    <input type='radio' name='keyType' id='keyType3' defaultChecked={keyType==='importJsonKey'} className='custom-control-input' value='importJsonKey' onChange={handleChange}/>
                                     <label className='custom-control-label' htmlFor='keyType3'>Import from JSON Keystore File</label>
                                 </div>
                             </div>
                         </div>
                         <div className='form-group text-right m-t-40'>
-                                <PreviousButton />
                                 <UseThisButton />
                         </div>
-                            
                     </section>
                 </div>
             </div>
         </form>
-        
     </div>;
 }

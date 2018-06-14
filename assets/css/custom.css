@@ -335,3 +335,19 @@ input:checked + .slider:before {
     z-index: 10005;
     margin: 5px 15px 0 0;
 }
+
+.setPasswordsBl input[type=password] {
+    -webkit-transition: all 0.30s ease-in-out;
+    -moz-transition: all 0.30s ease-in-out;
+    -ms-transition: all 0.30s ease-in-out;
+    -o-transition: all 0.30s ease-in-out;
+    outline: none;
+}
+.setPasswordsBl .correct{
+    box-shadow: 0 0 5px #81c868;
+    border: 1px solid #81c868;
+}
+.setPasswordsBl .wrong{
+    box-shadow: 0 0 5px #f05050;
+    border: 1px solid #f05050;
+}

@@ -34,9 +34,9 @@ class AsyncProducts extends React.Component<any, any>{
                                     <thead>
                                     <tr>
                                         <th>Name</th>
-                                        <th>Template</th>
-                                        <th>End Point</th>
-                                        <th>Offering Count</th>
+                                        <th>Offering template</th>
+                                        <th>Access template</th>
+                                        <th>Offering count</th>
                                         <th></th>
                                     </tr>
                                     </thead>

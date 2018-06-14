@@ -11,6 +11,7 @@ class AsyncProductItem extends React.Component<any, any>{
         super(props);
 
         this.state = {visible: false, offerings: []};
+
         fetch(`/templates`, {})
             .then((templates: any) => {
                 let offerTemplate, accessTemplate;
@@ -38,7 +39,6 @@ class AsyncProductItem extends React.Component<any, any>{
 
 
     onOfferingCreated(){
-        this.setState({visible: false});
         this.props.history.push('/offerings/all');
     }
 
