@@ -1,6 +1,6 @@
 import * as React from 'react';
 import Transactions from '../transactions/transactionsList';
-
+import {getTransactions} from '../transactions/utils';
 import ConfirmPopupSwal from '../confirmPopupSwal';
 import GasRange from '../utils/gasRange';
 
@@ -13,6 +13,7 @@ class AccountView extends React.Component<any, any> {
                      ,destination: 'psc'
                      ,address: `0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`
                      ,account: props.account
+                     ,transactions: []
         };
     }
 
@@ -29,6 +30,12 @@ class AccountView extends React.Component<any, any> {
         amount = Math.floor(amount * 1e8);
         console.log(amount);
         this.setState({amount});
+    }
+
+    async onTransferCreated(){
+        const transactions = await getTransactions(this.state.account.id);
+        console.log('TRANSACTIONS UPDATE!!!', transactions);
+        this.setState({transactions});
     }
 
     static getDerivedStateFromProps(props: any, state: any) {
@@ -123,6 +130,7 @@ class AccountView extends React.Component<any, any> {
                         <ConfirmPopupSwal
                             endpoint={`/accounts/${this.state.account.id}/status`}
                             options={{method: 'put', body: {action: 'transfer', amount: this.state.amount, destination: this.state.destination , gasPrice: this.state.gasPrice}}}
+                            done={this.onTransferCreated.bind(this)}
                             title={'Transfer'}
                             text={<span>This action will transfer your tokens from {this.state.destination === 'ptc' ? 'Service' :'Exchange' } balance to {this.state.destination === 'psc' ? 'Service' :'Exchange' } balance.<br />
                                 This operation takes time and gas.<br /><br />You can monitor transaction status in the Transaction log.</span>}
@@ -137,7 +145,7 @@ class AccountView extends React.Component<any, any> {
         <div className='card m-t-30'>
             <h5 className='card-header'>Transaction Log</h5>
             <div className='card-body'>
-                <Transactions account={this.state.account.id} />
+                <Transactions transactions={this.state.transactions} />
             </div>
         </div>
     </div>;
