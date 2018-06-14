@@ -1,82 +1,147 @@
 import * as React from 'react';
 import Transactions from '../transactions/transactionsList';
-import { Link } from 'react-router-dom';
 
-export default function(props:any){
+import ConfirmPopupSwal from '../confirmPopupSwal';
+import GasRange from '../utils/gasRange';
 
-    const transferToServiceBalance = function(evt:any){
+class AccountView extends React.Component<any, any> {
+
+    constructor(props: any) {
+        super(props);
+        this.state = {gasPrice: 6*1e9
+                     ,amount: 0
+                     ,destination: 'psc'
+                     ,address: `0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`
+                     ,account: props.account
+        };
+    }
+
+    onGasPriceChanged(evt: any){
+        this.setState({gasPrice: Math.floor(evt.target.value*1e9)}); // Gwei = 1e9 wei
+    }
+
+    onTransferAmount(evt: any){
+        console.log('onChange', evt, evt.target.value);
+        let amount = parseFloat(evt.target.value);
+        if(amount !== amount){
+            amount = 0;
+        }
+        amount = Math.floor(amount * 1e8);
+        console.log(amount);
+        this.setState({amount});
+    }
+
+    static getDerivedStateFromProps(props: any, state: any) {
+        return {account: props.account};
+    }
+
+    changeTransferType(evt: any){
         evt.preventDefault();
-        console.log('TRANSFER TO SERVICE!!!');
-    };
+        this.setState({destination: evt.target.value === 'psc' ? 'ptc' : 'psc'});
+    }
 
-    const transferToExchangeBalance = function(evt:any){
-        evt.preventDefault();
-        console.log('TRANSFER TO EXCHANGE!!!');
-    };
+    render(){
 
-    const setAsDefault = function(evt:any){
-        evt.preventDefault();
-        console.log('SET AS DEFAULT!!!');
-    };
-
-    const deleteAccount = function(evt:any){
-        evt.preventDefault();
-        console.log('DELETE ACCOUNT!!!');
-    };
-
-    const account = JSON.parse(props.match.params.account);
-
-    return <div className='container-fluid'>
-        <div className='card-box'>
-            <div className='row'>
-                <div className='col-sm-12 m-b-15'>
-                    <div className='btn-group pull-right'>
-                        <Link to={'/accounts'} className='btn btn-default waves-effect waves-light'>&lt;&lt;&lt; Back</Link>
+    return <div className='col-lg-9 col-md-8'>
+        <div className='card m-b-20'>
+            <h5 className='card-header'>General Info</h5>
+            <div className='card-body'>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Name:</label>
+                    <div className='col-9'>
+                        <input type='text' className='form-control' value={this.state.account.name} readOnly/>
                     </div>
-                    <h3 className='page-title'>Account</h3>
+                </div>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Address:</label>
+                    <div className='col-9'>
+                        <input type='text' className='form-control' value={this.state.address} readOnly/>
+                    </div>
                 </div>
             </div>
-            <div className='row justify-content-between'>
-                <div className='col-md-6'>
-                    <form className='form-horizontal m-t-20'>
-                        <fieldset className='form-group'>
-                            <legend className=''>Address</legend>
-                            0x{Buffer.from(account.ethAddr, 'base64').toString('hex')}
-                        </fieldset>
-                    </form>
-                    <form className='form-horizontal m-t-20'>
-                        <button type='button' className='btn btn-default waves-effect waves-light' onClick={setAsDefault}>Set as default</button>
-                    </form>
+        </div>
+        <div className='card m-b-20'>
+            <h5 className='card-header'>Balance Info</h5>
+            <div className='card-body'>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Exchange balance:</label>
+                    <div className='col-9'>
+                        <div className='input-group bootstrap-touchspin'>
+                            <input type='text' className='form-control' value={this.state.account.ptcBalance/1e8} readOnly/>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                        </div>
+                    </div>
                 </div>
-                <div className='col-md-4 col-sm-3 col-4 col-xl-3'>
-                    <form className='form-horizontal m-t-20'>
-                        <fieldset className='form-group text-center'>
-                            <legend>Warning area</legend>
-                            <button type='button' className='btn btn-danger waves-effect waves-light' onClick={deleteAccount}>Delete</button>
-                        </fieldset>
-                    </form>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Service balance:</label>
+                    <div className='col-9'>
+                        <div className='input-group bootstrap-touchspin'>
+                            <input type='text' className='form-control' value={this.state.account.psc_balance/1e8} readOnly/>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                        </div>
+                    </div>
                 </div>
             </div>
-
-            <form className='form-horizontal m-t-20'>
-                <div className='form-group row acExchange'>
-                        <label className=''>Exchange balance</label>
-                        <input type='text' id='fromExchangeBalance' />
-                        <label className=''>transfer to Service balance</label>
-                        <input type='text' id='toServiceBalance' />
-                        <button type='button' className='btn btn-default waves-effect waves-light' onClick={transferToServiceBalance}>Transfer</button>
+        </div>
+        <div className='card m-b-20'>
+            <h5 className='card-header'>Transfer</h5>
+            <div className='card-body'>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>From:</label>
+                    <div className='col-9'>
+                        <div className='row'>
+                            <div className='col-8'>
+                                <select className='form-control' value={this.state.destination === 'psc' ? 'ptc' : 'psc'} onChange={this.changeTransferType.bind(this)}>
+                                    <option value='ptc' >Exchange balance</option>
+                                    <option value='psc' >Service balance</option>
+                                </select>
+                            </div>
+                            <div className='col-4 col-form-label'>
+                                <span>{(this.state.destination === 'psc' ? this.state.account.ptcBalance : this.state.account.psc_balance)/1e8}</span> PRIX
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </form>
-            <form className='form-horizontal m-t-20'>
-                <div className='form-group row acExchange'>
-                    <label>Service balance</label>
-                    <input type='text' id='fromServiceBalance' />
-                    <label>transfer to Exchange balance</label><input type='text' id='toExchangeBalance' />
-                    <button type='button' className='btn btn-default waves-effect waves-light' onClick={transferToExchangeBalance}>Transfer</button>
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>To:</label>
+                    <div className='col-9'>
+                        <input type='text' className='form-control' value={this.state.destination === 'psc' ? 'Service balance' : 'Exchange balance'} readOnly/>
+                    </div>
                 </div>
-            </form>
-            <h3 className='text-center'>Transaction Log</h3>
-            <Transactions account={account.id} />
+                <div className='form-group row'>
+                    <label className='col-3 col-form-label'>Amount:</label>
+                    <div className='col-9'>
+                        <div className='input-group bootstrap-touchspin'>
+                            <input type='text' onChange={this.onTransferAmount.bind(this)} className='form-control'/>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                        </div>
+                    </div>
+                </div>
+                <GasRange onChange={this.onGasPriceChanged.bind(this)} value={this.state.gasPrice/1e9} />
+                <div className='form-group row'>
+                    <div className='col-12'>
+                        <ConfirmPopupSwal
+                            endpoint={`/accounts/${this.state.account.id}/status`}
+                            options={{method: 'put', body: {action: 'transfer', amount: this.state.amount, destination: this.state.destination , gasPrice: this.state.gasPrice}}}
+                            title={'Transfer'}
+                            text={<span>This action will transfer your tokens from {this.state.destination === 'ptc' ? 'Service' :'Exchange' } balance to {this.state.destination === 'psc' ? 'Service' :'Exchange' } balance.<br />
+                                This operation takes time and gas.<br /><br />You can monitor transaction status in the Transaction log.</span>}
+                            class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
+                            swalType='warning'
+                            swalConfirmBtnText='Yes, transfer!'
+                            swalTitle='Are you sure?' />
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div className='card m-t-30'>
+            <h5 className='card-header'>Transaction Log</h5>
+            <div className='card-body'>
+                <Transactions account={this.state.account.id} />
+            </div>
         </div>
     </div>;
 }
+}
+
+export default AccountView;

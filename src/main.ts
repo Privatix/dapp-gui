@@ -7,17 +7,20 @@ import * as fs from 'fs';
 import fetch from 'node-fetch';
 import mocks from './mocks';
 import * as  btoa from 'btoa';
+import * as keythereum from 'keythereum';
 
-const settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
-var password = '';
+let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
+let password = '';
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
   }
-// const api = 'http://localhost:3000/ui';
 
   ipcMain.on('api', (event, msg) => {
     const req = JSON.parse(msg);
+    if(!req.options){
+        req.options = {};
+    }
     if(!req.options.method){
         req.options.method = 'get';
     }
@@ -26,25 +29,66 @@ var password = '';
     if(mocks.has(req)){
         const res = mocks.get(req);
         event.sender.send('api-reply', JSON.stringify({req: msg, res}));
+    }else if(req.endpoint === '/auth' && req.options.method === 'post' ){
+        // password = req.options.body.password;
+        const pwd = req.options.body.password;
+        req.options.body = JSON.stringify(req.options.body);
+        fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
+            .then(res => {
+                // console.log('auth!!!', res, res.status);
+                if(res.status === 201){
+                    password = pwd;
+                    event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+                }else {
+                    // TODO error handling
+                }
+            });
+    }else if(req.endpoint === '/backup'){
+        console.log('BACKUP!!!', req.options.body);
+
+        const pk = JSON.parse(req.options.body.pk);
+        console.log(pk);
+        const keyObject = keythereum.dump(password, Buffer.from(pk.privateKey.data), Buffer.from(pk.salt.data), Buffer.from(pk.iv.data));
+        fs.writeFile(req.options.body.fileName, JSON.stringify(keyObject), {encoding: 'utf8'}, (err:any) => {
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
+        });
+    }else if(req.endpoint === '/readFile'){
+        const file = fs.readFileSync(req.options.body.fileName, {encoding: 'utf8'});
+        // const privateKey = keythereum.recover(req.options.body.pwd, keyObject);
+        // console.log(privateKey);
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: {file}}));
     }else if(req.endpoint === '/saveAs'){
         console.log('SAVE AS!!!', req.options.body);
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
             // TODO handling
         });
-        
-    }else if(req.endpoint === '/isItFirstStart'){
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings.firstStart}));
-    }else if(req.endpoint === '/isAuthorized'){
-        console.log('isAuthorized', password !== '');
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: password !== ''}));
-    } else if(req.endpoint === '/login'){
+    }else if(req.endpoint === '/localSettings'){
+        if (req.options.method === 'get'){
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
+        }else{
+            settings = req.options.body;
+            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+        }
+    }else if(req.endpoint === '/login'){
         console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
-    }else if(req.endpoint === '/accounts/' && req.options.method === 'post'){
+        const options = {method: 'get'} as any;
+        options.headers = {};
+        options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
+        fetch(`${settings.apiEndpoint}/products`, options)
+            .then(res => {
+                event.sender.send('api-reply', JSON.stringify({req: msg, res: res.status === 200}));
+            });
+    }else if(req.endpoint === '/switchMode'){
+        settings.mode = settings.mode === 'agent' ? 'client' : 'agent';
+        fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+    }else if(req.endpoint === '/accounts' && req.options.method === 'post'){
         req.options.body = JSON.stringify(req.options.body);
+        console.log('SET ACCOUNT!!!', req.options.body, password);
         req.options.headers = {};
-        req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
+        req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
 
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
@@ -55,8 +99,10 @@ var password = '';
            
                   // const json = true;
                   console.log('accounts!!!', json);
-                  settings.firstStart = false;
-                  fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+                  if(settings.firstStart){
+                      settings.firstStart = false;
+                      fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+                  }
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
            });
     }else {
@@ -70,20 +116,20 @@ var password = '';
                 };
             }
         }
-        console.log(req);
         req.options.body = JSON.stringify(req.options.body);
         if(!req.options.headers){
             req.options.headers = {};
         }
-
-        req.options.headers.Authorization = 'Basic ' + Buffer.from('username' + ':' + 'chacha').toString('base64');
+        req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
-                // console.log('RESPONSE!!!', res);
-                return res.json();
+                // console.log(req.endpoint, res.headers.get('content-type'));
+                // const contentType = res.headers.get('content-type');
+                return res.json()
+                    .then(((res) =>  res), () => { return {}; });
+                // return  (contentType !== null && contentType.includes('application/json')) || res.status === 201 ? res.json() : {};
             })
             .then(json => {
-                  // console.log('RESPONSE!!!', json);
                   event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
             });
     }

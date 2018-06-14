@@ -1,11 +1,5 @@
-// import * as $ from 'jquery';
-// import 'free-jqgrid';
-// import {ipcRenderer} from 'electron';
-// import {fetchFactory} from './fetch';
-
-
 import Main from './components/main';
-import Start from './client_components/start';
+import Start from './components/start';
 import Navigation from './components/navigation';
 import Header from './components/header';
 import Settings from './components/settings';
@@ -24,11 +18,11 @@ import Endpoint from './components/endpoints/endpoint';
 
 import TemplatesList from './components/templates/templatesList';
 import Template from './components/templates/template';
-import SetAccount from './client_components/auth/setAccount';
-import GenerateKey from './client_components/auth/generateKey';
-import Backup from './client_components/auth/backup';
-import importHexKey from './client_components/auth/importHexKey';
-import importJsonKey from './client_components/auth/importJsonKey';
+import SetAccount from './components/auth/setAccount';
+import GenerateKey from './components/auth/generateKey';
+import Backup from './components/auth/backup';
+import importHexKey from './components/auth/importHexKey';
+import importJsonKey from './components/auth/importJsonKey';
 import AddAccount from './components/accounts/addAccount';
 import Login from './components/auth/login';
 
@@ -44,62 +38,9 @@ import { Route, Router, Switch, Redirect} from 'react-router';
 import { createMemoryHistory } from 'history';
 
 import { render } from 'react-dom';
-// import {fetch} from "./utils/fetch";
 
-
-// import Form from 'react-jsonschema-form';
-
-
-// const fetch = fetchFactory(ipcRenderer);
-/*
-fetch('/sessions', {}).then(res => {
-    $(document).ready(function () {
-        'use strict';
-        const data = {
-            'page': '1',
-            'records': '3',
-            'rows': res
-        };
-        const grid = $('#sessions_list');
-
-        grid.jqGrid({
-            colModel: [
-                { name: 'id', index: 'id', width: '100' },
-                { name: 'state_channel_id', index: 'state_channel_id', width: '100' },
-                { name: 'started', index: 'started', width: '100' },
-                { name: 'stopped', index: 'stopped', width: '100' },
-                { name: 'up', index: 'up', width: '100' },
-                { name: 'down', index: 'down', width: '100' },
-            ],
-            pager: '#packagePager',
-            datatype: 'jsonstring',
-            datastr: data,
-            jsonReader: { repeatitems: false },
-            rowNum: 2,
-            viewrecords: true,
-            caption: 'Sessions',
-            height: 'auto',
-            ignoreCase: true
-        });
-        grid.jqGrid('navGrid', '#pager',
-            { add: false, edit: false, del: false }, {}, {}, {},
-            { multipleSearch: true, multipleGroup: true });
-        grid.jqGrid('filterToolbar', { defaultSearch: 'cn', stringResult: true });
-    });
-});
-*/
-/*
-fetch('/getSOTemplates', {}).then(res => {
-    render(<TemplatesList list={res} />, document.getElementById('templatesList'));
-});
-*/
 let MemoryHistory = createMemoryHistory();
-/*
-let goBack = (e:any) => {
-    MemoryHistory.goBack();
-    e.preventDefault();
-};
-*/
+
 const auth = <Router history={MemoryHistory as any}>
     <div className='wrapper-page' style={{width:'700px'}}>
         <Switch>
@@ -118,11 +59,11 @@ const auth = <Router history={MemoryHistory as any}>
 const app = <Router history={MemoryHistory as any}>
     <div id='wrapper'>
         <Header />
-        <Navigation />
+        <Navigation mode='agent' />
         <div className='content-page'>
             <div className='content'>
                         <Switch>
-                            <Route exact path='/app' component={Main} />
+                            <Route exact path='/' component={Main} />
                             <Route path='/templates' component={TemplatesList} />
                             <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />

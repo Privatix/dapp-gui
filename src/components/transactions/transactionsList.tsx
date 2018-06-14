@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
-import TransactionItem from './transactionItem';
-
+import SortableTable from 'react-sortable-table-vilan';
+import ExternalLink from '../utils/externalLink';
+import PgTime from '../utils/pgTime';
 
 function Loader() {
 
@@ -12,20 +13,41 @@ function Loader() {
 
 async function AsyncTransactions (props: any){
 
-    const endpoint = '/transactions' + (props.account === 'all' ? '' : `?account=${props.account}`);
+    const endpoint = '/transactions' + (props.account === 'all' ? '' : `?relatedID=${props.account}&relatedType=account`);
     const transactions = await fetch(endpoint, {method: 'GET'});
-    const transactionsDOM = (transactions as any).map((transaction: any) => <TransactionItem transaction={transaction} account={props.account}/>);
+    console.log(endpoint, transactions);
+
+    const transactionsDataArr = [];
+    (transactions as any).map((transaction: any) => {
+        const tx = `0x${Buffer.from(transaction.hash, 'base64').toString('hex')}`;
+        let row = {
+            date: <PgTime time={transaction.issued} />,
+            ethereumLink: <ExternalLink href={`https://etherscan.io/tx/${tx}`} text={tx} />
+        };
+
+        transactionsDataArr.push(row);
+    });
+
+    const columns = [
+        {
+            header: 'Date',
+            key: 'date'
+        },
+        {
+            header: 'Ethereum link',
+            key: 'ethereumLink',
+            sortable: false
+        }
+    ];
+
     return <div className='row'>
-        <table  className='table table-bordered table-striped'>
-            <thead>
-                <tr>
-                <td>Date</td><td>Ethereum link</td>
-                </tr>
-            </thead>
-            <tbody>
-                {transactionsDOM}
-            </tbody>
-        </table>
+        <div className='col-12'>
+            <div className='bootstrap-table bootstrap-table-sortable'>
+                <SortableTable
+                    data={transactionsDataArr}
+                    columns={columns} />
+            </div>
+        </div>
     </div>;
 }
 

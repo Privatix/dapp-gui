@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 // import keythereum = require('keythereum');
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
+import notice from '../../utils/notice';
 
 // import * as ReactTooltip from 'react-tooltip';
 const pwdIsCorrect = function(pwd: string){
     return pwd.trim() !== '';
 };
-
-
 
 export default function(props: any){
 
@@ -29,7 +28,12 @@ export default function(props: any){
                 const body = {pwd};
                 const res = await fetch('/login', {method: 'post', body});
                 console.log(res, body);
-                history.push('/app');
+                if(res){
+                    history.push(props.entryPoint);
+                }else{
+                    notice({level: 'error', header: 'Attention!', msg: 'access denied, possibly wrong password'});
+                    console.log('access denied!!!');
+                }
             }else{
                 // TODO incorrect password
             }
@@ -48,7 +52,7 @@ export default function(props: any){
             <form className='form-horizontal m-t-20' onSubmit={submit}>
                 <div className='form-group'>
                     <div className='col-12'>
-                        <input className='form-control' type='password' id='pwd' required='' placeholder='Password' />
+                        <input className='form-control' type='password' id='pwd' required={true} placeholder='Password' />
                     </div>
                 </div>
 

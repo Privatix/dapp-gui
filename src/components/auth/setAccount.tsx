@@ -1,106 +1,70 @@
 import * as React from 'react';
+import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-// import keythereum = require('keythereum');
 
-import {fetch} from 'utils/fetch';
+let keyType = 'generateKey';
 
-import * as ReactTooltip from 'react-tooltip';
+function handleChange(e:any) {
+    keyType = e.target.value;
+    console.log(keyType);
+}
 
-const createPrivateKey = function(){
-    return '5318b4d5bcd28de64ee5559e671353e16f075ecae9f99c7a79a38af5f869aa46';
-};
-
-const trim = function(key: string){
-    key = key.trim().toLowerCase();
-    if(key.length > 1 && key.substring(0, 2) === '0x'){
-        key = key.substring(2);
-    }
-    return key;
-};
-
-const keyIsCorrect = function(key: string){
-    return true;
-};
-
-const UseThisButton = withRouter(({ history }) => <button
-    className='btn btn-pink btn-block text-uppercase waves-effect waves-light'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        console.log('BUTTON!');
-        const privateKey = trim((document.getElementById('privateKey') as any).value);
-        if(keyIsCorrect(privateKey)){
-            const body = {privateKey
-                         ,isDefault: true
-                         ,inUse: true
-                         ,name: 'default'
-            };
-            const res = await fetch('/accounts', {method: 'post', body});
-            console.log(res, body);
-            history.push('/auth');
-        }else{
-            // TODO incorrect private key message
-        }
-      }
-    }
-  >
-    Use this
-  </button>
-);
-
-const GenerateNewAccButton = withRouter(({ history }) => <button
-    className='btn btn-pink btn-block text-uppercase waves-effect waves-light'
-    type='button'
-    onClick={async (evt: any) => {
-        evt.preventDefault();
-        console.log('BUTTON!');
-        const privateKey = createPrivateKey();
-        const body = {privateKey
-                     ,isDefault: true
-                     ,inUse: true
-                     ,name: 'default'
-        };
-        const res = await fetch('/accounts', {method: 'post', body});
-        console.log(res);
-        history.push('/auth');
-      }
-    }
-  >
-    Generate a new account
-  </button>
-);
 
 export default function(props: any){
+
+    const UseThisButton = withRouter(({ history }) => <button
+        className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
+        type='button'
+        onClick={async (evt: any) => {
+            evt.preventDefault();
+            history.push(`/${keyType}/${props.default}`);
+          }
+        }
+      >
+        Next
+      </button>
+    );
+
     return <div className='card-box'>
         <div className='panel-heading'>
             <h4 className='text-center'> Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>
         </div>
-        <div className='p-20'>
-            <ul>
-                <li>
-                    <span>For token transfers, you need to add your Private Key for address that holds PRIX</span>
-                    <span><a data-tip='Link to the<br />user guide' data-html={true}> ? </a></span>
-                </li>
-                <li>We recommend you:
-                    <ul>
-                        <li>create a separate account</li>
-                        <li>transfer to them limited amount of PRIX and ETH</li>
-                        <li>use this separate account in this application</li>
-                    </ul>
-                </li>
-            </ul>
-            <GenerateNewAccButton />
-            <p className='m-b-0 m-t-20 text-center font-16'>-- or -- </p>
-            <form className='form-horizontal m-t-20'>
-                <div className='form-group'>
-                    <div className='col-12'>
-                        <label>Private key:</label>
-                        <textarea className='form-control' id='privateKey' required='' placeholder='Private key' />
-                    </div>
+        <form className='form-horizontal m-t-20'>
+            <div className='p-20 wizard clearfix'>
+                <Steps step='2' />
+                <div className='content clearfix'>
+                    <section>
+                        <p>For token transfers, you need to add your Private Key for address, that holds PRIX</p>
+                        <h5>We recommend you:</h5>
+                        
+                        <ul className='default'>
+                            <li>create a separate account</li>
+                            <li>transfer to them limited amount of PRIX and ETH</li>
+                            <li>use this separate account in this application</li>
+                        </ul>
+                        <p>Please choose the way you want to import Ethereum account:</p>
+                        <div className='row'>
+                            <div className='col-12'>
+                                <div className='custom-control custom-radio'>
+                                    <input type='radio' name='keyType' id='keyType1' defaultChecked={keyType==='generateKey'} className='custom-control-input' value='generateKey' onChange={handleChange}/>
+                                    <label className='custom-control-label' htmlFor='keyType1'>Generate new (recommended)</label>
+                                </div>
+                                <div className='custom-control custom-radio'>
+                                    <input type='radio' name='keyType' id='keyType2' defaultChecked={keyType==='importHexKey'} className='custom-control-input' value='importHexKey' onChange={handleChange}/>
+                                    <label className='custom-control-label' htmlFor='keyType2'>Import a Private Key in hex format</label>
+                                </div>
+                                <div className='custom-control custom-radio'>
+                                    <input type='radio' name='keyType' id='keyType3' defaultChecked={keyType==='importJsonKey'} className='custom-control-input' value='importJsonKey' onChange={handleChange}/>
+                                    <label className='custom-control-label' htmlFor='keyType3'>Import from JSON Keystore File</label>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='form-group text-right m-t-40'>
+                                <UseThisButton />
+                        </div>
+                    </section>
                 </div>
-                <UseThisButton />
-            </form>
-            <ReactTooltip place='top' type='dark' effect='float'/>
-        </div>
+            </div>
+        </form>
     </div>;
 }

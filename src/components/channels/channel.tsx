@@ -5,15 +5,10 @@ import SessionList from '../sessions/sessionsList';
 
 export default function(props:any){
 
-const channel = JSON.parse(props.match.params.channel);
+    const channel = props.channel;
 
     return <div>
         <div className='container-fluid'>
-            <div className='row'>
-                <div className='col-sm-12 m-b-15'>
-                    <h3 className='page-title'>Service</h3>
-                </div>
-            </div>
             <div className='row'>
                 <ChannelView channel={channel} />
                 <ChannelTools channel={channel} />

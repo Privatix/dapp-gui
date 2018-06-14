@@ -1,4 +1,6 @@
 const webpack = require('webpack');
+const path = require('path');
+
 const TsconfigPathsPlugin = require('tsconfig-paths-webpack-plugin');
 
 const electronMainConfig = {
@@ -18,13 +20,14 @@ const electronMainConfig = {
         filename: '[name].js',
     },
     resolve: {
-        extensions: ['.ts', '.js', '.json', '.html'],
+        extensions: ['.ts', '.js', '.json', '.node', '.html'],
         modules: ['node_modules']
     },
     module: {
         rules:[
-           /*  {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: './configs/tslint.json'}}
-           , */ {test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
+            /*  {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: './configs/tslint.json'}}
+            , */ {test: /\.ts$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
+            {test: /\.node$/, use: 'node-loader'}
         ]
     }
 
@@ -48,13 +51,15 @@ const electronRendererConfig = {
     },
     resolve: {
         plugins: [new TsconfigPathsPlugin({configFile: __dirname + '/tsconfig.json', baseUrl: __dirname + '/src/'})],
-        extensions: ['.ts', '.tsx', '.js', '.json', '.html'],
-        modules: ['node_modules', '.']
+        extensions: ['.ts', '.tsx', '.js', '.json', '.node', '.html'],
+        modules: ['node_modules'],
     },
     module: {
         rules:[
             /* {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: './configs/tslint.json'}}
            , */ {test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
+           {test: /\.node$/, use: 'node-loader'},
+            {test: /\.css$/, use: ['style-loader', 'css-loader']}
         ]
     }
 

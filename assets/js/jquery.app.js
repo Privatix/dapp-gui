@@ -82,64 +82,6 @@
     
 }(window.jQuery),
 
-
-function($) {
-    "use strict";
-
-    var FullScreen = function() {
-        this.$body = $("body"),
-        this.$fullscreenBtn = $("#btn-fullscreen")
-    };
-
-    //turn on full screen
-    // Thanks to http://davidwalsh.name/fullscreen
-    FullScreen.prototype.launchFullscreen  = function(element) {
-      if(element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if(element.mozRequestFullScreen) {
-        element.mozRequestFullScreen();
-      } else if(element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-      } else if(element.msRequestFullscreen) {
-        element.msRequestFullscreen();
-      }
-    },
-    FullScreen.prototype.exitFullscreen = function() {
-      if(document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if(document.mozCancelFullScreen) {
-        document.mozCancelFullScreen();
-      } else if(document.webkitExitFullscreen) {
-        document.webkitExitFullscreen();
-      }
-    },
-    //toggle screen
-    FullScreen.prototype.toggle_fullscreen  = function() {
-      var $this = this;
-      var fullscreenEnabled = document.fullscreenEnabled || document.mozFullScreenEnabled || document.webkitFullscreenEnabled;
-      if(fullscreenEnabled) {
-        if(!document.fullscreenElement && !document.mozFullScreenElement && !document.webkitFullscreenElement && !document.msFullscreenElement) {
-          $this.launchFullscreen(document.documentElement);
-        } else{
-          $this.exitFullscreen();
-        }
-      }
-    },
-    //init sidemenu
-    FullScreen.prototype.init = function() {
-      var $this  = this;
-      //bind
-      $this.$fullscreenBtn.on('click', function() {
-        $this.toggle_fullscreen();
-      });
-    },
-     //init FullScreen
-    $.FullScreen = new FullScreen, $.FullScreen.Constructor = FullScreen
-    
-}(window.jQuery),
-
-
-
 //main app module
  function($) {
     "use strict";
@@ -181,8 +123,6 @@ function($) {
         $(document).ready($this.onDocReady);
         //init side bar - left
         $.Sidemenu.init();
-        //init fullscreen
-        $.FullScreen.init();
     },
 
     $.App = new App, $.App.Constructor = App
@@ -198,10 +138,6 @@ function($) {
 
 
 /* ------------ some utility functions ----------------------- */
-//this full screen
-var toggle_fullscreen = function () {
-
-}
 
 function executeFunctionByName(functionName, context /*, args */) {
   var args = [].slice.call(arguments).splice(2);

@@ -1,51 +1,56 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import {fetch} from 'utils/fetch';
-import {asyncReactor} from 'async-reactor';
+// import { Link } from 'react-router-dom';
+import {fetch} from '../../utils/fetch';
+import { withRouter } from 'react-router-dom';
 import ProductItem from './productItem';
 
-function Loader() {
+class AsyncProducts extends React.Component<any, any>{
 
-  return (<h2>Loading products ...</h2>);
+    constructor(props:any) {
+        super(props);
+        this.state = { products: [], props: props};
 
-}
+        fetch(`/products`, {})
+            .then((products: any) => {
+                this.setState({products});
+            });
+    }
 
-async function AsyncProducts(props:any){
+    render() {
+        const list = (this.state.products as any).map((product:any) => <ProductItem product={product} {...this.props} /> );
 
-    const endpoint = '/products';
-    const products = await fetch(endpoint, {method: 'GET'});
-    const list = (products as any).map((product:any) => <ProductItem product={product} /> );
-
-    return (
-        <div className='container-fluid'>
-        <div className='row'>
-            <div className='col-sm-12 m-b-15'>
-                <div className='btn-group pull-right m-t-15'>
-                    <Link to={'createProduct'} className='btn btn-default waves-effect waves-light'>Create a product</Link>
+        return (
+            <div className='container-fluid'>
+                <div className='row'>
+                    <div className='col-sm-12 m-b-15'>
+                        <h3 className='page-title'>Servers list</h3>
+                    </div>
                 </div>
-                <h3 className='page-title'>Products list</h3>
-            </div>
-        </div>
-            <div className='row'>
-                <div className='col-12'>
-                    <div className='card-box'>
-                        <div className='table-responsive'>
-                            <table className='table table-bordered table-striped'>
-                                <thead>
+                <div className='row'>
+                    <div className='col-12'>
+                        <div className='card-box'>
+                            <div className='table-responsive'>
+                                <table className='table table-bordered table-striped'>
+                                    <thead>
                                     <tr>
-                                    <td>Name</td><td>Template</td><td>End Point</td><td>Offering Count</td><td></td>
+                                        <th>Name</th>
+                                        <th>Offering template</th>
+                                        <th>Access template</th>
+                                        <th>Offering count</th>
+                                        <th></th>
                                     </tr>
-                                </thead>
-                                <tbody>
+                                    </thead>
+                                    <tbody>
                                     {list}
-                                </tbody>
-                            </table>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
                 </div>
-          </div>
-        </div>
-   );
+            </div>
+        );
+    }
 }
 
-export default asyncReactor(AsyncProducts, Loader);
+export default withRouter(AsyncProducts);

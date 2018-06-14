@@ -11,6 +11,6 @@ export default function (props:any){
                 <h3 className='page-title'>{status === 'active'  ? 'Active Services' : 'History'}</h3>
             </div>
         </div>
-        <ChannelsListByStatus status={status} />;
+        <ChannelsListByStatus status={status} />
     </div>;
 }

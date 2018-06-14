@@ -1,12 +1,20 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
-import {fetch} from 'utils/fetch';
+import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
-import ChannelItem from './channelItem';
+import ChannelUsage from './channelUsage';
+import ProductByOffering from '../products/productByOffering';
+import PgTime from '../utils/pgTime';
+import ChannelStatusStyle from './channelStatusStyle';
+import ContractStatus from './contractStatus';
+import SortableTable from 'react-sortable-table-vilan';
+import { HtmlElSorter } from '../utils/sortingHtmlEl';
+import Channel from './channel';
+import ModalWindow from '../modalWindow';
+import Product from '../products/product';
 
 function Loader() {
 
-  return (<h2>Loading channels ...</h2>);
+  return (<b>Loading channels ...</b>);
 
 }
 
@@ -20,9 +28,78 @@ async function AsyncChannels (props:any){
         endpoint = '/channels' + (props.match.params.offering === 'all' ? '' : `?offeringId=${props.match.params.offering}`);
     }
 
-
     const channels = await fetch(endpoint, {method: 'GET'});
-    const channelsDOM = (channels as any).map((channel: any) => <ChannelItem channel={channel} />);
+
+    const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
+
+    const products = await Promise.all(channelsProducts);
+    const channelsDataArr = (products as any).map((product, index) => {
+        const channel = channels[index];
+        return {
+            id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
+            // server: <LinkToProductByOfferingId offeringId={channel.offering} ><ProductNameByOffering offeringId={channel.offering} /></LinkToProductByOfferingId>,
+            server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
+            client: channel.client,
+            contractStatus: <ContractStatus contractStatus={channel.channelStatus} />,
+            serviceStatus: <ChannelStatusStyle serviceStatus={channel.serviceStatus} />,
+            usage: <ChannelUsage channelId={channel.id} />,
+            incomePRIX: (channel.receiptBalance/1e8).toFixed(3),
+            serviceChangedTime: <PgTime time={channel.serviceChangedTime} />
+        };
+    });
+
+    const columns = [
+        {
+            header: 'ID',
+            key: 'id',
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
+        },
+        {
+            header: 'Server',
+            key: 'server',
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
+        },
+        {
+            header: 'Client',
+            key: 'client'
+        },
+        {
+            header: 'Contract Status',
+            key: 'contractStatus',
+            headerStyle: {textAlign: 'center'},
+            dataProps: { className: 'text-center'},
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
+        },
+        {
+            header: 'Service Status',
+            key: 'serviceStatus',
+            headerStyle: {textAlign: 'center'},
+            dataProps: { className: 'text-center'},
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
+        },
+        {
+            header: 'Usage',
+            key: 'usage',
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
+        },
+        {
+            header: 'Income (PRIX)',
+            key: 'incomePRIX',
+            headerStyle: {textAlign: 'center'},
+            dataProps: { className: 'text-center'},
+        },
+        {
+            header: 'Service Changed Time',
+            key: 'serviceChangedTime',
+            descSortFunction: HtmlElSorter.desc,
+            ascSortFunction: HtmlElSorter.asc
+        }
+    ];
 
     return <div className='container-fluid'>
         <div className='row'>
@@ -33,24 +110,10 @@ async function AsyncChannels (props:any){
             <div className='row'>
                 <div className='col-12'>
                     <div className='card-box'>
-                        <div className='table-responsive'>
-                            <table className='table table-bordered table-striped'>
-                                <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>Server</th>
-                                        <th>Client</th>
-                                        <th>Contract Status</th>
-                                        <th>Service Status</th>
-                                        <th>Usage</th>
-                                        <th>Income (PRIX)</th>
-                                        <th>Service Changed Time</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {channelsDOM}
-                                </tbody>
-                            </table>
+                        <div className='bootstrap-table bootstrap-table-sortable'>
+                            <SortableTable
+                                data={channelsDataArr}
+                                columns={columns} />
                         </div>
                     </div>
                 </div>
