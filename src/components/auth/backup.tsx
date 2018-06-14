@@ -25,7 +25,8 @@ export default class Backup extends React.Component<any, any>{
       e.preventDefault();
       
       let fileName=remote.dialog.showSaveDialog({});
-      this.setState({fileName});
+
+      this.setState({fileName: 'string' === typeof fileName ? fileName : ''});
     }
 
     render(){
