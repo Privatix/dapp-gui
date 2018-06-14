@@ -20,6 +20,10 @@ class SetPassword extends React.Component<any, any>{
             return 'neutral';
         }
 
+        if (this.state.pwd.length < this.state.conf.length) {
+            return 'wrong';
+        }
+
         const cond = this.state.pwd.length  > this.state.conf.length;
         const max =  cond ? this.state.pwd : this.state.conf;
         const min = !cond ? this.state.pwd : this.state.conf;
@@ -74,7 +78,7 @@ class SetPassword extends React.Component<any, any>{
             <div className='p-20 wizard clearfix'>
                     <Steps step='1' />
                     <div className='content clearfix'>
-                        <section>
+                        <section className='setPasswordsBl'>
                             <p> The password must be strong.</p>
                             <p className='row'>
                                 <span className='col-11'>
@@ -90,7 +94,7 @@ class SetPassword extends React.Component<any, any>{
                             <div className='form-group'>
                                 <div className='col-12'>
                                     <input
-                                        className='form-control'
+                                        className={[this.equality(), 'form-control'].join(' ')}
                                         type='password'
                                         data-payload-value='pwd'
                                         required={true}
@@ -103,7 +107,7 @@ class SetPassword extends React.Component<any, any>{
                             <div className='form-group'>
                                 <div className='col-12'>
                                     <input
-                                        className='form-control'
+                                        className={[this.equality(), 'form-control'].join(' ')}
                                         type='password'
                                         data-payload-value='conf'
                                         required={true}
@@ -118,7 +122,6 @@ class SetPassword extends React.Component<any, any>{
                                     <NextButton onSubmit={this.onSubmit.bind(this)} />
                                 </div>
                             </div>
-                            <div>{this.equality()}</div>
                             <ReactTooltip place='top' type='dark' effect='float'/>
                         </section>
                     </div>
