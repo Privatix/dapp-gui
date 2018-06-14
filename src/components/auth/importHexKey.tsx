@@ -33,7 +33,7 @@ export default function(props: any){
             const dk = createPrivateKey();
             console.log(res, dk);
             const newKeyObject = Object.assign({}, dk, {privateKey: pk});
-            history.push(`/backup/${JSON.stringify(newKeyObject)}`);
+            history.push(`/backup/${JSON.stringify(newKeyObject)}/importHexKey`);
           }
         }
       >

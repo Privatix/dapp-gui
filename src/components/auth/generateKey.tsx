@@ -26,7 +26,7 @@ export default function(props: any){
             const settings = await fetch('/localSettings', {}) as any;
             settings.accountCreated = true;
             await fetch('/localSettings', {method: 'put', body: settings});
-            history.push(`/backup/${JSON.stringify(dk)}`);
+            history.push(`/backup/${JSON.stringify(dk)}/generateKey`);
           }
         }
       >

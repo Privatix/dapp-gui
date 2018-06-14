@@ -50,9 +50,8 @@ let password = '';
         console.log(pk);
         const keyObject = keythereum.dump(password, Buffer.from(pk.privateKey.data), Buffer.from(pk.salt.data), Buffer.from(pk.iv.data));
         fs.writeFile(req.options.body.fileName, JSON.stringify(keyObject), {encoding: 'utf8'}, (err:any) => {
-            // TODO handling
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
     }else if(req.endpoint === '/readFile'){
         const file = fs.readFileSync(req.options.body.fileName, {encoding: 'utf8'});
         // const privateKey = keythereum.recover(req.options.body.pwd, keyObject);

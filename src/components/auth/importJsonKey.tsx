@@ -33,7 +33,7 @@ export default function(props: any){
             await fetch('/accounts/', {method: 'post', body});
             const dk = createPrivateKey();
             const newKeyObject = Object.assign({}, dk, {privateKey: pk});
-            history.push(`/backup/${JSON.stringify(newKeyObject)}`);
+            history.push(`/backup/${JSON.stringify(newKeyObject)}/importJsonKey`);
           }
         }
       >
