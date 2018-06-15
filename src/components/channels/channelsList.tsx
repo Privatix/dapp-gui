@@ -7,7 +7,7 @@ import PgTime from '../utils/pgTime';
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
 import SortableTable from 'react-sortable-table-vilan';
-import { HtmlElSorter } from '../utils/sortingHtmlEl';
+import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
@@ -29,7 +29,7 @@ async function AsyncChannels (props:any){
     }
 
     const channels = await fetch(endpoint, {method: 'GET'});
-
+console.log('Channels', channels);
     const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
 
     const products = await Promise.all(channelsProducts);
@@ -37,14 +37,13 @@ async function AsyncChannels (props:any){
         const channel = channels[index];
         return {
             id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
-            // server: <LinkToProductByOfferingId offeringId={channel.offering} ><ProductNameByOffering offeringId={channel.offering} /></LinkToProductByOfferingId>,
             server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
             client: channel.client,
-            contractStatus: <ContractStatus contractStatus={channel.channelStatus} />,
-            serviceStatus: <ChannelStatusStyle serviceStatus={channel.serviceStatus} />,
+            contractStatus: channel.channelStatus,
+            serviceStatus: channel.serviceStatus,
             usage: <ChannelUsage channelId={channel.id} />,
             incomePRIX: (channel.receiptBalance/1e8).toFixed(3),
-            serviceChangedTime: <PgTime time={channel.serviceChangedTime} />
+            serviceChangedTime: channel.serviceChangedTime
         };
     });
 
@@ -52,14 +51,14 @@ async function AsyncChannels (props:any){
         {
             header: 'ID',
             key: 'id',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+            descSortFunction: ModalPropTextSorter.desc,
+            ascSortFunction: ModalPropTextSorter.asc
         },
         {
             header: 'Server',
             key: 'server',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+            descSortFunction: ModalPropTextSorter.desc,
+            ascSortFunction: ModalPropTextSorter.asc
         },
         {
             header: 'Client',
@@ -70,22 +69,18 @@ async function AsyncChannels (props:any){
             key: 'contractStatus',
             headerStyle: {textAlign: 'center'},
             dataProps: { className: 'text-center'},
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+            render: (channelStatus) => { return <ContractStatus contractStatus={channelStatus} />; }
         },
         {
             header: 'Service Status',
             key: 'serviceStatus',
             headerStyle: {textAlign: 'center'},
             dataProps: { className: 'text-center'},
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+            render: (serviceStatus) => { return <ChannelStatusStyle serviceStatus={serviceStatus} />; }
         },
         {
             header: 'Usage',
-            key: 'usage',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+            key: 'usage'
         },
         {
             header: 'Income (PRIX)',
@@ -96,8 +91,7 @@ async function AsyncChannels (props:any){
         {
             header: 'Service Changed Time',
             key: 'serviceChangedTime',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+            render: (serviceChangedTime) => { return <PgTime time={serviceChangedTime} />; }
         }
     ];
 

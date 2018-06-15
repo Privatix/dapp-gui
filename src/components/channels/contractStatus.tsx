@@ -1,35 +1,25 @@
 import * as React from 'react';
 
-export default function(props:any) {
-    let incomingStatus = props.contractStatus;
-    let contractStatus;
-
-    switch (incomingStatus) {
-        case 'pending':
-            contractStatus = 'primary';
-            break;
-        case 'active':
-            contractStatus = 'success';
-            break;
-        case 'wait_coop':
-            contractStatus = 'warning';
-            break;
-        case 'wait_challenge':
-            contractStatus = 'warning';
-            break;
-        case 'closed_coop':
-            contractStatus = 'inverse';
-            break;
-        case 'in_challenge':
-            contractStatus = 'danger';
-            break;
-        case 'wait_uncoop':
-            contractStatus = 'danger';
-            break;
-        case 'closed_uncoop':
-            contractStatus = 'pink';
-            break;
+export default class ContractStatus extends React.Component<any, any> {
+    constructor(props: any) {
+        super(props);
     }
 
-    return <span className={'label label-table label-' + contractStatus}>{incomingStatus}</span>;
+    get classes() {
+        return {
+            pending: 'primary',
+            active: 'success',
+            wait_coop: 'warning',
+            wait_challenge: 'warning',
+            closed_coop: 'inverse',
+            in_challenge: 'danger',
+            wait_uncoop: 'danger',
+            closed_uncoop: 'pink'
+        };
+    }
+
+    render() {
+        const status = this.props.contractStatus;
+        return <span className={`label label-table label-${this.classes[status]}`}>{status}</span>;
+    }
 }
