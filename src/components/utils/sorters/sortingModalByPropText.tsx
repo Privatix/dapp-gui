@@ -1,4 +1,4 @@
-const OfferingsSorterById = {
+const ModalPropTextSorter = {
     desc: (data, key) => {
         return data.sort((_a, _b) => {
             let a = _a[key].props.text;
@@ -26,4 +26,4 @@ const OfferingsSorterById = {
     }
 };
 
-export default OfferingsSorterById;
+export default ModalPropTextSorter;

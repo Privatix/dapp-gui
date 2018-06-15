@@ -96,7 +96,7 @@ export default class AsyncAccounts extends React.Component<any, any> {
                 <div className='col-sm-12 m-b-15'>
                     <h3 className='page-title'>Accounts</h3>
                     <div className='m-t-15'>
-                        <Link to={'/addAccount'} className='btn btn-default btn-custom waves-effect waves-light m-r-15'>Create an account</Link>
+                        <Link to={'/setAccount'} className='btn btn-default btn-custom waves-effect waves-light m-r-15'>Create an account</Link>
                         <Link to={'#'} onClick={this.onRefresh.bind(this)} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
                     </div>
                 </div>

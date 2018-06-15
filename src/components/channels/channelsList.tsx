@@ -7,7 +7,7 @@ import PgTime from '../utils/pgTime';
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
 import SortableTable from 'react-sortable-table-vilan';
-// import { HtmlElSorter } from '../utils/sorters/sortingHtmlEl';
+import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
@@ -29,7 +29,7 @@ async function AsyncChannels (props:any){
     }
 
     const channels = await fetch(endpoint, {method: 'GET'});
-
+console.log('Channels', channels);
     const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
 
     const products = await Promise.all(channelsProducts);
@@ -50,11 +50,15 @@ async function AsyncChannels (props:any){
     const columns = [
         {
             header: 'ID',
-            key: 'id'
+            key: 'id',
+            descSortFunction: ModalPropTextSorter.desc,
+            ascSortFunction: ModalPropTextSorter.asc
         },
         {
             header: 'Server',
-            key: 'server'
+            key: 'server',
+            descSortFunction: ModalPropTextSorter.desc,
+            ascSortFunction: ModalPropTextSorter.asc
         },
         {
             header: 'Client',

@@ -4,7 +4,7 @@ import {fetch} from '../../utils/fetch';
 
 import OfferingStatus from './offeringStatus';
 import SortableTable from 'react-sortable-table-vilan';
-import OfferingsSorterById from '../utils/sorters/sortingOfferingsById';
+import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
 import Product from '../products/product';
@@ -77,8 +77,8 @@ class AsyncOfferings extends React.Component<any, any> {
             {
                 header: 'ID',
                 key: 'id',
-                descSortFunction: OfferingsSorterById.desc,
-                ascSortFunction: OfferingsSorterById.asc
+                descSortFunction: ModalPropTextSorter.desc,
+                ascSortFunction: ModalPropTextSorter.asc
             },
             {
                 header: 'Service name',
