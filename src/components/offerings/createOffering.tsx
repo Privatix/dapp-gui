@@ -93,7 +93,7 @@ class CreateOffering extends React.Component<any, any>{
            ,country: 'country'
            ,supply : 'supply'
            ,unitPrice: 'unit price'
-           ,maxBillingUnitLag: 'maximum payment lag'
+           ,maxBillingUnitLag: 'maximum billing unit lag'
            ,minUnits: 'minimum units'
            ,maxUnit: 'maximum units'
            ,maxSuspendTime: 'max suspend time'
@@ -112,7 +112,7 @@ class CreateOffering extends React.Component<any, any>{
         const payload = Object.assign({}, this.state.payload);
 
         const mustBeFilled = required.filter((key: string) => !(key in payload));
-        
+
 
         console.log('mustBeFilled', mustBeFilled);
 
@@ -135,7 +135,7 @@ class CreateOffering extends React.Component<any, any>{
             }
 
             payload[key] = res;
-            
+
         });
 
         payload.unitPrice = parseFloat(payload.unitPrice);
@@ -181,7 +181,7 @@ class CreateOffering extends React.Component<any, any>{
             }
             if(payload.unitPrice <= 0){
                 msg += 'Unit price must be more then 0.';
-            } 
+            }
             if(payload.deposit === payload.deposit && payload.deposit > this.state.account.psc_balance){
                 msg += 'Deposit is greater then service balance. Please choose another account or top up the balance. ';
             }
@@ -210,7 +210,7 @@ class CreateOffering extends React.Component<any, any>{
                 });
             });
         }
-        
+
         console.log(payload);
         return;
 
