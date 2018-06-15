@@ -37,8 +37,8 @@ export default function(props:any){
                 endpoint={`/offerings/${props.offering.id}/status`}
                 options={{method: 'put', body: {action: 'remove'}}}
                 title={'Remove'}
-                text={<span>This operation will permanently remove the offering from SOMC.<br />
-                    You can't undo this.</span>}
+                text={<span>This operation will permanently remove offering. You will receive your deposit back. Clients will not able to accept it anymore. This operation cannot be undone.<br />
+                    Would you like to proceed?</span>}
                 class={'btn btn-danger btn-custom btn-block'}
                 swalType='danger'
                 swalConfirmBtnText='Yes, remove it!'
