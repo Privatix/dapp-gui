@@ -56,13 +56,18 @@ class ImportJsonKey extends React.Component<any, any>{
         console.log(pk, key);
 
         const body = {privateKey: key
-                     ,isDefault: this.props.match.params.default === 'true'
+                     ,isDefault: this.props.default === 'true'
                      ,inUse: true
                      ,name
                      ,type: 'generate_new'
         };
         console.log(body);
         await fetch('/accounts/', {method: 'post', body});
+
+        const settings = await fetch('/localSettings', {}) as any;
+        settings.accountCreated = true;
+        await fetch('/localSettings', {method: 'put', body: settings});
+
         const dk = createPrivateKey();
         const newKeyObject = Object.assign({}, dk, {privateKey: pk});
         this.props.history.push(`/backup/${JSON.stringify(newKeyObject)}/importJsonKey`);
