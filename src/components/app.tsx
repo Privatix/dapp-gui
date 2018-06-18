@@ -98,9 +98,9 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
                             <Route path='/setAccount' render={() => <SetAccount default={false} />} />
-                            <Route path='/generateKey/:default' component={GenerateKey} />
-                            <Route path='/importHexKey' component={ImportHexKey} />
-                            <Route path='/importJsonKey' component={ImportJsonKey} />
+                            <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
+                            <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
+                            <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
                             <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
                             <Route path='/logs' component={Logs} />
 

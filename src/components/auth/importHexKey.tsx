@@ -45,12 +45,17 @@ class ImportHexKey extends React.Component<any, any>{
         const pk = new Buffer(privateKey, 'hex');
         const key = pk.toString('base64').split('+').join('-').split('/').join('_');
         const body = {privateKey: key
-                     ,isDefault: this.props.match.params.default === 'true'
+                     ,isDefault: this.props.default === 'true'
                      ,inUse: true
                      ,name
                      ,type: 'generate_new'
         };
         const res = await fetch('/accounts/', {method: 'post', body});
+
+        const settings = await fetch('/localSettings', {}) as any;
+        settings.accountCreated = true;
+        await fetch('/localSettings', {method: 'put', body: settings});
+
         const dk = createPrivateKey();
         console.log(res, dk);
         const newKeyObject = Object.assign({}, dk, {privateKey: pk});
