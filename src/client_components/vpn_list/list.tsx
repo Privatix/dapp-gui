@@ -13,43 +13,6 @@ export default class AsyncList extends React.Component<any,any> {
     constructor(props:any) {
         super(props);
 
-        const data = [];
-
-        const countries = [
-            {
-                name: 'Afganistan',
-                defShow: 0
-            },
-            {
-                name: 'Albania',
-                defShow: 0
-            },
-            {
-                name: 'Canada',
-                defShow: 1
-            },
-            {
-                name: 'Germany',
-                defShow: 1
-            },
-            {
-                name: 'Japan',
-                defShow: 1
-            },
-            {
-                name: 'Netherlands',
-                defShow: 1
-            },
-            {
-                name: 'Romania',
-                defShow: 1
-            },
-            {
-                name: 'Russia',
-                defShow: 0
-            }
-        ];
-
         this.state = {
             from: 0.0001,
             to: 0.01,
@@ -58,12 +21,11 @@ export default class AsyncList extends React.Component<any,any> {
             max: 0.01,
             spinner: true,
             changePriceInput: false,
-            data,
-            countries,
-            filteredCountries: countries.slice(),
-            // defCountries,
+            data: [],
+            countries: [],
+            filteredCountries: [],
             showAllCountries: false,
-            filtered: data.slice(),
+            filtered: [],
             columns: [
                 {
                     header: 'Id',
@@ -93,7 +55,7 @@ export default class AsyncList extends React.Component<any,any> {
 
         fetch(endpoint, {method: 'GET'})
             .then((clientOfferings) => {
-                let offerings = (clientOfferings as any).map((offering, key) => {
+                let offerings = (clientOfferings as any).map((offering) => {
                     return {
                         id: <ModalWindow customClass='' modalTitle='Accept Offering' text={offering.id} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
@@ -101,10 +63,44 @@ export default class AsyncList extends React.Component<any,any> {
                     };
                 });
 
+                // get countries list for filter by countries
+                let countriesArr = [];
+                let countriesAsocArr = [];
+                (clientOfferings as any).forEach((offering) => {
+                    if (countriesAsocArr[offering.country] !== undefined) {
+                        countriesAsocArr[offering.country].count++;
+                    } else {
+                        countriesAsocArr[offering.country] = {
+                            name: offering.country,
+                            defShow: 0,
+                            count: 1
+                        };
+                    }
+                });
+
+                (Object.keys(countriesAsocArr as any)).forEach((country) => {
+                    countriesArr.push(countriesAsocArr[country]);
+                });
+
+                countriesArr.sort((country1, country2) => {
+                    return country2.count - country1.count;
+                });
+
+                let countriesArrCount = 0;
+                let countries = (countriesArr as any).map((country) => {
+                    countriesArrCount++;
+                    return {
+                        name: country.name,
+                        defShow: countriesArrCount > 5 ? 0 : 1
+                    };
+                });
+
                 this.setState({
                     spinner: false,
                     data: offerings,
-                    filtered: offerings
+                    filtered: offerings,
+                    countries,
+                    filteredCountries: countries
                 });
             });
     }

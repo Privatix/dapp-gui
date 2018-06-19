@@ -37,7 +37,7 @@ class GenerateKey extends React.Component<any, any>{
         const dk = createPrivateKey();
         const key = dk.privateKey.toString('base64').split('+').join('-').split('/').join('_');
         const body = {privateKey: key
-                     ,isDefault: this.props.match.params.default === 'true'
+                     ,isDefault: this.props.default === 'true'
                      ,inUse: true
                      ,name
                      ,type: 'generate_new'
