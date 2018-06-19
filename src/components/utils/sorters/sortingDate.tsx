@@ -1,8 +1,8 @@
 const DateSorter = {
     desc: (data, key) => {
         return data.sort((_a, _b) => {
-            let a = Date.parse(_a);
-            let b = Date.parse(_b);
+            let a = Date.parse(_a[key]);
+            let b = Date.parse(_b[key]);
 
             if ( a <= b ) {
                 return 1;
@@ -14,8 +14,8 @@ const DateSorter = {
 
     asc: (data, key) => {
         return data.sort((_a, _b) => {
-            let a = Date.parse(_a);
-            let b = Date.parse(_b);
+            let a = Date.parse(_a[key]);
+            let b = Date.parse(_b[key]);
 
             if ( a >= b ) {
                 return 1;

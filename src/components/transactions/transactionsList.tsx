@@ -21,7 +21,7 @@ async function AsyncTransactions (props: any){
         const tx = `0x${Buffer.from(transaction.hash, 'base64').toString('hex')}`;
         let row = {
             date: <PgTime time={transaction.issued} />,
-            ethereumLink: <ExternalLink href={`https://rinkeby.etherscan.io/tx/${tx}`} text={tx} />
+            ethereumLink: <ExternalLink href={`https://etherscan.io/tx/${tx}`} text={tx} />
         };
 
         transactionsDataArr.push(row);
