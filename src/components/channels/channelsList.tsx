@@ -29,7 +29,7 @@ async function AsyncChannels (props:any){
     }
 
     const channels = await fetch(endpoint, {method: 'GET'});
-console.log('Channels', channels);
+
     const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
 
     const products = await Promise.all(channelsProducts);
