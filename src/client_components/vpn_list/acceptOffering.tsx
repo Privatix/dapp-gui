@@ -1,5 +1,6 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
+import notice from '../../utils/notice';
 import { withRouter } from 'react-router-dom';
 import {asyncReactor} from 'async-reactor';
 import GasRange from '../../components/utils/gasRange';
@@ -9,7 +10,13 @@ function Loader() {
 }
 
 async function AsyncAcceptOffering (props:any){
+
+
+
     const accounts = await fetch('/accounts/', {method: 'get'});
+    const offering = (await fetch('/client/offerings', {}))[0];
+    const deposit = ((offering.unitPrice*offering.minUnits)/1e8).toFixed(3);
+    console.log('CLIENT OFFERING!!!!', offering);
 
     const onChangeAccount = async function(){
         const selectAccount = document.getElementById('selectAccount');
@@ -27,6 +34,17 @@ async function AsyncAcceptOffering (props:any){
         gasPrice = Math.floor(evt.target.value * 1e9);
     };
 
+    const onSubmit = function(evt: any){
+        evt.preventDefault();
+        const selectAccount = document.getElementById('selectAccount');
+        const account = (selectAccount as any).options[(selectAccount as any).selectedIndex].value;
+        console.log('PATH!!!', `/client/offerings/${offering.id}/status`, {method: 'put', body: {action: 'accept', account, gasPrice}});
+        fetch(`/client/offerings/${offering.id}/status`, {method: 'put', body: {action: 'accept', account, gasPrice}})
+            .then((res) =>{
+                notice({level: 'info', title: 'Congratulations!', msg: 'offering accepted!'});
+            });
+    };
+
     return <div className='col-lg-12 col-md-12'>
         <div className='card m-b-20'>
             <h5 className='card-header'>VPN Info</h5>
@@ -34,7 +52,7 @@ async function AsyncAcceptOffering (props:any){
                 <div className='form-group row'>
                     <label className='col-3 col-form-label'>Country: </label>
                     <div className='col-9'>
-                        <input type='text' className='form-control' value='Japan' readOnly/>
+                        <input type='text' className='form-control' value={offering.country} readOnly/>
                     </div>
                 </div>
             </div>
@@ -47,7 +65,7 @@ async function AsyncAcceptOffering (props:any){
                     <label className='col-3 col-form-label'>Price per Mb:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value='0.03' readOnly/>
+                            <input type='text' className='form-control' value={(offering.unitPrice/1e8).toFixed(5)} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -62,7 +80,7 @@ async function AsyncAcceptOffering (props:any){
                     <label className='col-3 col-form-label'>Max inactive time:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value='60' readOnly/>
+                            <input type='text' className='form-control' value={offering.maxInactiveTimeSec} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                         </div>
                         <span className='help-block'>
@@ -99,7 +117,10 @@ async function AsyncAcceptOffering (props:any){
                 <div className='form-group row'>
                     <label className='col-2 col-form-label'>Deposit:</label>
                     <div className='col-6'>
-                        <input id='offeringDeposit' type='text' className='form-control' value='' placeholder='PRIX' readOnly/>
+                        <div className='input-group bootstrap-touchspin'>
+                            <input id='offeringDeposit' type='text' className='form-control' value={deposit} readOnly/>
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                        </div>
                         <span className='help-block'>
                             <small>After the end of using, the unused PRIX will be returned.</small>
                         </span>
@@ -110,7 +131,7 @@ async function AsyncAcceptOffering (props:any){
                 <div className='form-group row'>
                     <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
                     <div className='col-6 col-form-label font-18'>
-                        <strong>3 PRIX</strong>
+                        <strong>{deposit} PRIX</strong>
                     </div>
                 </div>
             </div>
@@ -118,7 +139,7 @@ async function AsyncAcceptOffering (props:any){
 
         <div className='form-group row'>
             <div className='col-md-12'>
-                <button type='submit' className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'>Accept</button>
+                <button type='submit' onClick={onSubmit} className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'>Accept</button>
             </div>
         </div>
     </div>;
