@@ -4,12 +4,13 @@ import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 import { withRouter } from 'react-router-dom';
 import GasRange from '../../components/utils/gasRange';
+import {LocalSettings} from '../../typings/settings';
 
 class AcceptOffering extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-        this.state = {accounts: [], gasPrice: 6*1e9};
+        this.state = {accounts: [], gasPrice: 6*1e9, deposit: (props.offering.unitPrice*props.offering.minUnits)};
     }
 
     componentDidMount(){
@@ -32,8 +33,27 @@ class AcceptOffering extends React.Component<any, any>{
         this.setState({gasPrice: Math.floor(evt.target.value * 1e9)});
     }
 
-    onSubmit(evt: any){
+    async onSubmit(evt: any){
         evt.preventDefault();
+        let err = false;
+        let msg = '';
+        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+
+        if(this.state.account.ptcBalance < this.state.deposit){
+            err=true;
+            msg += ' Not enough PRIXes for deposit. Please, select another account.';
+        }
+
+        if(this.state.account.ethBalance < settings.gas.acceptOffering*this.state.gasPrice){
+            err=true;
+            msg += ' Not enough funds for publish transaction. Please, select another account.';
+        }
+
+        if(err){
+            notice({level: 'eror', title: 'Attention!', msg});
+            return;
+        }
+
         fetch(`/client/offerings/${this.props.offering.id}/status`, {method: 'put', body: {action: 'accept', account: this.state.account.id, gasPrice: this.state.gasPrice}})
             .then((res) =>{
                 notice({level: 'info', title: 'Congratulations!', msg: 'offering accepted!'});
@@ -45,7 +65,6 @@ class AcceptOffering extends React.Component<any, any>{
     render(){
 
         const offering = this.props.offering;
-        const deposit = ((offering.unitPrice*offering.minUnits)/1e8).toFixed(3);
 
         const selectAccount =  <Select className='form-control'
             value={this.state.account ? this.state.account.id : ''}
@@ -129,7 +148,7 @@ class AcceptOffering extends React.Component<any, any>{
                         <label className='col-2 col-form-label'>Deposit:</label>
                         <div className='col-6'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input id='offeringDeposit' type='text' className='form-control' value={deposit} readOnly/>
+                                <input id='offeringDeposit' type='text' className='form-control' value={(this.state.deposit/1e8).toFixed(3)} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                             <span className='help-block'>
@@ -142,7 +161,7 @@ class AcceptOffering extends React.Component<any, any>{
                     <div className='form-group row'>
                         <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
                         <div className='col-6 col-form-label font-18'>
-                            <strong>{deposit} PRIX</strong>
+                            <strong>{(this.state.deposit/1e8).toFixed(3)} PRIX</strong>
                         </div>
                     </div>
                 </div>
