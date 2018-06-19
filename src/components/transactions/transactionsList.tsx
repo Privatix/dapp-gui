@@ -2,6 +2,7 @@ import * as React from 'react';
 import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import SortableTable from 'react-sortable-table-vilan';
+import DateSorter from '../utils/sorters/sortingDates';
 import ExternalLink from '../utils/externalLink';
 import PgTime from '../utils/pgTime';
 
@@ -12,17 +13,15 @@ function Loader() {
 }
 
 async function AsyncTransactions (props: any){
-
     const endpoint = '/transactions' + (props.account === 'all' ? '' : `?relatedID=${props.account}&relatedType=account`);
     const transactions = await fetch(endpoint, {method: 'GET'});
-    console.log(endpoint, transactions);
 
     const transactionsDataArr = [];
     (transactions as any).map((transaction: any) => {
         const tx = `0x${Buffer.from(transaction.hash, 'base64').toString('hex')}`;
         let row = {
             date: <PgTime time={transaction.issued} />,
-            ethereumLink: <ExternalLink href={`https://etherscan.io/tx/${tx}`} text={tx} />
+            ethereumLink: <ExternalLink href={`https://rinkeby.etherscan.io/tx/${tx}`} text={tx} />
         };
 
         transactionsDataArr.push(row);
@@ -31,7 +30,10 @@ async function AsyncTransactions (props: any){
     const columns = [
         {
             header: 'Date',
-            key: 'date'
+            key: 'date',
+            defaultSorting: 'DESC',
+            descSortFunction: DateSorter.desc,
+            ascSortFunction: DateSorter.asc
         },
         {
             header: 'Ethereum link',
