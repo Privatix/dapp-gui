@@ -12,10 +12,10 @@ class Offerings extends React.Component<any, any>{
         this.state = {offerings: [], products: []};
     }
 
-    componentDidMount(){
-        this.refresh();
-    }
-
+    // componentDidMount(){
+    //     this.refresh();
+    // }
+    //
     refresh(){
 
         fetchOfferings(this.props.product).then((res: any) => {
@@ -39,7 +39,8 @@ class Offerings extends React.Component<any, any>{
                     </div>
                 </div>
             </div>
-            <OfferingsList offerings={this.state.offerings} products={this.state.products} />
+            <OfferingsList product={this.props.match.params.product ? this.props.match.params.product : 'all'} rate={3000} />
+            {/*<OfferingsList offerings={this.state.offerings} products={this.state.products}  rate={3000} />*/}
        </div>;
     }
 }
