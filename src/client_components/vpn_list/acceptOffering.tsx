@@ -10,6 +10,7 @@ function Loader() {
 
 async function AsyncAcceptOffering (props:any){
     const accounts = await fetch('/accounts/', {method: 'get'});
+    const offering = props.offering;
 
     const onChangeAccount = async function(){
         const selectAccount = document.getElementById('selectAccount');
@@ -34,7 +35,7 @@ async function AsyncAcceptOffering (props:any){
                 <div className='form-group row'>
                     <label className='col-3 col-form-label'>Country: </label>
                     <div className='col-9'>
-                        <input type='text' className='form-control' value='Japan' readOnly/>
+                        <input type='text' className='form-control' value={offering.country} readOnly/>
                     </div>
                 </div>
             </div>
@@ -47,7 +48,7 @@ async function AsyncAcceptOffering (props:any){
                     <label className='col-3 col-form-label'>Price per Mb:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value='0.03' readOnly/>
+                            <input type='text' className='form-control' value={offering.unitPrice} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
@@ -62,7 +63,7 @@ async function AsyncAcceptOffering (props:any){
                     <label className='col-3 col-form-label'>Max inactive time:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value='60' readOnly/>
+                            <input type='text' className='form-control' value={offering.maxInactiveTimeSec} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                         </div>
                         <span className='help-block'>
