@@ -35,6 +35,7 @@
     "colors": "^1.1.2",
     "cors": "^2.8.4",
     "electron": "^1.8.4",
+    "electron-fetch": "^1.1.0",
     "history": "^4.7.2",
     "jquery": "^3.3.1",
     "keythereum": "^1.0.4",
