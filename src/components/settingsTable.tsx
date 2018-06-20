@@ -77,7 +77,7 @@ class SettingsTable extends React.Component<any, any> {
                                         <td>{option.name}:</td>
                                         <td>
                                             <div className='form-control text-right'>
-                                                <input id={option.key} type='text' defaultValue={option.value} data-desc={option.description} data-name={option.name}/>
+                                                <input disabled id={option.key} type='text' defaultValue={option.value} data-desc={option.description} data-name={option.name}/>
                                                 <label htmlFor={option.key} className='m-b-15'></label>
                                             </div>
                                         </td>
@@ -185,7 +185,7 @@ class SettingsTable extends React.Component<any, any> {
                                         {optionsDOM}
                                     </tbody>
                                 </table>
-                                <button className='btn btn-default waves-effect waves-light' onClick={this.saveOptions}>Save</button>
+                                {/*<button className='btn btn-default waves-effect waves-light' onClick={this.saveOptions}>Save</button>*/}
                             </form>
                         </div>
                     </div>
