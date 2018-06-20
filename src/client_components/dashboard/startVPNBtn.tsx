@@ -1,12 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import {asyncReactor} from 'async-reactor';
 
-function Loader() {
-    return (<h2>Loading data ...</h2>);
-}
-
-async function AsyncDashboardStart (props:any){
+export default function(props:any){
 
     const StartVPNButton = withRouter(
         ({ history }) => <button type='button'
@@ -27,5 +22,3 @@ async function AsyncDashboardStart (props:any){
         </div>
     </div>;
 }
-
-export default asyncReactor(AsyncDashboardStart, Loader);
