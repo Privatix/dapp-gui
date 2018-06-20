@@ -76,6 +76,7 @@ let password = '';
         const options = {method: 'get'} as any;
         options.headers = {};
         options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
+        fetch('https://github.com/');
         fetch(`${settings.apiEndpoint}/products`, options)
             .then(res => {
                 event.sender.send('api-reply', JSON.stringify({req: msg, res: res.status === 200}));
