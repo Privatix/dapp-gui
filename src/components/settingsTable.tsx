@@ -149,31 +149,32 @@ class SettingsTable extends React.Component<any, any> {
                 <div className='row'>
                     <div className='col-12'>
                         <div className='card-box'>
-                            <div className='form-group row'>
-                                <div className='col-md-12 m-t-10 m-b-10'>
-                                    <div className='input-group searchInputGroup'>
-                                        <div className='input-group-prepend'>
-                                            <span className='input-group-text'><i className='fa fa-search'></i></span>
-                                        </div>
-                                        <input className='form-control' type='search' name='search' placeholder='search'
-                                            value={this.state.filterAll}
-                                            onChange={this.filterAll.bind(this)} />
-                                    </div>
-                                </div>
-                            </div>
+                            {/*TODO(drew2a) hide search on alpha*/}
+                            {/*<div className='form-group row'>*/}
+                                {/*<div className='col-md-12 m-t-10 m-b-10'>*/}
+                                    {/*<div className='input-group searchInputGroup'>*/}
+                                        {/*<div className='input-group-prepend'>*/}
+                                            {/*<span className='input-group-text'><i className='fa fa-search'></i></span>*/}
+                                        {/*</div>*/}
+                                        {/*<input className='form-control' type='search' name='search' placeholder='search'*/}
+                                            {/*value={this.state.filterAll}*/}
+                                            {/*onChange={this.filterAll.bind(this)} />*/}
+                                    {/*</div>*/}
+                                {/*</div>*/}
+                            {/*</div>*/}
                             <form id='optionsForm'>
-                                <ReactTable
-                                    data={data}
-                                    columns={columns}
-                                    showPagination={false}
-                                    defaultPageSize={(this.state.data as any).length}
-                                    filterable={false}
-                                    filtered={this.state.filtered}
-                                    ref={r => (this as any).reactTable = r}
-                                    onFilteredChange={this.onFilteredChange.bind(this)}
+                                {/*<ReactTable*/}
+                                    {/*data={data}*/}
+                                    {/*columns={columns}*/}
+                                    {/*showPagination={false}*/}
+                                    {/*defaultPageSize={(this.state.data as any).length}*/}
+                                    {/*filterable={false}*/}
+                                    {/*filtered={this.state.filtered}*/}
+                                    {/*ref={r => (this as any).reactTable = r}*/}
+                                    {/*onFilteredChange={this.onFilteredChange.bind(this)}*/}
 
-                                />
-                                <hr />
+                                {/*/>*/}
+                                {/*<hr />*/}
                                 <table className='table table-bordered table-striped'>
                                     <thead>
                                     <tr>
