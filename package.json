@@ -58,7 +58,8 @@
     "react-toggle": "^4.0.2",
     "react-tooltip": "^3.5.0",
     "style-loader": "^0.21.0",
-    "uuid": "^3.2.1"
+    "uuid": "^3.2.1",
+    "dateformat": "^3.0.3"
   },
   "license": "GPL-3.0-only",
   "repository": {
