@@ -351,3 +351,7 @@ input:checked + .slider:before {
     box-shadow: 0 0 5px #f05050;
     border: 1px solid #f05050;
 }
+
+.width30{
+    width: 30%;
+}
