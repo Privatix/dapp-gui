@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { NavLink, Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 declare var window: any;
 interface Props {
     mode: string;
 }
-
 
 export default class Navigation extends React.Component<Props, any> {
 
@@ -44,6 +43,12 @@ export default class Navigation extends React.Component<Props, any> {
         return {mode: nextProps.mode};
     }
 
+    handleClick() {
+        this.setState((oldState) => {
+            return {submenu: !oldState.submenu};
+        });
+    }
+
     handleClickTrue() {
         this.setState({submenu: true});
     }
@@ -51,6 +56,7 @@ export default class Navigation extends React.Component<Props, any> {
     handleClickFalse() {
         this.setState({submenu: false});
     }
+
 
     render(){
         setTimeout(function(){
@@ -70,14 +76,16 @@ export default class Navigation extends React.Component<Props, any> {
                         </li>
 
                         <li className='has_sub' aria-current={this.state.submenu ? 'page' : null}>
-                            <NavLink to='/channels/all' activeClassName='active' className='waves-effect' >
-                                <i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span>
-                                <ul className='list-unstyled'>
-                                    <li onClick={this.handleClickTrue.bind(this)}><Link exact to='/channelsByStatus/active' className='waves-effect'>Active</Link></li>
-                                    <li onClick={this.handleClickTrue.bind(this)}><Link exact to='/channelsByStatus/terminated' className='waves-effect'>Archive</Link></li>
-                                    <li onClick={this.handleClickTrue.bind(this)}><Link exact to='/sessions/all' className='waves-effect'>Sessions</Link></li>
-                                </ul>
-                            </NavLink>
+                            <div onClick={this.handleClick.bind(this)}>
+                                <NavLink to='/channels/all' activeClassName='active' className='waves-effect' >
+                                    <i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span>
+                                </NavLink>
+                            </div>
+                            <ul className='list-unstyled sub_menu'>
+                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/active' className='waves-effect'>Active</NavLink></li>
+                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/terminated' className='waves-effect'>Archive</NavLink></li>
+                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/sessions/all' className='waves-effect'>Sessions</NavLink></li>
+                            </ul>
                         </li>
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
