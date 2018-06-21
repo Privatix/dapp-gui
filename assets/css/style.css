@@ -1624,7 +1624,8 @@ body.fixed-left .side-menu.left {
   color: #5fbeaa !important;
 }
 
-#sidebar-menu > ul > li > a {
+#sidebar-menu > ul > li > a,
+#sidebar-menu > ul > li > div > a {
   color: #36404a;
   display: block;
   padding: 12px 20px;
@@ -1632,12 +1633,14 @@ body.fixed-left .side-menu.left {
   border-left: 3px solid #ffffff;
 }
 
-#sidebar-menu > ul > li > a:hover {
+#sidebar-menu > ul > li > a:hover,
+#sidebar-menu > ul > li > div > a:hover {
   color: #5fbeaa;
   text-decoration: none;
 }
 
-#sidebar-menu > ul > li > a > span {
+#sidebar-menu > ul > li > a > span,
+#sidebar-menu > ul > li > div > a > span {
   vertical-align: middle;
 }
 
@@ -1665,6 +1668,14 @@ body.fixed-left .side-menu.left {
   content: "\f1b6";
 }
 
+#sidebar-menu ul li .menu-arrow {
+  transition: transform .15s;
+}
+
+#sidebar-menu ul li[aria-current="page"] .menu-arrow {
+  transform: rotate(90deg);
+}
+
 #sidebar-menu ul li a.subdrop .menu-arrow {
   -ms-transform: rotate(90deg);
   -webkit-transform: rotate(90deg);
@@ -1687,15 +1698,22 @@ body.fixed-left .side-menu.left {
   font-size: 18px;
 }
 
-#sidebar-menu > ul > li > a > i.i-right {
+#sidebar-menu > ul > li > a > i.i-right,
+#sidebar-menu > ul > li > div > a > i.i-right {
   float: right;
   margin: 3px 0 0 0;
 }
 
-#sidebar-menu > ul > li > a.active {
+#sidebar-menu > ul > li > a[aria-current="page"],
+#sidebar-menu > ul > li > div > a[aria-current="page"],
+#sidebar-menu li[aria-current="page"] > div > a {
   background: #f4f8fb !important;
   border-left: 3px solid #5fbeaa;
   color: #5fbeaa !important;
+}
+
+#sidebar-menu li[aria-current="page"] .sub_menu {
+  height: 114px;
 }
 
 .menu-title {
@@ -1712,7 +1730,8 @@ body.fixed-left .side-menu.left {
   text-align: center;
 }
 
-.side-menu-sm #sidebar-menu > ul > li > a > i {
+.side-menu-sm #sidebar-menu > ul > li > a > i,
+.side-menu-sm #sidebar-menu > ul > li > div > a > i {
   display: block;
   font-size: 18px;
   line-height: 24px;
@@ -1775,24 +1794,29 @@ body.fixed-left .side-menu.left {
   z-index: 5;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a {
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a,
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a {
   padding: 15px 20px;
   min-height: 52px;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:hover {
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:hover,
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a:hover {
   background: #f4f8fb !important;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:active {
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:active,
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a:active {
   background: #f4f8fb !important;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:focus {
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a:focus,
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a:focus {
   background: #f4f8fb !important;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a i {
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > a i,
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a i {
   margin-right: 20px !important;
   font-size: 20px;
 }
@@ -1811,7 +1835,8 @@ body.fixed-left .side-menu.left {
   white-space: nowrap;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > a {
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > a,
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > div > a {
   position: relative;
   width: 260px;
   background: #f4f8fb;
@@ -1820,10 +1845,13 @@ body.fixed-left .side-menu.left {
 }
 
 #wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul {
+  padding-left: 0;
   display: block;
-  left: 70px;
+  left: 67px;
+  top: 55px;
   position: absolute;
   width: 190px;
+  height: inherit !important;
 }
 
 #wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul a {
@@ -1839,18 +1867,29 @@ body.fixed-left .side-menu.left {
   color: #5fbeaa;
 }
 
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li a span {
+  display: none;
+}
+
 #wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover a span {
+  padding-left: 10px;
   display: inline;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul {
-  display: block;
-  left: 70px;
-  position: absolute;
-  width: 190px;
+.slimScrollDiv, 
+.sidebar-inner.slimscrollleft {
+  overflow: inherit !important;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul a {
+#sidebar-menu ul > li > ul {
+  height: 0;
+  display: block;
+  padding-left: 50px;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+#sidebar-menu ul > li > ul a {
   background: #ffffff;
   box-shadow: none;
   padding-left: 15px;
@@ -1859,7 +1898,32 @@ body.fixed-left .side-menu.left {
   z-index: 6;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul a:hover {
+#sidebar-menu ul > li > ul a:hover,
+#sidebar-menu ul > li > ul a.active_sub {
+  color: #5fbeaa;
+}
+
+#sidebar-menu ul > li a span {
+  display: inline;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul {
+  display: block;
+  left: 70px;
+  position: absolute;
+  width: 190px;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul a {
+  background: #ffffff;
+  box-shadow: none;
+  padding-left: 15px;
+  position: relative;
+  width: 186px;
+  z-index: 6;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul a:hover {
   color: #5fbeaa;
 }
 
@@ -2385,7 +2449,6 @@ body.fixed-left .side-menu.left {
   position: relative;
   cursor: pointer;
   display: inline-block;
-  overflow: hidden;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

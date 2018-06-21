@@ -32,19 +32,8 @@ export default function(props:any){
       }
     };
 
-    function toggle_slimscroll(item: any){
-    const $ = (document as any).jQuery;
-        if($('#wrapper').hasClass('enlarged')){
-          $(item).css('overflow','inherit').parent().css('overflow','inherit');
-          $(item). siblings('.slimScrollBar').css('visibility','hidden');
-        }else{
-          $(item).css('overflow','hidden').parent().css('overflow','hidden');
-          $(item). siblings('.slimScrollBar').css('visibility','visible');
-        }
-    }
-
     const openLeftBar = function() {
-    const $ = (document as any).jQuery;
+      const $ = (document as any).jQuery;
       $('#wrapper').toggleClass('enlarged');
       $('#wrapper').addClass('forced');
 
@@ -59,8 +48,7 @@ export default function(props:any){
       } else {
         $('.subdrop').siblings('ul:first').show();
       }
-      
-      toggle_slimscroll('.slimscrollleft');
+
       $('body').trigger('resize');
     };
 
