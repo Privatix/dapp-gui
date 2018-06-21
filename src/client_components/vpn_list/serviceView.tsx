@@ -77,14 +77,14 @@ export default class ServiceView extends React.Component <any,any> {
             {
                 header: 'Started',
                 key: 'started',
-                render: (started) => { return <PgTime time={started} />; },
+                render: (started) => <PgTime time={started} />,
                 descSortFunction: DateSorter.desc,
                 ascSortFunction: DateSorter.asc
             },
             {
                 header: 'Stopped',
                 key: 'stopped',
-                render: (stopped) => { return <PgTime time={stopped} />; },
+                render: (stopped) => <PgTime time={stopped} />,
                 descSortFunction: DateSorter.desc,
                 ascSortFunction: DateSorter.asc
             },
@@ -99,7 +99,7 @@ export default class ServiceView extends React.Component <any,any> {
             {
                 header: 'Last Usage time',
                 key: 'lastUsageTime',
-                render: (lastUsageTime) => { return <PgTime time={lastUsageTime} />; },
+                render: (lastUsageTime) => <PgTime time={lastUsageTime} />,
                 descSortFunction: DateSorter.desc,
                 ascSortFunction: DateSorter.asc
             },

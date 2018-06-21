@@ -94,14 +94,14 @@ export default class ClientHistory extends React.Component<any,any> {
                 key: 'contractStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
-                render: (contractStatus) => { return <ContractStatus contractStatus={contractStatus} />; }
+                render: (contractStatus) => <ContractStatus contractStatus={contractStatus} />
             },
             {
                 header: 'Service status',
                 key: 'serviceStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
-                render: (serviceStatus) => { return <ChannelStatus serviceStatus={serviceStatus} />; }
+                render: (serviceStatus) => <ChannelStatus serviceStatus={serviceStatus} />
             },
             {
                 header: 'Job status',
@@ -134,7 +134,7 @@ export default class ClientHistory extends React.Component<any,any> {
                 key: 'contractStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
-                render: (contractStatus) => { return <ContractStatus contractStatus={contractStatus} />; }
+                render: (contractStatus) => <ContractStatus contractStatus={contractStatus} />
             },
             {
                 header: 'Usage',
@@ -147,7 +147,7 @@ export default class ClientHistory extends React.Component<any,any> {
             {
                 header: 'Last used',
                 key: 'lastUsed',
-                render: (lastUsed) => { return <PgTime time={lastUsed} />; },
+                render: (lastUsed) => <PgTime time={lastUsed} />,
                 descSortFunction: DateSorter.desc,
                 ascSortFunction: DateSorter.asc
 
