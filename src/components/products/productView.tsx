@@ -13,8 +13,7 @@ async function AsyncProductView(props:any){
         <table className='table table-striped'>
             <tbody>
                 <tr><td>Name:</td><td>{props.product.name}</td></tr>
-                <tr><td>DNS:</td><td>{'8.8.8.8'}</td></tr>
-                <tr><td>IP address:</td><td>{'192.168.0.1'}</td></tr>
+                <tr><td>Host:</td><td>{'192.168.0.1'}</td></tr>
                 <tr><td>Additional params:</td><td>{'coming soon'}</td></tr>
             </tbody>
         </table>
