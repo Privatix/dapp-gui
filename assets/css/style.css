@@ -1692,7 +1692,8 @@ body.fixed-left .side-menu.left {
   margin: 3px 0 0 0;
 }
 
-#sidebar-menu > ul > li > a.active {
+#sidebar-menu > ul > li > a[aria-current="page"],
+#sidebar-menu li[aria-current="page"] > a {
   background: #f4f8fb !important;
   border-left: 3px solid #5fbeaa;
   color: #5fbeaa !important;
@@ -1819,14 +1820,15 @@ body.fixed-left .side-menu.left {
   border-color: #5fbeaa;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul {
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > a > ul {
   display: block;
-  left: 70px;
+  left: 67px;
+  top: 55px;
   position: absolute;
   width: 190px;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul a {
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > a > ul a {
   background: #ffffff;
   box-shadow: none;
   padding-left: 15px;
@@ -1835,7 +1837,7 @@ body.fixed-left .side-menu.left {
   z-index: 6;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul a:hover {
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > a > ul a:hover {
   color: #5fbeaa;
 }
 
@@ -1843,14 +1845,20 @@ body.fixed-left .side-menu.left {
   display: inline;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul {
+.slimScrollDiv, 
+.sidebar-inner.slimscrollleft {
+  overflow: inherit !important;
+}
+
+#sidebar-menu ul > li:hover > a > ul {
   display: block;
-  left: 70px;
+  left: 237px;
+  top: 0;
   position: absolute;
   width: 190px;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul a {
+#sidebar-menu ul > li:hover > a > ul a {
   background: #ffffff;
   box-shadow: none;
   padding-left: 15px;
@@ -1859,7 +1867,31 @@ body.fixed-left .side-menu.left {
   z-index: 6;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu li .show-menu + ul a:hover {
+#sidebar-menu ul > li:hover > a > ul a:hover {
+  color: #5fbeaa;
+}
+
+#sidebar-menu ul > li:hover a span {
+  display: inline;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul {
+  display: block;
+  left: 70px;
+  position: absolute;
+  width: 190px;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul a {
+  background: #ffffff;
+  box-shadow: none;
+  padding-left: 15px;
+  position: relative;
+  width: 186px;
+  z-index: 6;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul a:hover {
   color: #5fbeaa;
 }
 
@@ -2385,7 +2417,6 @@ body.fixed-left .side-menu.left {
   position: relative;
   cursor: pointer;
   display: inline-block;
-  overflow: hidden;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;

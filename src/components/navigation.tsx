@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink, Link } from 'react-router-dom';
 declare var window: any;
 interface Props {
     mode: string;
@@ -10,7 +10,10 @@ export default class Navigation extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
-        this.state = {mode: props.mode};
+        this.state = {
+            mode: props.mode,
+            submenu: false,
+        };
     }
 
     componentDidUpdate() {
@@ -41,40 +44,54 @@ export default class Navigation extends React.Component<Props, any> {
         return {mode: nextProps.mode};
     }
 
+    handleClickTrue() {
+        this.setState({submenu: true});
+    }
+
+    handleClickFalse() {
+        this.setState({submenu: false});
+    }
+
     render(){
         setTimeout(function(){
             const $ = (window as any).jQuery;
             $.Sidemenu.init();
         }, 1000);
+        console.log('new submenu', this.state.submenu);
         return this.state.mode === undefined || this.state.mode === 'agent' ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
-                        <li className=''>
+
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/' activeClassName='active' className='waves-effect'>
                                 <i className='ti-home'></i><span> Dashboard </span>
                             </NavLink>
                         </li>
-                        <li className='has_sub'>
-                            <NavLink to='/channels/all' activeClassName='active' className='waves-effect'>
+
+                        <li className='has_sub' aria-current={this.state.submenu ? 'page' : null}>
+                            <NavLink to='/channels/all' activeClassName='active' className='waves-effect' >
                                 <i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span>
+                                <ul className='list-unstyled'>
+                                    <li onClick={this.handleClickTrue.bind(this)}><Link exact to='/channelsByStatus/active' className='waves-effect'>Active</Link></li>
+                                    <li onClick={this.handleClickTrue.bind(this)}><Link exact to='/channelsByStatus/terminated' className='waves-effect'>Archive</Link></li>
+                                    <li onClick={this.handleClickTrue.bind(this)}><Link exact to='/sessions/all' className='waves-effect'>Sessions</Link></li>
+                                </ul>
                             </NavLink>
-                            <ul className='list-unstyled'>
-                                <li><NavLink exact to='/channelsByStatus/active' activeClassName='active' className='waves-effect'>Active</NavLink></li>
-                                <li><NavLink exact to='/channelsByStatus/terminated' activeClassName='active' className='waves-effect'>Archive</NavLink></li>
-                                <li><NavLink exact to='/sessions/all' activeClassName='active' className='waves-effect'>Sessions</NavLink></li>
-                            </ul>
                         </li>
-                        <li className=''>
+
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/offerings/all' activeClassName='active' className='waves-effect'>
                                 <i className='md md-toc'></i><span> Offerings </span>
                             </NavLink>
                         </li>
-                        <li className=''>
+
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
                                 <i className='md md-toc'></i><span> Servers </span>
                             </NavLink>
                         </li>
+
                     </ul>
                     <div className='clearfix'></div>
                 </div>
