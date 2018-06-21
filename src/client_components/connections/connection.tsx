@@ -64,7 +64,7 @@ async function AsyncConnection (props:any){
                                 <tbody>
                                     <tr>
                                         <td>Id:</td>
-                                        <td>3</td>
+                                        <td>props.connection.id</td>
                                     </tr>
                                     <tr>
                                         <td>Offering:</td>

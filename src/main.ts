@@ -121,6 +121,7 @@ let password = '';
             req.options.headers = {};
         }
         req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
+        console.log(`${settings.apiEndpoint}${req.endpoint}`);
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 // console.log(req.endpoint, res.headers.get('content-type'));

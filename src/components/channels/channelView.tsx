@@ -38,7 +38,7 @@ export default function(props:any){
             <h5 className='card-header'>Access info</h5>
             <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                 <div className='card-body'>
-                    <AccessInfo channelId={props.channel.id} />
+                    <AccessInfo channel={props.channel} />
                 </div>
             </div>
         </div>
