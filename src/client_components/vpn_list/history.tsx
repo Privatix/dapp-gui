@@ -8,7 +8,7 @@ import ServiceView from './serviceView';
 import notice from '../../utils/notice';
 import ModalWindow from '../../components/modalWindow';
 import DateSorter from '../../components/utils/sorters/sortingDate';
-// import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
+import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 
 export default class ClientHistory extends React.Component<any,any> {
 
@@ -39,6 +39,16 @@ export default class ClientHistory extends React.Component<any,any> {
                 if (channel.channelStatus.channelStatus !== 'active') {
                     return true;
                 }
+            }).map((channel) => {
+                return {
+                    id: <ModalWindow customClass='' modalTitle='Service' text={channel.id}
+                                     component={<ServiceView service={channel}/>}/>,
+                    agent: channel.agent,
+                    contractStatus: channel.channelStatus.channelStatus,
+                    usage: channel.usage.current + ' ' + channel.usage.unit,
+                    cost: channel.usage.cost / 1e8,
+                    lastUsed: channel.channelStatus.lastChanged
+                };
             });
 
             this.setState({historyData});
@@ -53,7 +63,7 @@ export default class ClientHistory extends React.Component<any,any> {
                 let jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
 
                 return {
-                    id: channel,
+                    id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<ServiceView service={channel} />} />,
                     agent: channel.agent,
                     contractStatus: channel.channelStatus.channelStatus,
                     serviceStatus: channel.channelStatus.serviceStatus,
@@ -72,7 +82,8 @@ export default class ClientHistory extends React.Component<any,any> {
             {
                 header: 'Id',
                 key: 'id',
-                render: (id) => { return <ModalWindow customClass='' modalTitle='Service' text={id.id} component={<ServiceView service={id} />} />; }
+                descSortFunction: ModalPropTextSorter.desc,
+                ascSortFunction: ModalPropTextSorter.asc
             },
             {
                 header: 'Agent',
@@ -110,7 +121,9 @@ export default class ClientHistory extends React.Component<any,any> {
         const historyColumns = [
             {
                 header: 'Id',
-                key: 'id'
+                key: 'id',
+                descSortFunction: ModalPropTextSorter.desc,
+                ascSortFunction: ModalPropTextSorter.asc
             },
             {
                 header: 'Agent',
@@ -141,21 +154,6 @@ export default class ClientHistory extends React.Component<any,any> {
             }
         ];
 
-
-        const historyDataArr = [];
-        this.state.historyData.map((channel) => {
-            let row =  {
-                id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<ServiceView service={channel} />} />,
-                agent: channel.agent,
-                contractStatus: channel.channelStatus.channelStatus,
-                usage: channel.usage.current + ' ' + channel.usage.unit,
-                cost: channel.usage.cost / 1e8,
-                lastUsed: channel.channelStatus.lastChanged
-            };
-
-            historyDataArr.push(row);
-        });
-
         return <div className='col-lg-12 col-md-12'>
             <div className='m-t-5 m-b-20'>
                 <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this)}>Refresh</button>
@@ -176,7 +174,7 @@ export default class ClientHistory extends React.Component<any,any> {
                 <div className='card-body'>
                     <div className='bootstrap-table bootstrap-table-sortable'>
                         <SortableTable
-                            data={historyDataArr}
+                            data={this.state.historyData}
                             columns={historyColumns}/>
                     </div>
                 </div>

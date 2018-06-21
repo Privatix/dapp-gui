@@ -9,9 +9,6 @@ function Loader() {
 }
 
 async function AsyncAccessInfo (props:any){
-
-    console.log('Channel', props.channel.offering);
-
     const offerings = await fetch(`/offerings?id=${props.channel.offering}`, {method: 'GET'});
 
     const offering = (offerings as any)[0];

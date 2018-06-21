@@ -18,28 +18,27 @@ export default class ServiceView extends React.Component <any,any> {
         };
     }
 
-    componentDidMount() {
-        this.getSessions(this.state.service);
+    static getDerivedStateFromProps(props:any, state:any) {
+        return {
+            service: props.service,
+            sessions: []
+        };
     }
 
-    getSessions(service:any) {
+    getSessions() {
+        const service = this.state.service;
         fetch(`/sessions?channelId=${service.id}`, {}).then(async (sessionsRaw) => {
-            console.log('Offering', service.offering);
             const offerings = await fetch(`/offerings?id=${service.offering}`, {});
             const offering = (offerings as any)[0];
 
-            console.log('Offerings', offerings);
-
             const products = await fetch(`/products`, {});
             const product = (products as any).filter((product: any) => product.id === offering.product)[0];
-
-            console.log('Product', product);
 
             const sessions = (sessionsRaw as any).map((session) => {
                 return {
                     id: session.channel,
                     agent: this.state.service.agent,
-                    server: 'mock',
+                    server: product.name,
                     offering: this.state.service.offering,
                     started: session.started,
                     stopped: session.stopped,
@@ -56,6 +55,7 @@ export default class ServiceView extends React.Component <any,any> {
 
     render() {
         const service = this.state.service;
+        this.getSessions();
 
         const sessionsColumns = [
             {
