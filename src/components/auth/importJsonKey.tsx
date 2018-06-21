@@ -57,6 +57,7 @@ class ImportJsonKey extends React.Component<any, any>{
         } catch (err) {
             msg = 'Please enter a valid password.';
             notice({level: 'error', header: 'attention!', msg});
+            return;
         }
         const key = pk.toString('base64').split('+').join('-').split('/').join('_');
         console.log(pk, key);
