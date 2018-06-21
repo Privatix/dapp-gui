@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import OfferingsList from './offeringsList';
 import ModalWindow from '../modalWindow';
 import CreateOffering from './createOffering';
@@ -15,9 +16,8 @@ class Offerings extends React.Component<any, any>{
     // componentDidMount(){
     //     this.refresh();
     // }
-    //
-    refresh(){
 
+    refresh(){
         fetchOfferings(this.props.product).then((res: any) => {
             console.log('OFFERINGS REFRESH!!!', res);
             this.setState(res);
@@ -36,6 +36,7 @@ class Offerings extends React.Component<any, any>{
                 <div className='col-sm-12 m-b-20'>
                     <div className='btn-group m-t-5'>
                         <ModalWindow visible={false} customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering done={this.refresh.bind(this)} />} />
+                        <Link to={'#'} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
                     </div>
                 </div>
             </div>

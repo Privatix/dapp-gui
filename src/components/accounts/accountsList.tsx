@@ -21,7 +21,6 @@ export default class AsyncAccounts extends React.Component<any, any> {
     }
 
     refresh(){
-
         const endpoint = '/accounts';
         fetch(endpoint, {method: 'GET'}).then(accounts => {
             this.setState({accounts});

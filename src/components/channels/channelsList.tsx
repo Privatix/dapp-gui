@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import ChannelUsage from './channelUsage';
@@ -101,18 +102,25 @@ console.log('Channels', channels);
                 <h3 className='page-title'>All Services</h3>
             </div>
         </div>
-            <div className='row'>
-                <div className='col-12'>
-                    <div className='card-box'>
-                        <div className='bootstrap-table bootstrap-table-sortable'>
-                            <SortableTable
-                                data={channelsDataArr}
-                                columns={columns} />
-                        </div>
+        <div className='row'>
+            <div className='col-sm-12 m-b-15'>
+                <div className='m-t-15'>
+                    <Link to={'#'} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
+                </div>
+            </div>
+        </div>
+        <div className='row'>
+            <div className='col-12'>
+                <div className='card-box'>
+                    <div className='bootstrap-table bootstrap-table-sortable'>
+                        <SortableTable
+                            data={channelsDataArr}
+                            columns={columns} />
                     </div>
                 </div>
-          </div>
-        </div>;
+            </div>
+        </div>
+    </div>;
 }
 
 export default asyncReactor(AsyncChannels, Loader);

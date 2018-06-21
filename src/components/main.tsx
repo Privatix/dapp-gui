@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import {fetch} from '../utils/fetch';
 // import {fetchOfferings} from './offerings/utils';
 import {asyncReactor} from 'async-reactor';
@@ -25,6 +26,13 @@ async function AsyncMain (props:any){
         <div className='row'>
             <div className='col-sm-12 m-b-20'>
                 <h3 className='page-title'>Total income: {(income/1e8).toFixed(3)} PRIX</h3>
+            </div>
+        </div>
+        <div className='row'>
+            <div className='col-sm-12 m-b-15'>
+                <div className='m-t-15'>
+                    <Link to={'#'} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
+                </div>
             </div>
         </div>
         <div className='row'>
