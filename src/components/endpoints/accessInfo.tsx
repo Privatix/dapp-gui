@@ -18,8 +18,8 @@ async function AsyncAccessInfo (props:any){
     return <div className='table-responsive'>
         <table className='table table-striped'>
             <tbody>
-            <tr><td>Country:</td><td><img src={`images/country/${offering.country.toLowerCase()}.png`} width='30px'/></td></tr>
-            <tr><td>Hostname:</td><td>{product.serviceEndpointAddress}</td></tr>
+                <tr><td>Country:</td><td><img src={`images/country/${offering.country.toLowerCase()}.png`} width='30px'/></td></tr>
+                <tr><td>Hostname:</td><td>{product.serviceEndpointAddress}</td></tr>
             </tbody>
         </table>
     </div>;

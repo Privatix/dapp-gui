@@ -8,14 +8,10 @@ export default class ContractStatus extends React.Component<any, any> {
 
     get classes() {
         return {
-            pending: 'primary',
-            active: 'success',
-            wait_coop: 'warning',
-            wait_challenge: 'warning',
-            closed_coop: 'inverse',
-            in_challenge: 'danger',
-            wait_uncoop: 'danger',
-            closed_uncoop: 'pink'
+            unpublished: 'default',
+            bchain_publishing: 'primary',
+            bchain_published: 'primary',
+            msg_channel_published: 'success'
         };
     }
 

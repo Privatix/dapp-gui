@@ -8,19 +8,15 @@ export default class ContractStatus extends React.Component<any, any> {
 
     get classes() {
         return {
+            terminated: 'default',
             pending: 'primary',
-            active: 'success',
-            wait_coop: 'warning',
-            wait_challenge: 'warning',
-            closed_coop: 'inverse',
-            in_challenge: 'danger',
-            wait_uncoop: 'danger',
-            closed_uncoop: 'pink'
+            suspended: 'primary',
+            active: 'success'
         };
     }
 
     render() {
-        const status = this.props.contractStatus;
+        const status = this.props.status;
         return <span className={`label label-table label-${this.classes[status]}`}>{status}</span>;
     }
 }

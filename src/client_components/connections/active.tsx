@@ -17,7 +17,7 @@ class ActiveConnection extends React.Component<any, any>{
                         <td>
                             <ModalWindow visible={this.state.popup}
                                          customClass='btn btn-link waves-effect'
-                                         modalTitle='Connection' text={channel.id} component={<Connection/>}
+                                         modalTitle='Connection' text={channel.id} component={<Connection connection={channel} />}
                             />
                         </td>
                         <td>{channel.agent}</td>

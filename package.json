@@ -34,13 +34,13 @@
     "btoa": "^1.2.1",
     "colors": "^1.1.2",
     "cors": "^2.8.4",
+    "dateformat": "^3.0.3",
     "electron": "^1.8.4",
     "electron-fetch": "^1.1.0",
     "history": "^4.7.2",
     "jquery": "^3.3.1",
     "keythereum": "^1.0.4",
     "lodash": "^4.17.10",
-    "node-fetch": "^2.0.0",
     "node-loader": "^0.6.0",
     "popper.js": "^1.14.3",
     "rc-slider": "^8.6.1",
@@ -58,8 +58,7 @@
     "react-toggle": "^4.0.2",
     "react-tooltip": "^3.5.0",
     "style-loader": "^0.21.0",
-    "uuid": "^3.2.1",
-    "dateformat": "^3.0.3"
+    "uuid": "^3.2.1"
   },
   "license": "GPL-3.0-only",
   "repository": {
