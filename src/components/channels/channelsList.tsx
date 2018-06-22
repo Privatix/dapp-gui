@@ -19,7 +19,7 @@ function Loader() {
 
 }
 
-async function AsyncChannels (props:any){
+async function refresh(props:any) {
 
     let endpoint;
 
@@ -30,7 +30,7 @@ async function AsyncChannels (props:any){
     }
 
     const channels = await fetch(endpoint, {method: 'GET'});
-console.log('Channels', channels);
+
     const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
 
     const products = await Promise.all(channelsProducts);
@@ -96,6 +96,23 @@ console.log('Channels', channels);
         }
     ];
 
+    return {
+        channelsDataArr: channelsDataArr,
+        columns: columns,
+    };
+
+}
+
+async function AsyncChannels (props:any){
+
+    let channelsDataArr, columns;
+
+    await refresh(props)
+        .then((table)=>{
+            channelsDataArr = table.channelsDataArr;
+            columns = table.columns;
+        });
+
     return <div className='container-fluid'>
         <div className='row'>
             <div className='col-sm-12 m-b-15'>
@@ -105,7 +122,12 @@ console.log('Channels', channels);
         <div className='row'>
             <div className='col-sm-12 m-b-15'>
                 <div className='m-t-15'>
-                    <Link to={'#'} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
+                    <Link to={'#'} onClick={()=>{ 
+                        refresh(props)
+                            .then((table)=>{
+                                channelsDataArr = table.channelsDataArr; columns = table.columns;
+                            });
+                    }} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
                 </div>
             </div>
         </div>

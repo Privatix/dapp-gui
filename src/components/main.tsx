@@ -12,15 +12,17 @@ function Loader() {
 
 }
 
-async function AsyncMain (props:any){
-
+async function refresh() {
     const sessions = await fetch(`/sessions`, {method: 'GET'});
-    const income = await (sessions as any).reduce(async (income, session) => {
+    return await (sessions as any).reduce(async (income, session) => {
         const channels = await fetch(`/channels?id=${session.channel}`, {method: 'GET'});
         return income + (channels as any).reduce((income, channel) => {return income + channel.receiptBalance;}, 0);
     }, 0);
+}
 
+async function AsyncMain (props:any){
     // const {offerings, products} = await fetchOfferings('all');
+    let income: any = refresh();
 
     return <div className='container-fluid'>
         <div className='row'>
@@ -31,7 +33,7 @@ async function AsyncMain (props:any){
         <div className='row'>
             <div className='col-sm-12 m-b-15'>
                 <div className='m-t-15'>
-                    <Link to={'#'} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
+                    <Link to={'#'} onClick={()=>{income = refresh();}} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
                 </div>
             </div>
         </div>

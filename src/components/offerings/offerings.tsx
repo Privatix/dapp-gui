@@ -35,8 +35,8 @@ class Offerings extends React.Component<any, any>{
             <div className='row'>
                 <div className='col-sm-12 m-b-20'>
                     <div className='btn-group m-t-5'>
-                        <ModalWindow visible={false} customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering done={this.refresh.bind(this)} />} />
-                        <Link to={'#'} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
+                        <ModalWindow visible={false} customClass='btn btn-default btn-custom waves-effect waves-light m-r-15' modalTitle='Create offering' text='Create an offering' component={<CreateOffering done={this.refresh.bind(this)} />} />
+                        <Link to={'#'} onClick={this.refresh.bind(this)} className='btn btn-default btn-custom waves-effect waves-light'>Refresh all</Link>
                     </div>
                 </div>
             </div>
