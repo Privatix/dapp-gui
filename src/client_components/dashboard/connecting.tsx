@@ -4,14 +4,12 @@ import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import Countdown from 'react-countdown-now';
 import ActiveConnection from '../connections/active';
 
-    let timeEnd = 720000;
-
     const countdownRender = ({ minutes, seconds }) => {
         return <span>{minutes}:{seconds}</span>;
     };
 
     const completeRemaining = () => {
-        console.log('Completed', 777);
+        return <span>Waiting time is over. Finish procedure will be called automatically.</span>;
     };
 
 
@@ -83,7 +81,7 @@ export default class Connecting extends React.Component<any, any>{
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text remainingText'>Remaining: <strong><Countdown date={Date.now() + this.state.channels[0].channelStatus.maxInactiveTime} renderer={countdownRender} onComplete={completeRemaining} /></strong> min</p>
+                        <p className='card-text remainingText'>Remaining: <strong><Countdown date={new Date(Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000)} renderer={countdownRender} onComplete={completeRemaining} /></strong> min</p>
                         <p className='card-text m-t-5 m-b-20 text-muted'>After max. inactivity time has been reached, "Finish procedure" will be called automatically.</p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
@@ -147,8 +145,8 @@ export default class Connecting extends React.Component<any, any>{
                         <p className='card-text'>This operation will permanently finish VPN usage.</p>
                         <p className='card-text m-t-5 m-b-20'>Your remaining deposit will be returned approx. in 12 min.</p>
                         <ConfirmPopupSwal
-                            endpoint={ `/`}
-                            options={{method: 'put', body: {action: 'remove'}}}
+                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
+                            options={{method: 'put', body: {action: 'terminate'}}}
                             title={'Finish'}
                             text={<span>This operation will permanently finish VPN usage</span>}
                             class={'btn btn-danger btn-custom btn-block'}
@@ -168,11 +166,11 @@ export default class Connecting extends React.Component<any, any>{
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text remainingText'>Remaining: <strong><Countdown date={Date.now() + timeEnd} renderer={countdownRender} onComplete={completeRemaining} /></strong> min</p>
+                        <p className='card-text remainingText'>Remaining: <strong><Countdown date={Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000} renderer={countdownRender} onComplete={completeRemaining} /></strong> min</p>
                         <p className='card-text m-t-5 m-b-20 text-muted'>After max. inactivity time has been reached, "Finish procedure" will be called automatically.</p>
                         <ConfirmPopupSwal
-                            endpoint={`/`}
-                            options={{method: 'get'}}
+                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
+                            options={{method: 'put', body: {action: 'resume'}}}
                             title={'Resume'}
                             text={<span></span>}
                             class={'btn btn-primary btn-custom btn-block'}
@@ -189,8 +187,8 @@ export default class Connecting extends React.Component<any, any>{
                         <p className='card-text'>This operation will permanently finish VPN usage.</p>
                         <p className='card-text m-t-5 m-b-20'>Your remaining deposit will be returned approx. in 12 min.</p>
                         <ConfirmPopupSwal
-                            endpoint={`/`}
-                            options={{method: 'put', body: {action: 'remove'}}}
+                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
+                            options={{method: 'put', body: {action: 'terminate'}}}
                             title={'Finish'}
                             text={<span>This operation will permanently finish VPN usage</span>}
                             class={'btn btn-danger btn-custom btn-block'}
@@ -207,6 +205,5 @@ export default class Connecting extends React.Component<any, any>{
 
     render(){
         return this[this.state.status]();
-
     }
 }
