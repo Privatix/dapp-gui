@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { NavLink } from 'react-router-dom';
 import TopPanel from './topPanel';
+declare var window: any;
 
 export default function(props:any){
 
@@ -33,7 +34,7 @@ export default function(props:any){
     };
 
     const openLeftBar = function() {
-      const $ = (document as any).jQuery;
+      const $ = (window as any).jQuery;
       $('#wrapper').toggleClass('enlarged');
       $('#wrapper').addClass('forced');
 
