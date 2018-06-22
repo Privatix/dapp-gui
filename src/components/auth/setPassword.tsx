@@ -59,9 +59,6 @@ class SetPassword extends React.Component<any, any>{
             return;
         }
 
-        const res = await fetch('/auth', {method: 'post', body: {password: pwd}});
-        // TODO notice if server returns error (not implemented on dappctrl yet)
-        console.log(res);
         const settings = (await fetch('/localSettings', {})) as LocalSettings;
         settings.firstStart = false;
         await fetch('/localSettings', {method: 'post', body: settings});

@@ -352,6 +352,154 @@ input:checked + .slider:before {
     border: 1px solid #f05050;
 }
 
-.width30{
-    width: 30%;
+/*********** Menu styles **********/
+#sidebar-menu > ul > li > div > a {
+  color: #36404a;
+  display: block;
+  padding: 12px 20px;
+  margin: 4px 0;
+  border-left: 3px solid #ffffff;
 }
+
+#sidebar-menu > ul > li > div > a:hover {
+  color: #5fbeaa;
+  text-decoration: none;
+}
+
+#sidebar-menu > ul > li > div > a > span {
+  vertical-align: middle;
+}
+
+#sidebar-menu ul li .menu-arrow {
+  transition: transform .15s;
+}
+
+#sidebar-menu ul li[aria-current="page"] .menu-arrow {
+  transform: rotate(90deg);
+}
+
+#sidebar-menu > ul > li > div > a > i.i-right {
+  float: right;
+  margin: 3px 0 0 0;
+}
+
+#sidebar-menu > ul > li > a[aria-current="page"],
+#sidebar-menu > ul > li > div > a[aria-current="page"],
+#sidebar-menu li[aria-current="page"] > div > a {
+  background: #f4f8fb !important;
+  border-left: 3px solid #5fbeaa;
+  color: #5fbeaa !important;
+}
+
+#sidebar-menu li[aria-current="page"] .sub_menu {
+  height: 114px;
+}
+
+.side-menu-sm #sidebar-menu > ul > li > div > a > i {
+  display: block;
+  font-size: 18px;
+  line-height: 24px;
+  width: 100%;
+  margin: 0;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a {
+  padding: 15px 20px;
+  min-height: 52px;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a:hover {
+  background: #f4f8fb !important;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a:active {
+  background: #f4f8fb !important;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a:focus {
+  background: #f4f8fb !important;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu > ul > li > div > a i {
+  margin-right: 20px !important;
+  font-size: 20px;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > div > a {
+  position: relative;
+  width: 260px;
+  background: #f4f8fb;
+  color: #5fbeaa;
+  border-color: #5fbeaa;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > ul {
+  padding-left: 0;
+  left: 67px;
+  top: 55px;
+  height: inherit !important;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li a span {
+  display: none;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover a span {
+  padding-left: 10px;
+}
+
+.slimScrollDiv, 
+.sidebar-inner.slimscrollleft {
+  overflow: inherit !important;
+}
+
+#sidebar-menu ul > li > ul {
+  height: 0;
+  display: block;
+  padding-left: 50px;
+  overflow: hidden;
+  transition: height 0.5s;
+}
+
+#sidebar-menu ul > li > ul a {
+  background: #ffffff;
+  box-shadow: none;
+  padding-left: 15px;
+  position: relative;
+  width: 186px;
+  z-index: 6;
+}
+
+#sidebar-menu ul > li > ul a:hover,
+#sidebar-menu ul > li > ul a.active_sub {
+  color: #5fbeaa;
+}
+
+#sidebar-menu ul > li a span {
+  display: inline;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul {
+  display: block;
+  left: 70px;
+  position: absolute;
+  width: 190px;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul a {
+  background: #ffffff;
+  box-shadow: none;
+  padding-left: 15px;
+  position: relative;
+  width: 186px;
+  z-index: 6;
+}
+
+#wrapper.enlarged .left.side-menu #sidebar-menu li.show-menu + ul a:hover {
+  color: #5fbeaa;
+}
+
+.waves-effect{
+    overflow: inherit;
+}
+/*********** END Menu styles **********/
