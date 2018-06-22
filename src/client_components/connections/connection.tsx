@@ -5,6 +5,7 @@ import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import * as dateformat from 'dateformat';
 import ServiceStatus from './serviceStatus';
 import ContractStatus from '../../components/channels/contractStatus';
+import AccessInfo from '../../components/endpoints/accessInfo';
 
 console.log(dateformat);
 
@@ -112,13 +113,7 @@ async function AsyncConnection (props:any){
                     <h5 className='card-header'>Access info</h5>
                     <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                         <div className='card-body'>
-                            <table className='table table-bordered table-striped'>
-                                <tbody>
-                                <tr><td>Country:</td><td><img src='images/country/ua.png' className='flagImg' /></td></tr>
-                                <tr><td>Hostname:</td><td>195.49.100.12</td></tr>
-                                <tr><td>Port:</td><td>443</td></tr>
-                                </tbody>
-                            </table>
+                           <AccessInfo channel={props.connection} />
                         </div>
                     </div>
                 </div>
