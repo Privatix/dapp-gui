@@ -4,25 +4,17 @@ import {asyncReactor} from 'async-reactor';
 
 function Loader() {
 
-  return (<h2>Loading endpoint ...</h2>);
+    return (<h2>Loading endpoint ...</h2>);
 
 }
 
 async function AsyncAccessInfo (props:any){
-
-    // const endpoints = await fetch(`/endpoints?ch_id=${props.channelId}`, {method: 'GET'});
-    // const endpoint = endpoints[0];
-    // const channels = await fetch(`/channels/?id=${props.channelId}`, {method: 'GET'});
-    // const channel = channels[0];
-    console.log('ACCESS INFO!!!', props.channel);
-    const offerings = await fetch(`/offerings/?id=${props.channel.offering}`, {method: 'GET'});
-    console.log('OFFERINGS!!!', offerings);
+    const offerings = await fetch(`/offerings?id=${props.channel.offering}`, {method: 'GET'});
 
     const offering = (offerings as any)[0];
-    console.log(offerings, offering);
+
     const products = await fetch(`/products`, {});
     const product = (products as any).filter((product: any) => product.id === offering.product)[0];
-    console.log(products, product);
     return <div className='table-responsive'>
         <table className='table table-striped'>
             <tbody>

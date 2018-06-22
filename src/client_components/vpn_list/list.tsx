@@ -8,6 +8,7 @@ import {fetch} from '../../utils/fetch';
 import AcceptOffering from './acceptOffering';
 import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
+import notice from '../../utils/notice';
 
 export default class AsyncList extends React.Component<any,any> {
     constructor(props:any) {
@@ -50,11 +51,28 @@ export default class AsyncList extends React.Component<any,any> {
         this.getClientOfferings();
     }
 
-    async getClientOfferings() {
+    async refresh(clicked?: boolean) {
+        this.getClientOfferings(this.filter.bind(this)).then(() => {
+            if (clicked === true) {
+                notice({level: 'info', title: 'Congratulations!', msg: 'VPN list was successfully updated!'});
+            }
+        });
+    }
+
+    async getClientOfferings(done?: Function) {
         let endpoint = '/client/offerings';
 
         fetch(endpoint, {method: 'GET'})
             .then((clientOfferings) => {
+                // Show loader when downloading VPN list
+                if (Object.keys(clientOfferings).length === 0) {
+                    this.setState({spinner: true});
+                    setTimeout(() => {
+                        this.refresh();
+                    }, 5000);
+                    return;
+                }
+
                 let offerings = (clientOfferings as any).map((offering) => {
                     return {
                         id: <ModalWindow customClass='' modalTitle='Accept Offering' text={offering.id} component={<AcceptOffering offering={offering} />} />,
@@ -102,6 +120,10 @@ export default class AsyncList extends React.Component<any,any> {
                     countries,
                     filteredCountries: countries
                 });
+
+                if ('function' === typeof done) {
+                    done();
+                }
             });
     }
 
@@ -193,7 +215,8 @@ export default class AsyncList extends React.Component<any,any> {
 
     filter() {
         // filter by price
-        let from = (document.getElementById('priceFrom') as HTMLInputElement).value;
+        let fromEl = document.getElementById('priceFrom') as HTMLInputElement;
+        let from = fromEl !== null ? fromEl.value : false;
         let to = (document.getElementById('priceTo') as HTMLInputElement).value;
         let filtered = this.state.data.filter((item) => {
             if (item.price >= from && item.price <= to) {
@@ -266,6 +289,9 @@ export default class AsyncList extends React.Component<any,any> {
             :
             <div className='container-fluid'>
                 <div className='row m-t-20'>
+                    <div className='col-12 m-b-20'>
+                        <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this, true)}>Refresh</button>
+                    </div>
                     <div className='col-3'>
                         <div className='card m-b-20'>
                             <div className='card-body'>
