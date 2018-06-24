@@ -18,7 +18,6 @@ import CreateProduct from './products/addProduct';
 import Offerings from './offerings/offerings';
 import Offering from './offerings/offering';
 import CreateOffering from './offerings/createOffering';
-import FilledOffering from './offerings/filledOffering';
 import ChannelsList from './channels/channelsList';
 import ChannelsByStatus from './channels/channelsByStatus';
 import Channel from './channels/channel';
@@ -90,7 +89,6 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
                             <Route path='/offering/:offering' component={Offering} />
                             <Route path='/createOffering/' component={CreateOffering} />
-                            <Route path='/filledOffering/:offering' component={FilledOffering} />
                             <Route path='/channels/:offering' component={ChannelsList} />
                             <Route path='/channelsByStatus/:status' component={ChannelsByStatus} />
                             <Route path='/channel/:channel' component={Channel} />
