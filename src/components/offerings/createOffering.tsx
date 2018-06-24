@@ -2,7 +2,6 @@ import * as React from 'react';
 import Select from 'react-select';
 import {fetch} from '../../utils/fetch';
 import GasRange from '../utils/gasRange';
-// import notice from '../../utils/notice';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
 

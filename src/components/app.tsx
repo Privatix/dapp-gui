@@ -25,8 +25,6 @@ import SessionsList from './sessions/sessionsList';
 import Session from './sessions/session';
 import Endpoint from './endpoints/endpoint';
 
-import TemplatesList from './templates/templatesList';
-import Template from './templates/template';
 import SetAccount from './auth/setAccount';
 import GenerateKey from './auth/generateKey';
 import ImportHexKey from './auth/importHexKey';
@@ -77,8 +75,6 @@ export default class App extends React.Component<Props, any> {
                     <div className='content'>
                         <Switch>
                             <Route exact path='/' component={Main} />
-                            <Route path='/templates' component={TemplatesList} />
-                            <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />
                             <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
                             <Route path='/createProduct' component={CreateProduct} />
