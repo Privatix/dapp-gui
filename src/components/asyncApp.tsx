@@ -3,7 +3,7 @@ import * as React from 'react';
 // tslint:disable-next-line
 
 import {asyncReactor} from 'async-reactor';
-import {fetch} from '../utils/fetch';
+import * as api from '../utils/api';
 
 import App from './app';
 
@@ -14,9 +14,8 @@ function Loader() {
 }
 
 async function AsyncApp(props:any){
-
-    const localSettings = await fetch('/localSettings', {});
-    return <App mode={(localSettings as any).mode} />;
+    const userMode = await api.getUserMode();
+    return <App mode={userMode} />;
 }
 
 export default asyncReactor(AsyncApp, Loader);
