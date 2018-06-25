@@ -1,6 +1,6 @@
 {
-    "firstStart": false
-   ,"accountCreated": true
+    "firstStart": true
+   ,"accountCreated": false
    ,"apiEndpoint": "http://localhost:3000"
    ,"gas": {
         "acceptOffering": 100000,
