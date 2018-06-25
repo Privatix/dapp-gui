@@ -1,12 +1,13 @@
 export interface GasConsumption {
     acceptOffering: number;
+    createOffering: number;
 }
 
 export interface LocalSettings {
     firstStart: boolean;
     accountCreated: boolean;
     apiEndpoint: string;
-    gas: GasConsumtion;
+    gas: GasConsumption;
 }
 
 export interface DbSetting {

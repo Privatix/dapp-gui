@@ -3,6 +3,7 @@
    ,"accountCreated": false
    ,"apiEndpoint": "http://localhost:3000"
    ,"gas": {
-        "acceptOffering": 100000
+        "acceptOffering": 100000,
+        "createOffering": 100000
    }
 }
