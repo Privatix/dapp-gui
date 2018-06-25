@@ -5,6 +5,7 @@ import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
+import {LocalSettings} from '../../typings/settings';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -81,7 +82,7 @@ class CreateOffering extends React.Component<any, any>{
         console.log(payload);
     }
 
-    onSubmit(evt:any){
+    async onSubmit(evt:any){
         this.setState({errMsg: ''});
         evt.preventDefault();
         console.log(this.state);
@@ -106,6 +107,8 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeInteger = [];
         const isZero = [];
 
+        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        
         let err = false;
         const payload = Object.assign({}, this.state.payload);
 
@@ -157,6 +160,11 @@ class CreateOffering extends React.Component<any, any>{
             err = true;
         }
 
+        if(this.state.account.ethBalance < settings.gas.acceptOffering*this.state.gasPrice){
+            console.log('4 err');
+            err=true;
+        }
+
         if(err){
             let msg = '';
             if(mustBeFilled.length){
@@ -182,6 +190,9 @@ class CreateOffering extends React.Component<any, any>{
             }
             if(payload.deposit === payload.deposit && payload.deposit > this.state.account.psc_balance){
                 msg += 'Deposit is greater then service balance. Please choose another account or top up the balance. ';
+            }
+            if(this.state.account.ethBalance < settings.gas.acceptOffering*this.state.gasPrice){
+                msg += ' Not enough funds for publish transaction. Please, select another account.';
             }
             if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
                 if(payload.maxUnit < payload.minUnit){

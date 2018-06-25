@@ -4,6 +4,7 @@ export enum Mode {
 
 export interface GasConsumption {
     acceptOffering: number;
+    createOffering: number;
 }
 
 export interface LocalSettings {
@@ -11,5 +12,5 @@ export interface LocalSettings {
     accountCreated: boolean;
     apiEndpoint: string;
     mode: Mode;
-    gas: GasConsumtion;
+    gas: GasConsumption;
 }
