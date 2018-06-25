@@ -18,7 +18,6 @@ import CreateProduct from './products/addProduct';
 import Offerings from './offerings/offerings';
 import Offering from './offerings/offering';
 import CreateOffering from './offerings/createOffering';
-import FilledOffering from './offerings/filledOffering';
 import ChannelsList from './channels/channelsList';
 import ChannelsByStatus from './channels/channelsByStatus';
 import Channel from './channels/channel';
@@ -26,8 +25,6 @@ import SessionsList from './sessions/sessionsList';
 import Session from './sessions/session';
 import Endpoint from './endpoints/endpoint';
 
-import TemplatesList from './templates/templatesList';
-import Template from './templates/template';
 import SetAccount from './auth/setAccount';
 import GenerateKey from './auth/generateKey';
 import ImportHexKey from './auth/importHexKey';
@@ -78,8 +75,6 @@ export default class App extends React.Component<Props, any> {
                     <div className='content'>
                         <Switch>
                             <Route exact path='/' component={Main} />
-                            <Route path='/templates' component={TemplatesList} />
-                            <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />
                             <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
                             <Route path='/createProduct' component={CreateProduct} />
@@ -90,7 +85,6 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
                             <Route path='/offering/:offering' component={Offering} />
                             <Route path='/createOffering/' component={CreateOffering} />
-                            <Route path='/filledOffering/:offering' component={FilledOffering} />
                             <Route path='/channels/:offering' component={ChannelsList} />
                             <Route path='/channelsByStatus/:status' component={ChannelsByStatus} />
                             <Route path='/channel/:channel' component={Channel} />

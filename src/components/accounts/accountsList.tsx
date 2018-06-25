@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import {fetch} from '../../utils/fetch';
-// import {asyncReactor} from 'async-reactor';
+import * as api from '../../utils/api';
+
 import SortableTable from 'react-sortable-table-vilan';
 import ModalWindow from '../modalWindow';
 import Account from './account';
@@ -20,11 +20,10 @@ export default class AsyncAccounts extends React.Component<any, any> {
         this.setState({visible: false});
     }
 
-    refresh(){
-        const endpoint = '/accounts';
-        fetch(endpoint, {method: 'GET'}).then(accounts => {
-            this.setState({accounts});
-        });
+    async refresh(){
+
+        const accounts = await api.getAccounts();
+        this.setState({accounts});
     }
 
     onRefresh(evt: any){
