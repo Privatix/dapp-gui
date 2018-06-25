@@ -2,7 +2,6 @@
 import * as React from 'react';
 // tslint:disable-next-line
 
-import {fetch} from '../utils/fetch';
 import { Route, Router, Switch} from 'react-router';
 
 import { createMemoryHistory } from 'history';
@@ -40,6 +39,8 @@ import ClientDashboardPaused from '../client_components/dashboard/paused';
 import VPNList from '../client_components/vpn_list/list';
 import AcceptOffering from '../client_components/vpn_list/acceptOffering';
 import ClientHistory from '../client_components/vpn_list/history';
+import * as api from '../utils/api';
+import notice from '../utils/notice';
 
 import Logs from './logs/logs';
 
@@ -60,10 +61,19 @@ export default class App extends React.Component<Props, any> {
         return {mode: nextProps.mode};
     }
 
-    onSwitchMode(evt: any){
+    async onSwitchMode(evt: any){
         evt.preventDefault();
-        fetch('/switchMode', {});
-        this.setState({mode: this.state.mode === undefined || this.state.mode === 'agent' ? 'client' : 'agent'});
+
+        const newUserMode = this.state.mode === 'agent' ? 'client' : 'agent';
+        const updateResult = await api.setUserMode(newUserMode);
+
+        if (updateResult === 'updated.') {
+            this.setState({mode: newUserMode});
+            notice({level: 'info', title: 'Congratulations!', msg: 'User mode was successfully switched to ' + newUserMode.toUpperCase()});
+        } else {
+            notice({level: 'error', title: 'Attention!', msg: 'Something went wrong!'});
+        }
+
     }
 
     render(){
