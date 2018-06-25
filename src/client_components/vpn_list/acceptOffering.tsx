@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Select from 'react-select';
+import * as api from '../../utils/api';
 import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 import { withRouter } from 'react-router-dom';
@@ -13,13 +14,11 @@ class AcceptOffering extends React.Component<any, any>{
         this.state = {accounts: [], gasPrice: 6*1e9, deposit: (props.offering.unitPrice*props.offering.minUnits)};
     }
 
-    componentDidMount(){
+    async componentDidMount(){
 
-        fetch('/accounts/', {method: 'get'})
-            .then((accounts: any) => {
-                const account = accounts.find((account: any) => account.isDefault);
-                this.setState({accounts, account});
-            });
+        const accounts = await api.getAccounts();
+        const account = accounts.find((account: any) => account.isDefault);
+        this.setState({accounts, account});
     }
 
     onAccountChanged(selectedAccount: any) {

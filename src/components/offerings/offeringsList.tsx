@@ -1,6 +1,7 @@
 import * as React from 'react';
 // import { Link } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 
 import OfferingStatus from './offeringStatus';
 import SortableTable from 'react-sortable-table-vilan';
@@ -31,9 +32,9 @@ class AsyncOfferings extends React.Component<any, any> {
         }
 
         const offeringsRequest = fetch(endpoint, {method: 'GET'});
-        const productsRequest = fetch('/products', {});
-        let offerings, products;
-        [offerings, products] = await Promise.all([offeringsRequest, productsRequest]);
+        const products = await api.getProducts();
+        let offerings;
+        [offerings] = await Promise.all([offeringsRequest]);
         const resolveTable = (products as any).reduce((table, product) => {
             table[product.id] = product.name;
             return table;

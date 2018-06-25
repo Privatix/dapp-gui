@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Select from 'react-select';
 import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
@@ -30,28 +31,26 @@ class CreateOffering extends React.Component<any, any>{
 
     }
 
-    componentDidMount(){
+    async componentDidMount(){
 
-        Promise.all([fetch('/products'), fetch('/accounts/')])
-            .then((res: any) => {
-                // TODO check products length
-                let products, accounts;
-                [products, accounts] = res;
-                const account = accounts.find((account: any) => account.isDefault);
-                // console.log('Accounts retrieved!!!', accounts, account);
-                const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
-                this.setState({products, accounts, account, payload});
-                fetch(`/templates?id=${products[0].offerTplID}`)
-                    .then((templates: any) => {
+        const accounts = await api.getAccounts();
+        const products = await api.getProducts();
+        console.log(products);
+        // TODO check products length
+        const account = accounts.find((account: any) => account.isDefault);
+        // console.log('Accounts retrieved!!!', accounts, account);
+        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
+        this.setState({products, accounts, account, payload});
+        fetch(`/templates?id=${products[0].offerTplID}`)
+            .then((templates: any) => {
 
-                        const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
+                const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
-                        // console.log(products, accounts, templates);
-                        const template = templates[0];
-                        template.raw = JSON.parse(atob(template.raw));
-                        this.setState({payload, template});
-                        // console.log(products, template, 'accounts', accounts);
-                    });
+                // console.log(products, accounts, templates);
+                const template = templates[0];
+                template.raw = JSON.parse(atob(template.raw));
+                this.setState({payload, template});
+                // console.log(products, template, 'accounts', accounts);
             });
     }
 
