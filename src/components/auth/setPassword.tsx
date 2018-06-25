@@ -20,7 +20,7 @@ class SetPassword extends React.Component<any, any>{
             return 'neutral';
         }
 
-        if (this.state.pwd.length < this.state.conf.length) {
+        if (this.state.pwd.length !== this.state.conf.length) {
             return 'wrong';
         }
 
