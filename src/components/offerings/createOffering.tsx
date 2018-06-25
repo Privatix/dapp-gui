@@ -160,7 +160,7 @@ class CreateOffering extends React.Component<any, any>{
             err = true;
         }
 
-        if(this.state.account.ethBalance < settings.gas.acceptOffering*this.state.gasPrice){
+        if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
             console.log('4 err');
             err=true;
         }
