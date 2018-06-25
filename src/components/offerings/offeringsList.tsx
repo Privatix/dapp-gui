@@ -67,8 +67,7 @@ class AsyncOfferings extends React.Component<any, any> {
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
                 status: offering.offerStatus,
-                freeUnits: offering.freeUnits,
-                maxUnits: offering.maxUnit
+                supply: offering.supply
             };
 
             offeringsDataArr.push(row);
@@ -98,14 +97,8 @@ class AsyncOfferings extends React.Component<any, any> {
                 render: (status) => { return <OfferingStatus status={status} />; }
             },
             {
-                header: 'Free Services',
-                key: 'freeUnits',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'}
-            },
-            {
                 header: 'Supply',
-                key: 'maxUnits',
+                key: 'supply',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'}
             }
