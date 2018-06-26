@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
 import * as api from '../../utils/api';
 
@@ -66,7 +65,7 @@ class AsyncOfferings extends React.Component<any, any> {
                 id: <ModalWindow customClass='' modalTitle='Offering' text={offering.id} component={<Offering offering={offering} />} />,
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
-                status: offering.offerStatus,
+                status: offering.status,
                 supply: offering.supply
             };
 

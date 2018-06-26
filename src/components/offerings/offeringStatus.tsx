@@ -9,13 +9,30 @@ export default class OfferingStatus extends React.Component<any, any>{
     }
 
     get classes() {
-        return {register: 'success', remove: 'danger', empty: 'warning'};
+        return {
+            unpublished: {
+                label: 'warning',
+                alias: 'Unpublished'
+            },
+            bchain_publishing: {
+                label: 'primary',
+                alias: 'Publishing on blockchain'
+            },
+            bchain_published: {
+                label: 'primary',
+                alias: 'Published on blockchain'
+            },
+            msg_channel_published: {
+                label: 'success',
+                alias: 'Published'
+            },
+        };
     }
 
     render() {
         const status = this.props.status;
-        return <span className={`label label-table label-${this.classes[status] ? this.classes[status] : 'inverse'}`} >
-                {this.props.status}
+        return <span className={`label label-table label-${this.classes[status].label ? this.classes[status].label : 'inverse'}`} >
+                {this.classes[status].alias}
             </span>;
     }
 }
