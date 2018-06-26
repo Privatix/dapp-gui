@@ -35,7 +35,6 @@ export default class AsyncAccounts extends React.Component<any, any> {
 
         const accountsDataArr = this.state.accounts.map((account: any) => {
 
-            let isUse = account.inUse === true ? 'on' : 'off';
             let isDefault = account.isDefault === true ? 'on' : 'off';
             const ethereumAddress = `0x${Buffer.from(account.ethAddr, 'base64').toString('hex')}`;
             return {
@@ -44,7 +43,6 @@ export default class AsyncAccounts extends React.Component<any, any> {
                 eth: (account.ethBalance/1e18).toFixed(3),
                 exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
                 serviceBalance: (account.psc_balance/1e8).toFixed(3),
-                inUse: <span className={'fieldStatusLabel fieldStatus-' + isUse}><i className={'md md-check-box' + (isUse === 'off' ? '-outline-blank' : '')}></i></span>,
                 isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault}><i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i></span>
             };
 
@@ -74,13 +72,8 @@ export default class AsyncAccounts extends React.Component<any, any> {
                 key: 'serviceBalance',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
-            },
-            {
-                header: 'In Use',
-                key: 'inUse',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-            },
+            }
+            ,
             {
                 header: 'Is Default',
                 key: 'isDefault',
