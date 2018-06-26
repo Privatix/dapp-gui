@@ -130,47 +130,56 @@ class AcceptOffering extends React.Component<any, any>{
                    */}
                 </div>
             </div>
-
-            <div className='card m-b-20'>
-                <h5 className='card-header'>Pay Info:</h5>
-                <div className='card-body'>
-                    <div className='form-group row'>
-                        <label className='col-2 col-form-label'>Account:</label>
-                        <div className='col-6'>
-                            {selectAccount}
-                        </div>
-                        <div className='col-4 col-form-label'>
-                            Balance: <span>{(this.state.account ? this.state.account.ptcBalance/1e8 : 0).toFixed(3)} PRIX / {(this.state.account ? this.state.account.ethBalance/1e18 : 0).toFixed(3)} ETH</span>
-                        </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-2 col-form-label'>Deposit:</label>
-                        <div className='col-6'>
-                            <div className='input-group bootstrap-touchspin'>
-                                <input id='offeringDeposit' type='text' className='form-control' value={(this.state.deposit/1e8).toFixed(3)} readOnly/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+            {this.props.mode === 'view'
+                ? ''
+                : <div>
+                    <div className='card m-b-20'>
+                        <h5 className='card-header'>Pay Info:</h5>
+                        <div className='card-body'>
+                            <div className='form-group row'>
+                                <label className='col-2 col-form-label'>Account:</label>
+                                <div className='col-6'>
+                                    {selectAccount}
+                                </div>
+                                <div className='col-4 col-form-label'>
+                                    Balance: <span>{(this.state.account ? this.state.account.ptcBalance/1e8 : 0).toFixed(3)} PRIX / {(this.state.account ? this.state.account.ethBalance/1e18 : 0).toFixed(3)} ETH</span>
+                                </div>
                             </div>
-                            <span className='help-block'>
-                                <small>After the end of using, the unused PRIX will be returned.</small>
-                            </span>
+                            <div className='form-group row'>
+                                <label className='col-2 col-form-label'>Deposit:</label>
+                                <div className='col-6'>
+                                    <div className='input-group bootstrap-touchspin'>
+                                        <input id='offeringDeposit' type='text' className='form-control' value={(this.state.deposit/1e8).toFixed(3)} readOnly/>
+                                        <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                                    </div>
+                                    <span className='help-block'>
+                                        <small>After the end of using, the unused PRIX will be returned.</small>
+                                    </span>
+                                </div>
+                            </div>
+                            <GasRange onChange={this.onGasPriceChanged.bind(this)} value={Math.floor(this.state.gasPrice/1e9)}
+                                      extLinkText='Information about Gas price' averageTimeText={'acceptance'} />
+                            <div className='form-group row'>
+                                <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
+                                <div className='col-6 col-form-label font-18'>
+                                    <strong>{(this.state.deposit/1e8).toFixed(3)} PRIX</strong>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <GasRange onChange={this.onGasPriceChanged.bind(this)} value={Math.floor(this.state.gasPrice/1e9)}
-                              extLinkText='Information about Gas price' averageTimeText={'acceptance'} />
-                    <div className='form-group row'>
-                        <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
-                        <div className='col-6 col-form-label font-18'>
-                            <strong>{(this.state.deposit/1e8).toFixed(3)} PRIX</strong>
-                        </div>
-                    </div>
-                </div>
-            </div>
 
-            <div className='form-group row'>
-                <div className='col-md-12'>
-                    <button type='submit' onClick={this.onSubmit.bind(this)} className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'>Accept</button>
+                    <div className='form-group row'>
+                        <div className='col-md-12'>
+                            <button type='submit'
+                                    onClick={this.onSubmit.bind(this)}
+                                    className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
+                            >
+                                Accept
+                            </button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            }
         </div>;
     }
 }
