@@ -34,6 +34,40 @@ class AccountView extends React.Component<any, any> {
         this.setState({amount});
     }
 
+    async checkUserInput(){
+
+        let err = false;
+        let msg = '';
+        const settings = await api.getLocalSettings();
+
+        if(this.state.amount <= 0){
+            err = true;
+            msg += 'Amount must be more then zero.';
+        }
+
+        if(this.state.destination === 'psc' && this.state.account.ptcBalance < this.state.amount){
+            err = true;
+            msg += ' Not enough funds on Exchange balance.';
+        }
+
+        if(this.state.destination === 'ptc' && this.state.account.psc_balance < this.state.amount){
+            err = true;
+            msg += ' Not enough funds on Service balance.';
+        }
+
+        if(settings.gas.transfer*this.state.gasPrice > this.state.account.ethBalance) {
+            err = true;
+            msg += ' Not enough funds to publish transaction.';
+        }
+
+        if(err){
+            notice({level: 'error', header: 'Attention!', msg});
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     onTransferComplete(){
         notice({level: 'info', header: 'Attention!', msg: 'The data was successfully transmitted. Once the transaction will in the blockchain, you will see it in the list below.'});
         this.startRefreshing();
@@ -54,14 +88,20 @@ class AccountView extends React.Component<any, any> {
         }, 3000)});
     }
 
-    componentWillUnmount(){
+    stopRefreshing(){
         if(this.state.handler){
             clearInterval(this.state.handler);
+            this.setState({handler: 0});
         }
     }
 
+    componentWillUnmount(){
+        this.stopRefreshing();
+    }
+
     static getDerivedStateFromProps(props: any, state: any) {
-        return {account: props.account};
+        console.log('ACCOUNT!!!', props);
+        return {account: props.account, refreshing: props.visible};
     }
 
     changeTransferType(evt: any){
@@ -70,6 +110,14 @@ class AccountView extends React.Component<any, any> {
     }
 
     render(){
+
+        if(!this.state.visible){
+            this.stopRefreshing();
+        }else{
+            if(!this.state.handler){
+                this.startRefreshing();
+            }
+        }
 
         return <div className='col-lg-9 col-md-8'>
             <div className='card m-b-20'>
@@ -155,6 +203,7 @@ class AccountView extends React.Component<any, any> {
                     <div className='form-group row'>
                         <div className='col-12'>
                             <ConfirmPopupSwal
+                                beforeAsking={this.checkUserInput.bind(this)}
                                 endpoint={`/accounts/${this.state.account.id}/status`}
                                 options={{method: 'put'
                                          ,body: {action: 'transfer'

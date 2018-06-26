@@ -1,6 +1,7 @@
 export interface GasConsumption {
     acceptOffering: number;
     createOffering: number;
+    transfer: number;
 }
 
 export interface LocalSettings {
