@@ -8,6 +8,7 @@ import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
 import SortableTable from 'react-sortable-table-vilan';
 import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
+import DateSorter from '../utils/sorters/sortingDate';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
@@ -19,9 +20,56 @@ class AsyncChannels extends React.Component<any, any> {
         this.state = {
             isLoading: true,
             channelsDataArr: [],
-            columns: [],
+            columns: [
+                {
+                    header: 'ID',
+                    key: 'id',
+                    descSortFunction: ModalPropTextSorter.desc,
+                    ascSortFunction: ModalPropTextSorter.asc
+                },
+                {
+                    header: 'Server',
+                    key: 'server',
+                    descSortFunction: ModalPropTextSorter.desc,
+                    ascSortFunction: ModalPropTextSorter.asc
+                },
+                {
+                    header: 'Client',
+                    key: 'client'
+                },
+                {
+                    header: 'Contract Status',
+                    key: 'contractStatus',
+                    headerStyle: {textAlign: 'center'},
+                    dataProps: { className: 'text-center'},
+                    render: (channelStatus) => <ContractStatus contractStatus={channelStatus} />
+                },
+                {
+                    header: 'Service Status',
+                    key: 'serviceStatus',
+                    headerStyle: {textAlign: 'center'},
+                    dataProps: { className: 'text-center'},
+                    render: (serviceStatus) => <ChannelStatusStyle serviceStatus={serviceStatus} />
+                },
+                {
+                    header: 'Usage',
+                    key: 'usage'
+                },
+                {
+                    header: 'Income (PRIX)',
+                    key: 'incomePRIX',
+                    headerStyle: {textAlign: 'center'},
+                    dataProps: { className: 'text-center'},
+                },
+                {
+                    header: 'Service Changed Time',
+                    key: 'serviceChangedTime',
+                    descSortFunction: DateSorter.desc,
+                    ascSortFunction: DateSorter.asc,
+                    render: (serviceChangedTime) => <PgTime time={serviceChangedTime} />
+                }
+            ],
         };
-        this.refresh = this.refresh.bind(this);
     }
 
     async refresh() {
@@ -34,10 +82,9 @@ class AsyncChannels extends React.Component<any, any> {
         }
 
         const channels = await fetch(endpoint, {method: 'GET'});
-
         const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
-
         const products = await Promise.all(channelsProducts);
+
         const channelsDataArr = (products as any).map((product, index) => {
             const channel = channels[index];
             return {
@@ -52,57 +99,8 @@ class AsyncChannels extends React.Component<any, any> {
             };
         });
 
-        const columns = [
-            {
-                header: 'ID',
-                key: 'id',
-                descSortFunction: ModalPropTextSorter.desc,
-                ascSortFunction: ModalPropTextSorter.asc
-            },
-            {
-                header: 'Server',
-                key: 'server',
-                descSortFunction: ModalPropTextSorter.desc,
-                ascSortFunction: ModalPropTextSorter.asc
-            },
-            {
-                header: 'Client',
-                key: 'client'
-            },
-            {
-                header: 'Contract Status',
-                key: 'contractStatus',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                render: (channelStatus) => { return <ContractStatus contractStatus={channelStatus} />; }
-            },
-            {
-                header: 'Service Status',
-                key: 'serviceStatus',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                render: (serviceStatus) => { return <ChannelStatusStyle serviceStatus={serviceStatus} />; }
-            },
-            {
-                header: 'Usage',
-                key: 'usage'
-            },
-            {
-                header: 'Income (PRIX)',
-                key: 'incomePRIX',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-            },
-            {
-                header: 'Service Changed Time',
-                key: 'serviceChangedTime',
-                render: (serviceChangedTime) => { return <PgTime time={serviceChangedTime} />; }
-            }
-        ];
-
         this.setState({
-            channelsDataArr: channelsDataArr,
-            columns: columns,
+            channelsDataArr
         });
 
     }
@@ -113,7 +111,7 @@ class AsyncChannels extends React.Component<any, any> {
     }
 
     render() {
-        return this.state.isLoading ? 
+        return this.state.isLoading ?
             <b>Loading channels ...</b> :
             <div className='container-fluid'>
                 <div className='row'>
@@ -124,7 +122,7 @@ class AsyncChannels extends React.Component<any, any> {
                 <div className='row'>
                     <div className='col-sm-12 m-b-15'>
                         <div className='m-t-15'>
-                            <a onClick={this.refresh} className='btn btn-default btn-custom waves-effect waves-light' href='#'>Refresh all</a>
+                            <a onClick={this.refresh.bind(this)} className='btn btn-default btn-custom waves-effect waves-light' href='#'>Refresh all</a>
                         </div>
                     </div>
                 </div>
