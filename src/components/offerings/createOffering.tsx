@@ -17,7 +17,7 @@ class CreateOffering extends React.Component<any, any>{
         super(props);
 
         const payload = {
-            unitName: 'Mb'
+            unitName: 'MB'
            ,unitType: 'units'
            ,billingType: 'prepaid'
            ,template: ''

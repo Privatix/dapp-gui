@@ -39,7 +39,7 @@ export default class AsyncList extends React.Component<any,any> {
                     key: 'country'
                 },
                 {
-                    header: 'Price (PRIX/Mb)',
+                    header: 'Price (PRIX/MB)',
                     key: 'price'
                 }
             ]
@@ -295,7 +295,7 @@ export default class AsyncList extends React.Component<any,any> {
                     <div className='col-3'>
                         <div className='card m-b-20'>
                             <div className='card-body'>
-                                <h6 className='card-title'>Price (PRIX/Mb):</h6>
+                                <h6 className='card-title'>Price (PRIX/MB):</h6>
                                 <div className='form-group row'>
                                     <div className='col-6'>
                                         <div className='input-group'>

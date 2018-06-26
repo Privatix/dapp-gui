@@ -89,7 +89,7 @@ class AcceptOffering extends React.Component<any, any>{
                 <h5 className='card-header'>Billing Info</h5>
                 <div className='card-body'>
                     <div className='form-group row'>
-                        <label className='col-3 col-form-label'>Price per Mb:</label>
+                        <label className='col-3 col-form-label'>Price per MB:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
                                 <input type='text' className='form-control' value={(offering.unitPrice/1e8).toFixed(5)} readOnly/>

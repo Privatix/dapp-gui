@@ -13,7 +13,7 @@ async function AsyncChannelUsage (props:any){
     const endpoint = `/sessions?channelId=${props.channelId}`;
     const sessions = await fetch(endpoint, {method: 'GET'});
     const usage = (sessions as any).reduce( (usage, session) => {return usage + session.unitsUsed;}, 0);
-    return <span>{usage} Mb</span>;
+    return <span>{usage} MB</span>;
 }
 
 export default asyncReactor(AsyncChannelUsage, Loader);
