@@ -2,9 +2,15 @@ import {fetch} from './fetch';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
 import {DbSetting} from '../typings/settings';
+import {Transaction} from '../typings/transactions.d.ts';
 
 export const getAccounts = function(): Promise<Account[]>{
     return fetch('/accounts') as Promise<Account[]>;
+};
+
+export const getTransactionsByAccount = async function(account: string): Promise<Transaction[]>{
+    const endpoint = '/transactions' + (account === 'all' ? '' : `?relatedID=${account}&relatedType=account`);
+    return fetch(endpoint, {}) as Promise<Transaction[]>;
 };
 
 export const getProducts = function(): Promise<Product[]>{
