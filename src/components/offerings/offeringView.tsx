@@ -4,7 +4,7 @@ import ProductNameByOffering from '../products/productNameByOffering';
 
 export default function(props:any){
 
-    return <div className='col-lg-9 col-md-8'>
+    return <div className='col-lg-12 col-md-12'>
         <div className='card m-b-20 card-body'>
             <div className='form-group row m-b-0'>
                 <label className='col-3 col-form-label'>Server: </label>
