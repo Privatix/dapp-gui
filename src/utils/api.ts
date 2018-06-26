@@ -3,6 +3,7 @@ import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
 import {LocalSettings, DbSetting} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
+import {ClientOffering} from '../typings/clientOfferings.d.ts';
 
 export const getAccounts = function(): Promise<Account[]>{
     return fetch('/accounts') as Promise<Account[]>;
@@ -52,4 +53,11 @@ export const setUserMode = function(userMode:string) {
     return fetch('/settings', {method: 'PUT', body}).then((result:any) => {
         return result.message;
     });
+};
+
+export const getClientOfferings = function(): Promise<ClientOffering[]>{
+    // if you need to add parameters to this function - just make them optional
+    // or change call in client_components/connections/connection.tsx
+    return fetch('/client/offerings', {}) as Promise<ClientOffering[]>;
+
 };

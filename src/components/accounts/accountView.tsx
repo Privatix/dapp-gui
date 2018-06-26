@@ -111,7 +111,7 @@ class AccountView extends React.Component<any, any> {
 
     render(){
 
-        if(!this.state.visible){
+        if(!this.state.refreshing){
             this.stopRefreshing();
         }else{
             if(!this.state.handler){

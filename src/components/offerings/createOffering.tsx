@@ -13,26 +13,52 @@ import {LocalSettings} from '../../typings/settings';
 
 class CreateOffering extends React.Component<any, any>{
 
-    constructor(props: any){
-        super(props);
 
-        const payload = {
-            unitName: 'MB'
+    static defaultState = {
+        payload: {
+            serviceName: ''
+           ,description: ''
+           ,country: ''
+           ,supply: ''
+           ,unitName: 'Mb'
            ,unitType: 'units'
+           ,unitPrice: ''
            ,billingType: 'prepaid'
+           ,maxBillingUnitLag: ''
+           ,minUnits: ''
+           ,maxUnit: ''
+           ,maxSuspendTime: ''
+           ,maxInactiveTimeSec: ''
            ,template: ''
            ,deposit: 0
-        };
+           ,product: ''
+        },
+        products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9
+    };
 
-        if(props.product){
-            (payload as any).product = props.product;
+    getDefaultState(){
+        const state = Object.assign({}, CreateOffering.defaultState);
+        if(this.props.product){
+            state.payload.product = this.props.product;
         }
-
-        this.state = {payload, products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9};
-
+        return state;
     }
 
-    async componentDidMount(){
+    constructor(props: any){
+        super(props);
+        this.state = this.getDefaultState();
+    }
+
+    static getDerivedStateFromProps(props: any, state: any){
+        console.log('createOffering!!!!', props, state);
+        if(props.visible){
+            return {refreshing: true};
+        }else{
+            return CreateOffering.defaultState;
+        }
+    }
+
+    async refresh(){
 
         const accounts = await api.getAccounts();
         const products = await api.getProducts();
@@ -210,12 +236,15 @@ class CreateOffering extends React.Component<any, any>{
                 console.log('offering created', res);
                 fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: this.state.gasPrice}}).then(res => {
                     console.log('offering published', res);
+                    this.setState(this.getDefaultState());
+
                     if(typeof this.props.closeModal === 'function'){
                         this.props.closeModal();
                     }
                     if(typeof this.props.done === 'function'){
                        this.props.done();
                     }
+
                 });
             });
         }
@@ -227,16 +256,17 @@ class CreateOffering extends React.Component<any, any>{
 
     render(){
 
+        if(this.state.refreshing){
+            this.refresh();
+            this.setState({refreshing: false});
+        }
         const selectProduct = <Select className='form-control'
             value={this.state.payload.product}
             searchable={false}
             clearable={false}
             options={this.state.products.map((product: any) => ({value: product.id, label: product.name})) }
             onChange={this.onProductChanged.bind(this)} />;
-        /*
-            {this.state.products.map((product:any) => <option key={product.id} value={product.id}>{product.name}</option>) }
-        </Select>;
-*/
+
         const selectAccount =  <Select className='form-control'
             value={this.state.payload.agent}
             searchable={false}
@@ -269,25 +299,51 @@ class CreateOffering extends React.Component<any, any>{
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Name: </label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control' onChange={onUserInput} data-payload-value='serviceName' placeholder={title}  />
+                                        <input type='text'
+                                               className='form-control'
+                                               onChange={onUserInput}
+                                               data-payload-value='serviceName'
+                                               value={this.state.payload.serviceName}
+                                               placeholder={title}
+                                        />
                                     </div>
                                 </div>
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Description: </label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control' onChange={onUserInput} data-payload-value='description' placeholder={'description'} />
+                                        <input type='text'
+                                               className='form-control'
+                                               onChange={onUserInput}
+                                               data-payload-value='description'
+                                               value={this.state.payload.description}
+                                               placeholder={'description'}
+                                        />
                                     </div>
                                 </div>
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Country: </label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control' onChange={onUserInput} data-payload-value='country' placeholder={countryComment} />
+                                        <input type='text'
+                                               className='form-control'
+                                               onChange={onUserInput}
+                                               data-payload-value='country'
+                                               value={this.state.payload.country}
+                                               placeholder={countryComment}
+                                        />
                                     </div>
                                 </div>
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Supply: </label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control autonumber' onChange={onUserInput} data-payload-value='supply' placeholder='3' data-v-max='999' data-v-min='0' />
+                                        <input type='text'
+                                               className='form-control autonumber'
+                                               onChange={onUserInput}
+                                               data-payload-value='supply'
+                                               value={this.state.payload.supply}
+                                               placeholder='3'
+                                               data-v-max='999'
+                                               data-v-min='0'
+                                        />
                                         <span className='help-block'>
                                             <small>
                                                 Maximum supply of services according to service offerings.
@@ -313,7 +369,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Price per MB:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='0.001' onChange={onUserInput} data-payload-value='unitPrice' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='0.001'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='unitPrice'
+                                                   value={this.state.payload.unitPrice}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                         </div>
                                     </div>
@@ -322,7 +384,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max billing unit lag:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='3' onChange={onUserInput} data-payload-value='maxBillingUnitLag' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='3'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='maxBillingUnitLag'
+                                                   value={this.state.payload.maxBillingUnitLag}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
@@ -334,7 +402,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Min units:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='100'  onChange={onUserInput} data-payload-value='minUnits' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='100'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='minUnits'
+                                                   value={this.state.payload.minUnits}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
@@ -346,7 +420,12 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max units:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' onChange={onUserInput} data-payload-value='maxUnit' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='maxUnit'
+                                                   value={this.state.payload.maxUnit}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
@@ -363,7 +442,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max suspend time:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='1800' onChange={onUserInput} data-payload-value='maxSuspendTime' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='1800'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='maxSuspendTime'
+                                                   value={this.state.payload.maxSuspendTime}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                         </div>
                                         <span className='help-block'>
@@ -377,7 +462,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max inactive time:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='1800' onChange={onUserInput} data-payload-value='maxInactiveTimeSec' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='1800'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='maxInactiveTimeSec'
+                                                   value={this.state.payload.maxInactiveTimeSec}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                         </div>
                                         <span className='help-block'>
@@ -405,7 +496,12 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Deposit:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' value={(this.state.payload.deposit/1e8).toFixed(4)} placeholder='PRIX' readOnly/>
+                                            <input type='text'
+                                                   className='form-control'
+                                                   value={(this.state.payload.deposit/1e8).toFixed(4)}
+                                                   placeholder='PRIX'
+                                                   readOnly
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                         </div>
                                         <span className='help-block'>
