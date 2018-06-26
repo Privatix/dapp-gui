@@ -2,7 +2,7 @@ import * as React from 'react';
 import {fetch} from '../../utils/fetch';
 import {asyncReactor} from 'async-reactor';
 import SortableTable from 'react-sortable-table-vilan';
-import { HtmlElSorter } from '../utils/sortingHtmlEl';
+import DateSorter from '../utils/sorters/sortingDate';
 declare const jQuery;
 
 function Loader() {
@@ -16,20 +16,25 @@ async function AsyncLogs(props:any){
     const endpoint = '/logs';
     const logs = await fetch(endpoint, {method: 'GET'});
 
-    const logsDataArr = [];
-    (logs as any).map((log: any) => {
-        let severity = 'label label-';
-        switch (log.severity) {
+    function getClassName(severityData:any) {
+        let severityClass = 'label label-';
+
+        switch (severityData) {
             case 'warning':
-                severity += 'warning'; break;
+                severityClass += 'warning'; break;
             case 'error':
-                severity += 'danger'; break;
+                severityClass += 'danger'; break;
             case 'info':
-                severity += 'success'; break;
+                severityClass += 'success'; break;
         }
 
+        return severityClass;
+    }
+
+    const logsDataArr = [];
+    (logs as any).map((log: any) => {
         let row = {
-            severity: <span className={severity}>{log.severity}</span>,
+            severity: log.severity,
             date: log.date,
             event: log.event
         };
@@ -41,12 +46,13 @@ async function AsyncLogs(props:any){
         {
             header: 'Severity',
             key: 'severity',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+            render: (severityData) => { return <span className={getClassName(severityData)}>{severityData}</span>; }
         },
         {
             header: 'Date',
-            key: 'date'
+            key: 'date',
+            descSortFunction: DateSorter.desc,
+            ascSortFunction: DateSorter.asc
         },
         {
             header: 'Event',

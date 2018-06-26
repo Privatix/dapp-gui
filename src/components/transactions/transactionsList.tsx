@@ -1,5 +1,6 @@
 import * as React from 'react';
 import SortableTable from 'react-sortable-table-vilan';
+import DateSorter from '../utils/sorters/sortingDates';
 import ExternalLink from '../utils/externalLink';
 import PgTime from '../utils/pgTime';
 
@@ -20,7 +21,10 @@ export default class Transactions extends React.Component<any, any>{
         const columns = [
             {
                 header: 'Date',
-                key: 'date'
+                key: 'date',
+                defaultSorting: 'DESC',
+                descSortFunction: DateSorter.desc,
+                ascSortFunction: DateSorter.asc
             },
             {
                 header: 'Ethereum link',

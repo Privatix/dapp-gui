@@ -2,5 +2,8 @@
     "firstStart": true
    ,"accountCreated": false
    ,"apiEndpoint": "http://localhost:3000"
-   ,"mode": "agent"
+   ,"gas": {
+        "acceptOffering": 100000,
+        "createOffering": 100000
+   }
 }

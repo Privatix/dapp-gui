@@ -11,6 +11,24 @@ class ActiveConnection extends React.Component<any, any>{
     }
 
     render() {
+
+        const connections = this.props.channels.map((channel: any) => {
+            return <tr>
+                        <td>
+                            <ModalWindow visible={this.state.popup}
+                                         customClass='btn btn-link waves-effect'
+                                         modalTitle='Connection' text={channel.id} component={<Connection connection={channel} />}
+                            />
+                        </td>
+                        <td>{channel.agent}</td>
+                        <td><span className='label label-table label-primary'>{channel.channelStatus.channelStatus}</span></td>
+                        <td><span className='label label-table label-primary'>{channel.channelStatus.serviceStatus}</span></td>
+                        <td>{`${channel.job.jobType} ${channel.job.status} at ...`} (Done 13:32)</td>
+                        <td>120 MB of 500 MB</td>
+                        <td>0.01</td>
+                    </tr>;
+        });
+
         return <div className='row'>
             <div className='col-12'>
                 <div className='card m-b-20'>
@@ -30,20 +48,7 @@ class ActiveConnection extends React.Component<any, any>{
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>
-                                        <ModalWindow visible={this.state.popup}
-                                                     customClass='btn btn-link waves-effect'
-                                                     modalTitle='Connection' text='1111111' component={<Connection/>}
-                                        />
-                                    </td>
-                                    <td>Name</td>
-                                    <td><span className='label label-table label-primary'>Pending</span></td>
-                                    <td><span className='label label-table label-primary'>Pending</span></td>
-                                    <td>ClientPreChannelCreate (Done 13:32)</td>
-                                    <td>120 MB of 500 MB</td>
-                                    <td>0.01</td>
-                                </tr>
+                                { connections }
                                 </tbody>
                             </table>
                         </div>

@@ -2,7 +2,6 @@
 import * as React from 'react';
 // tslint:disable-next-line
 
-import {fetch} from '../utils/fetch';
 import { Route, Router, Switch} from 'react-router';
 
 import { createMemoryHistory } from 'history';
@@ -18,7 +17,6 @@ import CreateProduct from './products/addProduct';
 import Offerings from './offerings/offerings';
 import Offering from './offerings/offering';
 import CreateOffering from './offerings/createOffering';
-import FilledOffering from './offerings/filledOffering';
 import ChannelsList from './channels/channelsList';
 import ChannelsByStatus from './channels/channelsByStatus';
 import Channel from './channels/channel';
@@ -26,8 +24,6 @@ import SessionsList from './sessions/sessionsList';
 import Session from './sessions/session';
 import Endpoint from './endpoints/endpoint';
 
-import TemplatesList from './templates/templatesList';
-import Template from './templates/template';
 import SetAccount from './auth/setAccount';
 import GenerateKey from './auth/generateKey';
 import ImportHexKey from './auth/importHexKey';
@@ -43,6 +39,8 @@ import ClientDashboardPaused from '../client_components/dashboard/paused';
 import VPNList from '../client_components/vpn_list/list';
 import AcceptOffering from '../client_components/vpn_list/acceptOffering';
 import ClientHistory from '../client_components/vpn_list/history';
+import * as api from '../utils/api';
+import notice from '../utils/notice';
 
 import Logs from './logs/logs';
 
@@ -63,10 +61,19 @@ export default class App extends React.Component<Props, any> {
         return {mode: nextProps.mode};
     }
 
-    onSwitchMode(evt: any){
+    async onSwitchMode(evt: any){
         evt.preventDefault();
-        fetch('/switchMode', {});
-        this.setState({mode: this.state.mode === undefined || this.state.mode === 'agent' ? 'client' : 'agent'});
+
+        const newUserMode = this.state.mode === 'agent' ? 'client' : 'agent';
+        const updateResult = await api.setUserMode(newUserMode);
+
+        if (updateResult === 'updated.') {
+            this.setState({mode: newUserMode});
+            notice({level: 'info', title: 'Congratulations!', msg: 'User mode was successfully switched to ' + newUserMode.toUpperCase()});
+        } else {
+            notice({level: 'error', title: 'Attention!', msg: 'Something went wrong!'});
+        }
+
     }
 
     render(){
@@ -78,8 +85,6 @@ export default class App extends React.Component<Props, any> {
                     <div className='content'>
                         <Switch>
                             <Route exact path='/' component={Main} />
-                            <Route path='/templates' component={TemplatesList} />
-                            <Route path='/template/:id' component={Template} />
                             <Route path='/settings' component={Settings} />
                             <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
                             <Route path='/createProduct' component={CreateProduct} />
@@ -90,7 +95,6 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
                             <Route path='/offering/:offering' component={Offering} />
                             <Route path='/createOffering/' component={CreateOffering} />
-                            <Route path='/filledOffering/:offering' component={FilledOffering} />
                             <Route path='/channels/:offering' component={ChannelsList} />
                             <Route path='/channelsByStatus/:status' component={ChannelsByStatus} />
                             <Route path='/channel/:channel' component={Channel} />
@@ -98,9 +102,9 @@ export default class App extends React.Component<Props, any> {
                             <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
                             <Route path='/setAccount' render={() => <SetAccount default={false} />} />
-                            <Route path='/generateKey/:default' component={GenerateKey} />
-                            <Route path='/importHexKey' component={ImportHexKey} />
-                            <Route path='/importJsonKey' component={ImportJsonKey} />
+                            <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
+                            <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
+                            <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
                             <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
                             <Route path='/logs' component={Logs} />
 

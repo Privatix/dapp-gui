@@ -4,7 +4,7 @@ import {app, ipcMain, BrowserWindow} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
-import fetch from 'node-fetch';
+import fetch from 'electron-fetch';
 import mocks from './mocks';
 import * as  btoa from 'btoa';
 import * as keythereum from 'keythereum';
@@ -121,6 +121,7 @@ let password = '';
             req.options.headers = {};
         }
         req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
+        console.log(`${settings.apiEndpoint}${req.endpoint}`);
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 // console.log(req.endpoint, res.headers.get('content-type'));

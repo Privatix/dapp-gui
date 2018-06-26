@@ -1,10 +1,11 @@
 import * as React from 'react';
 import Select from 'react-select';
 import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
-// import notice from '../../utils/notice';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
+import {LocalSettings} from '../../typings/settings';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -31,28 +32,26 @@ class CreateOffering extends React.Component<any, any>{
 
     }
 
-    componentDidMount(){
+    async componentDidMount(){
 
-        Promise.all([fetch('/products'), fetch('/accounts/')])
-            .then((res: any) => {
-                // TODO check products length
-                let products, accounts;
-                [products, accounts] = res;
-                const account = accounts.find((account: any) => account.isDefault);
-                // console.log('Accounts retrieved!!!', accounts, account);
-                const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
-                this.setState({products, accounts, account, payload});
-                fetch(`/templates?id=${products[0].offerTplID}`)
-                    .then((templates: any) => {
+        const accounts = await api.getAccounts();
+        const products = await api.getProducts();
+        console.log(products);
+        // TODO check products length
+        const account = accounts.find((account: any) => account.isDefault);
+        // console.log('Accounts retrieved!!!', accounts, account);
+        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
+        this.setState({products, accounts, account, payload});
+        fetch(`/templates?id=${products[0].offerTplID}`)
+            .then((templates: any) => {
 
-                        const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
+                const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
-                        // console.log(products, accounts, templates);
-                        const template = templates[0];
-                        template.raw = JSON.parse(atob(template.raw));
-                        this.setState({payload, template});
-                        // console.log(products, template, 'accounts', accounts);
-                    });
+                // console.log(products, accounts, templates);
+                const template = templates[0];
+                template.raw = JSON.parse(atob(template.raw));
+                this.setState({payload, template});
+                // console.log(products, template, 'accounts', accounts);
             });
     }
 
@@ -83,7 +82,7 @@ class CreateOffering extends React.Component<any, any>{
         console.log(payload);
     }
 
-    onSubmit(evt:any){
+    async onSubmit(evt:any){
         this.setState({errMsg: ''});
         evt.preventDefault();
         console.log(this.state);
@@ -93,7 +92,7 @@ class CreateOffering extends React.Component<any, any>{
            ,country: 'country'
            ,supply : 'supply'
            ,unitPrice: 'unit price'
-           ,maxBillingUnitLag: 'maximum payment lag'
+           ,maxBillingUnitLag: 'maximum billing unit lag'
            ,minUnits: 'minimum units'
            ,maxUnit: 'maximum units'
            ,maxSuspendTime: 'max suspend time'
@@ -108,11 +107,13 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeInteger = [];
         const isZero = [];
 
+        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        
         let err = false;
         const payload = Object.assign({}, this.state.payload);
 
         const mustBeFilled = required.filter((key: string) => !(key in payload));
-        
+
 
         console.log('mustBeFilled', mustBeFilled);
 
@@ -135,7 +136,7 @@ class CreateOffering extends React.Component<any, any>{
             }
 
             payload[key] = res;
-            
+
         });
 
         payload.unitPrice = parseFloat(payload.unitPrice);
@@ -157,6 +158,11 @@ class CreateOffering extends React.Component<any, any>{
         if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.psc_balance){
             console.log('3 err');
             err = true;
+        }
+
+        if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
+            console.log('4 err');
+            err=true;
         }
 
         if(err){
@@ -181,9 +187,12 @@ class CreateOffering extends React.Component<any, any>{
             }
             if(payload.unitPrice <= 0){
                 msg += 'Unit price must be more then 0.';
-            } 
+            }
             if(payload.deposit === payload.deposit && payload.deposit > this.state.account.psc_balance){
                 msg += 'Deposit is greater then service balance. Please choose another account or top up the balance. ';
+            }
+            if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
+                msg += ' Not enough funds for publish transaction. Please, select another account.';
             }
             if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
                 if(payload.maxUnit < payload.minUnit){
@@ -210,7 +219,7 @@ class CreateOffering extends React.Component<any, any>{
                 });
             });
         }
-        
+
         console.log(payload);
         return;
 

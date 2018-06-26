@@ -2693,7 +2693,7 @@ body.fixed-left .side-menu.left {
   -webkit-border-radius: 2px;
   -webkit-transition: all 400ms ease-in-out;
   background-color: transparent !important;
-  border-radius: 5px;
+  border-radius: 5px !important;
   transition: all 400ms ease-in-out;
   background-clip: inherit;
 }

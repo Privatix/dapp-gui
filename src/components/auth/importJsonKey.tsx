@@ -51,18 +51,29 @@ class ImportJsonKey extends React.Component<any, any>{
         const res = await fetch('/readFile', {method: 'post', body: {fileName}});
         const keyObject = JSON.parse((res as any).file);
         console.log(pwd, fileName, res, keyObject);
-        const pk = keythereum.recover(pwd, keyObject);
+        let pk;
+        try {
+            pk = keythereum.recover(pwd, keyObject);
+        } catch (err) {
+            msg = 'Please enter a valid password.';
+            notice({level: 'error', header: 'attention!', msg});
+            return;
+        }
         const key = pk.toString('base64').split('+').join('-').split('/').join('_');
         console.log(pk, key);
 
         const body = {privateKey: key
-                     ,isDefault: this.props.match.params.default === 'true'
+                     ,isDefault: this.props.default === 'true'
                      ,inUse: true
                      ,name
                      ,type: 'generate_new'
         };
-        console.log(body);
         await fetch('/accounts/', {method: 'post', body});
+
+        const settings = await fetch('/localSettings', {}) as any;
+        settings.accountCreated = true;
+        await fetch('/localSettings', {method: 'put', body: settings});
+
         const dk = createPrivateKey();
         const newKeyObject = Object.assign({}, dk, {privateKey: pk});
         this.props.history.push(`/backup/${JSON.stringify(newKeyObject)}/importJsonKey`);
