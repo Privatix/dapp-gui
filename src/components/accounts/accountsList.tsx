@@ -4,7 +4,7 @@ import * as api from '../../utils/api';
 
 import SortableTable from 'react-sortable-table-vilan';
 import ModalWindow from '../modalWindow';
-import Account from './account';
+import Account from './accountView';
 
 export default class AsyncAccounts extends React.Component<any, any> {
 

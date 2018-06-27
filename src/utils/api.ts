@@ -1,8 +1,8 @@
 import {fetch} from './fetch';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
-import {DbSetting} from '../typings/settings';
-import {Transaction} from '../typings/transactions.d.ts';
+import {LocalSettings, DbSetting} from '../typings/settings';
+import {Transaction} from '../typings/transactions';
 import {ClientOffering} from '../typings/clientOfferings.d.ts';
 
 export const getAccounts = function(): Promise<Account[]>{
@@ -20,6 +20,10 @@ export const getProducts = function(): Promise<Product[]>{
 
 export const getSettings = function(): Promise<DbSetting[]>{
     return fetch('/settings') as Promise<DbSetting[]>;
+};
+
+export const getLocalSettings = function(): Promise<LocalSettings>{
+    return fetch('/localSettings') as Promise<LocalSettings>;
 };
 
 export const getUserMode = async function(): Promise<string> {

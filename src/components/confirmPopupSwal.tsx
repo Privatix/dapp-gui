@@ -10,9 +10,13 @@ export default class ConfirmPopupSwal extends React.Component<any, any>{
         this.state = {show: false};
     }
 
-    showPopUpSwal(event: any) {
+    async showPopUpSwal(event: any) {
         event.preventDefault();
-        this.setState({show: true});
+        if('function' === typeof this.props.beforeAsking){
+            this.setState({show: await this.props.beforeAsking()});
+        }else{
+            this.setState({show: true});
+        }
     }
 
     confirmHandler() {
