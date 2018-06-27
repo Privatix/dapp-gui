@@ -51,6 +51,17 @@ export default class TopPanel extends React.Component <any, any>{
         this.setState({handler: setTimeout(this.update.bind(this), rate)});
     }
 
+    shouldComponentUpdate(props: any, state: any){
+        const diff = Object.keys(state).filter(key => this.state[key] !== state[key]);
+        if(diff.length === 1 && diff[0] === 'handler'){
+            return false;
+        }
+        if(diff.length === 1 && diff[0] === 'changeMode'){
+            return false;
+        }
+        return true;
+    }
+
     updateAgent() {
         fetch('/channels?serviceStatus=active', {}).then(res => {
             const pscCount = (res as any).length;
