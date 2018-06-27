@@ -19,7 +19,7 @@ class CreateOffering extends React.Component<any, any>{
            ,description: ''
            ,country: ''
            ,supply: ''
-           ,unitName: 'Mb'
+           ,unitName: 'MB'
            ,unitType: 'units'
            ,unitPrice: ''
            ,billingType: 'prepaid'

@@ -65,9 +65,8 @@ export default class Connecting extends React.Component<any, any>{
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
                         <p className='card-text'>After the connection is ready, you can start using the VPN.</p>
-                        <p className='card-text m-t-5 m-b-20'>Elapsed time: 5 min</p>
                         <button className='btn btn-inverse btn-block btn-lg disabled'>
-                            <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>Connecting
+                            <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>Synchronizing...
                         </button>
                     </div>
                 </div>
