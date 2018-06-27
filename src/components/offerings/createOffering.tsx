@@ -13,14 +13,13 @@ import {LocalSettings} from '../../typings/settings';
 
 class CreateOffering extends React.Component<any, any>{
 
-
     static defaultState = {
         payload: {
             serviceName: ''
            ,description: ''
            ,country: ''
            ,supply: ''
-           ,unitName: 'Mb'
+           ,unitName: 'MB'
            ,unitType: 'units'
            ,unitPrice: ''
            ,billingType: 'prepaid'
