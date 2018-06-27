@@ -59,7 +59,7 @@ export default class TopPanel extends React.Component <any, any>{
         if(diff.length === 1 && diff[0] === 'changeMode'){
             return false;
         }
-        return true;
+        return diff.length > 0;
     }
 
     updateAgent() {
