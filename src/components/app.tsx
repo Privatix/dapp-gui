@@ -3,7 +3,7 @@ import * as React from 'react';
 // tslint:disable-next-line
 
 import { Route, Router, Switch} from 'react-router';
-
+import { withRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
 
 import Main from './main';
@@ -51,7 +51,7 @@ interface Props {
     mode: string;
 }
 
-export default class App extends React.Component<Props, any> {
+class App extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
@@ -69,11 +69,15 @@ export default class App extends React.Component<Props, any> {
 
         if (updateResult === 'updated.') {
             this.setState({mode: newUserMode});
+            if (newUserMode === 'agent') {
+                MemoryHistory.push('/');
+            } else {
+                MemoryHistory.push('/client-dashboard-start');
+            }
             notice({level: 'info', title: 'Congratulations!', msg: 'User mode was successfully switched to ' + newUserMode.toUpperCase()});
         } else {
             notice({level: 'error', title: 'Attention!', msg: 'Something went wrong!'});
         }
-
     }
 
     render(){
@@ -84,7 +88,7 @@ export default class App extends React.Component<Props, any> {
                 <div className='content-page'>
                     <div className='content'>
                         <Switch>
-                            <Route exact path='/' component={Main} />
+                            <Route exact path='/' component={this.state.mode === 'client' ? ClientDashboardStart : Main } />
                             <Route path='/settings' component={Settings} />
                             <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
                             <Route path='/createProduct' component={CreateProduct} />
@@ -122,3 +126,5 @@ export default class App extends React.Component<Props, any> {
         </Router>;
     }
 }
+
+export default withRouter(App);
