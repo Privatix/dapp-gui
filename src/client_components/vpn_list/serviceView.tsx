@@ -14,14 +14,23 @@ export default class ServiceView extends React.Component <any,any> {
 
         this.state = {
             service: props.service,
-            sessions: []
+            sessions: [],
+            getSessions: false
         };
+
+
     }
 
     static getDerivedStateFromProps(props:any, state:any) {
+        let getSessions = false;
+        if (props.visible) {
+            getSessions = true;
+        }
+
         return {
             service: props.service,
-            sessions: []
+            sessions: [],
+            getSessions
         };
     }
 
@@ -54,8 +63,11 @@ export default class ServiceView extends React.Component <any,any> {
     }
 
     render() {
+        if (this.state.getSessions) {
+            this.getSessions();
+            this.setState({getSessions: false});
+        }
         const service = this.state.service;
-        this.getSessions();
 
         const sessionsColumns = [
             {

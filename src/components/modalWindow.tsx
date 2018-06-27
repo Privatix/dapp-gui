@@ -56,6 +56,7 @@ export default class ModalWindow extends React.Component<any, any> {
                             <div className='modal-body'>
                                 {React.cloneElement(this.state.props.component, {closeModal: this.closeModal.bind(this)
                                                                                 ,render: this.changeContent.bind(this)
+                                                                                ,visible: this.state.visible
                                                                                 }
                                 )}
                             </div>
