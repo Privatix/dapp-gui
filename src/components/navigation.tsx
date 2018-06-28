@@ -109,7 +109,7 @@ export default class Navigation extends React.Component<Props, any> {
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
-                        <li className=''>
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/client-dashboard-start' activeClassName='active' className='waves-effect'>
                                 <i className='ti-home'></i><span> Client Dashboard </span>
                             </NavLink>
