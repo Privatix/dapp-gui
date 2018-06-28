@@ -49,7 +49,7 @@ class AcceptOffering extends React.Component<any, any>{
         }
 
         if(err){
-            notice({level: 'eror', title: 'Attention!', msg});
+            notice({level: 'error', title: 'Attention!', msg});
             return;
         }
 

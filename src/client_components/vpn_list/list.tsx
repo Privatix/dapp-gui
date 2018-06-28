@@ -297,7 +297,7 @@ export default class AsyncList extends React.Component<any,any> {
                             <div className='card-body'>
                                 <h6 className='card-title'>Price (PRIX/MB):</h6>
                                 <div className='form-group row'>
-                                    <div className='col-6'>
+                                    <div className='col-6 priceMinMaxInputBl'>
                                         <div className='input-group'>
                                             <div className='input-group-prepend'>
                                                 <span className='input-group-text' id='priceFromLabel'>from</span>
@@ -306,7 +306,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                    id='priceFrom' value={this.state.from} onChange={(e) => this.changeMinPriceInput(e)} />
                                         </div>
                                     </div>
-                                    <div className='col-6'>
+                                    <div className='col-6 priceMinMaxInputBl'>
                                         <div className='input-group'>
                                             <div className='input-group-prepend'>
                                                 <span className='input-group-text' id='priceToLabel'>to</span>

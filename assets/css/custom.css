@@ -503,3 +503,18 @@ input:checked + .slider:before {
     overflow: inherit;
 }
 /*********** END Menu styles **********/
+
+@media only screen and (max-width: 1750px) {
+    .priceMinMaxInputBl {
+        width: 100%;
+        flex: 0 0 100%;
+        max-width: 100%;
+        margin-bottom: 15px;
+    }
+    .priceMinMaxInputBl .input-group-text{
+        padding: 6px 0px;
+        width: 50px;
+        align-content: center;
+        display: inline-block;
+    }
+}
