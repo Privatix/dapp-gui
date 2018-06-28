@@ -19,13 +19,11 @@ class Offerings extends React.Component<any, any>{
 
     refresh(){
         fetchOfferings(this.props.product).then((res: any) => {
-            console.log('OFFERINGS REFRESH!!!', res);
             this.setState(res);
         });
     }
 
     render(){
-        console.log('OFFERINGS!!!', this.state);
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-b-15'>

@@ -39,7 +39,6 @@ export default class Navigation extends React.Component<Props, any> {
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        console.log('PROPS!!!', nextProps, prevState);
         return {mode: nextProps.mode};
     }
 
@@ -63,7 +62,6 @@ export default class Navigation extends React.Component<Props, any> {
             const $ = (window as any).jQuery;
             $.Sidemenu.init();
         }, 1000);
-        console.log('new submenu', this.state.submenu);
         return this.state.mode === undefined || this.state.mode === 'agent' ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>

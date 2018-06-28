@@ -52,10 +52,8 @@ class CreateOffering extends React.Component<any, any>{
 
         const accounts = await api.getAccounts();
         const products = await api.getProducts();
-        console.log(products);
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
-        // console.log('Accounts retrieved!!!', accounts, account);
         const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
         this.setState({products, accounts, account, payload});
         fetch(`/templates?id=${products[0].offerTplID}`)
@@ -95,13 +93,11 @@ class CreateOffering extends React.Component<any, any>{
         const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value});
         payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? Math.floor((0 + payload.unitPrice)*1e8) : 0) * (payload.minUnits ? payload.minUnits : 0);
         this.setState({payload});
-        console.log(payload);
     }
 
     async onSubmit(evt:any){
         this.setState({errMsg: ''});
         evt.preventDefault();
-        console.log(this.state);
         const aliases = {
             serviceName: 'name'
            ,description: 'description'
@@ -130,9 +126,6 @@ class CreateOffering extends React.Component<any, any>{
 
         const mustBeFilled = required.filter((key: string) => !(key in payload));
 
-
-        console.log('mustBeFilled', mustBeFilled);
-
         integers.filter((key:string) => !mustBeFilled.includes(key) ).forEach((key: string) => {
             if(optional.includes(key) && !(key in payload)){
                 return;
@@ -160,24 +153,20 @@ class CreateOffering extends React.Component<any, any>{
         const emptyStrings = strings.filter((key: string) => !mustBeFilled.includes(key) && payload[key].trim() === '');
 
         if(mustBeFilled.length || emptyStrings.length || payload.unitPrice !== payload.unitPrice || payload.unitPrice <= 0){
-            console.log('first err');
             err = true;
         }
 
         const wrongKeys = [...mustBeInteger, ...mustBeFilled, ...mustBePositive, ...isZero];
         if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
             if(payload.maxUnit < payload.minUnits){
-                console.log('second err');
                 err = true;
             }
         }
         if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.psc_balance){
-            console.log('3 err');
             err = true;
         }
 
         if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
-            console.log('4 err');
             err=true;
         }
 
@@ -221,11 +210,9 @@ class CreateOffering extends React.Component<any, any>{
             payload.unitPrice = Math.floor(payload.unitPrice * 1e8);
             payload.billingInterval = 1;
             payload.additionalParams = Buffer.from('{}').toString('base64');
-            console.log('FETCH!!!');
+
             fetch('/offerings/', {method: 'post', body: payload}).then(res => {
-                console.log('offering created', res);
                 fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: this.state.gasPrice}}).then(res => {
-                    console.log('offering published', res);
                     this.setState(this.getDefaultState());
 
                     if(typeof this.props.closeModal === 'function'){
@@ -239,13 +226,11 @@ class CreateOffering extends React.Component<any, any>{
             });
         }
 
-        console.log(payload);
         return;
 
     }
 
     componentDidMount(){
-        console.log('CREATE OFFERINF DID MOUNT!!!');
         this.refresh();
     }
 
@@ -331,7 +316,7 @@ class CreateOffering extends React.Component<any, any>{
                                                onChange={onUserInput}
                                                data-payload-value='supply'
                                                value={this.state.payload.supply}
-                                               placeholder='3'
+                                               placeholder='i.e. 3'
                                                data-v-max='999'
                                                data-v-min='0'
                                         />
@@ -362,7 +347,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder='0.001'
+                                                   placeholder='i.e. 0.001'
                                                    onChange={onUserInput}
                                                    data-payload-value='unitPrice'
                                                    value={this.state.payload.unitPrice}
@@ -377,7 +362,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder='3'
+                                                   placeholder='i.e. 3'
                                                    onChange={onUserInput}
                                                    data-payload-value='maxBillingUnitLag'
                                                    value={this.state.payload.maxBillingUnitLag}
@@ -395,7 +380,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder='100'
+                                                   placeholder='i.e. 100'
                                                    onChange={onUserInput}
                                                    data-payload-value='minUnits'
                                                    value={this.state.payload.minUnits}
@@ -435,7 +420,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder='1800'
+                                                   placeholder='i.e. 1800'
                                                    onChange={onUserInput}
                                                    data-payload-value='maxSuspendTime'
                                                    value={this.state.payload.maxSuspendTime}
@@ -455,7 +440,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder='1800'
+                                                   placeholder='i.e. 1800'
                                                    onChange={onUserInput}
                                                    data-payload-value='maxInactiveTimeSec'
                                                    value={this.state.payload.maxInactiveTimeSec}
