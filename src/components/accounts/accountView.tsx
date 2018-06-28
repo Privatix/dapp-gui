@@ -16,7 +16,6 @@ class AccountView extends React.Component<any, any> {
                      ,account: props.account
                      ,transactions: []
         };
-        this.refreshTransactions();
     }
 
     onGasPriceChanged(evt: any){
@@ -80,28 +79,24 @@ class AccountView extends React.Component<any, any> {
     }
 
     startRefreshing(){
+        this.refreshTransactions();
         this.setState({handler: setTimeout( ()=> {
-            if(this.state.handler){
-                this.refreshTransactions();
-                this.startRefreshing();
-            }
+            this.startRefreshing();
         }, 3000)});
     }
 
     stopRefreshing(){
         if(this.state.handler){
             clearInterval(this.state.handler);
-            this.setState({handler: 0});
         }
+    }
+
+    componentDidMount(){
+        this.startRefreshing();
     }
 
     componentWillUnmount(){
         this.stopRefreshing();
-    }
-
-    static getDerivedStateFromProps(props: any, state: any) {
-        console.log('ACCOUNT!!!', props);
-        return {account: props.account, refreshing: props.visible};
     }
 
     changeTransferType(evt: any){
@@ -110,14 +105,6 @@ class AccountView extends React.Component<any, any> {
     }
 
     render(){
-
-        if(!this.state.refreshing){
-            this.stopRefreshing();
-        }else{
-            if(!this.state.handler){
-                this.startRefreshing();
-            }
-        }
 
         return <div className='col-lg-9 col-md-8'>
             <div className='card m-b-20'>

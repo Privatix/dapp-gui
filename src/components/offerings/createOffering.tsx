@@ -48,15 +48,6 @@ class CreateOffering extends React.Component<any, any>{
         this.state = this.getDefaultState();
     }
 
-    static getDerivedStateFromProps(props: any, state: any){
-        console.log('createOffering!!!!', props, state);
-        if(props.visible){
-            return {refreshing: true};
-        }else{
-            return CreateOffering.defaultState;
-        }
-    }
-
     async refresh(){
 
         const accounts = await api.getAccounts();
@@ -253,12 +244,13 @@ class CreateOffering extends React.Component<any, any>{
 
     }
 
+    componentDidMount(){
+        console.log('CREATE OFFERINF DID MOUNT!!!');
+        this.refresh();
+    }
+
     render(){
 
-        if(this.state.refreshing){
-            this.refresh();
-            this.setState({refreshing: false});
-        }
         const selectProduct = <Select className='form-control'
             value={this.state.payload.product}
             searchable={false}
