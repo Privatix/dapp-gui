@@ -8,7 +8,7 @@ export default function(props:any){
                                  className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light'
                                  onClick={async (evt: any) => {
                                      evt.preventDefault();
-                                     history.push(`/client-dashboard-connecting`);
+                                     history.push(`/client-vpn-list`);
                                  }}>
             Start using VPN
         </button>
