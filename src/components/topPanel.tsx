@@ -132,7 +132,7 @@ export default class TopPanel extends React.Component <any, any>{
             return <ul className='list-inline float-right mb-0 topPanel'>
                 <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
                 <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
-                <li className='list-inline-item'>Service balance: {this.state.ptcBalance}</li>
+                <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
                 <li className='list-inline-item'>Total Traffic: {this.state.totalTraffic}</li>
                 <li className='list-inline-item'>Traffic Balance: {this.state.trafficBalance}</li>
                 <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>

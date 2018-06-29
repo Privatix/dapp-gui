@@ -3,7 +3,7 @@ import ChannelsListByStatus from './channelsListByStatus';
 
 export default function (props:any){
 
-    const status = props.status ? props.status : props.match.params.status;
+    const status = props.status;
 
     return <div className='container-fluid'>
         <div className='row'>
