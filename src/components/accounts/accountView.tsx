@@ -24,13 +24,12 @@ class AccountView extends React.Component<any, any> {
     }
 
     onTransferAmount(evt: any){
-        console.log('onChange', evt, evt.target.value);
         let amount = parseFloat(evt.target.value);
         if(amount !== amount){
             amount = 0;
         }
         amount = Math.floor(amount * 1e8);
-        console.log(amount);
+
         this.setState({amount});
     }
 
@@ -70,7 +69,6 @@ class AccountView extends React.Component<any, any> {
 
     onTransferComplete(){
         notice({level: 'info', header: 'Attention!', msg: 'The data was successfully transmitted. Once the transaction will in the blockchain, you will see it in the list below.'});
-        this.startRefreshing();
     }
 
     async refreshTransactions(){
