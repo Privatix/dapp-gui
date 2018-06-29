@@ -45,7 +45,7 @@ export default class Connecting extends React.Component<any, any>{
             const channel = suspendedChannels[0];
 
             if(channel.usage.current > 0){
-                this.setState({status: 'paused', channels: activeChannels});
+                this.setState({status: 'paused', channels: suspendedChannels});
             }else{
                 this.setState({status: 'suspended', channels: suspendedChannels});
             }
@@ -74,50 +74,23 @@ export default class Connecting extends React.Component<any, any>{
 
     suspended(){
 
-        const remaining = this.state.channels[0].channelStatus.lastChanged === null
-            ? <p className='card-text remainingText' >Ready for launch</p>
-            : <p className='card-text remainingText'>
-                Remaining:&nbsp;
-                <strong>
-                    <Countdown date={new Date(Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000)} renderer={countdownRender} onComplete={completeRemaining} />
-                </strong> min
-            </p>;
-
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                    {remaining}
-                        <p className='card-text m-t-5 m-b-20 text-muted'>After max. inactivity time has been reached, "Finish procedure" will be called automatically.</p>
+                        <p className='card-text m-t-5 m-b-20'><strong>You can start using VPN</strong></p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'resume'}}}
-                            title={'Resume'}
+                            title={'Connect'}
                             text={<span></span>}
                             class={'btn btn-primary btn-custom btn-block'}
                             swalType='warning'
-                            swalConfirmBtnText='Yes, resume it!'
+                            swalConfirmBtnText='Yes, connect it!'
                             swalTitle='Are you sure?' />
                     </div>
                 </div>
 
-                <div className='col-2'></div>
-
-                <div className='col-5'>
-                    <div className='card m-b-20 card-body'>
-                        <p className='card-text'>This operation will permanently finish VPN usage.</p>
-                        <p className='card-text m-t-5 m-b-20'>Your remaining deposit will be returned approx. in 12 min.</p>
-                        <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
-                            options={{method: 'put', body: {action: 'terminate'}}}
-                            title={'Finish'}
-                            text={<span>This operation will permanently finish VPN usage</span>}
-                            class={'btn btn-danger btn-custom btn-block'}
-                            swalType='danger'
-                            swalConfirmBtnText='Yes, finish it!'
-                            swalTitle='Are you sure?' />
-                    </div>
-                </div>
             </div>
 
             <ActiveConnection channels={this.state.channels}/>
