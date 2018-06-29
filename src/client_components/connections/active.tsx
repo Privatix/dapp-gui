@@ -1,18 +1,34 @@
 import * as React from 'react';
 import ModalWindow from '../../components/modalWindow';
 import Connection from './connection';
+import ContractStatus from '../../components/channels/contractStatus';
+import ChannelStatus from '../../components/channels/channelStatusStyle';
+import JobStatus from './jobStatus';
 import { withRouter } from 'react-router-dom';
 
 class ActiveConnection extends React.Component<any, any>{
 
     constructor(props: any){
         super(props);
-        this.state = {popup: false};
+        this.state = {
+            popup: false,
+            channels: props.channels
+        };
+    }
+
+    static getDerivedStateFromProps(props:any, state:any) {
+        return {channels: props.channels};
     }
 
     render() {
 
-        const connections = this.props.channels.map((channel: any) => {
+        const connections = this.state.channels.map((channel: any) => {
+
+            const usage = `${channel.usage.current} ${channel.usage.unit} of ${channel.usage.maxUsage} ${channel.usage.unit}`;
+            const jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
+            const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
+            const jobStatus = <JobStatus status={channel.job.status} />;
+
             return <tr>
                         <td>
                             <ModalWindow visible={this.state.popup}
@@ -21,11 +37,11 @@ class ActiveConnection extends React.Component<any, any>{
                             />
                         </td>
                         <td>{channel.agent}</td>
-                        <td><span className='label label-table label-primary'>{channel.channelStatus.channelStatus}</span></td>
-                        <td><span className='label label-table label-primary'>{channel.channelStatus.serviceStatus}</span></td>
-                        <td>{`${channel.job.jobType} ${channel.job.status} at ...`} (Done 13:32)</td>
-                        <td>120 MB of 500 MB</td>
-                        <td>0.01</td>
+                        <td><ContractStatus contractStatus={channel.channelStatus.channelStatus}/></td>
+                        <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
+                        <td>{channel.job.jobtype} ({jobStatus} {jobTime})</td>
+                        <td>{usage}</td>
+                        <td>{channel.usage.cost / 1e8}</td>
                     </tr>;
         });
 

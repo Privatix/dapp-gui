@@ -25,7 +25,7 @@ export default class ModalWindow extends React.Component<any, any> {
     }
 
     static getDerivedStateFromProps(props: any, state: any){
-        return state.props.visible !== props.visible ? {visible: props.visible, props} : null;
+        return {props};
     }
 
     showModal(event: any) {
