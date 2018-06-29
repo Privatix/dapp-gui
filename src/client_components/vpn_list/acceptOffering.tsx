@@ -11,21 +11,51 @@ class AcceptOffering extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-        this.state = {accounts: [], gasPrice: 6*1e9, deposit: (props.offering.unitPrice*props.offering.minUnits)};
+
+        const acceptOfferingBtnBl = <div className='form-group row'>
+            <div className='col-md-12'>
+                <button type='submit'
+                        onClick={this.onSubmit.bind(this)}
+                        className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
+                >
+                    Accept
+                </button>
+            </div>
+        </div>;
+
+        this.state = {
+            accounts: [],
+            gasPrice: 6*1e9,
+            deposit: (props.offering.unitPrice*props.offering.minUnits),
+            acceptOfferingBtnBl: acceptOfferingBtnBl
+        };
     }
 
     async componentDidMount(){
 
         const accounts = await api.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
+        this.getNotTerminatedConnections();
         this.setState({accounts, account});
     }
 
-    onAccountChanged(selectedAccount: any) {
+    async getNotTerminatedConnections() {
+        const pendingChannelsReq = fetch('/client/channels?serviceStatus=pending', {});
+        const activeChannelsReq = fetch('/client/channels?serviceStatus=active', {});
+        const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
 
+        const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
+
+        if((activeChannels as any).length > 0
+            || (suspendedChannels as any).length > 0
+            || (pendingChannels as any).length > 0) {
+            this.setState({acceptOfferingBtnBl: ''});
+        }
+    }
+
+    onAccountChanged(selectedAccount: any) {
         const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
         this.setState({account});
-
     }
 
     onGasPriceChanged(evt:any){
@@ -168,16 +198,7 @@ class AcceptOffering extends React.Component<any, any>{
                         </div>
                     </div>
 
-                    <div className='form-group row'>
-                        <div className='col-md-12'>
-                            <button type='submit'
-                                    onClick={this.onSubmit.bind(this)}
-                                    className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
-                            >
-                                Accept
-                            </button>
-                        </div>
-                    </div>
+                    {this.state.acceptOfferingBtnBl}
                 </div>
             }
         </div>;
