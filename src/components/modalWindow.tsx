@@ -16,7 +16,7 @@ export default class ModalWindow extends React.Component<any, any> {
         }
 
         document.body.classList.remove('modal-open');
-        this.setState({visible: false, props: this.props});
+        this.setState({visible: false});
     }
 
     changeContent(modalTitle: string, component: any){
@@ -25,7 +25,7 @@ export default class ModalWindow extends React.Component<any, any> {
     }
 
     static getDerivedStateFromProps(props: any, state: any){
-        return state.props.visible !== props.visible ? {visible: props.visible, props} : null;
+        return {props};
     }
 
     showModal(event: any) {
@@ -66,7 +66,7 @@ export default class ModalWindow extends React.Component<any, any> {
 
         return (
             <div>
-                <a href='#' onClick={this.showModal.bind(this)} className={this.props.customClass}>{this.props.text}</a>
+                <a href='#' onClick={this.showModal.bind(this)} className={this.state.props.customClass}>{this.state.props.text}</a>
                 {content}
             </div>
         );
