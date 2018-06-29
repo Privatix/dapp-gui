@@ -36,10 +36,9 @@ export default class Connecting extends React.Component<any, any>{
         const pendingChannelsReq = fetch('/client/channels?serviceStatus=pending', {});
         const activeChannelsReq = fetch('/client/channels?serviceStatus=active', {});
         const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
-        const testReq = fetch('/client/channels?channelStatus=active', {});
 
-        const [pendingChannels, activeChannels, suspendedChannels, test] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq, testReq]);
-        console.log('REFRESH!!!!', [pendingChannels, activeChannels, suspendedChannels, test]);
+        const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
+        console.log('REFRESH!!!!', [pendingChannels, activeChannels, suspendedChannels]);
 
         if((activeChannels as any).length > 0){
             this.setState({status: 'active', channels: activeChannels});
@@ -76,11 +75,21 @@ export default class Connecting extends React.Component<any, any>{
     }
 
     suspended(){
+
+        const remaining = this.state.channels[0].channelStatus.lastChanged === null
+            ? <p className='card-text remainingText' >Ready for launch</p>
+            : <p className='card-text remainingText'>
+                Remaining: 
+                <strong>
+                    <Countdown date={new Date(Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000)} renderer={countdownRender} onComplete={completeRemaining} />
+                </strong> min
+            </p>;
+
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text remainingText'>Remaining: <strong><Countdown date={new Date(Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000)} renderer={countdownRender} onComplete={completeRemaining} /></strong> min</p>
+                    {remaining}
                         <p className='card-text m-t-5 m-b-20 text-muted'>After max. inactivity time has been reached, "Finish procedure" will be called automatically.</p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
