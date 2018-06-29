@@ -38,12 +38,10 @@ export default class Connecting extends React.Component<any, any>{
         const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
 
         const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
-        console.log('REFRESH!!!!', [pendingChannels, activeChannels, suspendedChannels]);
 
         if((activeChannels as any).length > 0){
             this.setState({status: 'active', channels: activeChannels});
         }else if((suspendedChannels as any).length > 0){
-            // const usage = (await fetch(`/channel=${suspendedChannels[0].id}`)) as any;
             const channel = suspendedChannels[0];
 
             if(channel.usage.current > 0){
@@ -79,7 +77,7 @@ export default class Connecting extends React.Component<any, any>{
         const remaining = this.state.channels[0].channelStatus.lastChanged === null
             ? <p className='card-text remainingText' >Ready for launch</p>
             : <p className='card-text remainingText'>
-                Remaining: 
+                Remaining:&nbsp;
                 <strong>
                     <Countdown date={new Date(Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000)} renderer={countdownRender} onComplete={completeRemaining} />
                 </strong> min
