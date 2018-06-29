@@ -128,7 +128,15 @@ export default class Connection extends React.Component<any, any>{
                         <form>
                             <p className='card-text'>This operation will pause VPN usage.</p>
                             <p className='card-text'>For this contract, max suspend time is {Math.floor(this.state.channel.channelStatus.maxInactiveTime/60)} min</p>
-                            <button className='btn btn-primary btn-custom btn-block'>Pause</button>
+                            <ConfirmPopupSwal
+                                endpoint={`/client/channels/${this.state.channel.id}/status`}
+                                options={{method: 'put', body: {action: 'pause'}}}
+                                title={'Pause'}
+                                text={<span>This operation will pause VPN usage.</span>}
+                                class={'btn btn-primary btn-custom btn-block'}
+                                swalType='warning'
+                                swalConfirmBtnText='Yes, pause it!'
+                                swalTitle='Are you sure?' />
                         </form>
                     </div>
                     <div className='card m-b-20 card-body text-xs-center'>
