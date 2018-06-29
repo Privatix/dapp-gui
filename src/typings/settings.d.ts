@@ -9,6 +9,7 @@ export interface LocalSettings {
     accountCreated: boolean;
     apiEndpoint: string;
     gas: GasConsumption;
+    network: string;
 }
 
 export interface DbSetting {
