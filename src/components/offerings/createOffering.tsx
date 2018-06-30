@@ -155,8 +155,10 @@ class CreateOffering extends React.Component<any, any>{
 
         const wrongKeys = [...mustBeInteger, ...mustBeFilled, ...mustBePositive, ...isZero];
         if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
-            if(payload.maxUnit < payload.minUnits){
-                err = true;
+            if (payload.maxUnit !== '') {
+                if (payload.maxUnit < payload.minUnits) {
+                    err = true;
+                }
             }
         }
         if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.psc_balance){
