@@ -6,6 +6,7 @@ import GasRange from '../utils/gasRange';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
 import {LocalSettings} from '../../typings/settings';
+import countries from '../../utils/countries';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -82,6 +83,13 @@ class CreateOffering extends React.Component<any, any>{
         const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
         const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
         this.setState({account, payload});
+
+    }
+
+    onCountryChanged(selectedCountry: any) {
+
+        const payload = Object.assign({}, this.state.payload, {country: selectedCountry.value});
+        this.setState({payload});
 
     }
 
@@ -253,9 +261,14 @@ class CreateOffering extends React.Component<any, any>{
             options={this.state.accounts.map((account:any) => ({value: account.id, label: account.name}))}
             onChange={this.onAccountChanged.bind(this)} />;
             // {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
+        const selectCountry = <Select className='form-control'
+            value={this.state.payload.country}
+            searchable={false}
+            clearable={false}
+            options={countries.map((country:any) => ({value: country.id, label: country.name}))}
+            onChange={this.onCountryChanged.bind(this)} />;
 
         const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
-        const countryComment = this.state.template ? this.state.template.raw.uiSchema.country['ui:help'] : '';
         const ethBalance = this.state.account ? (this.state.account.ethBalance/1e18).toFixed(3) : 0;
         const pscBalance = this.state.account ? (this.state.account.psc_balance/1e8).toFixed(3) : 0;
 
@@ -302,13 +315,7 @@ class CreateOffering extends React.Component<any, any>{
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Country: </label>
                                     <div className='col-6'>
-                                        <input type='text'
-                                               className='form-control'
-                                               onChange={onUserInput}
-                                               data-payload-value='country'
-                                               value={this.state.payload.country}
-                                               placeholder={countryComment}
-                                        />
+                                        {selectCountry}
                                     </div>
                                 </div>
                                 <div className='form-group row'>
