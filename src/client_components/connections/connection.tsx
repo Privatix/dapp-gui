@@ -124,6 +124,7 @@ export default class Connection extends React.Component<any, any>{
 
 
                 <div className='col-4'>
+                    { /*
                     <div className='card m-b-20 card-body text-xs-center'>
                         <form>
                             <p className='card-text'>This operation will pause VPN usage.</p>
@@ -139,6 +140,7 @@ export default class Connection extends React.Component<any, any>{
                                 swalTitle='Are you sure?' />
                         </form>
                     </div>
+                    */ }
                     <div className='card m-b-20 card-body text-xs-center'>
                         <form>
                             <p className='card-text'>This operation will permanently finish VPN usage.</p>

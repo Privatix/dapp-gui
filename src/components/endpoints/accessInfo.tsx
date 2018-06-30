@@ -9,7 +9,8 @@ function Loader() {
 }
 
 async function AsyncAccessInfo (props:any){
-    const offerings = await fetch(`/offerings?id=${props.channel.offering}`, {method: 'GET'});
+
+    const offerings = await fetch(`/client/offerings?id=${props.channel.offering}`, {method: 'GET'});
 
     const offering = (offerings as any)[0];
 
@@ -19,7 +20,7 @@ async function AsyncAccessInfo (props:any){
         <table className='table table-striped'>
             <tbody>
                 <tr><td>Country:</td><td><img src={`images/country/${offering.country.toLowerCase()}.png`} width='30px'/></td></tr>
-                <tr><td>Hostname:</td><td>{product.serviceEndpointAddress}</td></tr>
+                <tr><td>Hostname:</td><td>{product.serviceEndpointAddress ? product.serviceEndpointAddress : ''}</td></tr>
             </tbody>
         </table>
     </div>;
