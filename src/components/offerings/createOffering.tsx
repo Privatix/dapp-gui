@@ -58,14 +58,11 @@ class CreateOffering extends React.Component<any, any>{
         this.setState({products, accounts, account, payload});
         fetch(`/templates?id=${products[0].offerTplID}`)
             .then((templates: any) => {
-
                 const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
-                // console.log(products, accounts, templates);
                 const template = templates[0];
                 template.raw = JSON.parse(atob(template.raw));
                 this.setState({payload, template});
-                // console.log(products, template, 'accounts', accounts);
             });
     }
 
@@ -127,7 +124,7 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeFilled = required.filter((key: string) => !(key in payload));
 
         integers.filter((key:string) => !mustBeFilled.includes(key) ).forEach((key: string) => {
-            if(optional.includes(key) && !(key in payload)){
+            if(optional.includes(key)){
                 return;
             }
             const res = parseInt(payload[key], 10);
@@ -493,8 +490,6 @@ class CreateOffering extends React.Component<any, any>{
                             <div className='col-md-8'>
                                 <button type='submit' onClick={this.onSubmit.bind(this)} className='btn btn-default btn-custom btn-block waves-effect waves-light'>Create and Publish</button>
                             </div>
-                            <hr />
-                            <div>{this.state.errMsg}</div>
                         </div>
                 </div>
             </div>
