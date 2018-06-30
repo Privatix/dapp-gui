@@ -210,6 +210,10 @@ class CreateOffering extends React.Component<any, any>{
             payload.billingInterval = 1;
             payload.additionalParams = Buffer.from('{}').toString('base64');
 
+            if (payload.maxUnit === '') {
+                delete payload.maxUnit;
+            }
+
             fetch('/offerings/', {method: 'post', body: payload}).then(res => {
                 fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: this.state.gasPrice}}).then(res => {
                     this.setState(this.getDefaultState());
