@@ -65,7 +65,7 @@ export default function(props:any){
                     <label className='col-3 col-form-label'>Price per MB:</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
-                            <input type='text' className='form-control' value={props.offering.unitPrice} readOnly/>
+                            <input type='text' className='form-control' value={(props.offering.unitPrice/1e8).toFixed(8).replace(/0+$/,'')} readOnly/>
                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                         </div>
                     </div>
