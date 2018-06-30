@@ -220,6 +220,8 @@ class CreateOffering extends React.Component<any, any>{
 
             if (payload.maxUnit === '') {
                 delete payload.maxUnit;
+            }else{
+                payload.maxUnit = parseInt(payload.maxUnit, 10);
             }
 
             fetch('/offerings/', {method: 'post', body: payload}).then(res => {
