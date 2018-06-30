@@ -86,7 +86,7 @@ class AcceptOffering extends React.Component<any, any>{
         fetch(`/client/offerings/${this.props.offering.id}/status`, {method: 'put', body: {action: 'accept', account: this.state.account.id, gasPrice: this.state.gasPrice}})
             .then((res) =>{
                 notice({level: 'info', title: 'Congratulations!', msg: 'offering accepted!'});
-                this.props.history.push('/client-dashboard-start');
+                this.props.history.push('/client-dashboard-connecting');
             });
     }
 
