@@ -1,12 +1,12 @@
-import * as React from "react";
-import Select from "react-select";
-import {fetch} from "../../utils/fetch";
-import * as api from "../../utils/api";
-import GasRange from "../utils/gasRange";
-import {withRouter} from "react-router";
-import notice from "../../utils/notice";
-import {LocalSettings} from "../../typings/settings";
-import countries from "../../utils/countries";
+import * as React from 'react';
+import Select from 'react-select';
+import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
+import GasRange from '../utils/gasRange';
+import { withRouter } from 'react-router';
+import notice from '../../utils/notice';
+import {LocalSettings} from '../../typings/settings';
+import countries from '../../utils/countries';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
