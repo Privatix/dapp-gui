@@ -1,12 +1,12 @@
-import * as React from 'react';
-import Select from 'react-select';
-import {fetch} from '../../utils/fetch';
-import * as api from '../../utils/api';
-import GasRange from '../utils/gasRange';
-import { withRouter } from 'react-router';
-import notice from '../../utils/notice';
-import {LocalSettings} from '../../typings/settings';
-import countries from '../../utils/countries';
+import * as React from "react";
+import Select from "react-select";
+import {fetch} from "../../utils/fetch";
+import * as api from "../../utils/api";
+import GasRange from "../utils/gasRange";
+import {withRouter} from "react-router";
+import notice from "../../utils/notice";
+import {LocalSettings} from "../../typings/settings";
+import countries from "../../utils/countries";
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -125,7 +125,7 @@ class CreateOffering extends React.Component<any, any>{
         const isZero = [];
 
         const settings = (await fetch('/localSettings', {})) as LocalSettings;
-        
+
         let err = false;
         const payload = Object.assign({}, this.state.payload);
 
@@ -270,7 +270,7 @@ class CreateOffering extends React.Component<any, any>{
 
         const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
         const ethBalance = this.state.account ? (this.state.account.ethBalance/1e18).toFixed(3) : 0;
-        const pscBalance = this.state.account ? (this.state.account.psc_balance/1e8).toFixed(8) : 0;
+        const pscBalance = this.state.account ? (this.state.account.psc_balance/1e8).toFixed(8).replace(/0+$/,'') : 0;
 
         const onUserInput = this.onUserInput.bind(this);
 
@@ -484,7 +484,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   value={(this.state.payload.deposit/1e8).toFixed(8)}
+                                                   value={(this.state.payload.deposit/1e8).toFixed(8).replace(/0+$/,'')}
                                                    placeholder='PRIX'
                                                    readOnly
                                             />
