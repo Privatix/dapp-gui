@@ -49,7 +49,13 @@ class AcceptOffering extends React.Component<any, any>{
         if((activeChannels as any).length > 0
             || (suspendedChannels as any).length > 0
             || (pendingChannels as any).length > 0) {
-            this.setState({acceptOfferingBtnBl: ''});
+            this.setState({
+                acceptOfferingBtnBl: <div className='form-group row'>
+                    <div className='col-md-12'>
+                        <div className='text-danger'>Note. You can have only one VPN connection. To accept another, terminate the current connection.</div>
+                    </div>
+                </div>
+            });
         }
     }
 
