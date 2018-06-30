@@ -9,6 +9,7 @@ import notice from '../../utils/notice';
 import ModalWindow from '../../components/modalWindow';
 import DateSorter from '../../components/utils/sorters/sortingDate';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
+import JobStatus from '../connections/jobStatus';
 
 export default class ClientHistory extends React.Component<any,any> {
 
@@ -35,6 +36,7 @@ export default class ClientHistory extends React.Component<any,any> {
     getHistoryData() {
         let endpoint = '/client/channels?serviceStatus=terminated';
         fetch(endpoint, {}).then(async (clientChannels) => {
+            console.log(clientChannels);
             const historyData = (clientChannels as any).filter((channel) => {
                 if (channel.channelStatus.channelStatus !== 'active') {
                     return true;
@@ -61,13 +63,14 @@ export default class ClientHistory extends React.Component<any,any> {
             const data = (clientChannels as any).map((channel) => {
                 let jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
                 let jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
+                const jobStatus = <JobStatus status={channel.job.status} />;
 
                 return {
                     id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<ServiceView service={channel} />} />,
                     agent: channel.agent,
                     contractStatus: channel.channelStatus.channelStatus,
                     serviceStatus: channel.channelStatus.serviceStatus,
-                    jobStatus: channel.job.jobtype + ' (' +channel.job.status.charAt(0).toUpperCase() + channel.job.status.slice(1) +' ' + jobTime + ')',
+                    jobStatus: <span>{channel.job.jobtype} ({jobStatus} {jobTime})</span>,
                     usage: channel.usage.current + ' ' + channel.usage.unit + ' of ' + channel.usage.maxUsage + ' ' + channel.usage.unit,
                     cost: channel.usage.cost / 1e8
                 };

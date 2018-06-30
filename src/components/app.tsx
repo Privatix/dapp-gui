@@ -100,7 +100,7 @@ class App extends React.Component<Props, any> {
                             <Route path='/offering/:offering' component={Offering} />
                             <Route path='/createOffering/' component={CreateOffering} />
                             <Route path='/channels/:offering' component={ChannelsList} />
-                            <Route path='/channelsByStatus/:status' component={ChannelsByStatus} />
+                            <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                             <Route path='/channel/:channel' component={Channel} />
                             <Route path='/sessions/:channel' component={SessionsList} />
                             <Route path='/session/:session' component={Session} />

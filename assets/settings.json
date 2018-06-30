@@ -6,5 +6,6 @@
         "acceptOffering": 100000,
         "createOffering": 100000,
         "transfer": 100000
-   }
+   },
+   "network": "rinkeby"
 }

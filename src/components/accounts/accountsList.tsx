@@ -5,6 +5,7 @@ import * as api from '../../utils/api';
 import SortableTable from 'react-sortable-table-vilan';
 import ModalWindow from '../modalWindow';
 import Account from './accountView';
+import notice from '../../utils/notice';
 
 export default class AsyncAccounts extends React.Component<any, any> {
 
@@ -29,6 +30,7 @@ export default class AsyncAccounts extends React.Component<any, any> {
     onRefresh(evt: any){
         evt.preventDefault();
         this.refresh();
+        notice({level: 'info', title: 'Congratulations!', msg: 'Page was successfully refreshed!'});
     }
 
     render(){

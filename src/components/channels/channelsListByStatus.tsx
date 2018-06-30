@@ -1,44 +1,44 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
-import { withRouter } from 'react-router-dom';
-import {asyncReactor} from 'async-reactor';
 import ChannelsListPure from './channelsListPure';
-
-function Loader() {
-
-  return (<b>Loading channels ...</b>);
-
-}
-
-const AsyncChannels = async function(props: any){
-        const endpoint = `/channels/?serviceStatus=${props.status}`;
-
-        const channels = await fetch(endpoint, {method: 'GET'});
-
-        return <ChannelsListPure channels={channels} />;
-    };
 
 interface Props {
     status: string;
-    history: any;
-    match: any;
 }
 
 class Channels extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
-        this.state = {status: props.status};
+        this.state = {status: props.status, channels: {active: [], terminated: []}, handler: 0};
+    }
+
+    componentDidMount(){
+        this.refresh();
+    }
+
+    componentWillUnmount(){
+        if(this.state.handler){
+            clearTimeout(this.state.handler);
+        }
+    }
+
+    async refresh(){
+        const endpoint = `/channels/?serviceStatus=active`;
+        const active = await fetch(endpoint, {});
+        const terminatedEndPoint = `/channels/?serviceStatus=terminated`;
+        const terminated = await fetch(terminatedEndPoint, {});
+
+        this.setState({channels: {active, terminated}, handler: setTimeout(this.refresh.bind(this), 3000)});
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        return {status: nextProps.match.params.status ? nextProps.match.params.status : prevState.status};
+        return {status: nextProps.status ? nextProps.status : prevState.status};
     }
 
     render (){
-        const Helper = asyncReactor(AsyncChannels, Loader);
-        return <Helper status={this.state.status} />;
+        return <ChannelsListPure channels={this.state.channels[this.state.status]} />;
     }
 }
 
-export default withRouter(Channels);
+export default Channels;

@@ -12,7 +12,7 @@ export default class Transactions extends React.Component<any, any>{
             const tx = `0x${Buffer.from(transaction.hash, 'base64').toString('hex')}`;
             const row = {
                 date: <PgTime time={transaction.issued} />,
-                ethereumLink: <ExternalLink href={`https://etherscan.io/tx/${tx}`} text={tx} />
+                ethereumLink: <ExternalLink href={`https://${this.props.network === '' ? '' : this.props.network + '.'}etherscan.io/tx/${tx}`} text={tx} />
             };
 
             return row;

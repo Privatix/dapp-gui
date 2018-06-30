@@ -57,8 +57,12 @@ export default function(props:any){
 
         <div className='topbar-left'>
             <div className='text-center'>
-                <NavLink to='/' className='logo'><i
-                    className='icon-c-logo md md-local-parking'></i><span id='h'>Privatix</span></NavLink>
+                <NavLink to='/' className='logo'>
+                    <i className='icon-c-logo'>
+                        <img src='images/logo@2x_small.png' className='smallLogoImg' />
+                    </i>
+                    <span><img src='images/logo@2x.png' className='fullLogoImg' /></span>
+                </NavLink>
             </div>
         </div>
         <nav className='navbar-custom'>
@@ -84,9 +88,9 @@ export default function(props:any){
                             <NavLink to='/settings' className='dropdown-item notify-item'>
                                 <i className='md md-settings'></i> <span>Settings</span>
                             </NavLink>
-                            <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
-                                <i className='dripicons-blog'></i><span>Logs</span>
-                            </NavLink>
+                            {/*<NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>*/}
+                                {/*<i className='dripicons-blog'></i><span>Logs</span>*/}
+                            {/*</NavLink>*/}
                         </div>
                 </li>
 

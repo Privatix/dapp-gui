@@ -11,21 +11,57 @@ class AcceptOffering extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-        this.state = {accounts: [], gasPrice: 6*1e9, deposit: (props.offering.unitPrice*props.offering.minUnits)};
+
+        const acceptOfferingBtnBl = <div className='form-group row'>
+            <div className='col-md-12'>
+                <button type='submit'
+                        onClick={this.onSubmit.bind(this)}
+                        className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
+                >
+                    Accept
+                </button>
+            </div>
+        </div>;
+
+        this.state = {
+            accounts: [],
+            gasPrice: 6*1e9,
+            deposit: (props.offering.unitPrice*props.offering.minUnits),
+            acceptOfferingBtnBl: acceptOfferingBtnBl
+        };
     }
 
     async componentDidMount(){
 
         const accounts = await api.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
+        this.getNotTerminatedConnections();
         this.setState({accounts, account});
     }
 
-    onAccountChanged(selectedAccount: any) {
+    async getNotTerminatedConnections() {
+        const pendingChannelsReq = fetch('/client/channels?serviceStatus=pending', {});
+        const activeChannelsReq = fetch('/client/channels?serviceStatus=active', {});
+        const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
 
+        const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
+
+        if((activeChannels as any).length > 0
+            || (suspendedChannels as any).length > 0
+            || (pendingChannels as any).length > 0) {
+            this.setState({
+                acceptOfferingBtnBl: <div className='form-group row'>
+                    <div className='col-md-12'>
+                        <div className='text-danger'>Note. You can have only one VPN connection. To accept another, terminate the current connection.</div>
+                    </div>
+                </div>
+            });
+        }
+    }
+
+    onAccountChanged(selectedAccount: any) {
         const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
         this.setState({account});
-
     }
 
     onGasPriceChanged(evt:any){
@@ -38,7 +74,7 @@ class AcceptOffering extends React.Component<any, any>{
         let msg = '';
         const settings = (await fetch('/localSettings', {})) as LocalSettings;
 
-        if(this.state.account.ptcBalance < this.state.deposit){
+        if(this.state.account.psc_balance < this.state.deposit){
             err=true;
             msg += ' Not enough PRIXes for deposit. Please, select another account.';
         }
@@ -56,7 +92,7 @@ class AcceptOffering extends React.Component<any, any>{
         fetch(`/client/offerings/${this.props.offering.id}/status`, {method: 'put', body: {action: 'accept', account: this.state.account.id, gasPrice: this.state.gasPrice}})
             .then((res) =>{
                 notice({level: 'info', title: 'Congratulations!', msg: 'offering accepted!'});
-                this.props.history.push('/client-dashboard-start');
+                this.props.history.push('/client-dashboard-connecting');
             });
     }
 
@@ -92,7 +128,7 @@ class AcceptOffering extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>Price per MB:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={(offering.unitPrice/1e8).toFixed(5)} readOnly/>
+                                <input type='text' className='form-control' value={((offering.unitPrice/1e8).toFixed(8)).replace(/0+$/,'')} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -142,14 +178,14 @@ class AcceptOffering extends React.Component<any, any>{
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    Balance: <span>{(this.state.account ? this.state.account.ptcBalance/1e8 : 0).toFixed(3)} PRIX / {(this.state.account ? this.state.account.ethBalance/1e18 : 0).toFixed(3)} ETH</span>
+                                    Balance: <span>{(this.state.account ? this.state.account.psc_balance/1e8 : 0).toFixed(3)} PRIX / {(this.state.account ? this.state.account.ethBalance/1e18 : 0).toFixed(3)} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Deposit:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input id='offeringDeposit' type='text' className='form-control' value={(this.state.deposit/1e8).toFixed(3)} readOnly/>
+                                        <input id='offeringDeposit' type='text' className='form-control' value={((this.state.deposit/1e8).toFixed(8)).replace(/0+$/,'')} readOnly/>
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                     <span className='help-block'>
@@ -162,22 +198,13 @@ class AcceptOffering extends React.Component<any, any>{
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{(this.state.deposit/1e8).toFixed(3)} PRIX</strong>
+                                    <strong>{((this.state.deposit/1e8).toFixed(8)).replace(/0+$/,'')} PRIX</strong>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className='form-group row'>
-                        <div className='col-md-12'>
-                            <button type='submit'
-                                    onClick={this.onSubmit.bind(this)}
-                                    className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
-                            >
-                                Accept
-                            </button>
-                        </div>
-                    </div>
+                    {this.state.acceptOfferingBtnBl}
                 </div>
             }
         </div>;

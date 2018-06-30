@@ -15,6 +15,7 @@ class AccountView extends React.Component<any, any> {
                      ,address: `0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`
                      ,account: props.account
                      ,transactions: []
+                     ,network: ''
         };
     }
 
@@ -23,13 +24,12 @@ class AccountView extends React.Component<any, any> {
     }
 
     onTransferAmount(evt: any){
-        console.log('onChange', evt, evt.target.value);
         let amount = parseFloat(evt.target.value);
         if(amount !== amount){
             amount = 0;
         }
         amount = Math.floor(amount * 1e8);
-        console.log(amount);
+
         this.setState({amount});
     }
 
@@ -69,7 +69,6 @@ class AccountView extends React.Component<any, any> {
 
     onTransferComplete(){
         notice({level: 'info', header: 'Attention!', msg: 'The data was successfully transmitted. Once the transaction will in the blockchain, you will see it in the list below.'});
-        this.startRefreshing();
     }
 
     async refreshTransactions(){
@@ -93,6 +92,8 @@ class AccountView extends React.Component<any, any> {
 
     componentDidMount(){
         this.startRefreshing();
+        api.getLocalSettings()
+           .then(settings => this.setState({network: settings.network}));
     }
 
     componentWillUnmount(){
@@ -214,7 +215,7 @@ class AccountView extends React.Component<any, any> {
             <div className='card m-t-30'>
                 <h5 className='card-header'>Transaction Log</h5>
                 <div className='card-body'>
-                    <Transactions transactions={this.state.transactions} />
+                    <Transactions transactions={this.state.transactions} network={this.state.network} />
                 </div>
             </div>
         </div>;

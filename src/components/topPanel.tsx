@@ -14,7 +14,7 @@ export default class TopPanel extends React.Component <any, any>{
             pscBalance: 0,
             ptcBalance: 0,
             pscCount: 0,
-            totalTraffic: '0',
+            totalTraffic: 0,
             trafficBalance: '0'
         };
     }
@@ -72,21 +72,22 @@ export default class TopPanel extends React.Component <any, any>{
     }
 
     updateClient() {
-        fetch('/client/channels?serviceStatus=active', {}).then((res:any) => {
+        fetch('/client/channels?channelStatus=active', {}).then((res:any) => {
+            console.log('client channels traffic', res);
             const activeConnections = res.length;
             let totalTraffic = '0';
-            let trafficBalance = '0';
+            // let trafficBalance = 0;
             if (activeConnections > 0) {
                 const traffic = res[0].usage;
-                totalTraffic = traffic.current + ' ' + traffic.unit.toUpperCase();
-                trafficBalance = (traffic.maxUsage - traffic.current) + ' ' + traffic.unit.toUpperCase();
+                totalTraffic = String(traffic.current) + ' ' + traffic.unit.toUpperCase();
+                // trafficBalance = (traffic.maxUsage - traffic.current) + ' ' + traffic.unit.toUpperCase();
             }
 
 
             this.setState({
                 status: activeConnections > 0,
-                totalTraffic,
-                trafficBalance
+                totalTraffic
+                /* ,trafficBalance */
             });
         });
 
@@ -132,10 +133,10 @@ export default class TopPanel extends React.Component <any, any>{
             return <ul className='list-inline float-right mb-0 topPanel'>
                 <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
                 <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
-                <li className='list-inline-item'>Service balance: {this.state.ptcBalance}</li>
+                <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
                 <li className='list-inline-item'>Total Traffic: {this.state.totalTraffic}</li>
-                <li className='list-inline-item'>Traffic Balance: {this.state.trafficBalance}</li>
-                <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>
+                {/*<li className='list-inline-item'>Traffic Balance: {this.state.trafficBalance}</li>*/}
+                {/*<li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>*/}
             </ul>;
         }
     }

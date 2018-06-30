@@ -39,7 +39,6 @@ export default class Navigation extends React.Component<Props, any> {
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        console.log('PROPS!!!', nextProps, prevState);
         return {mode: nextProps.mode};
     }
 
@@ -63,7 +62,6 @@ export default class Navigation extends React.Component<Props, any> {
             const $ = (window as any).jQuery;
             $.Sidemenu.init();
         }, 1000);
-        console.log('new submenu', this.state.submenu);
         return this.state.mode === undefined || this.state.mode === 'agent' ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
@@ -83,7 +81,7 @@ export default class Navigation extends React.Component<Props, any> {
                             </div>
                             <ul className='list-unstyled sub_menu'>
                                 <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/active' className='waves-effect'>Active</NavLink></li>
-                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/terminated' className='waves-effect'>Archive</NavLink></li>
+                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/terminated' className='waves-effect'>History</NavLink></li>
                                 <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/sessions/all' className='waves-effect'>Sessions</NavLink></li>
                             </ul>
                         </li>
@@ -111,7 +109,7 @@ export default class Navigation extends React.Component<Props, any> {
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
-                        <li className=''>
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/client-dashboard-start' activeClassName='active' className='waves-effect'>
                                 <i className='ti-home'></i><span> Client Dashboard </span>
                             </NavLink>

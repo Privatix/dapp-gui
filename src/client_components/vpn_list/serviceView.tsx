@@ -1,10 +1,10 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
-import SortableTable from 'react-sortable-table-vilan';
+// import SortableTable from 'react-sortable-table-vilan';
 import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
-import DateSorter from '../../components/utils/sorters/sortingDate';
+// import DateSorter from '../../components/utils/sorters/sortingDate';
 import AccessInfo from '../../components/endpoints/accessInfo';
 
 export default class ServiceView extends React.Component <any,any> {
@@ -38,9 +38,15 @@ export default class ServiceView extends React.Component <any,any> {
         const service = this.state.service;
         fetch(`/sessions?channelId=${service.id}`, {}).then(async (sessionsRaw) => {
             const offerings = await fetch(`/offerings?id=${service.offering}`, {});
+
+            if (Object.keys(offerings).length === 0) {
+                return false;
+            }
+
             const offering = (offerings as any)[0];
 
             const products = await fetch(`/products`, {});
+
             const product = (products as any).filter((product: any) => product.id === offering.product)[0];
 
             const sessions = (sessionsRaw as any).map((session) => {
@@ -68,7 +74,7 @@ export default class ServiceView extends React.Component <any,any> {
             this.setState({getSessions: false});
         }
         const service = this.state.service;
-
+/*
         const sessionsColumns = [
             {
                 header: 'Id',
@@ -121,7 +127,7 @@ export default class ServiceView extends React.Component <any,any> {
                 sortable: false
             }
         ];
-
+*/
         return <div>
             <div className='row'>
                 <div className='col-12'>
@@ -179,7 +185,7 @@ export default class ServiceView extends React.Component <any,any> {
                     </div>
                 </div>
             </div>
-
+            { /*
             <div className='row m-t-30'>
                 <div className='col-12'>
                     <div className='card m-b-20'>
@@ -196,6 +202,7 @@ export default class ServiceView extends React.Component <any,any> {
                     </div>
                 </div>
             </div>
+           */ }
         </div>;
     }
 }

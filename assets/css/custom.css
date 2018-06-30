@@ -518,3 +518,23 @@ input:checked + .slider:before {
         display: inline-block;
     }
 }
+
+#wrapper .topbar .topbar-left,
+#wrapper .navbar-custom,
+#wrapper .button-menu-mobile {
+    background-color: #008ACE;
+}
+.topbar {
+    height: 70px;
+    box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.16), 0 2px 10px 0 rgba(0, 0, 0, 0.12);
+}
+.smallLogoImg{
+    height: 42px;
+}
+.fullLogoImg{
+    height: 40px;
+}
+
+.form-group input[type="text"]::placeholder {
+    opacity: 0.7;
+}
