@@ -6,7 +6,6 @@ let keyType = 'generateKey';
 
 function handleChange(e:any) {
     keyType = e.target.value;
-    console.log(keyType);
 }
 
 

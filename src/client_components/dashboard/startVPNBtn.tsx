@@ -1,31 +1,49 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import {asyncReactor} from 'async-reactor';
+import {fetch} from '../../utils/fetch';
 
-function Loader() {
-    return (<h2>Loading data ...</h2>);
-}
+class StartVPN extends React.Component <any,any> {
 
-async function AsyncDashboardStart (props:any){
+    constructor(props:any) {
+        super(props);
+    }
 
-    const StartVPNButton = withRouter(
-        ({ history }) => <button type='button'
-                                 className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light'
-                                 onClick={async (evt: any) => {
-                                     evt.preventDefault();
-                                     history.push(`/client-dashboard-connecting`);
-                                 }}>
-            Start using VPN
-        </button>
-    );
+    componentDidMount() {
+        this.getNotTerminatedConnections();
+    }
 
-    return <div className='container-fluid'>
-        <div className='row'>
-            <div className='col-sm-12 m-t-20'>
-                <StartVPNButton />
+    async getNotTerminatedConnections() {
+        const pendingChannelsReq = fetch('/client/channels?serviceStatus=pending', {});
+        const activeChannelsReq = fetch('/client/channels?serviceStatus=active', {});
+        const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
+
+        const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
+
+        if((activeChannels as any).length > 0
+            || (suspendedChannels as any).length > 0
+            || (pendingChannels as any).length > 0) {
+            this.props.history.push('/client-dashboard-connecting');
+        }
+    }
+
+    startVPNBtnHandler(evt: any) {
+        evt.preventDefault();
+        this.props.history.push('/client-vpn-list');
+    }
+
+    render() {
+        return <div className='container-fluid'>
+            <div className='row'>
+                <div className='col-sm-12 m-t-20'>
+                    <button type='button'
+                            className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light'
+                            onClick={this.startVPNBtnHandler.bind(this)}>
+                        Start using VPN
+                    </button>
+                </div>
             </div>
-        </div>
-    </div>;
+        </div>;
+    }
 }
 
-export default asyncReactor(AsyncDashboardStart, Loader);
+export default withRouter(StartVPN);

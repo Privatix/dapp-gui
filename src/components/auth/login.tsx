@@ -22,17 +22,14 @@ export default function(props: any){
         id='but'
         onClick={async (evt: any) => {
             evt.preventDefault();
-            console.log('BUTTON!');
             const pwd = (document.getElementById('pwd') as any).value.trim();
             if(pwdIsCorrect(pwd)){
                 const body = {pwd};
                 const res = await fetch('/login', {method: 'post', body});
-                console.log(res, body);
                 if(res){
                     history.push(props.entryPoint);
                 }else{
                     notice({level: 'error', header: 'Attention!', msg: 'access denied, possibly wrong password'});
-                    console.log('access denied!!!');
                 }
             }else{
                 // TODO incorrect password

@@ -38,9 +38,6 @@ const electronRendererConfig = {
     entry: {
         dapp: [
             "../src/dapp.tsx"
-        ],
-        dapp_client: [
-            "../src/dapp_client.tsx"
         ]
     },
     target: 'electron-renderer',

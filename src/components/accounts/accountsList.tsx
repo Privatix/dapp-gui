@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { Link } from 'react-router-dom';
-import {fetch} from '../../utils/fetch';
-// import {asyncReactor} from 'async-reactor';
+import * as api from '../../utils/api';
+
 import SortableTable from 'react-sortable-table-vilan';
 import ModalWindow from '../modalWindow';
-import Account from './account';
+import Account from './accountView';
+import notice from '../../utils/notice';
 
 export default class AsyncAccounts extends React.Component<any, any> {
 
@@ -20,24 +21,22 @@ export default class AsyncAccounts extends React.Component<any, any> {
         this.setState({visible: false});
     }
 
-    refresh(){
+    async refresh(){
 
-        const endpoint = '/accounts';
-        fetch(endpoint, {method: 'GET'}).then(accounts => {
-            this.setState({accounts});
-        });
+        const accounts = await api.getAccounts();
+        this.setState({accounts});
     }
 
     onRefresh(evt: any){
         evt.preventDefault();
         this.refresh();
+        notice({level: 'info', title: 'Congratulations!', msg: 'Page was successfully refreshed!'});
     }
 
     render(){
 
         const accountsDataArr = this.state.accounts.map((account: any) => {
 
-            let isUse = account.inUse === true ? 'on' : 'off';
             let isDefault = account.isDefault === true ? 'on' : 'off';
             const ethereumAddress = `0x${Buffer.from(account.ethAddr, 'base64').toString('hex')}`;
             return {
@@ -46,7 +45,6 @@ export default class AsyncAccounts extends React.Component<any, any> {
                 eth: (account.ethBalance/1e18).toFixed(3),
                 exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
                 serviceBalance: (account.psc_balance/1e8).toFixed(3),
-                inUse: <span className={'fieldStatusLabel fieldStatus-' + isUse}><i className={'md md-check-box' + (isUse === 'off' ? '-outline-blank' : '')}></i></span>,
                 isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault}><i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i></span>
             };
 
@@ -76,13 +74,8 @@ export default class AsyncAccounts extends React.Component<any, any> {
                 key: 'serviceBalance',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
-            },
-            {
-                header: 'In Use',
-                key: 'inUse',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-            },
+            }
+            ,
             {
                 header: 'Is Default',
                 key: 'isDefault',

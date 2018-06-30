@@ -1,29 +1,72 @@
 import * as React from 'react';
-// import {asyncReactor} from 'async-reactor';
-// import { Link } from 'react-router-dom';
-// import {fetchOfferings} from './utils';
+import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 
 import OfferingStatus from './offeringStatus';
 import SortableTable from 'react-sortable-table-vilan';
-import { HtmlElSorter } from '../utils/sortingHtmlEl';
+import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
 import Product from '../products/product';
 
-export default class OfferingsList extends React.Component<any, any>{
+class AsyncOfferings extends React.Component<any, any> {
 
-    render(){
+    constructor(props:any) {
+        super(props);
 
-        const {offerings, products} = this.props;
+        this.state = {
+            handler: 0,
+            offerings: [],
+            products: []
+        };
+    }
+
+    async refresh() {
+        let endpoint;
+
+        if(this.props.product){
+            endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
+        }else{
+            endpoint = '/offerings/' + (this.props.match.params.product === 'all' ? '' : `?product=${this.props.match.params.product}`);
+        }
+
+        const offeringsRequest = fetch(endpoint, {method: 'GET'});
+        const products = await api.getProducts();
+        let offerings;
+        [offerings] = await Promise.all([offeringsRequest]);
+        const resolveTable = (products as any).reduce((table, product) => {
+            table[product.id] = product.name;
+            return table;
+        }, {});
+
+        offerings = (offerings as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+
+        this.setState({offerings, products});
+
+        const handler = setTimeout(this.refresh.bind(this), this.props.rate);
+        this.setState({handler});
+    }
+
+    componentDidMount() {
+        this.refresh();
+    }
+
+    componentWillUnmount() {
+        if (this.state.handler) {
+            clearTimeout(this.state.handler);
+        }
+    }
+
+    render() {
         const offeringsDataArr = [];
-        (offerings as any).map((offering: any) => {
-            let product = (products as any).filter((product: any) => product.id === offering.product)[0];
+        this.state.offerings.map((offering: any) => {
+            let product = this.state.products.filter((product: any) => product.id === offering.product)[0];
             let row = {
                 id: <ModalWindow customClass='' modalTitle='Offering' text={offering.id} component={<Offering offering={offering} />} />,
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
-                status: <OfferingStatus offeringId={offering.id} rate={3000} />,
-                supply: offering.supply,
+                status: offering.status,
+                supply: offering.supply
             };
 
             offeringsDataArr.push(row);
@@ -32,7 +75,9 @@ export default class OfferingsList extends React.Component<any, any>{
         const columns = [
             {
                 header: 'ID',
-                key: 'id'
+                key: 'id',
+                descSortFunction: ModalPropTextSorter.desc,
+                ascSortFunction: ModalPropTextSorter.asc
             },
             {
                 header: 'Service name',
@@ -41,22 +86,20 @@ export default class OfferingsList extends React.Component<any, any>{
             {
                 header: 'Server',
                 key: 'server',
-                descSortFunction: HtmlElSorter.desc,
-                ascSortFunction: HtmlElSorter.asc
+                sortable: false
             },
             {
                 header: 'Status',
                 key: 'status',
                 headerStyle: {textAlign: 'center'},
                 dataProps: {className: 'text-center'},
-                descSortFunction: HtmlElSorter.desc,
-                ascSortFunction: HtmlElSorter.asc
+                render: (status) => { return <OfferingStatus status={status} />; }
             },
             {
                 header: 'Supply',
                 key: 'supply',
                 headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
+                dataProps: { className: 'text-center'}
             }
         ];
 
@@ -72,4 +115,7 @@ export default class OfferingsList extends React.Component<any, any>{
             </div>
         </div>;
     }
+
 }
+
+export default AsyncOfferings;

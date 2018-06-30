@@ -1,16 +1,50 @@
 import * as React from 'react';
 import ModalWindow from '../../components/modalWindow';
 import Connection from './connection';
+import ContractStatus from '../../components/channels/contractStatus';
+import ChannelStatus from '../../components/channels/channelStatusStyle';
+import JobStatus from './jobStatus';
 import { withRouter } from 'react-router-dom';
 
 class ActiveConnection extends React.Component<any, any>{
 
     constructor(props: any){
         super(props);
-        this.state = {popup: false};
+        this.state = {
+            popup: false,
+            channels: props.channels
+        };
+    }
+
+    static getDerivedStateFromProps(props:any, state:any) {
+        return {channels: props.channels};
     }
 
     render() {
+
+        const connections = this.state.channels.map((channel: any) => {
+
+            const usage = `${channel.usage.current} ${channel.usage.unit}`;
+            const jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
+            const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
+            const jobStatus = <JobStatus status={channel.job.status} />;
+
+            return <tr>
+                        <td>
+                            <ModalWindow visible={this.state.popup}
+                                         customClass='btn btn-link waves-effect'
+                                         modalTitle='Connection' text={channel.id} component={<Connection connection={channel} />}
+                            />
+                        </td>
+                        <td>{channel.agent}</td>
+                        <td><ContractStatus contractStatus={channel.channelStatus.channelStatus}/></td>
+                        <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
+                        <td>{channel.job.jobtype} ({jobStatus} {jobTime})</td>
+                        <td>{usage}</td>
+                        <td>{((channel.usage.cost / 1e8).toFixed(8)).replace(/0+$/,'')}</td>
+                    </tr>;
+        });
+
         return <div className='row'>
             <div className='col-12'>
                 <div className='card m-b-20'>
@@ -30,20 +64,7 @@ class ActiveConnection extends React.Component<any, any>{
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>
-                                        <ModalWindow visible={this.state.popup}
-                                                     customClass='btn btn-link waves-effect'
-                                                     modalTitle='Connection' text='1111111' component={<Connection/>}
-                                        />
-                                    </td>
-                                    <td>Name</td>
-                                    <td><span className='label label-table label-primary'>Pending</span></td>
-                                    <td><span className='label label-table label-primary'>Pending</span></td>
-                                    <td>ClientPreChannelCreate (Done 13:32)</td>
-                                    <td>120 MB of 500 MB</td>
-                                    <td>0.01</td>
-                                </tr>
+                                { connections }
                                 </tbody>
                             </table>
                         </div>

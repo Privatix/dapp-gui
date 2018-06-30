@@ -1,10 +1,20 @@
-export enum Mode {
-    agent = 'agent', client = 'client'
+export interface GasConsumption {
+    acceptOffering: number;
+    createOffering: number;
+    transfer: number;
 }
 
 export interface LocalSettings {
     firstStart: boolean;
     accountCreated: boolean;
     apiEndpoint: string;
-    mode: Mode;
+    gas: GasConsumption;
+    network: string;
+}
+
+export interface DbSetting {
+    key: string;
+    value: string;
+    description: string;
+    name: string;
 }

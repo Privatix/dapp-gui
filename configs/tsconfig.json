@@ -14,7 +14,7 @@
         "isolatedModules": false,
         "baseUrl": "../src/"
     },
-    "files": ["../src/main.ts", "../src/dapp.tsx", "../src/dapp_client.tsx"],
+    "files": ["../src/main.ts", "../src/dapp.tsx"],
     "exclude": [
         "node_modules"
     ]

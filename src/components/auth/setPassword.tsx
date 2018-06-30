@@ -20,7 +20,7 @@ class SetPassword extends React.Component<any, any>{
             return 'neutral';
         }
 
-        if (this.state.pwd.length < this.state.conf.length) {
+        if (this.state.pwd.length !== this.state.conf.length) {
             return 'wrong';
         }
 
@@ -62,6 +62,7 @@ class SetPassword extends React.Component<any, any>{
         const res = await fetch('/auth', {method: 'post', body: {password: pwd}});
         // TODO notice if server returns error (not implemented on dappctrl yet)
         console.log(res);
+
         const settings = (await fetch('/localSettings', {})) as LocalSettings;
         settings.firstStart = false;
         await fetch('/localSettings', {method: 'post', body: settings});

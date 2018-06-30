@@ -28,9 +28,9 @@ const wizard = <Router history={MemoryHistory as any}>
     <Switch>
         <Route exact path='/' component={SetPassword} />
         <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
-        <Route path='/generateKey/:default' component={GenerateKey} />
-        <Route path='/importHexKey' component={ImportHexKey} />
-        <Route path='/importJsonKey' component={ImportJsonKey} />
+        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
+        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
+        <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
         <Route path='/backup/:privateKey/:from' render={(props: any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} from={props.match.params.from}/>} />
         <Route path='/login' component={Login} />
         <Route path='/app' component={App} />
@@ -41,9 +41,9 @@ const setAccount = <Router history={MemoryHistory as any}>
     <Switch>
         <Route exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />
         <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
-        <Route path='/generateKey/:default' component={GenerateKey} />
-        <Route path='/importHexKey' component={ImportHexKey} />
-        <Route path='/importJsonKey' component={ImportJsonKey} />
+        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
+        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
+        <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
         <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
         <Route path='/app' component={App} />
     </Switch>

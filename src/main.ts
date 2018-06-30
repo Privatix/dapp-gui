@@ -4,7 +4,7 @@ import {app, ipcMain, BrowserWindow} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
-import fetch from 'node-fetch';
+import fetch from 'electron-fetch';
 import mocks from './mocks';
 import * as  btoa from 'btoa';
 import * as keythereum from 'keythereum';
@@ -44,10 +44,8 @@ let password = '';
                 }
             });
     }else if(req.endpoint === '/backup'){
-        console.log('BACKUP!!!', req.options.body);
 
         const pk = JSON.parse(req.options.body.pk);
-        console.log(pk);
         const keyObject = keythereum.dump(password, Buffer.from(pk.privateKey.data), Buffer.from(pk.salt.data), Buffer.from(pk.iv.data));
         fs.writeFile(req.options.body.fileName, JSON.stringify(keyObject), {encoding: 'utf8'}, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
@@ -58,7 +56,6 @@ let password = '';
         // console.log(privateKey);
         event.sender.send('api-reply', JSON.stringify({req: msg, res: {file}}));
     }else if(req.endpoint === '/saveAs'){
-        console.log('SAVE AS!!!', req.options.body);
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
             // TODO handling
         });
@@ -71,7 +68,6 @@ let password = '';
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
         }
     }else if(req.endpoint === '/login'){
-        console.log('login!!!', req.options.body.pwd);
         password = req.options.body.pwd;
         const options = {method: 'get'} as any;
         options.headers = {};
@@ -86,19 +82,16 @@ let password = '';
         event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
     }else if(req.endpoint === '/accounts' && req.options.method === 'post'){
         req.options.body = JSON.stringify(req.options.body);
-        console.log('SET ACCOUNT!!!', req.options.body, password);
         req.options.headers = {};
         req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
 
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
-                console.log('accounts!!!', res);
                 return res.json();
             })
             .then(json => {
            
                   // const json = true;
-                  console.log('accounts!!!', json);
                   if(settings.firstStart){
                       settings.firstStart = false;
                       fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
@@ -121,6 +114,7 @@ let password = '';
             req.options.headers = {};
         }
         req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
+
         fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
             .then(res => {
                 // console.log(req.endpoint, res.headers.get('content-type'));
@@ -141,7 +135,6 @@ let win:BrowserWindow = null;
 
 function createWindow () {
   // Create the browser window.
-  console.log(path.join(__dirname, 'icon_64.png'));
   let options = {
           width: 800
          ,height: 600

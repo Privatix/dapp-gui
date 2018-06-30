@@ -1,10 +1,12 @@
 import * as React from 'react';
 import Select from 'react-select';
 import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
-// import notice from '../../utils/notice';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
+import {LocalSettings} from '../../typings/settings';
+import countries from '../../utils/countries';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -12,47 +14,56 @@ import notice from '../../utils/notice';
 
 class CreateOffering extends React.Component<any, any>{
 
-    constructor(props: any){
-        super(props);
-
-        const payload = {
-            unitName: 'Mb'
+    static defaultState = {
+        payload: {
+            serviceName: ''
+           ,description: ''
+           ,country: ''
+           ,supply: ''
+           ,unitName: 'MB'
            ,unitType: 'units'
+           ,unitPrice: ''
            ,billingType: 'prepaid'
+           ,maxBillingUnitLag: ''
+           ,minUnits: ''
+           ,maxUnit: ''
+           ,maxSuspendTime: ''
+           ,maxInactiveTimeSec: ''
            ,template: ''
            ,deposit: 0
-        };
+           ,product: ''
+        },
+        products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9
+    };
 
-        if(props.product){
-            (payload as any).product = props.product;
+    getDefaultState(){
+        const state = Object.assign({}, CreateOffering.defaultState);
+        if(this.props.product){
+            state.payload.product = this.props.product;
         }
-
-        this.state = {payload, products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9};
-
+        return state;
     }
 
-    componentDidMount(){
+    constructor(props: any){
+        super(props);
+        this.state = this.getDefaultState();
+    }
 
-        Promise.all([fetch('/products'), fetch('/accounts/')])
-            .then((res: any) => {
-                // TODO check products length
-                let products, accounts;
-                [products, accounts] = res;
-                const account = accounts.find((account: any) => account.isDefault);
-                // console.log('Accounts retrieved!!!', accounts, account);
-                const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
-                this.setState({products, accounts, account, payload});
-                fetch(`/templates?id=${products[0].offerTplID}`)
-                    .then((templates: any) => {
+    async refresh(){
 
-                        const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
+        const accounts = await api.getAccounts();
+        const products = await api.getProducts();
+        // TODO check products length
+        const account = accounts.find((account: any) => account.isDefault);
+        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
+        this.setState({products, accounts, account, payload});
+        fetch(`/templates?id=${products[0].offerTplID}`)
+            .then((templates: any) => {
+                const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
-                        // console.log(products, accounts, templates);
-                        const template = templates[0];
-                        template.raw = JSON.parse(atob(template.raw));
-                        this.setState({payload, template});
-                        // console.log(products, template, 'accounts', accounts);
-                    });
+                const template = templates[0];
+                template.raw = JSON.parse(atob(template.raw));
+                this.setState({payload, template});
             });
     }
 
@@ -75,25 +86,30 @@ class CreateOffering extends React.Component<any, any>{
 
     }
 
+    onCountryChanged(selectedCountry: any) {
+
+        const payload = Object.assign({}, this.state.payload, {country: selectedCountry.value});
+        this.setState({payload});
+
+    }
+
     onUserInput(evt: any){
 
         const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value});
         payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? Math.floor((0 + payload.unitPrice)*1e8) : 0) * (payload.minUnits ? payload.minUnits : 0);
         this.setState({payload});
-        console.log(payload);
     }
 
-    onSubmit(evt:any){
+    async onSubmit(evt:any){
         this.setState({errMsg: ''});
         evt.preventDefault();
-        console.log(this.state);
         const aliases = {
             serviceName: 'name'
            ,description: 'description'
            ,country: 'country'
            ,supply : 'supply'
            ,unitPrice: 'unit price'
-           ,maxBillingUnitLag: 'maximum payment lag'
+           ,maxBillingUnitLag: 'maximum billing unit lag'
            ,minUnits: 'minimum units'
            ,maxUnit: 'maximum units'
            ,maxSuspendTime: 'max suspend time'
@@ -108,16 +124,15 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeInteger = [];
         const isZero = [];
 
+        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+
         let err = false;
         const payload = Object.assign({}, this.state.payload);
 
         const mustBeFilled = required.filter((key: string) => !(key in payload));
-        
-
-        console.log('mustBeFilled', mustBeFilled);
 
         integers.filter((key:string) => !mustBeFilled.includes(key) ).forEach((key: string) => {
-            if(optional.includes(key) && !(key in payload)){
+            if(optional.includes(key)){
                 return;
             }
             const res = parseInt(payload[key], 10);
@@ -135,7 +150,7 @@ class CreateOffering extends React.Component<any, any>{
             }
 
             payload[key] = res;
-            
+
         });
 
         payload.unitPrice = parseFloat(payload.unitPrice);
@@ -143,20 +158,23 @@ class CreateOffering extends React.Component<any, any>{
         const emptyStrings = strings.filter((key: string) => !mustBeFilled.includes(key) && payload[key].trim() === '');
 
         if(mustBeFilled.length || emptyStrings.length || payload.unitPrice !== payload.unitPrice || payload.unitPrice <= 0){
-            console.log('first err');
             err = true;
         }
 
         const wrongKeys = [...mustBeInteger, ...mustBeFilled, ...mustBePositive, ...isZero];
         if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
-            if(payload.maxUnit < payload.minUnits){
-                console.log('second err');
-                err = true;
+            if (payload.maxUnit !== '') {
+                if (payload.maxUnit < payload.minUnits) {
+                    err = true;
+                }
             }
         }
         if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.psc_balance){
-            console.log('3 err');
             err = true;
+        }
+
+        if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
+            err=true;
         }
 
         if(err){
@@ -181,9 +199,12 @@ class CreateOffering extends React.Component<any, any>{
             }
             if(payload.unitPrice <= 0){
                 msg += 'Unit price must be more then 0.';
-            } 
+            }
             if(payload.deposit === payload.deposit && payload.deposit > this.state.account.psc_balance){
                 msg += 'Deposit is greater then service balance. Please choose another account or top up the balance. ';
+            }
+            if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
+                msg += ' Not enough funds for publish transaction. Please, select another account.';
             }
             if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
                 if(payload.maxUnit < payload.minUnit){
@@ -196,24 +217,34 @@ class CreateOffering extends React.Component<any, any>{
             payload.unitPrice = Math.floor(payload.unitPrice * 1e8);
             payload.billingInterval = 1;
             payload.additionalParams = Buffer.from('{}').toString('base64');
-            console.log('FETCH!!!');
+
+            if (payload.maxUnit === '') {
+                delete payload.maxUnit;
+            }else{
+                payload.maxUnit = parseInt(payload.maxUnit, 10);
+            }
+
             fetch('/offerings/', {method: 'post', body: payload}).then(res => {
-                console.log('offering created', res);
                 fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: this.state.gasPrice}}).then(res => {
-                    console.log('offering published', res);
+                    this.setState(this.getDefaultState());
+
                     if(typeof this.props.closeModal === 'function'){
                         this.props.closeModal();
                     }
                     if(typeof this.props.done === 'function'){
                        this.props.done();
                     }
+
                 });
             });
         }
-        
-        console.log(payload);
+
         return;
 
+    }
+
+    componentDidMount(){
+        this.refresh();
     }
 
     render(){
@@ -224,10 +255,7 @@ class CreateOffering extends React.Component<any, any>{
             clearable={false}
             options={this.state.products.map((product: any) => ({value: product.id, label: product.name})) }
             onChange={this.onProductChanged.bind(this)} />;
-        /*
-            {this.state.products.map((product:any) => <option key={product.id} value={product.id}>{product.name}</option>) }
-        </Select>;
-*/
+
         const selectAccount =  <Select className='form-control'
             value={this.state.payload.agent}
             searchable={false}
@@ -235,11 +263,16 @@ class CreateOffering extends React.Component<any, any>{
             options={this.state.accounts.map((account:any) => ({value: account.id, label: account.name}))}
             onChange={this.onAccountChanged.bind(this)} />;
             // {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
+        const selectCountry = <Select className='form-control'
+            value={this.state.payload.country}
+            searchable={false}
+            clearable={false}
+            options={countries.map((country:any) => ({value: country.id, label: country.name}))}
+            onChange={this.onCountryChanged.bind(this)} />;
 
         const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
-        const countryComment = this.state.template ? this.state.template.raw.uiSchema.country['ui:help'] : '';
         const ethBalance = this.state.account ? (this.state.account.ethBalance/1e18).toFixed(3) : 0;
-        const pscBalance = this.state.account ? (this.state.account.psc_balance/1e8).toFixed(3) : 0;
+        const pscBalance = this.state.account ? (this.state.account.psc_balance/1e8).toFixed(8).replace(/0+$/,'') : 0;
 
         const onUserInput = this.onUserInput.bind(this);
 
@@ -260,25 +293,45 @@ class CreateOffering extends React.Component<any, any>{
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Name: </label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control' onChange={onUserInput} data-payload-value='serviceName' placeholder={title}  />
+                                        <input type='text'
+                                               className='form-control'
+                                               onChange={onUserInput}
+                                               data-payload-value='serviceName'
+                                               value={this.state.payload.serviceName}
+                                               placeholder={title}
+                                        />
                                     </div>
                                 </div>
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Description: </label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control' onChange={onUserInput} data-payload-value='description' placeholder={'description'} />
+                                        <input type='text'
+                                               className='form-control'
+                                               onChange={onUserInput}
+                                               data-payload-value='description'
+                                               value={this.state.payload.description}
+                                               placeholder={'description'}
+                                        />
                                     </div>
                                 </div>
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Country: </label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control' onChange={onUserInput} data-payload-value='country' placeholder={countryComment} />
+                                        {selectCountry}
                                     </div>
                                 </div>
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>Supply: </label>
                                     <div className='col-6'>
-                                        <input type='text' className='form-control autonumber' onChange={onUserInput} data-payload-value='supply' placeholder='3' data-v-max='999' data-v-min='0' />
+                                        <input type='text'
+                                               className='form-control autonumber'
+                                               onChange={onUserInput}
+                                               data-payload-value='supply'
+                                               value={this.state.payload.supply}
+                                               placeholder='i.e. 3'
+                                               data-v-max='999'
+                                               data-v-min='0'
+                                        />
                                         <span className='help-block'>
                                             <small>
                                                 Maximum supply of services according to service offerings.
@@ -304,7 +357,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Price per MB:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='0.001' onChange={onUserInput} data-payload-value='unitPrice' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='i.e. 0.001'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='unitPrice'
+                                                   value={this.state.payload.unitPrice}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                         </div>
                                     </div>
@@ -313,7 +372,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max billing unit lag:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='3' onChange={onUserInput} data-payload-value='maxBillingUnitLag' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='i.e. 3'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='maxBillingUnitLag'
+                                                   value={this.state.payload.maxBillingUnitLag}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
@@ -325,7 +390,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Min units:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='100'  onChange={onUserInput} data-payload-value='minUnits' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='i.e. 100'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='minUnits'
+                                                   value={this.state.payload.minUnits}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
@@ -337,7 +408,12 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max units:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' onChange={onUserInput} data-payload-value='maxUnit' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='maxUnit'
+                                                   value={this.state.payload.maxUnit}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
@@ -354,7 +430,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max suspend time:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='1800' onChange={onUserInput} data-payload-value='maxSuspendTime' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='i.e. 1800'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='maxSuspendTime'
+                                                   value={this.state.payload.maxSuspendTime}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                         </div>
                                         <span className='help-block'>
@@ -368,7 +450,13 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Max inactive time:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' placeholder='1800' onChange={onUserInput} data-payload-value='maxInactiveTimeSec' />
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder='i.e. 1800'
+                                                   onChange={onUserInput}
+                                                   data-payload-value='maxInactiveTimeSec'
+                                                   value={this.state.payload.maxInactiveTimeSec}
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                         </div>
                                         <span className='help-block'>
@@ -396,7 +484,12 @@ class CreateOffering extends React.Component<any, any>{
                                     <label className='col-2 col-form-label'>Deposit:</label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
-                                            <input type='text' className='form-control' value={(this.state.payload.deposit/1e8).toFixed(4)} placeholder='PRIX' readOnly/>
+                                            <input type='text'
+                                                   className='form-control'
+                                                   value={(this.state.payload.deposit/1e8).toFixed(8).replace(/0+$/,'')}
+                                                   placeholder='PRIX'
+                                                   readOnly
+                                            />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                         </div>
                                         <span className='help-block'>
@@ -412,8 +505,6 @@ class CreateOffering extends React.Component<any, any>{
                             <div className='col-md-8'>
                                 <button type='submit' onClick={this.onSubmit.bind(this)} className='btn btn-default btn-custom btn-block waves-effect waves-light'>Create and Publish</button>
                             </div>
-                            <hr />
-                            <div>{this.state.errMsg}</div>
                         </div>
                 </div>
             </div>

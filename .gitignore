@@ -4,6 +4,6 @@ node_modules
 *.swp
 *.swo
 *.log
-package-lock.json
 xunit.xml
 .idea/
+*.iml

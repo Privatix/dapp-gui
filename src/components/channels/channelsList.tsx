@@ -1,124 +1,145 @@
 import * as React from 'react';
+import { withRouter } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
-import {asyncReactor} from 'async-reactor';
 import ChannelUsage from './channelUsage';
 import ProductByOffering from '../products/productByOffering';
 import PgTime from '../utils/pgTime';
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
 import SortableTable from 'react-sortable-table-vilan';
-import { HtmlElSorter } from '../utils/sortingHtmlEl';
+import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
+import DateSorter from '../utils/sorters/sortingDate';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
 
-function Loader() {
+class AsyncChannels extends React.Component<any, any> {
 
-  return (<b>Loading channels ...</b>);
-
-}
-
-async function AsyncChannels (props:any){
-
-    let endpoint;
-
-    if(props.offering){
-        endpoint = '/channels' + (props.offering === 'all' ? '' : `?offeringId=${props.offering}`);
-    }else{
-        endpoint = '/channels' + (props.match.params.offering === 'all' ? '' : `?offeringId=${props.match.params.offering}`);
+    constructor(props: any) {
+        super(props);
+        this.state = {
+            isLoading: true,
+            channelsDataArr: [],
+            columns: [
+                {
+                    header: 'ID',
+                    key: 'id',
+                    descSortFunction: ModalPropTextSorter.desc,
+                    ascSortFunction: ModalPropTextSorter.asc
+                },
+                {
+                    header: 'Server',
+                    key: 'server',
+                    descSortFunction: ModalPropTextSorter.desc,
+                    ascSortFunction: ModalPropTextSorter.asc
+                },
+                {
+                    header: 'Client',
+                    key: 'client'
+                },
+                {
+                    header: 'Contract Status',
+                    key: 'contractStatus',
+                    headerStyle: {textAlign: 'center'},
+                    dataProps: { className: 'text-center'},
+                    render: (channelStatus) => <ContractStatus contractStatus={channelStatus} />
+                },
+                {
+                    header: 'Service Status',
+                    key: 'serviceStatus',
+                    headerStyle: {textAlign: 'center'},
+                    dataProps: { className: 'text-center'},
+                    render: (serviceStatus) => <ChannelStatusStyle serviceStatus={serviceStatus} />
+                },
+                {
+                    header: 'Usage',
+                    key: 'usage'
+                },
+                {
+                    header: 'Income (PRIX)',
+                    key: 'incomePRIX',
+                    headerStyle: {textAlign: 'center'},
+                    dataProps: { className: 'text-center'},
+                },
+                {
+                    header: 'Service Changed Time',
+                    key: 'serviceChangedTime',
+                    descSortFunction: DateSorter.desc,
+                    ascSortFunction: DateSorter.asc,
+                    render: (serviceChangedTime) => <PgTime time={serviceChangedTime} />
+                }
+            ],
+        };
     }
 
-    const channels = await fetch(endpoint, {method: 'GET'});
+    async refresh() {
+        let endpoint;
 
-    const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
-
-    const products = await Promise.all(channelsProducts);
-    const channelsDataArr = (products as any).map((product, index) => {
-        const channel = channels[index];
-        return {
-            id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
-            // server: <LinkToProductByOfferingId offeringId={channel.offering} ><ProductNameByOffering offeringId={channel.offering} /></LinkToProductByOfferingId>,
-            server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
-            client: channel.client,
-            contractStatus: <ContractStatus contractStatus={channel.channelStatus} />,
-            serviceStatus: <ChannelStatusStyle serviceStatus={channel.serviceStatus} />,
-            usage: <ChannelUsage channelId={channel.id} />,
-            incomePRIX: (channel.receiptBalance/1e8).toFixed(3),
-            serviceChangedTime: <PgTime time={channel.serviceChangedTime} />
-        };
-    });
-
-    const columns = [
-        {
-            header: 'ID',
-            key: 'id',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
-        },
-        {
-            header: 'Server',
-            key: 'server',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
-        },
-        {
-            header: 'Client',
-            key: 'client'
-        },
-        {
-            header: 'Contract Status',
-            key: 'contractStatus',
-            headerStyle: {textAlign: 'center'},
-            dataProps: { className: 'text-center'},
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
-        },
-        {
-            header: 'Service Status',
-            key: 'serviceStatus',
-            headerStyle: {textAlign: 'center'},
-            dataProps: { className: 'text-center'},
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
-        },
-        {
-            header: 'Usage',
-            key: 'usage',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
-        },
-        {
-            header: 'Income (PRIX)',
-            key: 'incomePRIX',
-            headerStyle: {textAlign: 'center'},
-            dataProps: { className: 'text-center'},
-        },
-        {
-            header: 'Service Changed Time',
-            key: 'serviceChangedTime',
-            descSortFunction: HtmlElSorter.desc,
-            ascSortFunction: HtmlElSorter.asc
+        if(this.props.offering){
+            endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
+        }else{
+            endpoint = '/channels' + (this.props.match.params.offering === 'all' ? '' : `?offeringId=${this.props.match.params.offering}`);
         }
-    ];
 
-    return <div className='container-fluid'>
-        <div className='row'>
-            <div className='col-sm-12 m-b-15'>
-                <h3 className='page-title'>All Services</h3>
-            </div>
-        </div>
-            <div className='row'>
-                <div className='col-12'>
-                    <div className='card-box'>
-                        <div className='bootstrap-table bootstrap-table-sortable'>
-                            <SortableTable
-                                data={channelsDataArr}
-                                columns={columns} />
+        const channels = await fetch(endpoint, {method: 'GET'});
+        const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
+        const products = await Promise.all(channelsProducts);
+
+        const channelsDataArr = (products as any).map((product, index) => {
+            const channel = channels[index];
+            return {
+                id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
+                server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
+                client: channel.client,
+                contractStatus: channel.channelStatus,
+                serviceStatus: channel.serviceStatus,
+                usage: <ChannelUsage channelId={channel.id} />,
+                incomePRIX: (channel.receiptBalance/1e8).toFixed(3),
+                serviceChangedTime: channel.serviceChangedTime
+            };
+        });
+
+        this.setState({
+            channelsDataArr
+        });
+
+    }
+
+    componentDidMount() {
+        this.refresh();
+        this.setState({isLoading: false});
+    }
+
+    render() {
+        return this.state.isLoading ?
+            <b>Loading channels ...</b> :
+            <div className='container-fluid'>
+                <div className='row'>
+                    <div className='col-sm-12 m-b-15'>
+                        <h3 className='page-title'>All Services</h3>
+                    </div>
+                </div>
+                <div className='row'>
+                    <div className='col-sm-12 m-b-15'>
+                        <div className='m-t-15'>
+                            <a onClick={this.refresh.bind(this)} className='btn btn-default btn-custom waves-effect waves-light' href='#'>Refresh all</a>
                         </div>
                     </div>
                 </div>
-          </div>
-        </div>;
+                <div className='row'>
+                    <div className='col-12'>
+                        <div className='card-box'>
+                            <div className='bootstrap-table bootstrap-table-sortable'>
+                                <SortableTable
+                                    data={this.state.channelsDataArr}
+                                    columns={this.state.columns} />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>;
+    }
+
 }
 
-export default asyncReactor(AsyncChannels, Loader);
+export default withRouter(AsyncChannels);

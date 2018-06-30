@@ -5,12 +5,14 @@ interface Props {
     mode: string;
 }
 
-
 export default class Navigation extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
-        this.state = {mode: props.mode};
+        this.state = {
+            mode: props.mode,
+            submenu: false,
+        };
     }
 
     componentDidUpdate() {
@@ -37,9 +39,23 @@ export default class Navigation extends React.Component<Props, any> {
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        console.log('PROPS!!!', nextProps, prevState);
         return {mode: nextProps.mode};
     }
+
+    handleClick() {
+        this.setState((oldState) => {
+            return {submenu: !oldState.submenu};
+        });
+    }
+
+    handleClickTrue() {
+        this.setState({submenu: true});
+    }
+
+    handleClickFalse() {
+        this.setState({submenu: false});
+    }
+
 
     render(){
         setTimeout(function(){
@@ -50,31 +66,38 @@ export default class Navigation extends React.Component<Props, any> {
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
-                        <li className=''>
+
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/' activeClassName='active' className='waves-effect'>
                                 <i className='ti-home'></i><span> Dashboard </span>
                             </NavLink>
                         </li>
-                        <li className='has_sub'>
-                            <NavLink to='/channels/all' activeClassName='active' className='waves-effect'>
-                                <i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span>
-                            </NavLink>
-                            <ul className='list-unstyled'>
-                                <li><NavLink exact to='/channelsByStatus/active' activeClassName='active' className='waves-effect'>Active</NavLink></li>
-                                <li><NavLink exact to='/channelsByStatus/terminated' activeClassName='active' className='waves-effect'>Archive</NavLink></li>
-                                <li><NavLink exact to='/sessions/all' activeClassName='active' className='waves-effect'>Sessions</NavLink></li>
+
+                        <li className='has_sub' aria-current={this.state.submenu ? 'page' : null}>
+                            <div onClick={this.handleClick.bind(this)}>
+                                <NavLink to='/channels/all' activeClassName='active' className='waves-effect' >
+                                    <i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span>
+                                </NavLink>
+                            </div>
+                            <ul className='list-unstyled sub_menu'>
+                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/active' className='waves-effect'>Active</NavLink></li>
+                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/terminated' className='waves-effect'>History</NavLink></li>
+                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/sessions/all' className='waves-effect'>Sessions</NavLink></li>
                             </ul>
                         </li>
-                        <li className=''>
+
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/offerings/all' activeClassName='active' className='waves-effect'>
                                 <i className='md md-toc'></i><span> Offerings </span>
                             </NavLink>
                         </li>
-                        <li className=''>
+
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
                                 <i className='md md-toc'></i><span> Servers </span>
                             </NavLink>
                         </li>
+
                     </ul>
                     <div className='clearfix'></div>
                 </div>
@@ -86,7 +109,7 @@ export default class Navigation extends React.Component<Props, any> {
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
-                        <li className=''>
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/client-dashboard-start' activeClassName='active' className='waves-effect'>
                                 <i className='ti-home'></i><span> Client Dashboard </span>
                             </NavLink>
