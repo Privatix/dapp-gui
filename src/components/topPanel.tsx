@@ -14,7 +14,7 @@ export default class TopPanel extends React.Component <any, any>{
             pscBalance: 0,
             ptcBalance: 0,
             pscCount: 0,
-            totalTraffic: '0',
+            totalTraffic: 0,
             trafficBalance: '0'
         };
     }
@@ -73,20 +73,21 @@ export default class TopPanel extends React.Component <any, any>{
 
     updateClient() {
         fetch('/client/channels?channelStatus=active', {}).then((res:any) => {
+            console.log('client channels traffic', res);
             const activeConnections = res.length;
             let totalTraffic = '0';
-            let trafficBalance = '0';
+            // let trafficBalance = 0;
             if (activeConnections > 0) {
                 const traffic = res[0].usage;
-                totalTraffic = traffic.current + ' ' + traffic.unit.toUpperCase();
-                trafficBalance = (traffic.maxUsage - traffic.current) + ' ' + traffic.unit.toUpperCase();
+                totalTraffic = String(traffic.current) + ' ' + traffic.unit.toUpperCase();
+                // trafficBalance = (traffic.maxUsage - traffic.current) + ' ' + traffic.unit.toUpperCase();
             }
 
 
             this.setState({
                 status: activeConnections > 0,
-                totalTraffic,
-                trafficBalance
+                totalTraffic
+                /* ,trafficBalance */
             });
         });
 
