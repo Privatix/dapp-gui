@@ -49,7 +49,13 @@ class AcceptOffering extends React.Component<any, any>{
         if((activeChannels as any).length > 0
             || (suspendedChannels as any).length > 0
             || (pendingChannels as any).length > 0) {
-            this.setState({acceptOfferingBtnBl: ''});
+            this.setState({
+                acceptOfferingBtnBl: <div className='form-group row'>
+                    <div className='col-md-12'>
+                        <div className='text-danger'>Note. You can have only one VPN connection. To accept another, terminate the current connection.</div>
+                    </div>
+                </div>
+            });
         }
     }
 
@@ -122,7 +128,7 @@ class AcceptOffering extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>Price per MB:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={(offering.unitPrice/1e8).toFixed(5)} readOnly/>
+                                <input type='text' className='form-control' value={((offering.unitPrice/1e8).toFixed(8)).replace(/0+$/,'')} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -179,7 +185,7 @@ class AcceptOffering extends React.Component<any, any>{
                                 <label className='col-2 col-form-label'>Deposit:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input id='offeringDeposit' type='text' className='form-control' value={(this.state.deposit/1e8).toFixed(3)} readOnly/>
+                                        <input id='offeringDeposit' type='text' className='form-control' value={((this.state.deposit/1e8).toFixed(8)).replace(/0+$/,'')} readOnly/>
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                     <span className='help-block'>
@@ -192,7 +198,7 @@ class AcceptOffering extends React.Component<any, any>{
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{(this.state.deposit/1e8).toFixed(3)} PRIX</strong>
+                                    <strong>{((this.state.deposit/1e8).toFixed(8)).replace(/0+$/,'')} PRIX</strong>
                                 </div>
                             </div>
                         </div>

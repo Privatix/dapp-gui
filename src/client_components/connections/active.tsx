@@ -24,7 +24,7 @@ class ActiveConnection extends React.Component<any, any>{
 
         const connections = this.state.channels.map((channel: any) => {
 
-            const usage = `${channel.usage.current} ${channel.usage.unit} of ${channel.usage.maxUsage} ${channel.usage.unit}`;
+            const usage = `${channel.usage.current} ${channel.usage.unit}`;
             const jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
             const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
             const jobStatus = <JobStatus status={channel.job.status} />;
@@ -41,7 +41,7 @@ class ActiveConnection extends React.Component<any, any>{
                         <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
                         <td>{channel.job.jobtype} ({jobStatus} {jobTime})</td>
                         <td>{usage}</td>
-                        <td>{channel.usage.cost / 1e8}</td>
+                        <td>{((channel.usage.cost / 1e8).toFixed(8)).replace(/0+$/,'')}</td>
                     </tr>;
         });
 

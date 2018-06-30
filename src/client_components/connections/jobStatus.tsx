@@ -10,19 +10,19 @@ export default class JobStatus extends React.Component<any, any>{
         return {
             active: {
                 label: 'primary',
-                alias: 'Active'
+                alias: 'active'
             },
             done: {
                 label: 'success',
-                alias: 'Done'
+                alias: 'done'
             },
             failed: {
                 label: 'danger',
-                alias: 'Failed'
+                alias: 'failed'
             },
             canceled: {
                 label: 'inverse',
-                alias: 'Canceled'
+                alias: 'canceled'
             },
         };
     }
