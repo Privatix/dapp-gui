@@ -303,7 +303,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                 <span className='input-group-text' id='priceFromLabel'>from</span>
                                             </div>
                                             <input type='number' step={this.state.step} className='form-control' placeholder={this.state.min}
-                                                   id='priceFrom' value={((this.state.from).toFixed(8)).replace(/0+$/,'')} onChange={(e) => this.changeMinPriceInput(e)} />
+                                                   id='priceFrom' value={this.state.from !== 0 ? ((this.state.from).toFixed(8)).replace(/0+$/,'') : 0} onChange={(e) => this.changeMinPriceInput(e)} />
                                         </div>
                                     </div>
                                     <div className='col-6 priceMinMaxInputBl'>
@@ -312,7 +312,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                 <span className='input-group-text' id='priceToLabel'>to</span>
                                             </div>
                                             <input type='number' step={this.state.step} className='form-control' placeholder={this.state.max}
-                                                   id='priceTo' value={(this.state.to.toFixed(8)).replace(/0+$/,'')} onChange={(e) => this.changeMaxPriceInput(e)} />
+                                                   id='priceTo' value={this.state.to !== 0 ? (this.state.to.toFixed(8)).replace(/0+$/,'') : 0} onChange={(e) => this.changeMaxPriceInput(e)} />
                                         </div>
                                     </div>
                                 </div>

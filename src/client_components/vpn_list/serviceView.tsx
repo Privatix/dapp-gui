@@ -38,9 +38,15 @@ export default class ServiceView extends React.Component <any,any> {
         const service = this.state.service;
         fetch(`/sessions?channelId=${service.id}`, {}).then(async (sessionsRaw) => {
             const offerings = await fetch(`/offerings?id=${service.offering}`, {});
+
+            if (Object.keys(offerings).length === 0) {
+                return false;
+            }
+
             const offering = (offerings as any)[0];
 
             const products = await fetch(`/products`, {});
+
             const product = (products as any).filter((product: any) => product.id === offering.product)[0];
 
             const sessions = (sessionsRaw as any).map((session) => {
