@@ -15,10 +15,10 @@ export default class AsyncList extends React.Component<any,any> {
         super(props);
 
         this.state = {
-            from: 0.0001,
+            from: 0,
             to: 0.01,
             step: 0.0001,
-            min: 0.0001,
+            min: 0,
             max: 0.01,
             spinner: true,
             changePriceInput: false,
@@ -77,7 +77,7 @@ export default class AsyncList extends React.Component<any,any> {
                     return {
                         id: <ModalWindow customClass='' modalTitle='Accept Offering' text={offering.id} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
-                        price: (offering.unitPrice / 10 ** 8).toFixed(4)
+                        price: ((offering.unitPrice / 10 ** 8).toFixed(8)).replace(/0+$/,'')
                     };
                 });
 
@@ -303,7 +303,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                 <span className='input-group-text' id='priceFromLabel'>from</span>
                                             </div>
                                             <input type='number' step={this.state.step} className='form-control' placeholder={this.state.min}
-                                                   id='priceFrom' value={this.state.from} onChange={(e) => this.changeMinPriceInput(e)} />
+                                                   id='priceFrom' value={((this.state.from).toFixed(8)).replace(/0+$/,'')} onChange={(e) => this.changeMinPriceInput(e)} />
                                         </div>
                                     </div>
                                     <div className='col-6 priceMinMaxInputBl'>
@@ -312,7 +312,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                 <span className='input-group-text' id='priceToLabel'>to</span>
                                             </div>
                                             <input type='number' step={this.state.step} className='form-control' placeholder={this.state.max}
-                                                   id='priceTo' value={this.state.to} onChange={(e) => this.changeMaxPriceInput(e)} />
+                                                   id='priceTo' value={(this.state.to.toFixed(8)).replace(/0+$/,'')} onChange={(e) => this.changeMaxPriceInput(e)} />
                                         </div>
                                     </div>
                                 </div>

@@ -72,7 +72,7 @@ export default class TopPanel extends React.Component <any, any>{
     }
 
     updateClient() {
-        fetch('/client/channels?serviceStatus=active', {}).then((res:any) => {
+        fetch('/client/channels?channelStatus=active', {}).then((res:any) => {
             const activeConnections = res.length;
             let totalTraffic = '0';
             let trafficBalance = '0';
@@ -134,8 +134,8 @@ export default class TopPanel extends React.Component <any, any>{
                 <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
                 <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
                 <li className='list-inline-item'>Total Traffic: {this.state.totalTraffic}</li>
-                <li className='list-inline-item'>Traffic Balance: {this.state.trafficBalance}</li>
-                <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>
+                {/*<li className='list-inline-item'>Traffic Balance: {this.state.trafficBalance}</li>*/}
+                {/*<li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>*/}
             </ul>;
         }
     }
