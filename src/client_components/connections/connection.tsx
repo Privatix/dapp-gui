@@ -6,7 +6,7 @@ import * as dateformat from 'dateformat';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
 import AccessInfo from '../../components/endpoints/accessInfo';
-import floatTo8FixedShow from '../../utils/floatTo8FixedShow';
+import toFixed8 from '../../utils/toFixed8';
 
 class Connection extends React.Component<any, any>{
 
@@ -98,11 +98,11 @@ class Connection extends React.Component<any, any>{
                                         </tr>
                                         <tr>
                                             <td>Cost:</td>
-                                            <td>{floatTo8FixedShow({number: (this.state.channel.usage.cost / 1e8)})} PRIX</td>
+                                            <td>{toFixed8({number: (this.state.channel.usage.cost / 1e8)})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>Deposit:</td>
-                                            <td>{floatTo8FixedShow({number: (this.state.channel.deposit / 1e8)})} PRIX</td>
+                                            <td>{toFixed8({number: (this.state.channel.deposit / 1e8)})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>Last usage time:</td>

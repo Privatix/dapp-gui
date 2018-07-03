@@ -9,7 +9,7 @@ import AcceptOffering from './acceptOffering';
 import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import notice from '../../utils/notice';
-import floatTo8FixedShow from '../../utils/floatTo8FixedShow';
+import toFixed8 from '../../utils/toFixed8';
 
 export default class AsyncList extends React.Component<any,any> {
     constructor(props:any) {
@@ -78,7 +78,7 @@ export default class AsyncList extends React.Component<any,any> {
                     return {
                         id: <ModalWindow customClass='' modalTitle='Accept Offering' text={offering.id} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
-                        price: floatTo8FixedShow({number: (offering.unitPrice / 1e8)})
+                        price: toFixed8({number: (offering.unitPrice / 1e8)})
                     };
                 });
 
@@ -304,7 +304,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                 <span className='input-group-text' id='priceFromLabel'>from</span>
                                             </div>
                                             <input type='number' min={this.state.min} max={this.state.max - this.state.step} step={this.state.step} className='form-control' placeholder={this.state.min}
-                                                   id='priceFrom' value={floatTo8FixedShow({number: this.state.from})} onChange={(e) => this.changeMinPriceInput(e)} />
+                                                   id='priceFrom' value={toFixed8({number: this.state.from})} onChange={(e) => this.changeMinPriceInput(e)} />
                                         </div>
                                     </div>
                                     <div className='col-6 priceMinMaxInputBl'>
@@ -313,7 +313,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                 <span className='input-group-text' id='priceToLabel'>to</span>
                                             </div>
                                             <input type='number' min={this.state.min + this.state.step} max={this.state.max} step={this.state.step} className='form-control' placeholder={this.state.max}
-                                                   id='priceTo' value={floatTo8FixedShow({number: this.state.to})} onChange={(e) => this.changeMaxPriceInput(e)} />
+                                                   id='priceTo' value={toFixed8({number: this.state.to})} onChange={(e) => this.changeMaxPriceInput(e)} />
                                         </div>
                                     </div>
                                 </div>
