@@ -1,12 +1,14 @@
 import * as React from 'react';
+import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
 import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import * as dateformat from 'dateformat';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
 import AccessInfo from '../../components/endpoints/accessInfo';
+import floatTo8FixedShow from '../../utils/floatTo8FixedShow';
 
-export default class Connection extends React.Component<any, any>{
+class Connection extends React.Component<any, any>{
 
     constructor(props:any) {
         super(props);
@@ -96,11 +98,11 @@ export default class Connection extends React.Component<any, any>{
                                         </tr>
                                         <tr>
                                             <td>Cost:</td>
-                                            <td>{(this.state.channel.usage.cost/1e8).toFixed(4)} PRIX</td>
+                                            <td>{floatTo8FixedShow({number: (this.state.channel.usage.cost / 1e8)})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>Deposit:</td>
-                                            <td>{(this.state.channel.deposit/1e8).toFixed(4)} PRIX</td>
+                                            <td>{floatTo8FixedShow({number: (this.state.channel.deposit / 1e8)})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>Last usage time:</td>
@@ -169,7 +171,9 @@ export default class Connection extends React.Component<any, any>{
                                 class={'btn btn-danger btn-custom btn-block'}
                                 swalType='danger'
                                 swalConfirmBtnText='Yes, terminate contract!'
-                                swalTitle='Are you sure?' />
+                                swalTitle='Are you sure?'
+                                redirectTo='/client-history'
+                                done={() => this.props.history.push('/client-history')}/>
                         </form>
                     </div>
                 </div>
@@ -194,3 +198,5 @@ export default class Connection extends React.Component<any, any>{
         </div>;
     }
 }
+
+export default withRouter(Connection);

@@ -73,7 +73,6 @@ export default class TopPanel extends React.Component <any, any>{
 
     updateClient() {
         fetch('/client/channels?channelStatus=active', {}).then((res:any) => {
-            console.log('client channels traffic', res);
             const activeConnections = res.length;
             let totalTraffic = '0';
             // let trafficBalance = 0;

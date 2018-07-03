@@ -9,6 +9,7 @@ import AcceptOffering from './acceptOffering';
 import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import notice from '../../utils/notice';
+import floatTo8FixedShow from '../../utils/floatTo8FixedShow';
 
 export default class AsyncList extends React.Component<any,any> {
     constructor(props:any) {
@@ -77,7 +78,7 @@ export default class AsyncList extends React.Component<any,any> {
                     return {
                         id: <ModalWindow customClass='' modalTitle='Accept Offering' text={offering.id} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
-                        price: ((offering.unitPrice / 10 ** 8).toFixed(8)).replace(/0+$/,'')
+                        price: floatTo8FixedShow({number: (offering.unitPrice / 1e8)})
                     };
                 });
 
@@ -302,8 +303,8 @@ export default class AsyncList extends React.Component<any,any> {
                                             <div className='input-group-prepend'>
                                                 <span className='input-group-text' id='priceFromLabel'>from</span>
                                             </div>
-                                            <input type='number' step={this.state.step} className='form-control' placeholder={this.state.min}
-                                                   id='priceFrom' value={this.state.from !== 0 ? ((this.state.from).toFixed(8)).replace(/0+$/,'') : 0} onChange={(e) => this.changeMinPriceInput(e)} />
+                                            <input type='number' min={this.state.min} max={this.state.max - this.state.step} step={this.state.step} className='form-control' placeholder={this.state.min}
+                                                   id='priceFrom' value={floatTo8FixedShow({number: this.state.from})} onChange={(e) => this.changeMinPriceInput(e)} />
                                         </div>
                                     </div>
                                     <div className='col-6 priceMinMaxInputBl'>
@@ -311,8 +312,8 @@ export default class AsyncList extends React.Component<any,any> {
                                             <div className='input-group-prepend'>
                                                 <span className='input-group-text' id='priceToLabel'>to</span>
                                             </div>
-                                            <input type='number' step={this.state.step} className='form-control' placeholder={this.state.max}
-                                                   id='priceTo' value={this.state.to !== 0 ? (this.state.to.toFixed(8)).replace(/0+$/,'') : 0} onChange={(e) => this.changeMaxPriceInput(e)} />
+                                            <input type='number' min={this.state.min + this.state.step} max={this.state.max} step={this.state.step} className='form-control' placeholder={this.state.max}
+                                                   id='priceTo' value={floatTo8FixedShow({number: this.state.to})} onChange={(e) => this.changeMaxPriceInput(e)} />
                                         </div>
                                     </div>
                                 </div>
