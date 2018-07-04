@@ -13,21 +13,19 @@ function Loader() {
 
 async function AsyncSessions (props:any){
 
-    let endpoint;
-
-    if(props.channel){
-        endpoint = '/sessions' + (props.channel === 'all' ? '' : `?channelId=${props.channel}`);
-    }else{
-        endpoint = '/sessions' + (props.match.params.channel === 'all' ? '' : `?channelId=${props.match.params.channel}`);
-    }
+    const endpoint = '/sessions' + (props.channel === 'all' ? '' : `?channelId=${props.channel}`);
 
     const sessions = await fetch(endpoint, {method: 'GET'});
     const usage = (sessions as any).reduce((usage, session) => {return usage + session.unitsUsed;}, 0);
     const income = await (sessions as any).reduce(async (income, session) => {
+        /*
         const channels = await fetch(`/channels?id=${session.channel}`, {method: 'GET'});
         const offerings = await fetch(`/offerings?id=${channels[0].offering}`, {method: 'GET'});
         const price = offerings[0].unitPrice;
         return income + session.unitsUsed*price;
+       */
+       const sessionIncome = await fetch(`/income?channel=${session.channel}`);
+       return income + sessionIncome;
     }, 0);
 
     const sessionsDOM = (sessions as any).map((session: any) => <SessionItem session={session} />);
@@ -42,8 +40,8 @@ async function AsyncSessions (props:any){
                                                               ,session.started
                                                               ,session.stopped
                                                               ,session.unitsUsed
-                                                              ,session.clientIP
-                                                              ,session.clientPort
+                                                              ,session.clientIP ? session.clientIP : ''
+                                                              ,session.clientPort ? session.clientPort : ''
                 ]);
                 data.unshift(headers);
                 fetch('/saveAs', {body: {fileName, data: data.map(row => row.join()).join('\n')}});
@@ -62,7 +60,7 @@ async function AsyncSessions (props:any){
                             <table className='table table-striped'>
                                 <tbody>
                                 <tr><td>Total usage:</td><td>{(usage/1024).toFixed(3)} Gb</td></tr>
-                                <tr><td>Total income:</td><td>{(income/1e8).toFixed(3)} PRIX</td></tr>
+                                <tr><td>Total income:</td><td>{income ? (income/1e8).toFixed(3) : 0} PRIX</td></tr>
                                 <tr><td>Session count:</td><td>{(sessions as any).length}</td></tr>
                                 </tbody>
                             </table>
