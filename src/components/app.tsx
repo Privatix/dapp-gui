@@ -102,7 +102,7 @@ class App extends React.Component<Props, any> {
                             <Route path='/channels/:offering' component={ChannelsList} />
                             <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                             <Route path='/channel/:channel' component={Channel} />
-                            <Route path='/sessions/:channel' component={SessionsList} />
+                            <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
                             <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
                             <Route path='/setAccount' render={() => <SetAccount default={false} />} />
