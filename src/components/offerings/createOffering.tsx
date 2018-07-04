@@ -5,6 +5,7 @@ import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
+import toFixed8 from '../../utils/toFixed8';
 import {LocalSettings} from '../../typings/settings';
 import countries from '../../utils/countries';
 
@@ -248,7 +249,6 @@ class CreateOffering extends React.Component<any, any>{
     }
 
     render(){
-
         const selectProduct = <Select className='form-control'
             value={this.state.payload.product}
             searchable={false}
@@ -486,7 +486,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   value={(this.state.payload.deposit/1e8).toFixed(8).replace(/0+$/,'')}
+                                                   value={toFixed8({number: (this.state.payload.deposit / 1e8)})}
                                                    placeholder='PRIX'
                                                    readOnly
                                             />
