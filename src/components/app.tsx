@@ -12,8 +12,6 @@ import Header from './header';
 import Settings from './settings';
 import Products from './products/products';
 import Product from './products/product';
-import ProductById from './products/productById';
-import CreateProduct from './products/addProduct';
 import Offerings from './offerings/offerings';
 import Offering from './offerings/offering';
 import CreateOffering from './offerings/createOffering';
@@ -90,10 +88,8 @@ class App extends React.Component<Props, any> {
                             <Route exact path='/' component={this.state.mode === 'client' ? ClientDashboardStart : Main } />
                             <Route path='/settings' component={Settings} />
                             <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
-                            <Route path='/createProduct' component={CreateProduct} />
                             <Route path='/accounts' component={AccountsList} />
                             <Route path='/product/:product' component={Product} />
-                            <Route path='/productById/:productId' component={ProductById} />
                             <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
                             <Route path='/offering/:offering' component={Offering} />
                             <Route path='/createOffering/' component={CreateOffering} />
