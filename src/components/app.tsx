@@ -11,10 +11,7 @@ import Navigation from './navigation';
 import Header from './header';
 import Settings from './settings';
 import Products from './products/products';
-import Product from './products/product';
 import Offerings from './offerings/offerings';
-import Offering from './offerings/offering';
-import CreateOffering from './offerings/createOffering';
 import ChannelsList from './channels/channelsList';
 import ChannelsByStatus from './channels/channelsByStatus';
 import Channel from './channels/channel';
@@ -89,10 +86,7 @@ class App extends React.Component<Props, any> {
                             <Route path='/settings' component={Settings} />
                             <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
                             <Route path='/accounts' component={AccountsList} />
-                            <Route path='/product/:product' component={Product} />
                             <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
-                            <Route path='/offering/:offering' component={Offering} />
-                            <Route path='/createOffering/' component={CreateOffering} />
                             <Route path='/channels/:offering' component={ChannelsList} />
                             <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                             <Route path='/channel/:channel' component={Channel} />
