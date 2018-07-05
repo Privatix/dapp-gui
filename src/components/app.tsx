@@ -16,7 +16,6 @@ import ChannelsList from './channels/channelsList';
 import ChannelsByStatus from './channels/channelsByStatus';
 import Channel from './channels/channel';
 import SessionsList from './sessions/sessionsList';
-import Session from './sessions/session';
 import Endpoint from './endpoints/endpoint';
 
 import SetAccount from './auth/setAccount';
@@ -91,7 +90,6 @@ class App extends React.Component<Props, any> {
                             <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                             <Route path='/channel/:channel' component={Channel} />
                             <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
-                            <Route path='/session/:session' component={Session} />
                             <Route path='/endpoint/:channel' component={Endpoint} />
                             <Route path='/setAccount' render={() => <SetAccount default={false} />} />
                             <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
