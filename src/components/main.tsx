@@ -18,10 +18,13 @@ export default class Main extends React.Component <any,any> {
     }
 
     async refresh() {
-        const sessions = await fetch(`/sessions`, {method: 'GET'});
-        const income = await (sessions as any).reduce(async (income, session) => {
-            const channels = await fetch(`/channels?id=${session.channel}`, {method: 'GET'});
-            return income + (channels as any).reduce((income, channel) => {return income + channel.receiptBalance;}, 0);
+        const channels = await fetch(`/channels`);
+
+        const income = (channels as any).reduce((income, channel) => {
+            if (Object.keys(channel).length === 0) {
+                return 0;
+            }
+            return income + channel.receiptBalance;
         }, 0);
 
         this.setState({income});
