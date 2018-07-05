@@ -6,8 +6,7 @@ import ProductNameByOffering from '../products/productNameByOffering';
 
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
-// import ChannelStatus from './channelStatus';
-// import EndpointView from '../endpoints/endpointView';
+import toFixed8 from '../../utils/toFixed8';
 
 export default function(props:any){
 
@@ -25,8 +24,8 @@ export default function(props:any){
                                 <tr><td>Contract Status:</td><td><ContractStatus contractStatus={props.channel.channelStatus} /></td></tr>
                                 <tr><td>Service Status:</td><td><ChannelStatusStyle serviceStatus={props.channel.serviceStatus} /></td></tr>
                                 <tr><td>Usage:</td><td><ChannelUsage channelId={props.channel.id} /></td></tr>
-                                <tr><td>Income:</td><td>{(props.channel.receiptBalance/1e8).toFixed(3)} PRIX</td></tr>
-                                <tr><td>Deposit:</td><td>{(props.channel.totalDeposit/1e8).toFixed(3)} PRIX</td></tr>
+                                <tr><td>Income:</td><td>{toFixed8({number: props.channel.receiptBalance/1e8})} PRIX</td></tr>
+                                <tr><td>Deposit:</td><td>{toFixed8({number: props.channel.totalDeposit/1e8})} PRIX</td></tr>
                             </tbody>
                         </table>
                     </div>
