@@ -19,13 +19,8 @@ export default class Sessions extends React.Component <any,any> {
     }
 
     async componentDidMount() {
-        let endpoint;
-        if (this.props.channel) {
-            endpoint = '/sessions' + (this.props.channel === 'all' ? '' : `?channelId=${this.props.channel}`);
-        } else {
-            endpoint = '/sessions' + (this.props.match.params.channel === 'all' ? '' : `?channelId=${this.props.match.params.channel}`);
-        }
 
+        const endpoint = '/sessions' + (this.props.channel === 'all' ? '' : `?channelId=${this.props.channel}`);
         const sessions = await fetch(endpoint, {method: 'GET'});
 
         const usage = (sessions as any).reduce((usage, session) => {
