@@ -22,24 +22,18 @@ class AsyncOfferings extends React.Component<any, any> {
     }
 
     async refresh() {
-        let endpoint;
 
-        if(this.props.product){
-            endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
-        }else{
-            endpoint = '/offerings/' + (this.props.match.params.product === 'all' ? '' : `?product=${this.props.match.params.product}`);
-        }
+        const endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
 
-        const offeringsRequest = fetch(endpoint, {method: 'GET'});
+        const offeringsRaw = await fetch(endpoint, {method: 'GET'});
         const products = await api.getProducts();
-        let offerings;
-        [offerings] = await Promise.all([offeringsRequest]);
+
         const resolveTable = (products as any).reduce((table, product) => {
             table[product.id] = product.name;
             return table;
         }, {});
 
-        offerings = (offerings as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        const offerings = (offeringsRaw as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
 
         this.setState({offerings, products});
 
