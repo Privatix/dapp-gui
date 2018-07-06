@@ -73,13 +73,8 @@ class AsyncChannels extends React.Component<any, any> {
     }
 
     async refresh() {
-        let endpoint;
 
-        if(this.props.offering){
-            endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
-        }else{
-            endpoint = '/channels' + (this.props.match.params.offering === 'all' ? '' : `?offeringId=${this.props.match.params.offering}`);
-        }
+        const endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
 
         const channels = await fetch(endpoint, {method: 'GET'});
         const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));

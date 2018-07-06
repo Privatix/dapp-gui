@@ -14,7 +14,6 @@ import Products from './products/products';
 import Offerings from './offerings/offerings';
 import ChannelsList from './channels/channelsList';
 import ChannelsByStatus from './channels/channelsByStatus';
-import Channel from './channels/channel';
 import SessionsList from './sessions/sessionsList';
 
 import SetAccount from './auth/setAccount';
@@ -85,9 +84,8 @@ class App extends React.Component<Props, any> {
                             <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
                             <Route path='/accounts' component={AccountsList} />
                             <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
-                            <Route path='/channels/:offering' component={ChannelsList} />
+                            <Route path='/channels/:offering' render={(props: any) => <ChannelsList offering={props.match.params.offering} /> } />
                             <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
-                            <Route path='/channel/:channel' component={Channel} />
                             <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
                             <Route path='/setAccount' render={() => <SetAccount default={false} />} />
                             <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
