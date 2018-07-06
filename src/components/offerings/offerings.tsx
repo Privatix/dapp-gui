@@ -38,8 +38,7 @@ class Offerings extends React.Component<any, any>{
                     </div>
                 </div>
             </div>
-            <OfferingsList product={this.props.match.params.product ? this.props.match.params.product : 'all'} rate={3000} />
-            {/*<OfferingsList offerings={this.state.offerings} products={this.state.products}  rate={3000} />*/}
+            <OfferingsList product={this.props.product} rate={3000} />
        </div>;
     }
 }
