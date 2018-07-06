@@ -37,7 +37,6 @@ export default class Sessions extends React.Component <any,any> {
         });
 
         const income = (sessions as any).reduce((income, session) => {
-            console.log('Session', session);
             return income + session.unitsUsed * session.unitPrice;
             // const sessionIncome = await fetch(`/income?channel=${session.channel}`);
             // return income + sessionIncome;
