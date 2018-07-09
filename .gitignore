@@ -7,3 +7,4 @@ node_modules
 xunit.xml
 .idea/
 *.iml
+package-lock.json
