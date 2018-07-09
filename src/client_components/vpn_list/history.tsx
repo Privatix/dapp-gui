@@ -36,7 +36,6 @@ export default class ClientHistory extends React.Component<any,any> {
     getHistoryData() {
         let endpoint = '/client/channels?serviceStatus=terminated';
         fetch(endpoint, {}).then(async (clientChannels) => {
-            console.log(clientChannels);
             const historyData = (clientChannels as any).filter((channel) => {
                 if (channel.channelStatus.channelStatus !== 'active') {
                     return true;

@@ -11,18 +11,10 @@ import Navigation from './navigation';
 import Header from './header';
 import Settings from './settings';
 import Products from './products/products';
-import Product from './products/product';
-import ProductById from './products/productById';
-import CreateProduct from './products/addProduct';
 import Offerings from './offerings/offerings';
-import Offering from './offerings/offering';
-import CreateOffering from './offerings/createOffering';
 import ChannelsList from './channels/channelsList';
 import ChannelsByStatus from './channels/channelsByStatus';
-import Channel from './channels/channel';
 import SessionsList from './sessions/sessionsList';
-import Session from './sessions/session';
-import Endpoint from './endpoints/endpoint';
 
 import SetAccount from './auth/setAccount';
 import GenerateKey from './auth/generateKey';
@@ -31,7 +23,6 @@ import ImportJsonKey from './auth/importJsonKey';
 import Backup from './auth/backup';
 
 import AccountsList from './accounts/accountsList';
-import Account from './accounts/accountView';
 import ClientDashboardStart from '../client_components/dashboard/startVPNBtn';
 import ClientDashboardConnecting from '../client_components/dashboard/connecting';
 import ClientDashboardActive from '../client_components/dashboard/active';
@@ -91,24 +82,15 @@ class App extends React.Component<Props, any> {
                             <Route exact path='/' component={this.state.mode === 'client' ? ClientDashboardStart : Main } />
                             <Route path='/settings' component={Settings} />
                             <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
-                            <Route path='/createProduct' component={CreateProduct} />
                             <Route path='/accounts' component={AccountsList} />
-                            <Route path='/account/:account' component={Account} />
-                            <Route path='/product/:product' component={Product} />
-                            <Route path='/productById/:productId' component={ProductById} />
                             <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
-                            <Route path='/offering/:offering' component={Offering} />
-                            <Route path='/createOffering/' component={CreateOffering} />
-                            <Route path='/channels/:offering' component={ChannelsList} />
+                            <Route path='/channels/:offering' render={(props: any) => <ChannelsList offering={props.match.params.offering} /> } />
                             <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
-                            <Route path='/channel/:channel' component={Channel} />
-                            <Route path='/sessions/:channel' component={SessionsList} />
-                            <Route path='/session/:session' component={Session} />
-                            <Route path='/endpoint/:channel' component={Endpoint} />
+                            <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
                             <Route path='/setAccount' render={() => <SetAccount default={false} />} />
                             <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                             <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                            <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+                            <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
                             <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
                             <Route path='/logs' component={Logs} />
 

@@ -9,7 +9,8 @@ export default class Main extends React.Component <any,any> {
         super(props);
 
         this.state = {
-            income: 0
+            income: 0,
+            refresh: null
         };
     }
 
@@ -17,12 +18,23 @@ export default class Main extends React.Component <any,any> {
         this.refresh();
     }
 
+    registerRefresh(refresh:Function) {
+        this.setState({refresh});
+    }
+
     async refresh() {
-        const sessions = await fetch(`/sessions`, {method: 'GET'});
-        const income = await (sessions as any).reduce(async (income, session) => {
-            const channels = await fetch(`/channels?id=${session.channel}`, {method: 'GET'});
-            return income + (channels as any).reduce((income, channel) => {return income + channel.receiptBalance;}, 0);
+        const channels = await fetch(`/channels`);
+
+        const income = (channels as any).reduce((income, channel) => {
+            if (Object.keys(channel).length === 0) {
+                return income;
+            }
+            return income + channel.receiptBalance;
         }, 0);
+
+        if ('function' === typeof this.state.refresh) {
+            this.state.refresh();
+        }
 
         this.setState({income});
     }
@@ -47,14 +59,13 @@ export default class Main extends React.Component <any,any> {
                     <div className='card m-b-20'>
                         <h5 className='card-header'>Active Services</h5>
                         <div className='card-body'>
-                            <ChannelsListByStatus status={'active'}/>
+                            <ChannelsListByStatus status={'active'} registerRefresh={this.registerRefresh.bind(this)}/>
                         </div>
                     </div>
                     <div className='card m-b-20'>
                         <h5 className='card-header'>Active Offerings</h5>
                         <div className='card-body'>
                             <OfferingsList product={'all'} rate={3000}/>
-                            {/*<OfferingsList offerings={offerings} products={products} />*/}
                         </div>
                     </div>
                 </div>
