@@ -32,6 +32,7 @@
     "async-reactor": "^1.2.2",
     "bootstrap": "^4.1.0",
     "btoa": "^1.2.1",
+    "bugsnag-js": "^4.7.2",
     "colors": "^1.1.2",
     "cors": "^2.8.4",
     "dateformat": "^3.0.3",
