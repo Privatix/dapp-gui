@@ -1,11 +1,14 @@
 {
-    "firstStart": true
-   ,"accountCreated": false
-   ,"apiEndpoint": "http://localhost:3000"
-   ,"gas": {
+   "firstStart": true,
+   "accountCreated": false,
+   "apiEndpoint": "http://localhost:3000",
+   "gas": {
         "acceptOffering": 100000,
         "createOffering": 100000,
         "transfer": 100000
    },
-   "network": "rinkeby"
+   "network": "rinkeby",
+   "bugsnagKey": "f8f572a4fff86dd59cc2a36f6e9fe8d0",
+   "bugsnagEnable": true,
+   "release": "0.7.0"
 }
