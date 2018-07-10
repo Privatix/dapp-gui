@@ -1,7 +1,19 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import {fetch} from '../utils/fetch';
+import {asyncProviders} from '../redux/actions';
+import {Account} from '../typings/accounts';
+import {State} from '../typings/state';
+import {Mode} from '../typings/mode';
 
-export default class TopPanel extends React.Component <any, any>{
+interface Props {
+    accounts: Account[];
+    rate?: number;
+    mode: Mode;
+    dispatch: any;
+}
+
+class TopPanel extends React.Component <Props, any>{
 
     constructor(props: any){
         super(props);
@@ -10,9 +22,6 @@ export default class TopPanel extends React.Component <any, any>{
             mode: '',
             handler: 0,
             changeMode: false,
-            ethBalance: 0,
-            pscBalance: 0,
-            ptcBalance: 0,
             pscCount: 0,
             totalTraffic: 0,
             trafficBalance: '0'
@@ -32,7 +41,7 @@ export default class TopPanel extends React.Component <any, any>{
         this.checkModeChange();
     }
 
-    static getDerivedStateFromProps(nextProps: any, prevState: any) {
+    static getDerivedStateFromProps(nextProps: Props, prevState: any) {
         return {
             mode: nextProps.mode,
             changeMode: true
@@ -40,9 +49,12 @@ export default class TopPanel extends React.Component <any, any>{
     }
 
     async update(){
+
         const rate = this.props.rate ? this.props.rate : 3000;
 
-        if (this.props.mode === 'agent') {
+        this.props.dispatch(asyncProviders.updateAccounts());
+
+        if (this.props.mode === Mode.AGENT) {
             await this.updateAgent();
         }else {
             await this.updateClient();
@@ -67,8 +79,6 @@ export default class TopPanel extends React.Component <any, any>{
             const pscCount = (res as any).length;
             this.setState({status: pscCount > 0, pscCount });
         });
-
-        this.getBalances();
     }
 
     updateClient() {
@@ -89,24 +99,20 @@ export default class TopPanel extends React.Component <any, any>{
                 /* ,trafficBalance */
             });
         });
-
-        this.getBalances();
     }
 
-    getBalances() {
-        fetch('/accounts/', {}).then(res => {
-            const ethBalance = ((res as any).reduce((balance, account) => {
-                return account.ethBalance + balance;
-            }, 0)/1e18).toFixed(3);
-            const ptcBalance = ((res as any).reduce((balance, account) => {
-                return account.ptcBalance + balance;
-            }, 0)/1e8).toFixed(3);
-            const pscBalance = ((res as any).reduce((balance, account) => {
-                return account.psc_balance + balance;
-            }, 0)/1e8).toFixed(3);
+    getBalances(accounts: Account[]) {
+        const ethBalance = (accounts.reduce((balance, account) => {
+            return account.ethBalance + balance;
+        }, 0)/1e18).toFixed(3);
+        const ptcBalance = (accounts.reduce((balance, account) => {
+            return account.ptcBalance + balance;
+        }, 0)/1e8).toFixed(3);
+        const pscBalance = (accounts.reduce((balance, account) => {
+            return account.psc_balance + balance;
+        }, 0)/1e8).toFixed(3);
 
-            this.setState({ethBalance, ptcBalance, pscBalance});
-        });
+        return {ethBalance, ptcBalance, pscBalance};
     }
 
     checkModeChange() {
@@ -119,20 +125,20 @@ export default class TopPanel extends React.Component <any, any>{
 
     render(){
         const status = this.state.status ? 'on' : 'off';
-
+        const {ethBalance, ptcBalance, pscBalance} = this.getBalances(this.props.accounts);
         if(this.props.mode === 'agent'){
             return <ul className='list-inline float-right mb-0 topPanel'>
-                <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
-                <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
-                <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
+                <li className='list-inline-item'>ETH Balance: {ethBalance}</li>
+                <li className='list-inline-item'>Exchange Balance: {ptcBalance}</li>
+                <li className='list-inline-item'>Service balance: {pscBalance}</li>
                 <li className='list-inline-item'>Active Services: {this.state.pscCount}</li>
                 <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>
             </ul>;
         }else{
             return <ul className='list-inline float-right mb-0 topPanel'>
-                <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
-                <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
-                <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
+                <li className='list-inline-item'>ETH Balance: {ethBalance}</li>
+                <li className='list-inline-item'>Exchange Balance: {ptcBalance}</li>
+                <li className='list-inline-item'>Service balance: {pscBalance}</li>
                 <li className='list-inline-item'>Total Traffic: {this.state.totalTraffic}</li>
                 {/*<li className='list-inline-item'>Traffic Balance: {this.state.trafficBalance}</li>*/}
                 {/*<li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>*/}
@@ -140,3 +146,5 @@ export default class TopPanel extends React.Component <any, any>{
         }
     }
 }
+
+export default connect( (state: State) => ({accounts: state.accounts}) )(TopPanel);

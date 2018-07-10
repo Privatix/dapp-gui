@@ -1,19 +1,25 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import * as api from '../../utils/api';
 
 import SortableTable from 'react-sortable-table-vilan';
 import ModalWindow from '../modalWindow';
 import Account from './accountView';
 import notice from '../../utils/notice';
+import {asyncProviders} from '../../redux/actions';
+import {State} from '../../typings/state';
+import {Account as AccountType} from '../../typings/accounts';
 
-export default class AsyncAccounts extends React.Component<any, any> {
+interface Props {
+    accounts: AccountType[];
+    dispatch: any;
+}
+
+class Accounts extends React.Component<Props, any> {
 
     constructor(props: any) {
 
         super(props);
-        this.state = {accounts: []};
-
         this.refresh();
     }
 
@@ -22,20 +28,18 @@ export default class AsyncAccounts extends React.Component<any, any> {
     }
 
     async refresh(){
-
-        const accounts = await api.getAccounts();
-        this.setState({accounts});
+        this.props.dispatch(asyncProviders.updateAccounts());
     }
 
-    onRefresh(evt: any){
+    async onRefresh(evt: any){
         evt.preventDefault();
-        this.refresh();
+        await this.refresh();
         notice({level: 'info', title: 'Congratulations!', msg: 'Page was successfully refreshed!'});
     }
 
     render(){
 
-        const accountsDataArr = this.state.accounts.map((account: any) => {
+        const accountsDataArr = this.props.accounts.map((account: any) => {
 
             let isDefault = account.isDefault === true ? 'on' : 'off';
             const ethereumAddress = `0x${Buffer.from(account.ethAddr, 'base64').toString('hex')}`;
@@ -108,3 +112,5 @@ export default class AsyncAccounts extends React.Component<any, any> {
         </div>;
     }
 }
+
+export default connect( (state: State) => ({accounts: state.accounts}) )(Accounts);
