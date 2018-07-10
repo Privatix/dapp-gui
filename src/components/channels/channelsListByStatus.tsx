@@ -1,43 +1,86 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
-import ChannelsListPure from './channelsListPure';
+import ChannelsListSortTable from './channelsListSortTable';
+import ProductByOffering from '../products/productByOffering';
+import Channel from './channel';
+import ModalWindow from '../modalWindow';
+import Product from '../products/product';
+import toFixed8 from '../../utils/toFixed8';
 
-interface Props {
-    status: string;
-}
+class Channels extends React.Component<any, any> {
 
-class Channels extends React.Component<Props, any> {
-
-    constructor(props: Props) {
+    constructor(props: any) {
         super(props);
-        this.state = {status: props.status, channels: {active: [], terminated: []}, handler: 0};
-    }
 
-    componentDidMount(){
-        this.refresh();
-    }
+        this.state = {
+            channels: props.channels,
+            status: props.status,
+            channelsDataArr: [],
+            lastUpdatedStatus: null
+        };
 
-    componentWillUnmount(){
-        if(this.state.handler){
-            clearTimeout(this.state.handler);
+        if ('function' === typeof props.registerRefresh) {
+            props.registerRefresh(this.refresh.bind(this));
         }
     }
 
-    async refresh(){
-        const endpoint = `/channels/?serviceStatus=active`;
-        const active = await fetch(endpoint, {});
-        const terminatedEndPoint = `/channels/?serviceStatus=terminated`;
-        const terminated = await fetch(terminatedEndPoint, {});
+    refreshIfStatusChanged() {
+        if (this.state.lastUpdatedStatus === this.state.status) {
+            return;
+        }
 
-        this.setState({channels: {active, terminated}, handler: setTimeout(this.refresh.bind(this), 3000)});
+        this.refresh();
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        return {status: nextProps.status ? nextProps.status : prevState.status};
+    async refresh() {
+        const status = this.state.status;
+
+        let endpoint = `/channels/?serviceStatus=active`;
+        let channels = {};
+        if (status === 'active') {
+            channels = await fetch(endpoint);
+        } else {
+            endpoint = `/channels/?serviceStatus=terminated`;
+            channels = await fetch(endpoint);
+        }
+
+        const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
+        const products = await Promise.all(channelsProducts);
+
+        const channelsDataArr = (products as any).map((product, index) => {
+            const channel = channels[index];
+            return {
+                id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
+                server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
+                client: channel.client,
+                contractStatus: channel.channelStatus,
+                serviceStatus: channel.serviceStatus,
+                usage: channel.id,
+                incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
+                serviceChangedTime: channel.serviceChangedTime
+            };
+        });
+
+        this.setState({
+            channelsDataArr,
+            lastUpdatedStatus: status
+        });
+    }
+
+    static getDerivedStateFromProps(props: any, state: any){
+        return {status: props.status};
     }
 
     render (){
-        return <ChannelsListPure channels={this.state.channels[this.state.status]} />;
+        this.refreshIfStatusChanged();
+
+        return <div className='row'>
+            <div className='col-12'>
+                <div className='card-box'>
+                    <ChannelsListSortTable data={this.state.channelsDataArr} />
+                </div>
+            </div>
+        </div>;
     }
 }
 

@@ -10,6 +10,9 @@ export interface LocalSettings {
     apiEndpoint: string;
     gas: GasConsumption;
     network: string;
+    bugsnagKey: string;
+    bugsnagEnable: boolean;
+    release: string;
 }
 
 export interface DbSetting {

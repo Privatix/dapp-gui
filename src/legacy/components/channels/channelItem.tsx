@@ -1,14 +1,14 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 
-import ChannelUsage from './channelUsage';
-import LinkToProductByOfferingId from '../products/linkToProductByOfferingId';
-import ProductNameByOffering from '../products/productNameByOffering';
-import PgTime from '../utils/pgTime';
-import ChannelStatusStyle from './channelStatusStyle';
-import ContractStatus from './contractStatus';
-import Channel from './channel';
-import ModalWindow from '../modalWindow';
+import ChannelUsage from '../../../components/channels/channelUsage';
+import LinkToProductByOfferingId from '../../../components/products/linkToProductByOfferingId';
+import ProductNameByOffering from '../../../components/products/productNameByOffering';
+import PgTime from '../../../components/utils/pgTime';
+import ChannelStatusStyle from '../../../components/channels/channelStatusStyle';
+import ContractStatus from '../../../components/channels/contractStatus';
+import Channel from '../../../components/channels/channel';
+import ModalWindow from '../../../components/modalWindow';
 
 export default withRouter(function(props:any){
 
