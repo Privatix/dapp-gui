@@ -1,113 +1,132 @@
 import * as React from 'react';
+import { withRouter } from 'react-router';
+import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
 import TopPanel from './topPanel';
+import {asyncProviders} from '../redux/actions';
+import {Mode} from '../typings/mode';
+import {State} from '../typings/state';
+
 declare var window: any;
 
-export default function(props:any){
+class Header extends React.Component<any, any>{
 
+    constructor(props:any){
+        super(props);
+    }
 
-    const launchFullscreen  = function(element: any) {
-      if(element.requestFullscreen) {
-        element.requestFullscreen();
-      } else if(element.webkitRequestFullscreen) {
-        element.webkitRequestFullscreen();
-      }
-    };
+    onSwitchMode(){
+        const history = this.props.history;
+        this.props.dispatch(asyncProviders.setMode(this.props.mode === Mode.CLIENT ? Mode.AGENT : Mode.CLIENT, history));
+    }
 
-    const exitFullscreen = function() {
-      if(document.exitFullscreen) {
-        document.exitFullscreen();
-      } else if((document as any).webkitExitFullscreen) {
-        (document as any).webkitExitFullscreen();
-      }
-    };
-
-    const toggleFullScreen = function() {
-      var fullscreenEnabled = (document as any).fullscreenEnabled || (document as any).webkitFullscreenEnabled;
-      if(fullscreenEnabled) {
-        if(!(document as any).fullscreenElement && !(document as any).webkitFullscreenElement) {
-          launchFullscreen(document.documentElement);
-        } else{
-          exitFullscreen();
+    launchFullscreen(element: any) {
+        if(element.requestFullscreen) {
+            element.requestFullscreen();
+        } else if(element.webkitRequestFullscreen) {
+            element.webkitRequestFullscreen();
         }
-      }
-    };
+    }
 
-    const openLeftBar = function() {
-      const $ = (window as any).jQuery;
-      $('#wrapper').toggleClass('enlarged');
-      $('#wrapper').addClass('forced');
+    exitFullscreen() {
+        if(document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if((document as any).webkitExitFullscreen) {
+            (document as any).webkitExitFullscreen();
+        }
+    }
 
-      if($('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left')) {
-        $('body').removeClass('fixed-left').addClass('fixed-left-void');
-      } else if(!$('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left-void')) {
-        $('body').removeClass('fixed-left-void').addClass('fixed-left');
-      }
+    toggleFullScreen() {
+        var fullscreenEnabled = (document as any).fullscreenEnabled || (document as any).webkitFullscreenEnabled;
+        if(fullscreenEnabled) {
+            if(!(document as any).fullscreenElement && !(document as any).webkitFullscreenElement) {
+                this.launchFullscreen(document.documentElement);
+            } else{
+                this.exitFullscreen();
+            }
+        }
+    }
+
+    openLeftBar() {
+        const $ = (window as any).jQuery;
+        $('#wrapper').toggleClass('enlarged');
+        $('#wrapper').addClass('forced');
+
+        if($('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left')) {
+            $('body').removeClass('fixed-left').addClass('fixed-left-void');
+        } else if(!$('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left-void')) {
+            $('body').removeClass('fixed-left-void').addClass('fixed-left');
+        }
       
-      if($('#wrapper').hasClass('enlarged')) {
-        $('.left ul').removeAttr('style');
-      } else {
-        $('.subdrop').siblings('ul:first').show();
-      }
+        if($('#wrapper').hasClass('enlarged')) {
+            $('.left ul').removeAttr('style');
+        } else {
+            $('.subdrop').siblings('ul:first').show();
+        }
 
-      $('body').trigger('resize');
-    };
+        $('body').trigger('resize');
+    }
 
-    return <div className='topbar'>
+    render(){
 
-        <div className='topbar-left'>
-            <div className='text-center'>
-                <NavLink to='/' className='logo'>
-                    <i className='icon-c-logo'>
-                        <img src='images/logo@2x_small.png' className='smallLogoImg' />
-                    </i>
-                    <span><img src='images/logo@2x.png' className='fullLogoImg' /></span>
-                </NavLink>
+        return <div className='topbar'>
+
+            <div className='topbar-left'>
+                <div className='text-center'>
+                    <NavLink to='/' className='logo'>
+                        <i className='icon-c-logo'>
+                            <img src='images/logo@2x_small.png' className='smallLogoImg' />
+                        </i>
+                        <span><img src='images/logo@2x.png' className='fullLogoImg' /></span>
+                    </NavLink>
+                </div>
             </div>
-        </div>
-        <nav className='navbar-custom'>
+            <nav className='navbar-custom'>
 
-            <ul className='list-inline float-right mb-0'>
+                <ul className='list-inline float-right mb-0'>
 
-                <li className='list-inline-item dropdown notification-list'>
-                    <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
-                       href='#' role='button'
-                       aria-haspopup='false' aria-expanded='false'>
-                        <img src='images/PrivatixIcon.jpg' alt='user' className='rounded-circle' />
+                    <li className='list-inline-item dropdown notification-list'>
+                        <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
+                           href='#' role='button'
+                           aria-haspopup='false' aria-expanded='false'>
+                            <img src='images/PrivatixIcon.jpg' alt='user' className='rounded-circle' />
+                        </a>
+                            <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
+                                <NavLink to='/accounts' className='dropdown-item notify-item'>
+                                    <i className='md  md-account-child'></i> <span>Accounts</span>
+                                </NavLink>
+                                <NavLink to='#' className='dropdown-item notify-item'>
+                                    <i className='md md-help'></i> <span>Help</span>
+                                </NavLink>
+                                <NavLink to='#' onClick={this.onSwitchMode.bind(this)} className='dropdown-item notify-item'>
+                                    <i className='ion-arrow-swap'></i> <span>Switch to {this.props.mode === Mode.AGENT ? 'Client' : 'Agent'}</span>
+                                </NavLink>
+                                <NavLink to='/settings' className='dropdown-item notify-item'>
+                                    <i className='md md-settings'></i> <span>Settings</span>
+                                </NavLink>
+                                {/*<NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>*/}
+                                    {/*<i className='dripicons-blog'></i><span>Logs</span>*/}
+                                {/*</NavLink>*/}
+                            </div>
+                    </li>
+
+                    <a className='nav-link waves-light waves-effect' href='#' onClick={this.toggleFullScreen.bind(this)} >
+                        <i className='dripicons-expand noti-icon'></i>
                     </a>
-                        <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
-                            <NavLink to='/accounts' className='dropdown-item notify-item'>
-                                <i className='md  md-account-child'></i> <span>Accounts</span>
-                            </NavLink>
-                            <NavLink to='#' className='dropdown-item notify-item'>
-                                <i className='md md-help'></i> <span>Help</span>
-                            </NavLink>
-                            <NavLink to='#' onClick={props.onSwitchMode} className='dropdown-item notify-item'>
-                                <i className='ion-arrow-swap'></i> <span>Switch to {props.mode === undefined || props.mode === 'agent' ? 'Client' : 'Agent'}</span>
-                            </NavLink>
-                            <NavLink to='/settings' className='dropdown-item notify-item'>
-                                <i className='md md-settings'></i> <span>Settings</span>
-                            </NavLink>
-                            {/*<NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>*/}
-                                {/*<i className='dripicons-blog'></i><span>Logs</span>*/}
-                            {/*</NavLink>*/}
-                        </div>
-                </li>
+                </ul>
 
-                <a className='nav-link waves-light waves-effect' href='#' onClick={toggleFullScreen} >
-                    <i className='dripicons-expand noti-icon'></i>
-                </a>
-            </ul>
+                <TopPanel mode={this.props.mode} rate={3000} />
 
-            <TopPanel mode={props.mode} rate={3000} />
-
-            <ul className='list-inline menu-left mb-0'>
-                <li className='float-left'>
-                    <button onClick={openLeftBar} className='button-menu-mobile open-left waves-light waves-effect'>
-                        <i className='dripicons-menu'></i>
-                    </button>
-                </li>
-            </ul>
-        </nav>
-    </div>;
+                <ul className='list-inline menu-left mb-0'>
+                    <li className='float-left'>
+                        <button onClick={this.openLeftBar.bind(this)} className='button-menu-mobile open-left waves-light waves-effect'>
+                            <i className='dripicons-menu'></i>
+                        </button>
+                    </li>
+                </ul>
+            </nav>
+        </div>;
+    }
 }
+
+export default connect( (state: State) => ({mode: state.mode}) )(withRouter(Header));

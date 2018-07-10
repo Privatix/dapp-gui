@@ -5,6 +5,10 @@ import * as React from 'react';
 import { Route, Router, Switch} from 'react-router';
 import { withRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
+import { Provider } from 'react-redux';
+import { createStore, applyMiddleware } from 'redux';
+import thunkMiddleware from 'redux-thunk';
+import reducers from '../redux/reducers';
 
 import Main from './main';
 import Navigation from './navigation';
@@ -30,82 +34,72 @@ import ClientDashboardPaused from '../client_components/dashboard/paused';
 import VPNList from '../client_components/vpn_list/list';
 import AcceptOffering from '../client_components/vpn_list/acceptOffering';
 import ClientHistory from '../client_components/vpn_list/history';
-import * as api from '../utils/api';
-import notice from '../utils/notice';
+
+import handlers from '../redux/actions';
 
 import Logs from './logs/logs';
 
+import {Mode} from '../typings/mode';
 
-let MemoryHistory = createMemoryHistory();
+const MemoryHistory = createMemoryHistory();
+const store = createStore(reducers, applyMiddleware(
+    thunkMiddleware, // lets us dispatch() functions
+  ));
 
 interface Props {
-    mode: string;
+    mode: Mode;
 }
 
 class App extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
-        this.state = {mode: props.mode || 'agent' };
-    }
-    static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        return {mode: nextProps.mode};
-    }
-
-    async onSwitchMode(evt: any){
-        evt.preventDefault();
-
-        const newUserMode = this.state.mode === 'agent' ? 'client' : 'agent';
-        const updateResult = await api.setUserMode(newUserMode);
-
-        if (updateResult === 'updated.') {
-            this.setState({mode: newUserMode});
-            if (newUserMode === 'agent') {
-                MemoryHistory.push('/');
-            } else {
-                MemoryHistory.push('/client-dashboard-start');
-            }
-            notice({level: 'info', title: 'Congratulations!', msg: 'User mode was successfully switched to ' + newUserMode.toUpperCase()});
-        } else {
-            notice({level: 'error', title: 'Attention!', msg: 'Something went wrong!'});
-        }
+        store.dispatch(handlers.setMode(props.mode));
     }
 
     render(){
-        return <Router history={MemoryHistory as any}>
-            <div id='wrapper'>
-                <Header onSwitchMode={this.onSwitchMode.bind(this)} mode={this.state.mode}/>
-                <Navigation mode={this.state.mode} />
-                <div className='content-page'>
-                    <div className='content'>
-                        <Switch>
-                            <Route exact path='/' component={this.state.mode === 'client' ? ClientDashboardStart : Main } />
-                            <Route path='/settings' component={Settings} />
-                            <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
-                            <Route path='/accounts' component={AccountsList} />
-                            <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
-                            <Route path='/channels/:offering' render={(props: any) => <ChannelsList offering={props.match.params.offering} /> } />
-                            <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
-                            <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
-                            <Route path='/setAccount' render={() => <SetAccount default={false} />} />
-                            <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
-                            <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                            <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-                            <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/accounts'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
-                            <Route path='/logs' component={Logs} />
+        return <Provider store={store}>
+            <Router history={MemoryHistory as any}>
+                <div id='wrapper'>
+                    <Header />
+                    <Navigation />
+                    <div className='content-page'>
+                        <div className='content'>
+                            <Switch>
+                                <Route exact path='/' render={(props: any) => store.getState().mode === Mode.CLIENT ? <ClientDashboardStart /> : <Main /> } />
+                                <Route path='/settings' component={Settings} />
+                                <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
+                                <Route path='/accounts' component={AccountsList} />
+                                <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
+                                <Route path='/channels/:offering' render={(props: any) => <ChannelsList offering={props.match.params.offering} /> } />
+                                <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
+                                <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
+                                <Route path='/setAccount' render={() => <SetAccount default={false} />} />
+                                <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
+                                <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
+                                <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+                                <Route path='/backup/:privateKey/:from'
+                                        render={ (props:any) => <Backup entryPoint={'/accounts'}
+                                                                        privateKey={props.match.params.privateKey}
+                                                                        from={props.match.params.from}
+                                                                />
+                                               }
+                                />
+                                <Route path='/logs' component={Logs} />
 
-                            <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
-                            <Route exact path='/client-dashboard-connecting' component={ClientDashboardConnecting} />
-                            <Route exact path='/client-dashboard-active' component={ClientDashboardActive} />
-                            <Route exact path='/client-dashboard-paused' component={ClientDashboardPaused} />
-                            <Route exact path='/client-vpn-list' component={VPNList} />
-                            <Route exact path='/accept-offering' component={AcceptOffering} />
-                            <Route exact path='/client-history' component={ClientHistory} />
-                        </Switch>
+                                <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
+                                <Route exact path='/client-dashboard-connecting' component={ClientDashboardConnecting} />
+                                <Route exact path='/client-dashboard-active' component={ClientDashboardActive} />
+                                <Route exact path='/client-dashboard-paused' component={ClientDashboardPaused} />
+                                <Route exact path='/client-vpn-list' component={VPNList} />
+                                <Route exact path='/accept-offering' component={AcceptOffering} />
+                                <Route exact path='/client-history' component={ClientHistory} />
+                            </Switch>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </Router>;
+            </Router>
+        </Provider>;
     }
 }
 

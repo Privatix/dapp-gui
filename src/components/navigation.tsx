@@ -1,16 +1,20 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { NavLink } from 'react-router-dom';
+import {Mode} from '../typings/mode';
+import {State} from '../typings/state';
+
 declare var window: any;
+
 interface Props {
-    mode: string;
+    mode: Mode;
 }
 
-export default class Navigation extends React.Component<Props, any> {
+class Navigation extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
         this.state = {
-            mode: props.mode,
             submenu: false,
         };
     }
@@ -38,10 +42,6 @@ export default class Navigation extends React.Component<Props, any> {
         }, 1000);
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        return {mode: nextProps.mode};
-    }
-
     handleClick() {
         this.setState((oldState) => {
             return {submenu: !oldState.submenu};
@@ -62,7 +62,7 @@ export default class Navigation extends React.Component<Props, any> {
             const $ = (window as any).jQuery;
             $.Sidemenu.init();
         }, 1000);
-        return this.state.mode === undefined || this.state.mode === 'agent' ? <div className='left side-menu'>
+        return this.props.mode === Mode.AGENT ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
@@ -136,3 +136,5 @@ export default class Navigation extends React.Component<Props, any> {
         </div>;
     }
 }
+
+export default connect( (state: State) => ({mode: state.mode}) )(Navigation);
