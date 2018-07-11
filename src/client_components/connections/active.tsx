@@ -5,6 +5,7 @@ import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import JobStatus from './jobStatus';
 import { withRouter } from 'react-router-dom';
+import toFixed8 from '../../utils/toFixed8';
 
 class ActiveConnection extends React.Component<any, any>{
 
@@ -41,7 +42,7 @@ class ActiveConnection extends React.Component<any, any>{
                         <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
                         <td>{channel.job.jobtype} ({jobStatus} {jobTime})</td>
                         <td>{usage}</td>
-                        <td>{((channel.usage.cost / 1e8).toFixed(8)).replace(/0+$/,'')}</td>
+                        <td>{toFixed8({number: (channel.usage.cost / 1e8)})}</td>
                     </tr>;
         });
 

@@ -67,6 +67,9 @@ class Connection extends React.Component<any, any>{
         ];
         const sessionsData = [];
 
+        const lastUsageTime = this.state.channel.channelStatus.lastChanged;
+        const isValidLastUsageTime = (lastUsageTime !== '' && typeof(lastUsageTime) !== 'undefined' && lastUsageTime !== null);
+
         return <div>
             <div className='row'>
                 <div className='col-8'>
@@ -106,7 +109,7 @@ class Connection extends React.Component<any, any>{
                                         </tr>
                                         <tr>
                                             <td>Last usage time:</td>
-                                            <td>{dateformat(new Date(Date.parse(this.state.channel.channelStatus.lastChanged)), 'mmm d yyyy hh:MM:ss')}</td>
+                                            <td>{ isValidLastUsageTime ? dateformat(new Date(Date.parse(lastUsageTime)), 'mmm d yyyy hh:MM:ss') : ''}</td>
                                         </tr>
                                     </tbody>
                                 </table>
