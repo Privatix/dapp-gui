@@ -2,10 +2,19 @@ import * as React from 'react';
 import { withRouter } from 'react-router';
 import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
+import {asyncProviders} from '../../redux/actions';
+import { Product } from '../../typings/products';
+import { connect } from 'react-redux';
+import { State } from '../../typings/state';
 
-class ProductView extends React.Component <any,any> {
+interface Props {
+    product: Product;
+    dispatch: any;
+}
 
-    constructor(props:any) {
+class ProductView extends React.Component <Props,any> {
+
+    constructor(props:Props) {
         super(props);
 
         this.state = {
@@ -29,6 +38,7 @@ class ProductView extends React.Component <any,any> {
             fetch('/products', {method: 'PUT', body}).then((result:any) => {
                 if (result.id === this.state.product.id) {
                     notice({level: 'info', title: 'Congratulations!', msg: 'Host was successfully updated!'});
+                    this.props.dispatch(asyncProviders.updateProducts());
                 } else {
                     notice({level: 'error', title: 'Attention!', msg: 'Something went wrong. Try again later!'});
                 }
@@ -62,4 +72,6 @@ class ProductView extends React.Component <any,any> {
     }
 }
 
-export default withRouter(ProductView);
+export default connect( (state: State, onProps: Props) => {
+    return (onProps);
+} )(withRouter(ProductView));
