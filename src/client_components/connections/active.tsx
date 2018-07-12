@@ -30,7 +30,7 @@ class ActiveConnection extends React.Component<any, any>{
             const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
             const jobStatus = <JobStatus status={channel.job.status} />;
 
-            return <tr>
+            return <tr key={channel.id} >
                         <td>
                             <ModalWindow visible={this.state.popup}
                                          customClass='btn btn-link waves-effect'

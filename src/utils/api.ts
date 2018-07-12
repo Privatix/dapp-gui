@@ -4,6 +4,16 @@ import {Product} from '../typings/products';
 import {LocalSettings, DbSetting} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
 import {ClientOffering} from '../typings/clientOfferings.d.ts';
+import {Offering} from '../typings/offerings.d.ts';
+import {Channel, ServiceStatus} from '../typings/channels';
+
+export const getChannels = function(status?: ServiceStatus): Promise<Channel[]>{
+    if(status){
+        return fetch(`/channels/?serviceStatus=${status}`) as Promise<Channel[]>;
+    }else{
+        return fetch('/channels') as Promise<Channel[]>;
+    }
+};
 
 export const getAccounts = function(): Promise<Account[]>{
     return fetch('/accounts') as Promise<Account[]>;
@@ -53,6 +63,11 @@ export const setUserMode = function(userMode:string) {
     return fetch('/settings', {method: 'PUT', body}).then((result:any) => {
         return result.message;
     });
+};
+
+export const getOfferingById = function(offeringId: string): Promise<Offering>{
+    return (fetch(`/offerings/?id=${offeringId}`) as Promise<Offering[]>)
+               .then(offerings => offerings.length ? offerings[0] : null);
 };
 
 export const getClientOfferings = function(): Promise<ClientOffering[]>{
