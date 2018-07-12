@@ -1,23 +1,29 @@
 import * as React from 'react';
-// import { Link } from 'react-router-dom';
-import {fetch} from '../../utils/fetch';
-import { withRouter } from 'react-router-dom';
+import { Product } from '../../typings/products';
+import { connect } from 'react-redux';
 import ProductItem from './productItem';
+import { State } from '../../typings/state';
+import {asyncProviders} from '../../redux/actions';
 
-class AsyncProducts extends React.Component<any, any>{
+interface Props {
+    products: Product[];
+    dispatch: any;
+    showCreateOfferingModal: string;
+    productId: string;
+}
+
+class Products extends React.Component<Props, any>{
 
     constructor(props:any) {
         super(props);
-        this.state = { products: [], props: props};
+    }
 
-        fetch(`/products`, {})
-            .then((products: any) => {
-                this.setState({products});
-            });
+    componentDidMount() {
+        this.props.dispatch(asyncProviders.updateProducts());
     }
 
     render() {
-        const list = (this.state.products as any).map((product:any) => <ProductItem product={product} {...this.props} /> );
+        const list = this.props.products.map((product:Product) => <ProductItem product={product} {...this.props} /> );
 
         return (
             <div className='container-fluid'>
@@ -53,4 +59,6 @@ class AsyncProducts extends React.Component<any, any>{
     }
 }
 
-export default withRouter(AsyncProducts);
+export default connect( (state: State, onProps: Props) => {
+    return (Object.assign({}, {products: state.products}, onProps));
+} )(Products);

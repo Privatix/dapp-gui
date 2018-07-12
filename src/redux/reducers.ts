@@ -15,8 +15,9 @@ interface Reducers {
 export default function reducer(state: State = StateDefault, action: Action = {type: 'NONE'}) {
 
     const handlers: Reducers = {
-        [actions.REFRESH_ACCOUNTS]       : (state: State, action: Action) => _.assign({}, state, {accounts: action.value})
-       ,[actions.SET_MODE]               : (state: State, action: Action) => _.assign({}, state, {mode: action.value})
+        [actions.REFRESH_ACCOUNTS]       : (state: State, action: Action) => _.assign({}, state, {accounts: action.value}),
+        [actions.UPDATE_PRODUCTS]        : (state: State, action: Action) => _.assign({}, state, {products: action.value}),
+        [actions.SET_MODE]               : (state: State, action: Action) => _.assign({}, state, {mode: action.value})
     };
 
     return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;
