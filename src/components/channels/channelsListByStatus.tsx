@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 import ChannelsListSortTable from './channelsListSortTable';
 import ProductByOffering from '../products/productByOffering';
 import Channel from './channel';
@@ -35,15 +35,17 @@ class Channels extends React.Component<any, any> {
     async refresh() {
         const status = this.state.status;
 
+        const channels = await api.getChannels(status);
+/*
         let endpoint = `/channels/?serviceStatus=active`;
-        let channels = {};
+        let channels = [];
         if (status === 'active') {
             channels = await fetch(endpoint);
         } else {
             endpoint = `/channels/?serviceStatus=terminated`;
             channels = await fetch(endpoint);
         }
-
+*/
         const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
         const products = await Promise.all(channelsProducts);
 

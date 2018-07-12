@@ -4,6 +4,15 @@ import {Product} from '../typings/products';
 import {LocalSettings, DbSetting} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
 import {ClientOffering} from '../typings/clientOfferings.d.ts';
+import {Channel, ChannelStatus} from '../typings/channels';
+
+export const getChannels = function(status?: ChannelStatus): Promise<Channel[]>{
+    if(status){
+        return fetch(`/channels/?serviceStatus=${status}`) as Promise<Channel[]>;
+    }else{
+        return fetch('/channels') as Promise<Channel[]>;
+    }
+}
 
 export const getAccounts = function(): Promise<Account[]>{
     return fetch('/accounts') as Promise<Account[]>;
