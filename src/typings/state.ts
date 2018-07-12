@@ -6,6 +6,7 @@ interface State {
   [s: string]: any;
     accounts: Account[];
     products: Product[];
+    mode: Mode;
 }
 
 const StateDefault: State = {

@@ -10,7 +10,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 import reducers from '../redux/reducers';
 
-import Main from './main';
+import Main from './main/main';
 import Navigation from './navigation';
 import Header from './header';
 import Settings from './settings';

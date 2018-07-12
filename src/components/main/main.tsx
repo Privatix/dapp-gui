@@ -1,7 +1,7 @@
 import * as React from 'react';
-import {fetch} from '../utils/fetch';
-import ChannelsListByStatus from './channels/channelsListByStatus';
-import OfferingsList from './offerings/offeringsList';
+import {fetch} from '../../utils/fetch';
+import ChannelsListByStatus from '../channels/channelsListByStatus';
+import OfferingsList from '../offerings/offeringsList';
 
 export default class Main extends React.Component <any,any> {
 

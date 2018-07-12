@@ -30,7 +30,7 @@ class AsyncChannels extends React.Component<any, any> {
             return {
                 id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
-                client: channel.client,
+                client: channel.client ? channel.client : '',
                 contractStatus: channel.channelStatus,
                 serviceStatus: channel.serviceStatus,
                 usage: channel.id,

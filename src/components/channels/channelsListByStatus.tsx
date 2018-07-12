@@ -1,19 +1,33 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import * as api from '../../utils/api';
 import ChannelsListSortTable from './channelsListSortTable';
-import ProductByOffering from '../products/productByOffering';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
 import toFixed8 from '../../utils/toFixed8';
+import {State} from '../../typings/state';
+import {Channel as ChannelType, ServiceStatus} from '../../typings/channels';
+import {Product as ProductType} from '../../typings/products';
+import {asyncProviders} from '../../redux/actions';
 
-class Channels extends React.Component<any, any> {
+interface IProps{
+    status: ServiceStatus;
+    registerRefresh?: Function;
+}
+interface Props {
+    status: ServiceStatus;
+    registerRefresh?: Function;
+    products: ProductType[];
+    dispatch: any;
+}
 
-    constructor(props: any) {
+class Channels extends React.Component<Props, any> {
+
+    constructor(props: Props) {
         super(props);
 
         this.state = {
-            channels: props.channels,
             status: props.status,
             channelsDataArr: [],
             lastUpdatedStatus: null
@@ -32,24 +46,21 @@ class Channels extends React.Component<any, any> {
         this.refresh();
     }
 
+    componentDidMount(){
+        this.props.dispatch(asyncProviders.updateProducts());
+    }
+
     async refresh() {
+
         const status = this.state.status;
 
         const channels = await api.getChannels(status);
-/*
-        let endpoint = `/channels/?serviceStatus=active`;
-        let channels = [];
-        if (status === 'active') {
-            channels = await fetch(endpoint);
-        } else {
-            endpoint = `/channels/?serviceStatus=terminated`;
-            channels = await fetch(endpoint);
-        }
-*/
-        const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
-        const products = await Promise.all(channelsProducts);
 
-        const channelsDataArr = (products as any).map((product, index) => {
+        const channelsOfferings = channels.map((channel: ChannelType) => api.getOfferingById(channel.offering));
+        const offerings = await Promise.all(channelsOfferings);
+        const products = offerings.map(offering => this.props.products.find(product => offering.product === product.id));
+
+        const channelsDataArr = products.map((product, index) => {
             const channel = channels[index];
             return {
                 id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
@@ -86,4 +97,4 @@ class Channels extends React.Component<any, any> {
     }
 }
 
-export default Channels;
+export default connect( (state: State, ownProps: IProps) => Object.assign({}, {products: state.products}, ownProps))(Channels);
