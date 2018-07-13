@@ -24,7 +24,10 @@ class TopPanel extends React.Component <Props, any>{
             changeMode: false,
             pscCount: 0,
             totalTraffic: 0,
-            trafficBalance: '0'
+            trafficBalance: '0',
+            ethBalance: 0,
+            ptcBalance: 0,
+            pscBalance: 0
         };
     }
 
@@ -42,7 +45,21 @@ class TopPanel extends React.Component <Props, any>{
     }
 
     static getDerivedStateFromProps(nextProps: Props, prevState: any) {
+
+        const ethBalance = (nextProps.accounts.reduce((balance, account) => {
+            return account.ethBalance + balance;
+        }, 0)/1e18).toFixed(3);
+        const ptcBalance = (nextProps.accounts.reduce((balance, account) => {
+            return account.ptcBalance + balance;
+        }, 0)/1e8).toFixed(3);
+        const pscBalance = (nextProps.accounts.reduce((balance, account) => {
+            return account.psc_balance + balance;
+        }, 0)/1e8).toFixed(3);
+
         return {
+            ethBalance: ethBalance,
+            ptcBalance: ptcBalance,
+            pscBalance: pscBalance,
             mode: nextProps.mode,
             changeMode: true
         };
@@ -59,18 +76,19 @@ class TopPanel extends React.Component <Props, any>{
         }else {
             await this.updateClient();
         }
-
         this.setState({handler: setTimeout(this.update.bind(this), rate)});
     }
 
     shouldComponentUpdate(props: any, state: any){
         const diff = Object.keys(state).filter(key => this.state[key] !== state[key]);
+
         if(diff.length === 1 && diff[0] === 'handler'){
             return false;
         }
         if(diff.length === 1 && diff[0] === 'changeMode'){
             return false;
         }
+
         return diff.length > 0;
     }
 
@@ -101,20 +119,6 @@ class TopPanel extends React.Component <Props, any>{
         });
     }
 
-    getBalances(accounts: Account[]) {
-        const ethBalance = (accounts.reduce((balance, account) => {
-            return account.ethBalance + balance;
-        }, 0)/1e18).toFixed(3);
-        const ptcBalance = (accounts.reduce((balance, account) => {
-            return account.ptcBalance + balance;
-        }, 0)/1e8).toFixed(3);
-        const pscBalance = (accounts.reduce((balance, account) => {
-            return account.psc_balance + balance;
-        }, 0)/1e8).toFixed(3);
-
-        return {ethBalance, ptcBalance, pscBalance};
-    }
-
     checkModeChange() {
         if (this.state.handler && this.state.changeMode) {
             clearTimeout(this.state.handler);
@@ -125,20 +129,19 @@ class TopPanel extends React.Component <Props, any>{
 
     render(){
         const status = this.state.status ? 'on' : 'off';
-        const {ethBalance, ptcBalance, pscBalance} = this.getBalances(this.props.accounts);
         if(this.props.mode === 'agent'){
             return <ul className='list-inline float-right mb-0 topPanel'>
-                <li className='list-inline-item'>ETH Balance: {ethBalance}</li>
-                <li className='list-inline-item'>Exchange Balance: {ptcBalance}</li>
-                <li className='list-inline-item'>Service balance: {pscBalance}</li>
+                <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
+                <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
+                <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
                 <li className='list-inline-item'>Active Services: {this.state.pscCount}</li>
                 <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>
             </ul>;
         }else{
             return <ul className='list-inline float-right mb-0 topPanel'>
-                <li className='list-inline-item'>ETH Balance: {ethBalance}</li>
-                <li className='list-inline-item'>Exchange Balance: {ptcBalance}</li>
-                <li className='list-inline-item'>Service balance: {pscBalance}</li>
+                <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
+                <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
+                <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
                 <li className='list-inline-item'>Total Traffic: {this.state.totalTraffic}</li>
                 {/*<li className='list-inline-item'>Traffic Balance: {this.state.trafficBalance}</li>*/}
                 {/*<li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>*/}
