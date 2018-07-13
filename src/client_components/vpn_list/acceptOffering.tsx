@@ -179,7 +179,7 @@ class AcceptOffering extends React.Component<any, any>{
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    Balance: <span>{(this.state.account ? this.state.account.psc_balance/1e8 : 0).toFixed(3)} PRIX / {(this.state.account ? this.state.account.ethBalance/1e18 : 0).toFixed(3)} ETH</span>
+                                    Balance: <span>{this.state.account ? toFixed8({number: (this.state.account.psc_balance / 1e8)}) : 0} PRIX / {this.state.account ? toFixed8({number: (this.state.account.ethBalance / 1e18)}) : 0} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>

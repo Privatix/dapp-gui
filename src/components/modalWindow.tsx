@@ -6,7 +6,12 @@ export default class ModalWindow extends React.Component<any, any> {
     constructor(props: any) {
 
         super(props);
-        this.state = {visible: props.visible, props};
+        this.state = {
+            visible: props.visible,
+            props,
+            modalTitle: props.modalTitle,
+            component: props.component
+        };
     }
 
     closeModal(event: any) {
@@ -16,16 +21,24 @@ export default class ModalWindow extends React.Component<any, any> {
         }
 
         document.body.classList.remove('modal-open');
-        this.setState({visible: false});
+        this.setState({
+            visible: false,
+            component: this.props.component,
+            modalTitle: this.props.modalTitle
+        });
     }
 
     changeContent(modalTitle: string, component: any){
         const props = Object.assign({}, this.state.props, {modalTitle, component});
-        this.setState({props});
+        this.setState({props, component, modalTitle});
     }
 
     static getDerivedStateFromProps(props: any, state: any){
-        return {props};
+        if (state.component !== props.component && state.visible) {
+            return {props};
+        } else {
+            return {props, modalTitle: props.modalTitle, component: props.component};
+        }
     }
 
     showModal(event: any) {
@@ -49,11 +62,11 @@ export default class ModalWindow extends React.Component<any, any> {
                   >
                       <div className='modal-content'>
                           <div className='modal-header'>
-                              <h4 className='modal-title'>{this.state.props.modalTitle}</h4>
+                              <h4 className='modal-title'>{this.state.modalTitle}</h4>
                               <button type='button' className='close' onClick={this.closeModal.bind(this)}>×</button>
                           </div>
                           <div className='modal-body'>
-                              {React.cloneElement(this.state.props.component, {closeModal: this.closeModal.bind(this)
+                              {React.cloneElement(this.state.component, {closeModal: this.closeModal.bind(this)
                                                                               ,render: this.changeContent.bind(this)
                                                                               ,visible: this.state.visible
                                                                               }
