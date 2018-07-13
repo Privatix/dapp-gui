@@ -68,7 +68,7 @@ class App extends React.Component<Props, any> {
                             <Switch>
                                 <Route exact path='/' render={(props: any) => store.getState().mode === Mode.CLIENT ? <ClientDashboardStart /> : <Main /> } />
                                 <Route path='/settings' component={Settings} />
-                                <Route path='/products/:showCreateOfferingModal?/:productId?' component={Products} />
+                                <Route path='/products' render={() => <Products />} />
                                 <Route path='/accounts' component={AccountsList} />
                                 <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
                                 <Route path='/channels/:offering' render={(props: any) => <ChannelsList offering={props.match.params.offering} /> } />

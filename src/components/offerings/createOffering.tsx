@@ -272,8 +272,8 @@ class CreateOffering extends React.Component<any, any>{
             onChange={this.onCountryChanged.bind(this)} />;
 
         const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
-        const ethBalance = this.state.account ? (this.state.account.ethBalance/1e18).toFixed(3) : 0;
-        const pscBalance = this.state.account ? (this.state.account.psc_balance/1e8).toFixed(8).replace(/0+$/,'') : 0;
+        const ethBalance = this.state.account ? (toFixed8({number: (this.state.account.ethBalance / 1e18)})) : 0;
+        const pscBalance = this.state.account ? (toFixed8({number: (this.state.account.psc_balance / 1e8)})) : 0;
 
         const onUserInput = this.onUserInput.bind(this);
 
