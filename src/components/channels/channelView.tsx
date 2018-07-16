@@ -1,7 +1,7 @@
 import * as React from 'react';
 
 import ChannelUsage from './channelUsage';
-import AccessInfo from '../endpoints/accessInfo';
+import AgentAccessInfo from '../endpoints/agentAccessInfo';
 import ProductNameByOffering from '../products/productNameByOffering';
 
 import ChannelStatusStyle from './channelStatusStyle';
@@ -37,7 +37,7 @@ export default function(props:any){
             <h5 className='card-header'>Access info</h5>
             <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                 <div className='card-body'>
-                    <AccessInfo channel={props.channel} />
+                    <AgentAccessInfo channel={props.channel} />
                 </div>
             </div>
         </div>

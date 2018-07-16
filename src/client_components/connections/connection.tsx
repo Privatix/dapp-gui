@@ -5,7 +5,7 @@ import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import * as dateformat from 'dateformat';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
-import AccessInfo from '../../components/endpoints/accessInfo';
+// import AccessInfo from '../../components/endpoints/accessInfo';
 import toFixed8 from '../../utils/toFixed8';
 
 class Connection extends React.Component<any, any>{
@@ -117,14 +117,14 @@ class Connection extends React.Component<any, any>{
                         </div>
                     </div>
 
-                    <div className='card m-b-20'>
-                        <h5 className='card-header'>Access info</h5>
-                        <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
-                            <div className='card-body'>
-                               <AccessInfo channel={this.state.channel} />
-                            </div>
-                        </div>
-                    </div>
+                    {/*<div className='card m-b-20'>*/}
+                        {/*<h5 className='card-header'>Access info</h5>*/}
+                        {/*<div className='col-md-12 col-sm-12 col-xs-12 p-0'>*/}
+                            {/*<div className='card-body'>*/}
+                               {/*<AccessInfo channel={this.state.channel} />*/}
+                            {/*</div>*/}
+                        {/*</div>*/}
+                    {/*</div>*/}
                 </div>
 
 

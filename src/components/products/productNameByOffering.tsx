@@ -1,21 +1,37 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
-import {asyncReactor} from 'async-reactor';
+import { connect } from 'react-redux';
+import {asyncProviders} from '../../redux/actions';
+import {State} from '../../typings/state';
 
-function Loader() {
+class ProductName extends React.Component <any, any> {
 
-  return (<b>Loading data ...</b>);
+    constructor(props:any) {
+        super(props);
 
+        this.state = {
+            product: null
+        };
+    }
+
+    async componentDidMount() {
+        const endpoint = `/offerings?id=${this.props.offeringId}`;
+        const offerings = await fetch(endpoint, {method: 'GET'});
+
+        this.props.dispatch(asyncProviders.updateProducts());
+        const product = (this.props.products as any).filter(product => product.id === offerings[0].product)[0];
+
+        this.setState({product});
+    }
+
+    render() {
+        if (!this.state.product) {
+            return <span></span>;
+        }
+        return <span>{this.state.product.name}</span>;
+    }
 }
 
-async function AsyncProductName (props:any){
-
-    const endpoint = `/offerings?id=${props.offeringId}`;
-    const offerings = await fetch(endpoint, {method: 'GET'});
-    const products = await fetch(`/products?`, {method: 'GET'});
-    const product = (products as any).filter(product => product.id === offerings[0].product)[0];
-
-    return <span>{product.name}</span>;
-}
-
-export default asyncReactor(AsyncProductName, Loader);
+export default connect( (state: State) =>
+    ({products: state.products})
+)(ProductName);
