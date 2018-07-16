@@ -1,8 +1,7 @@
 import * as React from 'react';
 import ProductView from './productView';
 // import ProductTools from './productTools';
-import { Link } from 'react-router-dom';
-import { withRouter } from 'react-router';
+import CreateOffering from '../offerings/createOffering';
 
 declare const Custombox: any;
 
@@ -10,6 +9,11 @@ class Product extends React.Component <any, any> {
 
     constructor(props:any) {
         super(props);
+    }
+
+    openModal(evt:any) {
+        evt.preventDefault();
+        this.props.render('Create offering', <CreateOffering product={this.props.product.id} />);
     }
 
     render () {
@@ -20,9 +24,8 @@ class Product extends React.Component <any, any> {
                 <div className='row'>
                     <div className='col-sm-12 m-b-20'>
                         <div className='btn-group'>
-                            <Link to={`/products/createOfferingModal/${product.id}`}
-                                  className='btn btn-default btn-custom waves-effect waves-light'>Create an Offering</Link>
-                            {/*<ModalWindow customClass='btn btn-default btn-custom waves-effect waves-light' modalTitle='Create offering' text='Create an offering' component={<CreateOffering product={product.id} />} />*/}
+                            <button onClick={this.openModal.bind(this)}
+                                  className='btn btn-default btn-custom waves-effect waves-light'>Create an Offering</button>
                         </div>
                         {/*<h3 className='page-title'>Server info</h3>*/}
                     </div>
@@ -47,4 +50,4 @@ class Product extends React.Component <any, any> {
     }
 }
 
-export default withRouter(Product);
+export default Product;
