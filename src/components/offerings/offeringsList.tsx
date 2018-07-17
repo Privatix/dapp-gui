@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
-import * as api from '../../utils/api';
 
 import OfferingStatus from './offeringStatus';
 import SortableTable from 'react-sortable-table-vilan';
@@ -8,8 +7,11 @@ import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
 import Product from '../products/product';
+import { connect } from 'react-redux';
+import { State } from '../../typings/state';
+import {asyncProviders} from '../../redux/actions';
 
-class AsyncOfferings extends React.Component<any, any> {
+class Offerings extends React.Component<any, any> {
 
     constructor(props:any) {
         super(props);
@@ -26,16 +28,16 @@ class AsyncOfferings extends React.Component<any, any> {
         const endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
 
         const offeringsRaw = await fetch(endpoint, {method: 'GET'});
-        const products = await api.getProducts();
+        this.props.dispatch(asyncProviders.updateProducts());
 
-        const resolveTable = (products as any).reduce((table, product) => {
+        const resolveTable = (this.props.products as any).reduce((table, product) => {
             table[product.id] = product.name;
             return table;
         }, {});
 
         const offerings = (offeringsRaw as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
 
-        this.setState({offerings, products});
+        this.setState({offerings, products: this.props.products});
 
         const handler = setTimeout(this.refresh.bind(this), this.props.rate);
         this.setState({handler});
@@ -112,4 +114,6 @@ class AsyncOfferings extends React.Component<any, any> {
 
 }
 
-export default AsyncOfferings;
+export default connect( (state: State, onProps: any) => {
+    return (Object.assign({}, {products: state.products}, onProps));
+} )(Offerings);

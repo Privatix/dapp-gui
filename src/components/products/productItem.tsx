@@ -5,7 +5,7 @@ import ModalWindow from '../modalWindow';
 import CreateOffering from '../offerings/createOffering';
 import Product from './product';
 
-class AsyncProductItem extends React.Component<any, any>{
+class ProductItem extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
@@ -43,7 +43,7 @@ class AsyncProductItem extends React.Component<any, any>{
     }
 
     render(){
-        const elem = <tr>
+        const elem = <tr key={this.props.product.id}>
              <td>{ <ModalWindow customClass='' modalTitle='Server info' text={this.props.product.name} component={<Product product={this.props.product} />} /> }</td>
              <td>{this.state.offerTemplate? this.state.offerTemplate.raw.schema.title : ''}</td>
              <td>{this.state.accessTemplate ? this.state.accessTemplate.raw.title : ''}</td>
@@ -54,4 +54,4 @@ class AsyncProductItem extends React.Component<any, any>{
     }
 }
 
-export default withRouter(AsyncProductItem);
+export default withRouter(ProductItem);
