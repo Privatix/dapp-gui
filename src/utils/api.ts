@@ -7,6 +7,15 @@ import {ClientOffering} from '../typings/clientOfferings.d.ts';
 import {Offering} from '../typings/offerings.d.ts';
 import {Channel, ServiceStatus} from '../typings/channels';
 
+import * as Auth from './api/auth';
+export const auth = Auth;
+
+import * as Accounts from './api/accounts';
+export const accounts = Accounts;
+
+import * as Settings from './api/settings';
+export const settings = Settings;
+
 export const getChannels = function(status?: ServiceStatus): Promise<Channel[]>{
     if(status){
         return fetch(`/channels/?serviceStatus=${status}`) as Promise<Channel[]>;
@@ -33,8 +42,10 @@ export const getSettings = function(): Promise<DbSetting[]>{
 };
 
 export const getLocalSettings = function(): Promise<LocalSettings>{
-    return fetch('/localSettings') as Promise<LocalSettings>;
+    return Settings.getLocal() as Promise<LocalSettings>;
+    // return fetch('/localSettings') as Promise<LocalSettings>;
 };
+
 
 export const getUserMode = async function(): Promise<string> {
     const settings = await getSettings();

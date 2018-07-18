@@ -73,7 +73,7 @@ class AcceptOffering extends React.Component<any, any>{
         evt.preventDefault();
         let err = false;
         let msg = '';
-        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        const settings = (await api.settings.getLocal()) as LocalSettings;
 
         if(this.state.account.psc_balance < this.state.deposit){
             err=true;

@@ -125,7 +125,8 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeInteger = [];
         const isZero = [];
 
-        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        // const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        const settings = (await api.settings.getLocal()) as LocalSettings;
 
         let err = false;
         const payload = Object.assign({}, this.state.payload);
