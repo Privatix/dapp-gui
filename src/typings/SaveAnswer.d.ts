@@ -1,5 +1,5 @@
 export interface SaveAnswer {
-    code: number;
+    code?: number;
     message: string;
 }
 

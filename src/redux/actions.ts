@@ -48,7 +48,7 @@ export const asyncProviders: AsyncProviders = {
                .then(res => {
                    // TODO check if error
                    dispatch(handlers.setMode(mode));
-                   if (res === 'updated.') {
+                   if (res.message === 'updated.') {
                        if (mode === Mode.AGENT) {
                            history.push('/');
                        } else {

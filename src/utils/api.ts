@@ -1,7 +1,7 @@
 import {fetch} from './fetch';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
-import {LocalSettings, DbSetting} from '../typings/settings';
+import {LocalSettings} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
 import {ClientOffering} from '../typings/clientOfferings.d.ts';
 import {Offering} from '../typings/offerings.d.ts';
@@ -37,9 +37,6 @@ export const getProducts = function(): Promise<Product[]>{
     return fetch('/products') as Promise<Product[]>;
 };
 
-export const getSettings = function(): Promise<DbSetting[]>{
-    return fetch('/settings') as Promise<DbSetting[]>;
-};
 
 export const getLocalSettings = function(): Promise<LocalSettings>{
     return Settings.getLocal() as Promise<LocalSettings>;
@@ -48,8 +45,8 @@ export const getLocalSettings = function(): Promise<LocalSettings>{
 
 
 export const getUserMode = async function(): Promise<string> {
-    const settings = await getSettings();
-    const isAgentSetting = settings.filter((settingsItem:any) => {
+    const oldSettings = await settings.get();
+    const isAgentSetting = oldSettings.filter((settingsItem:any) => {
         if (settingsItem.key === 'user.isagent') {
             return true;
         }
@@ -71,9 +68,7 @@ export const setUserMode = function(userMode:string) {
         'description': 'Specifies user role. "true" - agent. "false" - client.',
         'name': 'user role is agent'
     }];
-    return fetch('/settings', {method: 'PUT', body}).then((result:any) => {
-        return result.message;
-    });
+    return settings.save(body);
 };
 
 export const getOfferingById = function(offeringId: string): Promise<Offering>{
