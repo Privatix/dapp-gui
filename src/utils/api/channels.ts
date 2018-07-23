@@ -1,5 +1,6 @@
 import {fetch} from '../fetch';
-import {ServiceStatus, Channel, ChannelStatus, ClientChannel, ClientChannelStatus} from '../../typings/channels';
+import {ServiceStatus, Channel, ChannelStatus, ClientChannel, ClientChannelStatus, ChannelActions} from '../../typings/channels';
+import {SaveAnswer} from '../../typings/SaveAnswer';
 
 export const getList = function (status?:ServiceStatus): Promise<Channel[]> {
 
@@ -27,4 +28,9 @@ export const getClientList = function (channelStatus?:ChannelStatus, serviceStat
 
 export const getClientStatus = function (id: string): Promise<ClientChannelStatus> {
     return fetch(`/client/channels/${id}/status`) as Promise<ClientChannelStatus>;
+};
+
+
+export const setChannelStatus= function (id: string, action:ChannelActions): Promise<SaveAnswer> {
+    return fetch(`/channels/${id}/status`, {method: 'put', body: {action: action}}) as Promise<SaveAnswer>;
 };

@@ -2,6 +2,7 @@ import {Job} from './job';
 
 export type ServiceStatus = 'pending' | 'active' | 'suspended' | 'terminanted';
 export type ChannelStatus = 'pending' | 'active' | 'wait_coop' | 'closed_coop' | 'wait_challenge' | 'in_challenge' | 'wait_uncoop' | 'closed_uncoop';
+export type ChannelActions = 'terminate' | 'pause' | 'resume';
 
 export interface Channel{
     id: string;
