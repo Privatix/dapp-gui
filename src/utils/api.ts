@@ -1,6 +1,4 @@
 import {fetch} from './fetch';
-import {Account} from '../typings/accounts';
-import {Product} from '../typings/products';
 import {LocalSettings} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
 import {ClientOffering} from '../typings/clientOfferings.d.ts';
@@ -18,18 +16,13 @@ export const settings = Settings;
 import * as Channels from './api/channels';
 export const channels = Channels;
 
+import * as Products from './api/products';
+export const products = Products;
 
-export const getAccounts = function(): Promise<Account[]>{
-    return fetch('/accounts') as Promise<Account[]>;
-};
 
 export const getTransactionsByAccount = async function(account: string): Promise<Transaction[]>{
     const endpoint = '/transactions' + (account === 'all' ? '' : `?relatedID=${account}&relatedType=account`);
     return fetch(endpoint, {}) as Promise<Transaction[]>;
-};
-
-export const getProducts = function(): Promise<Product[]>{
-    return fetch('/products') as Promise<Product[]>;
 };
 
 

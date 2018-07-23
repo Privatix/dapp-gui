@@ -28,7 +28,7 @@ interface AsyncProviders {
 export const asyncProviders: AsyncProviders = {
     updateAccounts: function(){
         return function(dispatch: any){
-            api.getAccounts()
+            api.accounts.getAccounts()
                .then(accounts => {
                     dispatch(handlers.updateAccounts(accounts));
                });
@@ -36,7 +36,7 @@ export const asyncProviders: AsyncProviders = {
     },
     updateProducts: function(){
         return function(dispatch: any){
-            api.getProducts()
+            api.products.getProducts()
                .then(products => {
                    dispatch(handlers.updateProducts(products));
                });
