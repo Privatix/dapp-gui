@@ -42,5 +42,9 @@ export interface ClientChannel {
     channelStatus: ClientChannelStatus;
     job: Job;
     usage: ClientChannelUsage;
+}
 
+export interface OneChannelStatus {
+    code?: number;
+    status: ChannelStatus;
 }
