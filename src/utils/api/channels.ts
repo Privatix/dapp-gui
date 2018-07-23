@@ -25,6 +25,10 @@ export const getClientList = function (channelStatus?:ChannelStatus, serviceStat
     return fetch('/client/channels?'+query.join('&'), {}) as Promise<ClientChannel[]>;
 };
 
+export const setClientChannelStatus = function (id: string, action:ChannelActions): Promise<SaveAnswer> {
+    return fetch(`/client/channels/${id}/status`, {method: 'put', body: {action: action}}) as Promise<SaveAnswer>;
+};
+
 
 export const getClientStatus = function (id: string): Promise<ClientChannelStatus> {
     return fetch(`/client/channels/${id}/status`) as Promise<ClientChannelStatus>;
