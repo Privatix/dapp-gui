@@ -23,7 +23,7 @@ class Products extends React.Component<Props, any>{
     }
 
     render() {
-        const list = this.props.products.map((product:Product) => <ProductItem product={product} {...this.props} /> );
+        const list = this.props.products.map((product:Product) => <ProductItem key={product.id} product={product} {...this.props} /> );
 
         return (
             <div className='container-fluid'>

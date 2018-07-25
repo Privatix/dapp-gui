@@ -5,7 +5,7 @@ import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 // import DateSorter from '../../components/utils/sorters/sortingDate';
-import AccessInfo from '../../components/endpoints/accessInfo';
+import ClientAccessInfo from '../endpoints/clientAccessInfo';
 
 export default class ServiceView extends React.Component <any,any> {
 
@@ -17,8 +17,6 @@ export default class ServiceView extends React.Component <any,any> {
             sessions: [],
             getSessions: false
         };
-
-
     }
 
     static getDerivedStateFromProps(props:any, state:any) {
@@ -175,14 +173,8 @@ export default class ServiceView extends React.Component <any,any> {
                         </div>
                     </div>
 
-                    <div className='card m-b-20'>
-                        <h5 className='card-header'>Access info</h5>
-                        <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
-                            <div className='card-body'>
-                                <AccessInfo channel={this.state.service} />
-                            </div>
-                        </div>
-                    </div>
+                    <ClientAccessInfo channel={this.state.service} />
+
                 </div>
             </div>
             { /*

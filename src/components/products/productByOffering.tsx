@@ -7,3 +7,10 @@ export default async function AsyncProductName (offeringId:string){
     products = Array.isArray(products) ? products : [];
     return (products as any).filter(product => product.id === offerings[0].product)[0];
 }
+
+export async function GetProductIdByOfferingId (offeringId:string){
+    const endpoint = `/offerings/?id=${offeringId}`;
+    const offerings = await fetch(endpoint, {method: 'GET'});
+
+    return offerings[0].product;
+}

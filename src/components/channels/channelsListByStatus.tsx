@@ -29,8 +29,9 @@ class Channels extends React.Component<Props, any> {
 
         this.state = {
             status: props.status,
-            channelsDataArr: [],
-            lastUpdatedStatus: null
+            lastUpdatedStatus: null,
+            productsByChannels: [],
+            channels: []
         };
 
         if ('function' === typeof props.registerRefresh) {
@@ -58,10 +59,27 @@ class Channels extends React.Component<Props, any> {
 
         const channelsOfferings = channels.map((channel: ChannelType) => api.getOfferingById(channel.offering));
         const offerings = await Promise.all(channelsOfferings);
-        const products = offerings.map(offering => this.props.products.find(product => offering.product === product.id));
 
-        const channelsDataArr = products.map((product, index) => {
-            const channel = channels[index];
+        const productsByChannels = offerings.map(offering => offering.product);
+
+        this.setState({
+            lastUpdatedStatus: status,
+            productsByChannels,
+            channels
+        });
+    }
+
+    static getDerivedStateFromProps(props: any, state: any){
+        return {status: props.status};
+    }
+
+    render (){
+        this.refreshIfStatusChanged();
+
+        const channelsDataArr = this.state.productsByChannels
+            .map((productId) => this.props.products.find(product => productId === product.id))
+            .map((product, index) => {
+            const channel = this.state.channels[index];
             return {
                 id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
@@ -74,23 +92,10 @@ class Channels extends React.Component<Props, any> {
             };
         });
 
-        this.setState({
-            channelsDataArr,
-            lastUpdatedStatus: status
-        });
-    }
-
-    static getDerivedStateFromProps(props: any, state: any){
-        return {status: props.status};
-    }
-
-    render (){
-        this.refreshIfStatusChanged();
-
         return <div className='row'>
             <div className='col-12'>
                 <div className='card-box'>
-                    <ChannelsListSortTable data={this.state.channelsDataArr} />
+                    <ChannelsListSortTable data={channelsDataArr} />
                 </div>
             </div>
         </div>;
