@@ -1,10 +1,11 @@
 import * as React from 'react';
 import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-import {fetch} from '../../utils/fetch';
 import * as keythereum from 'keythereum';
+import {fetch} from '../../utils/fetch';
 import {PreviousButton, createPrivateKey} from './utils';
 import notice from '../../utils/notice';
+import * as api from '../../utils/api';
 
 class ImportJsonKey extends React.Component<any, any>{
 
@@ -62,17 +63,9 @@ class ImportJsonKey extends React.Component<any, any>{
         const key = pk.toString('base64').split('+').join('-').split('/').join('_');
         console.log(pk, key);
 
-        const body = {privateKey: key
-                     ,isDefault: this.props.default === 'true'
-                     ,inUse: true
-                     ,name
-                     ,type: 'generate_new'
-        };
-        await fetch('/accounts/', {method: 'post', body});
-
-        const settings = await fetch('/localSettings', {}) as any;
-        settings.accountCreated = true;
-        await fetch('/localSettings', {method: 'put', body: settings});
+        const saveRes = await api.accounts.createNewAccount(key, this.props.default === 'true', true, name, 'generate_new');
+        console.log(saveRes);
+        await api.settings.updateLocal({accountCreated:true});
 
         const dk = createPrivateKey();
         const newKeyObject = Object.assign({}, dk, {privateKey: pk});

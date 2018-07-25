@@ -26,7 +26,7 @@ class AsyncOfferings extends React.Component<any, any> {
         const endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
 
         const offeringsRaw = await fetch(endpoint, {method: 'GET'});
-        const products = await api.getProducts();
+        const products = await api.products.getProducts();
 
         const resolveTable = (products as any).reduce((table, product) => {
             table[product.id] = product.name;

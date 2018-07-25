@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
+// import {fetch} from '../../utils/fetch';
 import ChannelsListByStatus from '../channels/channelsListByStatus';
 import OfferingsList from '../offerings/offeringsList';
 import toFixed8 from '../../utils/toFixed8';
+import * as api from '../../utils/api';
 
 
 export default class Main extends React.Component <any,any> {
@@ -25,7 +26,7 @@ export default class Main extends React.Component <any,any> {
     }
 
     async refresh() {
-        const channels = await fetch(`/channels`);
+        const channels = await api.channels.getList();
 
         const income = (channels as any).reduce((income, channel) => {
             if (Object.keys(channel).length === 0) {

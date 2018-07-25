@@ -34,7 +34,7 @@ class AcceptOffering extends React.Component<any, any>{
 
     async componentDidMount(){
 
-        const accounts = await api.getAccounts();
+        const accounts = await api.accounts.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
         this.getNotTerminatedConnections();
         this.setState({accounts, account});
@@ -73,7 +73,7 @@ class AcceptOffering extends React.Component<any, any>{
         evt.preventDefault();
         let err = false;
         let msg = '';
-        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        const settings = (await api.settings.getLocal()) as LocalSettings;
 
         if(this.state.account.psc_balance < this.state.deposit){
             err=true;

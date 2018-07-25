@@ -2,7 +2,6 @@ import * as React from 'react';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 import {asyncReactor} from 'async-reactor';
-import {fetch} from '../utils/fetch';
 import {LocalSettings} from '../typings/settings';
 import SetPassword from './auth/setPassword';
 import SetAccount from './auth/setAccount';
@@ -12,6 +11,7 @@ import ImportJsonKey from './auth/importJsonKey';
 import Backup from './auth/backup';
 import Login from './auth/login';
 import App from '../components/asyncApp';
+import * as api from '../utils/api';
 
 function Loader() {
 
@@ -21,7 +21,7 @@ function Loader() {
 
 async function AsyncStart (props:any){
 
-    const settings = (await fetch('/localSettings', {})) as LocalSettings;
+    const settings = (await api.settings.getLocal()) as LocalSettings;
 
 let MemoryHistory = createMemoryHistory();
 const wizard = <Router history={MemoryHistory as any}>

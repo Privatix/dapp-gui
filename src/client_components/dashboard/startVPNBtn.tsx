@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 
 class StartVPN extends React.Component <any,any> {
 
@@ -13,10 +13,9 @@ class StartVPN extends React.Component <any,any> {
     }
 
     async getNotTerminatedConnections() {
-        const pendingChannelsReq = fetch('/client/channels?serviceStatus=pending', {});
-        const activeChannelsReq = fetch('/client/channels?serviceStatus=active', {});
-        const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
-
+        const pendingChannelsReq = api.channels.getClientList(null, 'pending');
+        const activeChannelsReq = api.channels.getClientList(null, 'active');
+        const suspendedChannelsReq = api.channels.getClientList(null, 'suspended');
         const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
 
         if((activeChannels as any).length > 0

@@ -28,7 +28,7 @@ interface AsyncProviders {
 export const asyncProviders: AsyncProviders = {
     updateAccounts: function(){
         return function(dispatch: any){
-            api.getAccounts()
+            api.accounts.getAccounts()
                .then(accounts => {
                     dispatch(handlers.updateAccounts(accounts));
                });
@@ -36,7 +36,7 @@ export const asyncProviders: AsyncProviders = {
     },
     updateProducts: function(){
         return function(dispatch: any){
-            api.getProducts()
+            api.products.getProducts()
                .then(products => {
                    dispatch(handlers.updateProducts(products));
                });
@@ -48,7 +48,7 @@ export const asyncProviders: AsyncProviders = {
                .then(res => {
                    // TODO check if error
                    dispatch(handlers.setMode(mode));
-                   if (res === 'updated.') {
+                   if (res.message === 'updated.') {
                        if (mode === Mode.AGENT) {
                            history.push('/');
                        } else {

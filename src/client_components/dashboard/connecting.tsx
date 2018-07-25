@@ -1,8 +1,9 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
+// import {fetch} from '../../utils/fetch';
 import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import Countdown from 'react-countdown-now';
 import ActiveConnection from '../connections/active';
+import * as api from '../../utils/api';
 
     const countdownRender = ({ minutes, seconds }) => {
         return <span>{minutes}:{seconds}</span>;
@@ -32,10 +33,9 @@ export default class Connecting extends React.Component<any, any>{
     }
 
     async refresh(){
-
-        const pendingChannelsReq = fetch('/client/channels?serviceStatus=pending', {});
-        const activeChannelsReq = fetch('/client/channels?serviceStatus=active', {});
-        const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
+        const pendingChannelsReq = api.channels.getClientList(null, 'pending');
+        const activeChannelsReq = api.channels.getClientList(null, 'active');
+        const suspendedChannelsReq = api.channels.getClientList(null, 'suspended');
 
         const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
 
