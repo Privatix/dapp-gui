@@ -126,7 +126,7 @@ class Navigation extends React.Component<Props, any> {
                         {/*</li>*/}
                         <li className=''>
                             <NavLink exact to='/client-history' activeClassName='active' className='waves-effect'>
-                                <i className='md md-toc'></i><span> History </span>
+                                <i className='fa fa-history'></i><span> History </span>
                             </NavLink>
                         </li>
                     </ul>
