@@ -20,14 +20,15 @@ export default class ChannelUsage extends React.Component <any,any> {
     }
 
     async getUsage() {
-        if (this.state.lastUpdatedChannelId === this.state.channelId) {
-            return;
-        }
 
         const channelId = this.state.channelId;
         const endpoint = `/sessions?channelId=${this.state.channelId}`;
         const sessions = await fetch(endpoint, {method: 'GET'});
         const usage = (sessions as any).reduce( (usage, session) => {return usage + session.unitsUsed;}, 0);
+
+        if (this.state.lastUpdatedChannelId === this.state.channelId && usage === this.state.usage) {
+            return;
+        }
 
         this.setState({usage, lastUpdatedChannelId: channelId});
     }

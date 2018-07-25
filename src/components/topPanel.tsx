@@ -5,6 +5,7 @@ import {asyncProviders} from '../redux/actions';
 import {Account} from '../typings/accounts';
 import {State} from '../typings/state';
 import {Mode} from '../typings/mode';
+import * as api from '../utils/api';
 
 interface Props {
     accounts: Account[];
@@ -93,7 +94,7 @@ class TopPanel extends React.Component <Props, any>{
     }
 
     updateAgent() {
-        fetch('/channels?serviceStatus=active', {}).then(res => {
+        api.channels.getList('active').then(res => {
             const pscCount = (res as any).length;
             this.setState({status: pscCount > 0, pscCount });
         });

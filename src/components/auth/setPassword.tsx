@@ -1,11 +1,12 @@
 import * as React from 'react';
 import Steps from './steps';
-import {LocalSettings} from '../../typings/settings';
+// import {LocalSettings} from '../../typings/settings';
 import { withRouter } from 'react-router-dom';
-import {fetch} from '../../utils/fetch';
+// import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 import * as ReactTooltip from 'react-tooltip';
 import {NextButton} from './utils';
+import * as api from '../../utils/api';
 
 class SetPassword extends React.Component<any, any>{
 
@@ -59,13 +60,11 @@ class SetPassword extends React.Component<any, any>{
             return;
         }
 
-        const res = await fetch('/auth', {method: 'post', body: {password: pwd}});
+        const res  = await api.auth.newPassword(pwd);
         // TODO notice if server returns error (not implemented on dappctrl yet)
         console.log(res);
 
-        const settings = (await fetch('/localSettings', {})) as LocalSettings;
-        settings.firstStart = false;
-        await fetch('/localSettings', {method: 'post', body: settings});
+        await api.settings.updateLocal({firstStart:false});
         this.props.history.push('/setAccount');
     }
 

@@ -4,6 +4,7 @@ const {dialog} = remote;
 import {fetch} from '../../utils/fetch';
 import SessionItem from './sessionItem';
 import toFixed8 from '../../utils/toFixed8';
+import * as api from '../../utils/api';
 
 export default class Sessions extends React.Component <any,any> {
 
@@ -28,7 +29,8 @@ export default class Sessions extends React.Component <any,any> {
         }, 0);
 
         const offeringsArr = (sessions as any).map((session) => {
-            return (fetch(`/channels?id=${session.channel}`)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
+            // return (fetch(`/channels?id=${session.channel}`)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
+            return (api.channels.getById(session.channel)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
         });
         const offerings = await Promise.all(offeringsArr);
 

@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { withRouter } from 'react-router';
-import {fetch} from '../../utils/fetch';
+// import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 import {asyncProviders} from '../../redux/actions';
 import { Product } from '../../typings/products';
 import { connect } from 'react-redux';
 import { State } from '../../typings/state';
+import * as api from '../../utils/api';
 
 interface Props {
     product: Product;
@@ -33,9 +34,9 @@ class ProductView extends React.Component <Props,any> {
         if ( (/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(this.state.host)) // IP
             || (/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(this.state.host)) ) /* DNS */ {
 
-            const body = Object.assign({}, this.state.product, {serviceEndpointAddress: this.state.host});
+            const product = Object.assign({}, this.state.product, {serviceEndpointAddress: this.state.host});
 
-            fetch('/products', {method: 'PUT', body}).then((result:any) => {
+            api.products.saveProduct(product).then((result:any) => {
                 if (result.id === this.state.product.id) {
                     notice({level: 'info', title: 'Congratulations!', msg: 'Host was successfully updated!'});
                     this.props.dispatch(asyncProviders.updateProducts());

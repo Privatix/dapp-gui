@@ -53,8 +53,8 @@ class CreateOffering extends React.Component<any, any>{
 
     async refresh(){
 
-        const accounts = await api.getAccounts();
-        const products = await api.getProducts();
+        const accounts = await api.accounts.getAccounts();
+        const products = await api.products.getProducts();
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
         const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
@@ -126,7 +126,8 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeInteger = [];
         const isZero = [];
 
-        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        // const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        const settings = (await api.settings.getLocal()) as LocalSettings;
 
         let err = false;
         const payload = Object.assign({}, this.state.payload);
