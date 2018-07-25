@@ -85,7 +85,7 @@ class SetPassword extends React.Component<any, any>{
                                     In case you lost your password, you lost all your data. It is NOT possible to access your account without a password and there is no forgot my password option here. Do not forget it.
                                 </span>
                                 <span className='col-1 pull-right'>
-                                    <a data-tip='information about how we store<br/>and encrypt data' data-html={true} className='font-18'>
+                                    <a data-tip='We store your private keys encrypted and <br />in same format as ethereum node' data-html={true} className='font-18'>
                                         <i className='md md-help' />
                                     </a>
                                 </span>
