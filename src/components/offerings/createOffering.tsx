@@ -6,6 +6,7 @@ import GasRange from '../utils/gasRange';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
 import toFixed8 from '../../utils/toFixed8';
+import parseFloatPrix from '../../utils/parseFloatPrix';
 import {LocalSettings} from '../../typings/settings';
 import countries from '../../utils/countries';
 
@@ -97,7 +98,7 @@ class CreateOffering extends React.Component<any, any>{
     onUserInput(evt: any){
 
         const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value});
-        payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? Math.floor((0 + payload.unitPrice)*1e8) : 0) * (payload.minUnits ? payload.minUnits : 0);
+        payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0) * (payload.minUnits ? payload.minUnits : 0);
         this.setState({payload});
     }
 
@@ -155,7 +156,7 @@ class CreateOffering extends React.Component<any, any>{
 
         });
 
-        payload.unitPrice = parseFloat(payload.unitPrice);
+        payload.unitPrice = parseFloatPrix(payload.unitPrice);
 
         const emptyStrings = strings.filter((key: string) => !mustBeFilled.includes(key) && payload[key].trim() === '');
 
@@ -216,7 +217,6 @@ class CreateOffering extends React.Component<any, any>{
             this.setState({errMsg: msg});
             notice({level: 'error', header: 'Attention!', msg});
         }else{
-            payload.unitPrice = Math.floor(payload.unitPrice * 1e8);
             payload.billingInterval = 1;
             payload.billingType = 'postpaid';
             payload.additionalParams = Buffer.from('{}').toString('base64');
