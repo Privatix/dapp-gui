@@ -10,7 +10,7 @@ const bugsnag_handler = (window, apiKey, release) => {
 
     if (window.onerror) {
         window.addEventListener('error', async function(ErrorEvent:any) {
-            const accounts = await api.getAccounts();
+            const accounts = await api.accounts.getAccounts();
             bugsnagClient.metaData = {
                 accounts: accounts,
                 release: release

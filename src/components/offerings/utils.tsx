@@ -6,7 +6,7 @@ export const fetchOfferings = async function(product: string){
     const endpoint = `/offerings/?product=${product === 'all' ? '' : product}`;
 
     const offeringsRequest = fetch(endpoint, {});
-    const products = await api.getProducts();
+    const products = await api.products.getProducts();
     let offerings;
     [offerings] = await Promise.all([offeringsRequest]);
     const resolveTable = (products as any).reduce((table, product) => {

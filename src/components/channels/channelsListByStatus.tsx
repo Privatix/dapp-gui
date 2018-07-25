@@ -55,7 +55,7 @@ class Channels extends React.Component<Props, any> {
 
         const status = this.state.status;
 
-        const channels = await api.getChannels(status);
+        const channels = await api.channels.getList(status);
 
         const channelsOfferings = channels.map((channel: ChannelType) => api.getOfferingById(channel.offering));
         const offerings = await Promise.all(channelsOfferings);
