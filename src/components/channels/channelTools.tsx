@@ -4,7 +4,15 @@ import * as React from 'react';
 import ConfirmPopupSwal from '../confirmPopupSwal';
 
 export default function(props:any){
-    const info = 'This operation will terminate service and close contract. Earnings will be transferred to your account.';
+
+    const info = props.channel.receiptBalance === 0
+        ? 'This operation will terminate service and prevent Clients from using this service.'
+        : 'This operation will terminate service and close contract. Earnings will be transferred to your account.';
+
+    const buttonTitle = props.channel.receiptBalance === 0
+        ? 'Terminate service'
+        : 'Terminate contract';
+
     return <div className='col-lg-3 col-md-4'>
         <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
             <form>
@@ -13,7 +21,7 @@ export default function(props:any){
                 <ConfirmPopupSwal
                     endpoint={`/channels/${props.channel.id}/status`}
                     options={{method: 'put', body: {action: 'terminate'}}}
-                    title={'Terminate contract'}
+                    title={buttonTitle}
                     text={<span>{info}</span>}
                     class={'btn btn-danger btn-custom btn-block'}
                     swalType='danger'
