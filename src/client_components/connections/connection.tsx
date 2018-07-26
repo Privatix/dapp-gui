@@ -7,21 +7,51 @@ import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
 import toFixed8 from '../../utils/toFixed8';
+import * as api from '../../utils/api';
+import Offering from '../vpn_list/acceptOffering';
 
 class Connection extends React.Component<any, any>{
 
     constructor(props:any) {
         super(props);
         this.state = {
-            channel: props.connection
+            channel: props.connection,
+            offering: null
         };
+
+        this.updateOffering(props.connection.offering);
     }
 
     static getDerivedStateFromProps(props:any, state:any) {
         return {channel: props.connection};
     }
 
+    updateOffering(offeringId: string){
+
+        api.getClientOfferings()
+           .then(offerings => {
+
+               const offering = offerings.find(offering => {
+                   console.log(offering.id === offeringId, offering);
+                   return offering.id === offeringId;
+               });
+
+               if(offering){
+                   this.setState({offering});
+               }
+           });
+    }
+
+    showOffering(evt:any){
+        evt.preventDefault();
+        this.props.render('Offering', <Offering mode='view' offering={this.state.offering} />);
+    }
+
     render(){
+
+        if(this.state.offering && this.props.connection.offering !== this.state.offering.id){
+            this.updateOffering(this.props.connection.offering);
+        }
 
         const sessionsColumns = [
             {
@@ -85,7 +115,12 @@ class Connection extends React.Component<any, any>{
                                         </tr>
                                         <tr>
                                             <td>Offering:</td>
-                                            <td>{this.state.channel.offering}</td>
+                                            <td>{this.state.offering
+                                                ? <a href='#' onClick={this.showOffering.bind(this)}>
+                                                    { new Buffer(this.state.offering.hash, 'base64').toString('hex') }
+                                                  </a>
+                                                : ''}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Contract status:</td>
