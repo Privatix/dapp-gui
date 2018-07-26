@@ -6,8 +6,9 @@ import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 // import DateSorter from '../../components/utils/sorters/sortingDate';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
+import { withRouter } from 'react-router-dom';
 
-export default class ServiceView extends React.Component <any,any> {
+class ServiceView extends React.Component <any,any> {
 
     constructor(props:any) {
         super(props);
@@ -66,11 +67,15 @@ export default class ServiceView extends React.Component <any,any> {
         });
     }
 
-    render() {
+    async componentDidMount(){
         if (this.state.getSessions) {
             this.getSessions();
             this.setState({getSessions: false});
         }
+    }
+
+    render() {
+
         const service = this.state.service;
 /*
         const sessionsColumns = [
@@ -198,3 +203,6 @@ export default class ServiceView extends React.Component <any,any> {
         </div>;
     }
 }
+
+
+export default withRouter(ServiceView);
