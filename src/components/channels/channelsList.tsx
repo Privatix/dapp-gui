@@ -11,6 +11,7 @@ import { connect } from 'react-redux';
 import { State } from '../../typings/state';
 import {asyncProviders} from '../../redux/actions';
 import base64ToHex from '../utils/base64ToHex';
+import * as api from '../../utils/api';
 
 class AsyncChannels extends React.Component<any, any> {
 
@@ -19,7 +20,8 @@ class AsyncChannels extends React.Component<any, any> {
         this.state = {
             isLoading: true,
             products: [],
-            channels: []
+            channels: [],
+            offerings: []
         };
 
         this.props.dispatch(asyncProviders.updateProducts());
@@ -31,9 +33,10 @@ class AsyncChannels extends React.Component<any, any> {
         const channels = await fetch(endpoint, {method: 'GET'});
         const channelsProductsIds = (channels as any).map((channel: any) => GetProductIdByOfferingId(channel.offering));
         const products = await Promise.all(channelsProductsIds);
+        const offerings = await api.offerings.getOfferings();
         this.props.dispatch(asyncProviders.updateProducts());
-
-        this.setState({channels, products});
+        this.props.dispatch(asyncProviders.updateOfferings());
+        this.setState({channels, products, offerings});
 
     }
 
@@ -47,13 +50,14 @@ class AsyncChannels extends React.Component<any, any> {
             .map((productId) => this.props.products.find((product) => product.id === productId))
             .map((product, index) => {
                     const channel = this.state.channels[index];
+                    const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
                     return {
                         id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
                         server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
                         client: channel.client ? base64ToHex(channel.client) : '',
                         contractStatus: channel.channelStatus,
                         serviceStatus: channel.serviceStatus,
-                        usage: channel.id,
+                        usage: [channel.id,(channel.totalDeposit/offering.unitPrice)],
                         incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
                         serviceChangedTime: channel.serviceChangedTime
                     };
