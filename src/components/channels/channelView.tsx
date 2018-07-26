@@ -30,7 +30,6 @@ export default class ChannelView extends React.Component<any, any> {
 
     showOffering(evt:any){
         evt.preventDefault();
-        console.log(this.props);
         this.props.render('Offering', <Offering offering={this.state.offering} />);
     }
 
@@ -49,7 +48,15 @@ export default class ChannelView extends React.Component<any, any> {
                             <table className='table table-striped'>
                                 <tbody>
                                     <tr><td>Id:</td><td>{this.props.channel.id}</td></tr>
-                                    <tr><td>Server:</td><td><ProductNameByOffering offeringId={this.props.channel.offering} /></td></tr>
+                                    <tr>
+                                        <td>Server:</td>
+                                        <td>
+                                            <ProductNameByOffering mode='link'
+                                                                   offeringId={this.props.channel.offering}
+                                                                   render={this.props.render}
+                                            />
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <td>Offering:</td>
                                         <td>{this.state.offering
