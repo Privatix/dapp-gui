@@ -10,6 +10,7 @@ import toFixed8 from '../../utils/toFixed8';
 import { connect } from 'react-redux';
 import { State } from '../../typings/state';
 import {asyncProviders} from '../../redux/actions';
+import base64ToHex from '../utils/base64ToHex';
 
 class AsyncChannels extends React.Component<any, any> {
 
@@ -49,7 +50,7 @@ class AsyncChannels extends React.Component<any, any> {
                     return {
                         id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
                         server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
-                        client: channel.client ? channel.client : '',
+                        client: channel.client ? base64ToHex(channel.client) : '',
                         contractStatus: channel.channelStatus,
                         serviceStatus: channel.serviceStatus,
                         usage: channel.id,
