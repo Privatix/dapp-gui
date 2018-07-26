@@ -3,6 +3,7 @@ import {fetch} from '../../utils/fetch';
 import { connect } from 'react-redux';
 import {asyncProviders} from '../../redux/actions';
 import {State} from '../../typings/state';
+import Product from './product';
 
 class ProductName extends React.Component <any, any> {
 
@@ -24,11 +25,20 @@ class ProductName extends React.Component <any, any> {
         this.setState({product});
     }
 
+    showProduct(evt: any){
+        evt.preventDefault();
+        this.props.render('Product', <Product product={this.state.product} {...this.props} />);
+    }
+
     render() {
         if (!this.state.product) {
             return <span></span>;
         }
-        return <span>{this.state.product.name}</span>;
+        if(this.props.mode === 'link'){
+            return <a href='#' onClick={this.showProduct.bind(this)}>{this.state.product.name}</a>;
+        }else{
+            return <span>{this.state.product.name}</span>;
+        }
     }
 }
 
