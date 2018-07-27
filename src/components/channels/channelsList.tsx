@@ -58,7 +58,7 @@ class AsyncChannels extends React.Component<any, any> {
                         client: channel.client ? base64ToHex(channel.client) : '',
                         contractStatus: channelStatusDescription[channel.channelStatus],
                         serviceStatus: channel.serviceStatus,
-                        usage: [channel.id,(channel.totalDeposit/offering.unitPrice)],
+                        usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
                         incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
                         serviceChangedTime: channel.serviceChangedTime
                     };

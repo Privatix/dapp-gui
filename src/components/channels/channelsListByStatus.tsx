@@ -10,6 +10,8 @@ import {State} from '../../typings/state';
 import {Channel as ChannelType, ServiceStatus} from '../../typings/channels';
 import {Product as ProductType} from '../../typings/products';
 import {asyncProviders} from '../../redux/actions';
+import {channelStatusDescription} from './channel';
+import base64ToHex from '../utils/base64ToHex';
 
 interface IProps{
     status: ServiceStatus;
@@ -31,7 +33,8 @@ class Channels extends React.Component<Props, any> {
             status: props.status,
             lastUpdatedStatus: null,
             productsByChannels: [],
-            channels: []
+            channels: [],
+            offerings: []
         };
 
         if ('function' === typeof props.registerRefresh) {
@@ -59,13 +62,13 @@ class Channels extends React.Component<Props, any> {
 
         const channelsOfferings = channels.map((channel: ChannelType) => api.getOfferingById(channel.offering));
         const offerings = await Promise.all(channelsOfferings);
-
         const productsByChannels = offerings.map(offering => offering.product);
 
         this.setState({
             lastUpdatedStatus: status,
             productsByChannels,
-            channels
+            channels,
+            offerings
         });
     }
 
@@ -80,13 +83,14 @@ class Channels extends React.Component<Props, any> {
             .map((productId) => this.props.products.find(product => productId === product.id))
             .map((product, index) => {
             const channel = this.state.channels[index];
+            const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
             return {
                 id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
-                client: channel.client,
-                contractStatus: channel.channelStatus,
+                client: base64ToHex(channel.client),
+                contractStatus: channelStatusDescription[channel.channelStatus],
                 serviceStatus: channel.serviceStatus,
-                usage: channel.id,
+                usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
                 incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
                 serviceChangedTime: channel.serviceChangedTime
             };
