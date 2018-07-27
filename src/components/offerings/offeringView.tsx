@@ -119,7 +119,7 @@ export default function(props:any){
                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                         </div>
                         <span className='help-block'>
-                            <small>Maximum time service can be in Suspended status due to payment log.
+                            <small>Maximum time service can be in Suspended status due to payment lag.
                                 After this time period service will be terminated, if no sufficient payment was received.
                                 Period is specified in seconds.</small>
                         </span>

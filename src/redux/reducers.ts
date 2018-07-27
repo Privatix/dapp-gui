@@ -17,6 +17,7 @@ export default function reducer(state: State = StateDefault, action: Action = {t
     const handlers: Reducers = {
         [actions.REFRESH_ACCOUNTS]       : (state: State, action: Action) => _.assign({}, state, {accounts: action.value}),
         [actions.UPDATE_PRODUCTS]        : (state: State, action: Action) => _.assign({}, state, {products: action.value}),
+        [actions.UPDATE_SETTINGS]        : (state: State, action: Action) => _.assign({}, state, {settings: action.value}),
         [actions.SET_MODE]               : (state: State, action: Action) => _.assign({}, state, {mode: action.value})
     };
 
