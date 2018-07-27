@@ -37,7 +37,6 @@ class Offerings extends React.Component<any, any> {
         }, {});
 
         const offerings = (offeringsRaw as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
-        console.log(offerings);
 
         this.setState({offerings, products: this.props.products});
 
@@ -64,6 +63,7 @@ class Offerings extends React.Component<any, any> {
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
                 status: offering.status,
+                currentSupply: offering.currentSupply,
                 supply: offering.supply
             };
 
@@ -92,6 +92,12 @@ class Offerings extends React.Component<any, any> {
                 headerStyle: {textAlign: 'center'},
                 dataProps: {className: 'text-center'},
                 render: (status) => { return <OfferingStatus status={status} />; }
+            },
+            {
+                header: 'Current supply',
+                key: 'currentSupply',
+                headerStyle: {textAlign: 'center'},
+                dataProps: { className: 'text-center'}
             },
             {
                 header: 'Supply',
