@@ -48,7 +48,7 @@ class Navigation extends React.Component<Props, any> {
                         <li className='has_sub' aria-current={this.state.submenu ? 'page' : null}>
                             <div onClick={this.handleClick.bind(this)}>
                                 <NavLink to='/channels/all' activeClassName='active' className='waves-effect'>
-                                    <i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span>
+                                    <i className='fa fa-exchange'></i> <span> Services </span> <span className='menu-arrow'></span>
                                 </NavLink>
                             </div>
                             <ul className='list-unstyled sub_menu'>
@@ -60,13 +60,13 @@ class Navigation extends React.Component<Props, any> {
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/offerings/all' activeClassName='active' className='waves-effect'>
-                                <i className='md md-toc'></i><span> Offerings </span>
+                                <i className='fa fa-superpowers'></i><span> Offerings </span>
                             </NavLink>
                         </li>
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
-                                <i className='md md-toc'></i><span> Servers </span>
+                                <i className='fa fa-server'></i><span> Servers </span>
                             </NavLink>
                         </li>
 
