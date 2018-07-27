@@ -6,5 +6,5 @@ export const getOfferings  = async function(id?:string, product?:string, offerSt
     if (id){ query.push(`id=${id}`);}
     if (product){ query.push(`product=${product}`);}
     if (offerStatus){ query.push(`offerStatus=${offerStatus}`);}
-    return fetch('/offerings'+(query.length>0?'?'+query.concat('&'):'')) as Promise<Offering[]>;
+    return fetch('/offerings'+(query.length>0?'?'+query.join('&'):'')) as Promise<Offering[]>;
 };
