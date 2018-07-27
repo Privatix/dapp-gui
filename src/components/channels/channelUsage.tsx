@@ -8,6 +8,7 @@ export default class ChannelUsage extends React.Component <any,any> {
 
         this.state = {
             channelId: props.channelId,
+            trafficLimit: props.trafficLimit,
             usage: 0,
             lastUpdatedChannelId: 0
         };
@@ -20,7 +21,6 @@ export default class ChannelUsage extends React.Component <any,any> {
     }
 
     async getUsage() {
-
         const channelId = this.state.channelId;
         const endpoint = `/sessions?channelId=${this.state.channelId}`;
         const sessions = await fetch(endpoint, {method: 'GET'});
@@ -36,6 +36,10 @@ export default class ChannelUsage extends React.Component <any,any> {
     render () {
         this.getUsage();
 
-        return <span>{this.state.usage} MB</span>;
+        if (this.state.trafficLimit){
+            return <span>{this.state.usage}&nbsp;of&nbsp;{this.state.trafficLimit}&nbsp;MB</span>;
+        }else {
+            return <span>{this.state.usage} MB</span>;
+        }
     }
 }

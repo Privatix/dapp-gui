@@ -59,7 +59,7 @@ class ChannelsTable extends React.Component<any, any> {
             {
                 header: 'Usage',
                 key: 'usage',
-                render: (channelId) => <ChannelUsage channelId={channelId} />
+                render: (channelId) => {return (typeof channelId as any)=== 'object'? <ChannelUsage channelId={channelId[0]} trafficLimit={channelId[1]}/>:<ChannelUsage channelId={channelId}/>;}
             },
             {
                 header: 'Income (PRIX)',
@@ -70,6 +70,7 @@ class ChannelsTable extends React.Component<any, any> {
             {
                 header: 'Service Changed Time',
                 key: 'serviceChangedTime',
+                defaultSorting: 'DESC',
                 descSortFunction: DateSorter.desc,
                 ascSortFunction: DateSorter.asc,
                 render: (serviceChangedTime) => <PgTime time={serviceChangedTime} />
