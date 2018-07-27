@@ -10,7 +10,7 @@ export default function(props:any){
     return <div>
         <div className='container-fluid'>
             <div className='row'>
-                <ChannelView channel={channel} />
+                <ChannelView {...props}/>
                 <ChannelTools channel={channel} />
             </div>
             <div className='row'>

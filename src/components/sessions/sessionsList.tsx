@@ -83,7 +83,7 @@ export default class Sessions extends React.Component <any,any> {
                                     <tbody>
                                     <tr>
                                         <td>Total usage:</td>
-                                        <td>{(this.state.usage / 1024).toFixed(3)} Gb</td>
+                                        <td>{(this.state.usage / 1024).toFixed(3)} GB</td>
                                     </tr>
                                     <tr>
                                         <td>Total income:</td>
