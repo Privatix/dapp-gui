@@ -19,6 +19,8 @@ export const channels = Channels;
 import * as Products from './api/products';
 export const products = Products;
 
+import * as Offerings from './api/offerings';
+export const offerings = Offerings;
 
 export const getTransactionsByAccount = async function(account: string): Promise<Transaction[]>{
     const endpoint = '/transactions' + (account === 'all' ? '' : `?relatedID=${account}&relatedType=account`);

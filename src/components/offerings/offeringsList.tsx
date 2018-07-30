@@ -10,6 +10,7 @@ import Product from '../products/product';
 import { connect } from 'react-redux';
 import { State } from '../../typings/state';
 import {asyncProviders} from '../../redux/actions';
+import base64ToHex from '../utils/base64ToHex';
 
 class Offerings extends React.Component<any, any> {
 
@@ -58,10 +59,11 @@ class Offerings extends React.Component<any, any> {
         this.state.offerings.map((offering: any) => {
             let product = this.state.products.filter((product: any) => product.id === offering.product)[0];
             let row = {
-                id: <ModalWindow customClass='' modalTitle='Offering' text={offering.id} component={<Offering offering={offering} />} />,
+                id: <ModalWindow customClass='' modalTitle='Offering' text={base64ToHex(offering.hash)} component={<Offering offering={offering} />} />,
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
                 status: offering.status,
+                currentSupply: offering.currentSupply,
                 supply: offering.supply
             };
 
@@ -90,6 +92,12 @@ class Offerings extends React.Component<any, any> {
                 headerStyle: {textAlign: 'center'},
                 dataProps: {className: 'text-center'},
                 render: (status) => { return <OfferingStatus status={status} />; }
+            },
+            {
+                header: 'Current supply',
+                key: 'currentSupply',
+                headerStyle: {textAlign: 'center'},
+                dataProps: { className: 'text-center'}
             },
             {
                 header: 'Supply',
