@@ -23,9 +23,7 @@ export default class JobStatus extends React.Component<any, any>{
     render(){
 
         this.refresh();
-        if('offering' in this.state){
-            console.log(this.state.offering);
-        }
+
         const maxUsage = 'offering' in this.state ? Math.floor((this.props.channel.deposit - this.state.offering.setupPrice)/this.state.offering.unitPrice)
                                                   : '';
         const channel = this.props.channel;
