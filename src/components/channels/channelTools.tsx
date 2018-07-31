@@ -5,6 +5,7 @@ import ConfirmPopupSwal from '../confirmPopupSwal';
 
 export default function(props:any){
 
+    const warning = 'You can’t undo this.';
     const info = props.channel.receiptBalance === 0
         ? 'This operation will terminate service and prevent Clients from using this service.'
         : 'This operation will terminate service and close contract. Earnings will be transferred to your account.';
@@ -23,7 +24,7 @@ export default function(props:any){
                         endpoint={`/channels/${props.channel.id}/status`}
                         options={{method: 'put', body: {action: 'terminate'}}}
                         title={buttonTitle}
-                        text={<span>{info}</span>}
+                        text={<span>{`${info} ${warning}`}</span>}
                         class={'btn btn-danger btn-custom btn-block'}
                         swalType='danger'
                         swalConfirmBtnText='Yes, terminate it!'
