@@ -2,6 +2,7 @@ import * as api from '../utils/api';
 import notice from '../utils/notice';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
+import {DbSetting as Setting} from '../typings/settings';
 import {Offering} from '../typings/offerings';
 import {Mode} from '../typings/mode';
 
@@ -9,6 +10,7 @@ export const enum actions {
     REFRESH_ACCOUNTS,
     SET_MODE,
     UPDATE_PRODUCTS,
+    UPDATE_SETTINGS,
     UPDATE_OFFERINGS
 }
 
@@ -20,6 +22,7 @@ interface ReduxHandlers {
 const handlers: ReduxHandlers = {
     updateAccounts             : function(accounts: Account[]){ return { type: actions.REFRESH_ACCOUNTS, value: accounts };},
     updateProducts             : function(products: Product[]){ return { type: actions.UPDATE_PRODUCTS, value: products };},
+    updateSettings             : function(settings: Setting[]){ return { type: actions.UPDATE_SETTINGS, value: settings };},
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
     setMode                    : function(mode: Mode){ return { type: actions.SET_MODE, value: mode };}
 };
@@ -42,6 +45,14 @@ export const asyncProviders: AsyncProviders = {
             api.products.getProducts()
                .then(products => {
                    dispatch(handlers.updateProducts(products));
+               });
+        };
+    },
+    updateSettings: function(){
+        return function(dispatch: any){
+            api.settings.get()
+               .then(settings => {
+                   dispatch(handlers.updateSettings(settings));
                });
         };
     },
