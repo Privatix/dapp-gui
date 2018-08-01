@@ -27,6 +27,7 @@
     "pretest": "",
     "test": "mocha -R xunit-file tests/spec.js",
     "posttest": "",
+    "release_finish": "node ./release_finish.js",
     "build": "shx rm -rf ./build && shx mkdir ./build && tslint -c ./configs/tslint.json -p ./configs/tsconfig.json && webpack --mode development --config configs/webpack.config.js && shx cp -R assets/* ./build/ && node ./build.js"
   },
   "dependencies": {
