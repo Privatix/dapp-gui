@@ -4,7 +4,7 @@ import SortableTable from 'react-sortable-table-vilan';
 import 'rc-slider/assets/index.css';
 import Slider from 'rc-slider';
 import * as _ from 'lodash';
-import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 import AcceptOffering from './acceptOffering';
 import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
@@ -30,8 +30,14 @@ export default class AsyncList extends React.Component<any,any> {
             filtered: [],
             columns: [
                 {
-                    header: 'Id',
-                    key: 'id',
+                    header: 'Block',
+                    key: 'block',
+                    dataStyle: { fontSize: '11px'},
+                },
+                {
+                    header: 'Hash',
+                    key: 'hash',
+                    dataStyle: { fontSize: '11px'},
                     descSortFunction: ModalPropTextSorter.desc,
                     ascSortFunction: ModalPropTextSorter.asc
                 },
@@ -42,6 +48,14 @@ export default class AsyncList extends React.Component<any,any> {
                 {
                     header: 'Price (PRIX/MB)',
                     key: 'price'
+                },
+                {
+                    header: 'Supply (total)',
+                    key: 'supply'
+                },
+                {
+                    header: 'Current supply',
+                    key: 'currentSupply'
                 }
             ]
         };
@@ -61,10 +75,9 @@ export default class AsyncList extends React.Component<any,any> {
     }
 
     async getClientOfferings(done?: Function) {
-        let endpoint = '/client/offerings';
 
-        fetch(endpoint, {method: 'GET'})
-            .then((clientOfferings) => {
+        api.getClientOfferings()
+            .then(clientOfferings => {
                 // Show loader when downloading VPN list
                 if (Object.keys(clientOfferings).length === 0) {
                     this.setState({spinner: true});
@@ -74,18 +87,25 @@ export default class AsyncList extends React.Component<any,any> {
                     return;
                 }
 
-                let offerings = (clientOfferings as any).map((offering) => {
+                let offerings = clientOfferings.map(offering => {
+
+                    const offeringHash = '0x' + new Buffer(offering.hash, 'base64').toString('hex');
+
                     return {
-                        id: <ModalWindow customClass='' modalTitle='Accept Offering' text={offering.id} component={<AcceptOffering offering={offering} />} />,
+                        block: offering.blockNumberUpdated,
+                        hash: <ModalWindow customClass='' modalTitle='Accept Offering' text={offeringHash} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
-                        price: toFixed8({number: (offering.unitPrice / 1e8)})
+                        price: toFixed8({number: (offering.unitPrice / 1e8)}),
+                        supply: offering.supply,
+                        currentSupply: offering.currentSupply,
+                        agent: '0x' + new Buffer(offering.agent, 'base64').toString('hex')
                     };
                 });
 
                 // get countries list for filter by countries
                 let countriesArr = [];
                 let countriesAsocArr = [];
-                (clientOfferings as any).forEach((offering) => {
+                clientOfferings.forEach((offering) => {
                     if (countriesAsocArr[offering.country] !== undefined) {
                         countriesAsocArr[offering.country].count++;
                     } else {
@@ -113,13 +133,18 @@ export default class AsyncList extends React.Component<any,any> {
                         defShow: countriesArrCount > 5 ? 0 : 1
                     };
                 });
-
+                const max = clientOfferings.reduce((max, offering) => offering.unitPrice > max ? offering.unitPrice : max, 0);
+                const min = clientOfferings.reduce((min, offering) => offering.unitPrice < min ? offering.unitPrice : min, max);
                 this.setState({
                     spinner: false,
                     data: offerings,
                     filtered: offerings,
                     countries,
-                    filteredCountries: countries
+                    filteredCountries: countries,
+                    max: max/1e8,
+                    to: max/1e8,
+                    min: min/1e8,
+                    from: min/1e8
                 });
 
                 if ('function' === typeof done) {
@@ -210,6 +235,18 @@ export default class AsyncList extends React.Component<any,any> {
         });
     }
 
+    filterByAgent(e: any){
+        const searchText = e.target.value.toLowerCase().trim();
+        const agent = searchText.replace(/^0x/, '');
+        if(agent === ''){
+            this.filter();
+        }
+
+        const filtered = this.state.data.filter(item => agent === item.agent.trim().toLowerCase().replace(/^0x/, ''));
+
+        this.setState({filtered});
+    }
+
     filterByCountryHandler() {
         this.filter();
     }
@@ -289,11 +326,29 @@ export default class AsyncList extends React.Component<any,any> {
             </div>
             :
             <div className='container-fluid'>
+
                 <div className='row m-t-20'>
                     <div className='col-12 m-b-20'>
                         <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this, true)}>Refresh</button>
                     </div>
                     <div className='col-3'>
+
+                        <div className='card m-b-20'>
+                            <div className='card-body'>
+                                <div className='form-group row'>
+                                    <div className='col-md-12 m-t-10 m-b-10'>
+                                        <div className='input-group searchInputGroup'>
+                                            <div className='input-group-prepend'>
+                                                <span className='input-group-text'><i className='fa fa-search'></i></span>
+                                            </div>
+                                            <input className='form-control' type='search' name='agent' placeholder='agent'
+                                                   onChange={this.filterByAgent.bind(this)} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className='card m-b-20'>
                             <div className='card-body'>
                                 <h6 className='card-title'>Price (PRIX/MB):</h6>

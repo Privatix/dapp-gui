@@ -41,6 +41,7 @@ export interface ClientOffering {
     setupPrice: number;
     status: MsgStatus
     supply: number;
+    currentSupply: number;
     template: string;
     unitName: string;
     unitPrice: number;
