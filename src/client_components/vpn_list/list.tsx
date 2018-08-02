@@ -130,13 +130,18 @@ export default class AsyncList extends React.Component<any,any> {
                         defShow: countriesArrCount > 5 ? 0 : 1
                     };
                 });
-
+                const max = clientOfferings.reduce((max, offering) => offering.unitPrice > max ? offering.unitPrice : max, 0);
+                const min = clientOfferings.reduce((min, offering) => offering.unitPrice < min ? offering.unitPrice : min, max);
                 this.setState({
                     spinner: false,
                     data: offerings,
                     filtered: offerings,
                     countries,
-                    filteredCountries: countries
+                    filteredCountries: countries,
+                    max: max/1e8,
+                    to: max/1e8,
+                    min: min/1e8,
+                    from: min/1e8
                 });
 
                 if ('function' === typeof done) {
