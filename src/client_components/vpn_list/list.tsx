@@ -88,7 +88,7 @@ export default class AsyncList extends React.Component<any,any> {
                 }
 
                 let offerings = clientOfferings.map(offering => {
-                    const offeringHash = new Buffer(offering.hash, 'base64').toString('hex');
+                    const offeringHash = '0x' + new Buffer(offering.hash, 'base64').toString('hex');
                     return {
                         block: offering.blockNumberUpdated,
                         hash: <ModalWindow customClass='' modalTitle='Accept Offering' text={offeringHash} component={<AcceptOffering offering={offering} />} />,
