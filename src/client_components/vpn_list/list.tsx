@@ -30,6 +30,11 @@ export default class AsyncList extends React.Component<any,any> {
             filtered: [],
             columns: [
                 {
+                    header: 'Block',
+                    key: 'block',
+                    dataStyle: { fontSize: '11px'},
+                },
+                {
                     header: 'Hash',
                     key: 'hash',
                     dataStyle: { fontSize: '11px'},
@@ -85,6 +90,7 @@ export default class AsyncList extends React.Component<any,any> {
                 let offerings = clientOfferings.map(offering => {
                     const offeringHash = new Buffer(offering.hash, 'base64').toString('hex');
                     return {
+                        block: offering.blockNumberUpdated,
                         hash: <ModalWindow customClass='' modalTitle='Accept Offering' text={offeringHash} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
                         price: toFixed8({number: (offering.unitPrice / 1e8)}),
@@ -96,7 +102,7 @@ export default class AsyncList extends React.Component<any,any> {
                 // get countries list for filter by countries
                 let countriesArr = [];
                 let countriesAsocArr = [];
-                (clientOfferings as any).forEach((offering) => {
+                clientOfferings.forEach((offering) => {
                     if (countriesAsocArr[offering.country] !== undefined) {
                         countriesAsocArr[offering.country].count++;
                     } else {
