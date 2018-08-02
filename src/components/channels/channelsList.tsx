@@ -12,7 +12,6 @@ import { State } from '../../typings/state';
 import {asyncProviders} from '../../redux/actions';
 import base64ToHex from '../utils/base64ToHex';
 import * as api from '../../utils/api';
-import {channelStatusDescription} from './channel';
 
 class AsyncChannels extends React.Component<any, any> {
 
@@ -56,7 +55,7 @@ class AsyncChannels extends React.Component<any, any> {
                         id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
                         server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
                         client: channel.client ? base64ToHex(channel.client) : '',
-                        contractStatus: channelStatusDescription[channel.channelStatus],
+                        contractStatus: channel.channelStatus,
                         serviceStatus: channel.serviceStatus,
                         usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
                         incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
