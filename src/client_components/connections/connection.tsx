@@ -32,10 +32,7 @@ class Connection extends React.Component<any, any>{
         api.getClientOfferings()
            .then(offerings => {
 
-               const offering = offerings.find(offering => {
-                   console.log(offering.id === offeringId, offering);
-                   return offering.id === offeringId;
-               });
+               const offering = offerings.find(offering => offering.id === offeringId);
 
                if(offering){
                    this.setState({offering});
@@ -177,14 +174,14 @@ class Connection extends React.Component<any, any>{
                     */ }
                     <div className='card m-b-20 card-body text-xs-center'>
                         <form>
-                            <p className='card-text'>This operation will permanently finish VPN usage.</p>
-                            <p className='card-text'>Your remaining deposit will be returned approx. in 12 min.</p>
+                            <p className='card-text'>Permanently stop using this service.</p>
+                            <p className='card-text'>Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.</p>
                             <ConfirmPopupSwal
                                 endpoint={`/client/channels/${this.state.channel.id}/status`}
                                 options={{method: 'put', body: {action: 'terminate'}}}
                                 title={'Finish'}
-                                text={<span>This operation will permanently finish VPN usage.<br />
-                                    Your remaining deposit will be returned approx. in 12 min.</span>}
+                                text={<span>Permanently stop using this service.<br />
+                                    Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.</span>}
                                 class={'btn btn-primary btn-custom btn-block'}
                                 swalType='warning'
                                 swalConfirmBtnText='Yes, finish it!'
