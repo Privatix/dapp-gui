@@ -4,7 +4,7 @@ import SortableTable from 'react-sortable-table-vilan';
 import 'rc-slider/assets/index.css';
 import Slider from 'rc-slider';
 import * as _ from 'lodash';
-import {fetch} from '../../utils/fetch';
+import * as api from '../../utils/api';
 import AcceptOffering from './acceptOffering';
 import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
@@ -30,8 +30,9 @@ export default class AsyncList extends React.Component<any,any> {
             filtered: [],
             columns: [
                 {
-                    header: 'Id',
-                    key: 'id',
+                    header: 'Hash',
+                    key: 'hash',
+                    dataStyle: { fontSize: '11px'},
                     descSortFunction: ModalPropTextSorter.desc,
                     ascSortFunction: ModalPropTextSorter.asc
                 },
@@ -69,10 +70,9 @@ export default class AsyncList extends React.Component<any,any> {
     }
 
     async getClientOfferings(done?: Function) {
-        let endpoint = '/client/offerings';
 
-        fetch(endpoint, {method: 'GET'})
-            .then((clientOfferings) => {
+        api.getClientOfferings()
+            .then(clientOfferings => {
                 // Show loader when downloading VPN list
                 if (Object.keys(clientOfferings).length === 0) {
                     this.setState({spinner: true});
@@ -82,9 +82,10 @@ export default class AsyncList extends React.Component<any,any> {
                     return;
                 }
 
-                let offerings = (clientOfferings as any).map((offering) => {
+                let offerings = clientOfferings.map(offering => {
+                    const offeringHash = new Buffer(offering.hash, 'base64').toString('hex');
                     return {
-                        id: <ModalWindow customClass='' modalTitle='Accept Offering' text={offering.id} component={<AcceptOffering offering={offering} />} />,
+                        hash: <ModalWindow customClass='' modalTitle='Accept Offering' text={offeringHash} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
                         price: toFixed8({number: (offering.unitPrice / 1e8)}),
                         supply: offering.supply,
