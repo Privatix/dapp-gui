@@ -88,14 +88,17 @@ export default class AsyncList extends React.Component<any,any> {
                 }
 
                 let offerings = clientOfferings.map(offering => {
+
                     const offeringHash = '0x' + new Buffer(offering.hash, 'base64').toString('hex');
+
                     return {
                         block: offering.blockNumberUpdated,
                         hash: <ModalWindow customClass='' modalTitle='Accept Offering' text={offeringHash} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
                         price: toFixed8({number: (offering.unitPrice / 1e8)}),
                         supply: offering.supply,
-                        currentSupply: offering.currentSupply
+                        currentSupply: offering.currentSupply,
+                        agent: '0x' + new Buffer(offering.agent, 'base64').toString('hex')
                     };
                 });
 
@@ -232,6 +235,18 @@ export default class AsyncList extends React.Component<any,any> {
         });
     }
 
+    filterByAgent(e: any){
+        const searchText = e.target.value.toLowerCase().trim();
+        const agent = searchText.replace(/^0x/, '');
+        if(agent === ''){
+            this.filter();
+        }
+
+        const filtered = this.state.data.filter(item => agent === item.agent.trim().toLowerCase().replace(/^0x/, ''));
+
+        this.setState({filtered});
+    }
+
     filterByCountryHandler() {
         this.filter();
     }
@@ -311,11 +326,29 @@ export default class AsyncList extends React.Component<any,any> {
             </div>
             :
             <div className='container-fluid'>
+
                 <div className='row m-t-20'>
                     <div className='col-12 m-b-20'>
                         <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this, true)}>Refresh</button>
                     </div>
                     <div className='col-3'>
+
+                        <div className='card m-b-20'>
+                            <div className='card-body'>
+                                <div className='form-group row'>
+                                    <div className='col-md-12 m-t-10 m-b-10'>
+                                        <div className='input-group searchInputGroup'>
+                                            <div className='input-group-prepend'>
+                                                <span className='input-group-text'><i className='fa fa-search'></i></span>
+                                            </div>
+                                            <input className='form-control' type='search' name='agent' placeholder='agent'
+                                                   onChange={this.filterByAgent.bind(this)} />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className='card m-b-20'>
                             <div className='card-body'>
                                 <h6 className='card-title'>Price (PRIX/MB):</h6>
