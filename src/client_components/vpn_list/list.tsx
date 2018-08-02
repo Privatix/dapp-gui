@@ -42,6 +42,14 @@ export default class AsyncList extends React.Component<any,any> {
                 {
                     header: 'Price (PRIX/MB)',
                     key: 'price'
+                },
+                {
+                    header: 'Supply (total)',
+                    key: 'supply'
+                },
+                {
+                    header: 'Current supply',
+                    key: 'currentSupply'
                 }
             ]
         };
@@ -78,7 +86,9 @@ export default class AsyncList extends React.Component<any,any> {
                     return {
                         id: <ModalWindow customClass='' modalTitle='Accept Offering' text={offering.id} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
-                        price: toFixed8({number: (offering.unitPrice / 1e8)})
+                        price: toFixed8({number: (offering.unitPrice / 1e8)}),
+                        supply: offering.supply,
+                        currentSupply: offering.currentSupply
                     };
                 });
 
