@@ -36,7 +36,7 @@ class Accounts extends React.Component<Props, any> {
 
         const accountsDataArr = this.props.accounts.map((account: any) => {
             let isDefault = account.isDefault === true ? 'on' : 'off';
-            const ethereumAddress = `0x${Buffer.from(account.ethAddr, 'base64').toString('hex')}`;
+            const ethereumAddress = `0x${account.ethAddr}`;
             return {
                 name: <ModalWindow key={ethereumAddress} visible={false} customClass='' modalTitle='Account' text={account.name} component={<Account account={account} done={this.done.bind(this)} />} />,
                 ethereumAddress,

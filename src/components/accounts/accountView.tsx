@@ -12,7 +12,7 @@ class AccountView extends React.Component<any, any> {
         this.state = {gasPrice: 6*1e9
                      ,amount: 0
                      ,destination: 'psc'
-                     ,address: `0x${Buffer.from(props.account.ethAddr, 'base64').toString('hex')}`
+                     ,address: `0x${props.account.ethAddr}`
                      ,account: props.account
                      ,transactions: []
                      ,network: ''
