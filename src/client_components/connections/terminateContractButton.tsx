@@ -12,7 +12,7 @@ export default class TerminateContractButton extends React.Component<any, any>{
                     You pay multiple transaction fees.</p>
                 <ConfirmPopupSwal
                     endpoint={`/client/channels/${this.props.channelId}/status`}
-                    options={{method: 'put', body: {action: 'terminate'}}}
+                    options={{method: 'put', body: {action: 'close'}}}
                     title={'Terminate contract'}
                     text={<span>Permanently stop using service and request full deposit return.<br />
                         Use only, if Agent doesn’t closes contract for very long time.<br />
