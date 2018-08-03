@@ -22,6 +22,9 @@ export const products = Products;
 import * as Offerings from './api/offerings';
 export const offerings = Offerings;
 
+import * as Templates from './api/templates';
+export const templates = Templates;
+
 export const getTransactionsByAccount = async function(account: string): Promise<Transaction[]>{
     const endpoint = '/transactions' + (account === 'all' ? '' : `?relatedID=${account}&relatedType=account`);
     return fetch(endpoint, {}) as Promise<Transaction[]>;
