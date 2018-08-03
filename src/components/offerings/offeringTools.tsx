@@ -41,7 +41,7 @@ class OfferingTools extends React.Component<Props, any>{
     render(){
 
         const popupInfo = 'This operation will notify Clients that your offering is actual, improving your chances for a deal.';
-        const removeInfo = `This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for ${this.props.challengePeriod*4} past minutes.`;
+        const removeInfo = `This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for ${Math.floor(this.props.challengePeriod/4)} past minutes.`;
 
         return <div className='col-lg-3 col-md-4'>
             <div className='card m-b-20 card-body text-xs-center'>
