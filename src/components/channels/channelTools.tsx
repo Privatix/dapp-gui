@@ -14,7 +14,7 @@ export default function(props:any){
         ? 'Terminate service'
         : 'Terminate contract';
 
-    return ['active', 'pending'].includes(props.channel.channelStatus)
+    return ['active', 'pending'].includes(props.channel.channelStatus) && props.channel.serviceStatus !== 'terminated'
         ? <div className='col-lg-3 col-md-4'>
             <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <form>
