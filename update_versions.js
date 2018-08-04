@@ -22,9 +22,6 @@ async function start(){
             console.log('package.json with this version already committed');
             process.exit();
         }
-        console.log(await exec('git add ./package.json'));
-        console.log(await exec('git commit -m "Up to version '+release[1]+'"', 'Add new version to package.json'));
-        console.log(await exec('git flow release finish -m "'+release[1]+'" '+release[1], 'Finish release'));
     }catch(err){
         console.log(err);
         fs.writeFileSync('./package.json', JSON.stringify(originConfig, null, 4));
