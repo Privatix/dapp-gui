@@ -1,9 +1,9 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
 import { withRouter } from 'react-router-dom';
 import ModalWindow from '../modalWindow';
 import CreateOffering from '../offerings/createOffering';
 import Product from './product';
+import * as api from '../../utils/api';
 
 class ProductItem extends React.Component<any, any>{
 
@@ -12,7 +12,7 @@ class ProductItem extends React.Component<any, any>{
 
         this.state = {visible: false, offerings: []};
 
-        fetch(`/templates`, {})
+        api.templates.getTemlates()
             .then((templates: any) => {
                 let offerTemplate, accessTemplate;
                     if((templates as any).length){
@@ -31,7 +31,7 @@ class ProductItem extends React.Component<any, any>{
                         this.setState({offerTemplate, accessTemplate});
                     }
             });
-        fetch(`/offerings/?product=${props.product.id}`, {})
+        api.offerings.getOfferings(null,props.product.id)
             .then((offerings: any) => {
                 this.setState({offerings});
             });
