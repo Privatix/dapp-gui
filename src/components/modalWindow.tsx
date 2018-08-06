@@ -28,6 +28,10 @@ export default class ModalWindow extends React.Component<any, any> {
         });
     }
 
+    componentWillUnmount(){
+        document.body.classList.remove('modal-open');
+    }
+
     changeContent(modalTitle: string, component: any){
         const props = Object.assign({}, this.state.props, {modalTitle, component});
         this.setState({props, component, modalTitle});
