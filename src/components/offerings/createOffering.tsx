@@ -227,8 +227,8 @@ class CreateOffering extends React.Component<any, any>{
                 payload.maxUnit = parseInt(payload.maxUnit, 10);
             }
 
-            fetch('/offerings/', {method: 'post', body: payload}).then(res => {
-                fetch(`/offerings/${(res as any).id}/status`, {method: 'put', body: {action: 'publish', gasPrice: this.state.gasPrice}}).then(res => {
+            api.offerings.addOffering(payload).then(res => {
+                api.offerings.changeOfferingStatus((res as any).id, 'publish', this.state.gasPrice).then(res => {
                     this.setState(this.getDefaultState());
 
                     if(typeof this.props.closeModal === 'function'){
