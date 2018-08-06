@@ -15,7 +15,7 @@ p.push(new Promise((resolve, reject) => {
     })
 }));
 p.push(new Promise((resolve, reject) => {
-    require('child_process').exec('git tag', function(err, stdout) {
+    require('child_process').exec('git describe --abbrev=0 --tags', function(err, stdout) {
         settings.release = stdout.trim();
         resolve();
     })
