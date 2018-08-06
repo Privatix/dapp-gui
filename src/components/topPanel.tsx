@@ -103,11 +103,15 @@ class TopPanel extends React.Component <Props, any>{
     updateClient() {
         fetch('/client/channels?channelStatus=active', {}).then((res:any) => {
             const activeConnections = res.length;
-            let totalTraffic = '0';
-            // let trafficBalance = 0;
+            let totalTraffic = '0 MB';
             if (activeConnections > 0) {
-                const traffic = res[0].usage;
-                totalTraffic = String(traffic.current) + ' ' + traffic.unit.toUpperCase();
+                const traffic = res.reduce((traffic, item) => {
+                    if (item.usage.unit === 'MB') {
+                        return traffic + item.usage.current;
+                    }
+                }, 0);
+
+                totalTraffic = String(traffic) + ' MB';
                 // trafficBalance = (traffic.maxUsage - traffic.current) + ' ' + traffic.unit.toUpperCase();
             }
 
