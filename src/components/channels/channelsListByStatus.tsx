@@ -10,7 +10,6 @@ import {State} from '../../typings/state';
 import {Channel as ChannelType, ServiceStatus} from '../../typings/channels';
 import {Product as ProductType} from '../../typings/products';
 import {asyncProviders} from '../../redux/actions';
-import base64ToHex from '../utils/base64ToHex';
 
 interface IProps{
     status: ServiceStatus;
@@ -86,7 +85,7 @@ class Channels extends React.Component<Props, any> {
             return {
                 id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
-                client: base64ToHex(channel.client),
+                client: '0x'+channel.client,
                 contractStatus: channel.channelStatus,
                 serviceStatus: channel.serviceStatus,
                 usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
