@@ -1,13 +1,13 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
-// import SortableTable from 'react-sortable-table-vilan';
 import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
-// import DateSorter from '../../components/utils/sorters/sortingDate';
-import AccessInfo from '../../components/endpoints/accessInfo';
+import ClientAccessInfo from '../endpoints/clientAccessInfo';
+import { withRouter } from 'react-router-dom';
+import TerminateContractButton from '../connections/terminateContractButton';
 
-export default class ServiceView extends React.Component <any,any> {
+class ServiceView extends React.Component <any,any> {
 
     constructor(props:any) {
         super(props);
@@ -17,8 +17,6 @@ export default class ServiceView extends React.Component <any,any> {
             sessions: [],
             getSessions: false
         };
-
-
     }
 
     static getDerivedStateFromProps(props:any, state:any) {
@@ -68,11 +66,15 @@ export default class ServiceView extends React.Component <any,any> {
         });
     }
 
-    render() {
+    async componentDidMount(){
         if (this.state.getSessions) {
             this.getSessions();
             this.setState({getSessions: false});
         }
+    }
+
+    render() {
+
         const service = this.state.service;
 /*
         const sessionsColumns = [
@@ -130,7 +132,7 @@ export default class ServiceView extends React.Component <any,any> {
 */
         return <div>
             <div className='row'>
-                <div className='col-12'>
+                <div className={service.channelStatus.channelStatus === 'active' ? 'col-8' : 'col-12'}>
                     <div className='card m-b-20'>
                         <h5 className='card-header'>Common Info</h5>
                         <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
@@ -175,15 +177,18 @@ export default class ServiceView extends React.Component <any,any> {
                         </div>
                     </div>
 
-                    <div className='card m-b-20'>
-                        <h5 className='card-header'>Access info</h5>
-                        <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
-                            <div className='card-body'>
-                                <AccessInfo channel={this.state.service} />
-                            </div>
-                        </div>
-                    </div>
+                    <ClientAccessInfo channel={this.state.service} />
+
                 </div>
+                {service.channelStatus.channelStatus === 'active' ?
+                    <div className='col-4'>
+                        <TerminateContractButton
+                            channelId={service.id}
+                            done={() => this.props.history.push('/client-history')}
+                        />
+                    </div>
+                    :<div></div>
+                }
             </div>
             { /*
             <div className='row m-t-30'>
@@ -206,3 +211,5 @@ export default class ServiceView extends React.Component <any,any> {
         </div>;
     }
 }
+
+export default withRouter(ServiceView);

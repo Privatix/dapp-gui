@@ -6,6 +6,7 @@ import notice from '../../utils/notice';
 import { withRouter } from 'react-router-dom';
 import GasRange from '../../components/utils/gasRange';
 import {LocalSettings} from '../../typings/settings';
+import toFixed8 from '../../utils/toFixed8';
 
 class AcceptOffering extends React.Component<any, any>{
 
@@ -33,7 +34,7 @@ class AcceptOffering extends React.Component<any, any>{
 
     async componentDidMount(){
 
-        const accounts = await api.getAccounts();
+        const accounts = await api.accounts.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
         this.getNotTerminatedConnections();
         this.setState({accounts, account});
@@ -72,7 +73,7 @@ class AcceptOffering extends React.Component<any, any>{
         evt.preventDefault();
         let err = false;
         let msg = '';
-        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        const settings = (await api.settings.getLocal()) as LocalSettings;
 
         if(this.state.account.psc_balance < this.state.deposit){
             err=true;
@@ -92,6 +93,7 @@ class AcceptOffering extends React.Component<any, any>{
         fetch(`/client/offerings/${this.props.offering.id}/status`, {method: 'put', body: {action: 'accept', account: this.state.account.id, gasPrice: this.state.gasPrice}})
             .then((res) =>{
                 notice({level: 'info', title: 'Congratulations!', msg: 'offering accepted!'});
+                document.body.classList.remove('modal-open');
                 this.props.history.push('/client-dashboard-connecting');
             });
     }
@@ -128,7 +130,7 @@ class AcceptOffering extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>Price per MB:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={((offering.unitPrice/1e8).toFixed(8)).replace(/0+$/,'')} readOnly/>
+                                <input type='text' className='form-control' value={toFixed8({number: (offering.unitPrice / 1e8)})} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -178,14 +180,14 @@ class AcceptOffering extends React.Component<any, any>{
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    Balance: <span>{(this.state.account ? this.state.account.psc_balance/1e8 : 0).toFixed(3)} PRIX / {(this.state.account ? this.state.account.ethBalance/1e18 : 0).toFixed(3)} ETH</span>
+                                    Balance: <span>{this.state.account ? toFixed8({number: (this.state.account.psc_balance / 1e8)}) : 0} PRIX / {this.state.account ? toFixed8({number: (this.state.account.ethBalance / 1e18)}) : 0} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>Deposit:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input id='offeringDeposit' type='text' className='form-control' value={((this.state.deposit/1e8).toFixed(8)).replace(/0+$/,'')} readOnly/>
+                                        <input id='offeringDeposit' type='text' className='form-control' value={toFixed8({number: (this.state.deposit / 1e8)})} readOnly/>
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                     <span className='help-block'>
@@ -198,7 +200,7 @@ class AcceptOffering extends React.Component<any, any>{
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{((this.state.deposit/1e8).toFixed(8)).replace(/0+$/,'')} PRIX</strong>
+                                    <strong>{toFixed8({number: (this.state.deposit / 1e8)})} PRIX</strong>
                                 </div>
                             </div>
                         </div>

@@ -5,6 +5,8 @@ import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import { withRouter } from 'react-router';
 import notice from '../../utils/notice';
+import toFixed8 from '../../utils/toFixed8';
+import parseFloatPrix from '../../utils/parseFloatPrix';
 import {LocalSettings} from '../../typings/settings';
 import countries from '../../utils/countries';
 
@@ -51,8 +53,8 @@ class CreateOffering extends React.Component<any, any>{
 
     async refresh(){
 
-        const accounts = await api.getAccounts();
-        const products = await api.getProducts();
+        const accounts = await api.accounts.getAccounts();
+        const products = await api.products.getProducts();
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
         const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
@@ -96,7 +98,7 @@ class CreateOffering extends React.Component<any, any>{
     onUserInput(evt: any){
 
         const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value});
-        payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? Math.floor((0 + payload.unitPrice)*1e8) : 0) * (payload.minUnits ? payload.minUnits : 0);
+        payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0) * (payload.minUnits ? payload.minUnits : 0);
         this.setState({payload});
     }
 
@@ -124,7 +126,8 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeInteger = [];
         const isZero = [];
 
-        const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        // const settings = (await fetch('/localSettings', {})) as LocalSettings;
+        const settings = (await api.settings.getLocal()) as LocalSettings;
 
         let err = false;
         const payload = Object.assign({}, this.state.payload);
@@ -153,7 +156,7 @@ class CreateOffering extends React.Component<any, any>{
 
         });
 
-        payload.unitPrice = parseFloat(payload.unitPrice);
+        payload.unitPrice = parseFloatPrix(payload.unitPrice);
 
         const emptyStrings = strings.filter((key: string) => !mustBeFilled.includes(key) && payload[key].trim() === '');
 
@@ -214,8 +217,8 @@ class CreateOffering extends React.Component<any, any>{
             this.setState({errMsg: msg});
             notice({level: 'error', header: 'Attention!', msg});
         }else{
-            payload.unitPrice = Math.floor(payload.unitPrice * 1e8);
             payload.billingInterval = 1;
+            payload.billingType = 'postpaid';
             payload.additionalParams = Buffer.from('{}').toString('base64');
 
             if (payload.maxUnit === '') {
@@ -248,7 +251,6 @@ class CreateOffering extends React.Component<any, any>{
     }
 
     render(){
-
         const selectProduct = <Select className='form-control'
             value={this.state.payload.product}
             searchable={false}
@@ -271,8 +273,8 @@ class CreateOffering extends React.Component<any, any>{
             onChange={this.onCountryChanged.bind(this)} />;
 
         const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
-        const ethBalance = this.state.account ? (this.state.account.ethBalance/1e18).toFixed(3) : 0;
-        const pscBalance = this.state.account ? (this.state.account.psc_balance/1e8).toFixed(8).replace(/0+$/,'') : 0;
+        const ethBalance = this.state.account ? (toFixed8({number: (this.state.account.ethBalance / 1e18)})) : 0;
+        const pscBalance = this.state.account ? (toFixed8({number: (this.state.account.psc_balance / 1e8)})) : 0;
 
         const onUserInput = this.onUserInput.bind(this);
 
@@ -440,7 +442,7 @@ class CreateOffering extends React.Component<any, any>{
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                                         </div>
                                         <span className='help-block'>
-                                            <small>Maximum time service can be in Suspended status due to payment log.
+                                            <small>Maximum time service can be in Suspended status due to payment lag.
                                                 After this time period service will be terminated, if no sufficient payment was received.
                                                 Period is specified in seconds.</small>
                                         </span>
@@ -486,7 +488,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   value={(this.state.payload.deposit/1e8).toFixed(8).replace(/0+$/,'')}
+                                                   value={toFixed8({number: (this.state.payload.deposit / 1e8)})}
                                                    placeholder='PRIX'
                                                    readOnly
                                             />

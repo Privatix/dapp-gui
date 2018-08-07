@@ -1,4 +1,5 @@
 import * as React from 'react';
+import {channelStatusDescription} from './channel';
 
 export default class ContractStatus extends React.Component<any, any> {
 
@@ -21,6 +22,6 @@ export default class ContractStatus extends React.Component<any, any> {
 
     render() {
         const status = this.props.contractStatus;
-        return <span className={`label label-table label-${this.classes[status]}`}>{status}</span>;
+        return <span className={`label label-table label-${this.classes[status]}`}>{channelStatusDescription[status]}</span>;
     }
 }

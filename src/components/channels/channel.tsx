@@ -10,7 +10,7 @@ export default function(props:any){
     return <div>
         <div className='container-fluid'>
             <div className='row'>
-                <ChannelView channel={channel} />
+                <ChannelView {...props}/>
                 <ChannelTools channel={channel} />
             </div>
             <div className='row'>
@@ -23,3 +23,14 @@ export default function(props:any){
     </div>;
 
 }
+
+export const channelStatusDescription = {
+    'pending': 'pending',
+    'active': 'active',
+    'wait_coop': 'closing normaly',
+    'closed_coop': 'normally closed',
+    'wait_challenge': 'opening dispute',
+    'in_challenge': 'dispute opened',
+    'wait_uncoop': 'closing dispute',
+    'closed_uncoop': 'dispute closed'
+};

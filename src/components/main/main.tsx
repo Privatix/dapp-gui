@@ -1,7 +1,10 @@
 import * as React from 'react';
-import {fetch} from '../utils/fetch';
-import ChannelsListByStatus from './channels/channelsListByStatus';
-import OfferingsList from './offerings/offeringsList';
+// import {fetch} from '../../utils/fetch';
+import ChannelsListByStatus from '../channels/channelsListByStatus';
+import OfferingsList from '../offerings/offeringsList';
+import toFixed8 from '../../utils/toFixed8';
+import * as api from '../../utils/api';
+
 
 export default class Main extends React.Component <any,any> {
 
@@ -9,7 +12,8 @@ export default class Main extends React.Component <any,any> {
         super(props);
 
         this.state = {
-            income: 0
+            income: 0,
+            refresh: null
         };
     }
 
@@ -17,12 +21,23 @@ export default class Main extends React.Component <any,any> {
         this.refresh();
     }
 
+    registerRefresh(refresh:Function) {
+        this.setState({refresh});
+    }
+
     async refresh() {
-        const sessions = await fetch(`/sessions`, {method: 'GET'});
-        const income = await (sessions as any).reduce(async (income, session) => {
-            const channels = await fetch(`/channels?id=${session.channel}`, {method: 'GET'});
-            return income + (channels as any).reduce((income, channel) => {return income + channel.receiptBalance;}, 0);
+        const channels = await api.channels.getList();
+
+        const income = (channels as any).reduce((income, channel) => {
+            if (Object.keys(channel).length === 0) {
+                return income;
+            }
+            return income + channel.receiptBalance;
         }, 0);
+
+        if ('function' === typeof this.state.refresh) {
+            this.state.refresh();
+        }
 
         this.setState({income});
     }
@@ -31,7 +46,7 @@ export default class Main extends React.Component <any,any> {
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-b-20'>
-                    <h3 className='page-title'>Total income: {(this.state.income / 1e8).toFixed(3)} PRIX</h3>
+                    <h3 className='page-title'>Total income: {toFixed8({number: (this.state.income / 1e8)})} PRIX</h3>
                 </div>
             </div>
             <div className='row'>
@@ -47,14 +62,13 @@ export default class Main extends React.Component <any,any> {
                     <div className='card m-b-20'>
                         <h5 className='card-header'>Active Services</h5>
                         <div className='card-body'>
-                            <ChannelsListByStatus status={'active'}/>
+                            <ChannelsListByStatus status={'active'} registerRefresh={this.registerRefresh.bind(this)}/>
                         </div>
                     </div>
                     <div className='card m-b-20'>
                         <h5 className='card-header'>Active Offerings</h5>
                         <div className='card-body'>
                             <OfferingsList product={'all'} rate={3000}/>
-                            {/*<OfferingsList offerings={offerings} products={products} />*/}
                         </div>
                     </div>
                 </div>

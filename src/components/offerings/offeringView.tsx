@@ -4,7 +4,7 @@ import ProductNameByOffering from '../products/productNameByOffering';
 
 export default function(props:any){
 
-    return <div className='col-lg-12 col-md-12'>
+    return <div className='col-lg-9 col-md-8'>
         <div className='card m-b-20 card-body'>
             <div className='form-group row m-b-0'>
                 <label className='col-3 col-form-label'>Server: </label>
@@ -119,7 +119,7 @@ export default function(props:any){
                             <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
                         </div>
                         <span className='help-block'>
-                            <small>Maximum time service can be in Suspended status due to payment log.
+                            <small>Maximum time service can be in Suspended status due to payment lag.
                                 After this time period service will be terminated, if no sufficient payment was received.
                                 Period is specified in seconds.</small>
                         </span>

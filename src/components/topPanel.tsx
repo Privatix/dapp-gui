@@ -1,7 +1,20 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import {fetch} from '../utils/fetch';
+import {asyncProviders} from '../redux/actions';
+import {Account} from '../typings/accounts';
+import {State} from '../typings/state';
+import {Mode} from '../typings/mode';
+import * as api from '../utils/api';
 
-export default class TopPanel extends React.Component <any, any>{
+interface Props {
+    accounts: Account[];
+    rate?: number;
+    mode: Mode;
+    dispatch: any;
+}
+
+class TopPanel extends React.Component <Props, any>{
 
     constructor(props: any){
         super(props);
@@ -10,12 +23,12 @@ export default class TopPanel extends React.Component <any, any>{
             mode: '',
             handler: 0,
             changeMode: false,
-            ethBalance: 0,
-            pscBalance: 0,
-            ptcBalance: 0,
             pscCount: 0,
             totalTraffic: 0,
-            trafficBalance: '0'
+            trafficBalance: '0',
+            ethBalance: 0,
+            ptcBalance: 0,
+            pscBalance: 0
         };
     }
 
@@ -32,48 +45,63 @@ export default class TopPanel extends React.Component <any, any>{
         this.checkModeChange();
     }
 
-    static getDerivedStateFromProps(nextProps: any, prevState: any) {
+    static getDerivedStateFromProps(nextProps: Props, prevState: any) {
+
+        const ethBalance = (nextProps.accounts.reduce((balance, account) => {
+            return account.ethBalance + balance;
+        }, 0)/1e18).toFixed(3);
+        const ptcBalance = (nextProps.accounts.reduce((balance, account) => {
+            return account.ptcBalance + balance;
+        }, 0)/1e8).toFixed(3);
+        const pscBalance = (nextProps.accounts.reduce((balance, account) => {
+            return account.psc_balance + balance;
+        }, 0)/1e8).toFixed(3);
+
         return {
+            ethBalance: ethBalance,
+            ptcBalance: ptcBalance,
+            pscBalance: pscBalance,
             mode: nextProps.mode,
             changeMode: true
         };
     }
 
     async update(){
+
         const rate = this.props.rate ? this.props.rate : 3000;
 
-        if (this.props.mode === 'agent') {
+        this.props.dispatch(asyncProviders.updateAccounts());
+
+        if (this.props.mode === Mode.AGENT) {
             await this.updateAgent();
         }else {
             await this.updateClient();
         }
-
         this.setState({handler: setTimeout(this.update.bind(this), rate)});
     }
 
     shouldComponentUpdate(props: any, state: any){
         const diff = Object.keys(state).filter(key => this.state[key] !== state[key]);
+
         if(diff.length === 1 && diff[0] === 'handler'){
             return false;
         }
         if(diff.length === 1 && diff[0] === 'changeMode'){
             return false;
         }
+
         return diff.length > 0;
     }
 
     updateAgent() {
-        fetch('/channels?serviceStatus=active', {}).then(res => {
+        api.channels.getList('active').then(res => {
             const pscCount = (res as any).length;
             this.setState({status: pscCount > 0, pscCount });
         });
-
-        this.getBalances();
     }
 
     updateClient() {
         fetch('/client/channels?channelStatus=active', {}).then((res:any) => {
-            console.log('client channels traffic', res);
             const activeConnections = res.length;
             let totalTraffic = '0';
             // let trafficBalance = 0;
@@ -90,24 +118,6 @@ export default class TopPanel extends React.Component <any, any>{
                 /* ,trafficBalance */
             });
         });
-
-        this.getBalances();
-    }
-
-    getBalances() {
-        fetch('/accounts/', {}).then(res => {
-            const ethBalance = ((res as any).reduce((balance, account) => {
-                return account.ethBalance + balance;
-            }, 0)/1e18).toFixed(3);
-            const ptcBalance = ((res as any).reduce((balance, account) => {
-                return account.ptcBalance + balance;
-            }, 0)/1e8).toFixed(3);
-            const pscBalance = ((res as any).reduce((balance, account) => {
-                return account.psc_balance + balance;
-            }, 0)/1e8).toFixed(3);
-
-            this.setState({ethBalance, ptcBalance, pscBalance});
-        });
     }
 
     checkModeChange() {
@@ -120,7 +130,6 @@ export default class TopPanel extends React.Component <any, any>{
 
     render(){
         const status = this.state.status ? 'on' : 'off';
-
         if(this.props.mode === 'agent'){
             return <ul className='list-inline float-right mb-0 topPanel'>
                 <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
@@ -141,3 +150,5 @@ export default class TopPanel extends React.Component <any, any>{
         }
     }
 }
+
+export default connect( (state: State) => ({accounts: state.accounts}) )(TopPanel);

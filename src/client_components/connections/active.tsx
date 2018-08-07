@@ -4,7 +4,10 @@ import Connection from './connection';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import JobStatus from './jobStatus';
+import JobName from './jobName';
+import Usage from './usage';
 import { withRouter } from 'react-router-dom';
+import toFixed8 from '../../utils/toFixed8';
 
 class ActiveConnection extends React.Component<any, any>{
 
@@ -24,12 +27,11 @@ class ActiveConnection extends React.Component<any, any>{
 
         const connections = this.state.channels.map((channel: any) => {
 
-            const usage = `${channel.usage.current} ${channel.usage.unit}`;
             const jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
             const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
             const jobStatus = <JobStatus status={channel.job.status} />;
 
-            return <tr>
+            return <tr key={channel.id} >
                         <td>
                             <ModalWindow visible={this.state.popup}
                                          customClass='btn btn-link waves-effect'
@@ -39,9 +41,9 @@ class ActiveConnection extends React.Component<any, any>{
                         <td>{channel.agent}</td>
                         <td><ContractStatus contractStatus={channel.channelStatus.channelStatus}/></td>
                         <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
-                        <td>{channel.job.jobtype} ({jobStatus} {jobTime})</td>
-                        <td>{usage}</td>
-                        <td>{((channel.usage.cost / 1e8).toFixed(8)).replace(/0+$/,'')}</td>
+                        <td><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</td>
+                        <td><Usage channel={channel} /></td>
+                        <td>{toFixed8({number: (channel.usage.cost / 1e8)})}</td>
                     </tr>;
         });
 

@@ -1,17 +1,16 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import {fetch} from '../../utils/fetch';
-import ChannelUsage from './channelUsage';
-import ProductByOffering from '../products/productByOffering';
-import PgTime from '../utils/pgTime';
-import ChannelStatusStyle from './channelStatusStyle';
-import ContractStatus from './contractStatus';
-import SortableTable from 'react-sortable-table-vilan';
-import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
-import DateSorter from '../utils/sorters/sortingDate';
+import { GetProductIdByOfferingId } from '../products/productByOffering';
+import ChannelsListSortTable from './channelsListSortTable';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
+import toFixed8 from '../../utils/toFixed8';
+import { connect } from 'react-redux';
+import { State } from '../../typings/state';
+import {asyncProviders} from '../../redux/actions';
+import * as api from '../../utils/api';
 
 class AsyncChannels extends React.Component<any, any> {
 
@@ -19,89 +18,24 @@ class AsyncChannels extends React.Component<any, any> {
         super(props);
         this.state = {
             isLoading: true,
-            channelsDataArr: [],
-            columns: [
-                {
-                    header: 'ID',
-                    key: 'id',
-                    descSortFunction: ModalPropTextSorter.desc,
-                    ascSortFunction: ModalPropTextSorter.asc
-                },
-                {
-                    header: 'Server',
-                    key: 'server',
-                    descSortFunction: ModalPropTextSorter.desc,
-                    ascSortFunction: ModalPropTextSorter.asc
-                },
-                {
-                    header: 'Client',
-                    key: 'client'
-                },
-                {
-                    header: 'Contract Status',
-                    key: 'contractStatus',
-                    headerStyle: {textAlign: 'center'},
-                    dataProps: { className: 'text-center'},
-                    render: (channelStatus) => <ContractStatus contractStatus={channelStatus} />
-                },
-                {
-                    header: 'Service Status',
-                    key: 'serviceStatus',
-                    headerStyle: {textAlign: 'center'},
-                    dataProps: { className: 'text-center'},
-                    render: (serviceStatus) => <ChannelStatusStyle serviceStatus={serviceStatus} />
-                },
-                {
-                    header: 'Usage',
-                    key: 'usage'
-                },
-                {
-                    header: 'Income (PRIX)',
-                    key: 'incomePRIX',
-                    headerStyle: {textAlign: 'center'},
-                    dataProps: { className: 'text-center'},
-                },
-                {
-                    header: 'Service Changed Time',
-                    key: 'serviceChangedTime',
-                    descSortFunction: DateSorter.desc,
-                    ascSortFunction: DateSorter.asc,
-                    render: (serviceChangedTime) => <PgTime time={serviceChangedTime} />
-                }
-            ],
+            products: [],
+            channels: [],
+            offerings: []
         };
+
+        this.props.dispatch(asyncProviders.updateProducts());
     }
 
     async refresh() {
-        let endpoint;
-
-        if(this.props.offering){
-            endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
-        }else{
-            endpoint = '/channels' + (this.props.match.params.offering === 'all' ? '' : `?offeringId=${this.props.match.params.offering}`);
-        }
+        const endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
 
         const channels = await fetch(endpoint, {method: 'GET'});
-        const channelsProducts = (channels as any).map((channel: any) => ProductByOffering(channel.offering));
-        const products = await Promise.all(channelsProducts);
-
-        const channelsDataArr = (products as any).map((product, index) => {
-            const channel = channels[index];
-            return {
-                id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
-                server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
-                client: channel.client,
-                contractStatus: channel.channelStatus,
-                serviceStatus: channel.serviceStatus,
-                usage: <ChannelUsage channelId={channel.id} />,
-                incomePRIX: (channel.receiptBalance/1e8).toFixed(3),
-                serviceChangedTime: channel.serviceChangedTime
-            };
-        });
-
-        this.setState({
-            channelsDataArr
-        });
+        const channelsProductsIds = (channels as any).map((channel: any) => GetProductIdByOfferingId(channel.offering));
+        const products = await Promise.all(channelsProductsIds);
+        const offerings = await api.offerings.getOfferings();
+        this.props.dispatch(asyncProviders.updateProducts());
+        this.props.dispatch(asyncProviders.updateOfferings());
+        this.setState({channels, products, offerings});
 
     }
 
@@ -111,6 +45,24 @@ class AsyncChannels extends React.Component<any, any> {
     }
 
     render() {
+        const channelsDataArr = (this.state.products as any)
+            .map((productId) => this.props.products.find((product) => product.id === productId))
+            .map((product, index) => {
+                    const channel = this.state.channels[index];
+                    const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
+                    return {
+                        id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
+                        server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
+                        client: '0x'+channel.client,
+                        contractStatus: channel.channelStatus,
+                        serviceStatus: channel.serviceStatus,
+                        usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
+                        incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
+                        serviceChangedTime: channel.serviceChangedTime
+                    };
+                }
+            );
+
         return this.state.isLoading ?
             <b>Loading channels ...</b> :
             <div className='container-fluid'>
@@ -129,11 +81,7 @@ class AsyncChannels extends React.Component<any, any> {
                 <div className='row'>
                     <div className='col-12'>
                         <div className='card-box'>
-                            <div className='bootstrap-table bootstrap-table-sortable'>
-                                <SortableTable
-                                    data={this.state.channelsDataArr}
-                                    columns={this.state.columns} />
-                            </div>
+                            <ChannelsListSortTable data={channelsDataArr} />
                         </div>
                     </div>
                 </div>
@@ -142,4 +90,6 @@ class AsyncChannels extends React.Component<any, any> {
 
 }
 
-export default withRouter(AsyncChannels);
+export default connect( (state: State, onProps: any) => {
+    return (Object.assign({}, {products: state.products}, onProps));
+} )(withRouter(AsyncChannels));

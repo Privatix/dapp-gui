@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {fetch} from '../../utils/fetch';
-import * as api from '../../utils/api';
 
 import OfferingStatus from './offeringStatus';
 import SortableTable from 'react-sortable-table-vilan';
@@ -8,8 +7,12 @@ import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
 import Product from '../products/product';
+import { connect } from 'react-redux';
+import { State } from '../../typings/state';
+import {asyncProviders} from '../../redux/actions';
+import base64ToHex from '../utils/base64ToHex';
 
-class AsyncOfferings extends React.Component<any, any> {
+class Offerings extends React.Component<any, any> {
 
     constructor(props:any) {
         super(props);
@@ -22,26 +25,20 @@ class AsyncOfferings extends React.Component<any, any> {
     }
 
     async refresh() {
-        let endpoint;
 
-        if(this.props.product){
-            endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
-        }else{
-            endpoint = '/offerings/' + (this.props.match.params.product === 'all' ? '' : `?product=${this.props.match.params.product}`);
-        }
+        const endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
 
-        const offeringsRequest = fetch(endpoint, {method: 'GET'});
-        const products = await api.getProducts();
-        let offerings;
-        [offerings] = await Promise.all([offeringsRequest]);
-        const resolveTable = (products as any).reduce((table, product) => {
+        const offeringsRaw = await fetch(endpoint, {method: 'GET'});
+        this.props.dispatch(asyncProviders.updateProducts());
+
+        const resolveTable = (this.props.products as any).reduce((table, product) => {
             table[product.id] = product.name;
             return table;
         }, {});
 
-        offerings = (offerings as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        const offerings = (offeringsRaw as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
 
-        this.setState({offerings, products});
+        this.setState({offerings, products: this.props.products});
 
         const handler = setTimeout(this.refresh.bind(this), this.props.rate);
         this.setState({handler});
@@ -62,7 +59,7 @@ class AsyncOfferings extends React.Component<any, any> {
         this.state.offerings.map((offering: any) => {
             let product = this.state.products.filter((product: any) => product.id === offering.product)[0];
             let row = {
-                id: <ModalWindow customClass='' modalTitle='Offering' text={offering.id} component={<Offering offering={offering} />} />,
+                id: <ModalWindow customClass='' modalTitle='Offering' text={base64ToHex(offering.hash)} component={<Offering offering={offering} />} />,
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
                 status: offering.status,
@@ -118,4 +115,6 @@ class AsyncOfferings extends React.Component<any, any> {
 
 }
 
-export default AsyncOfferings;
+export default connect( (state: State, onProps: any) => {
+    return (Object.assign({}, {products: state.products}, onProps));
+} )(Offerings);

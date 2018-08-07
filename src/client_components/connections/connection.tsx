@@ -1,25 +1,55 @@
 import * as React from 'react';
+import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
 import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import * as dateformat from 'dateformat';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
-import AccessInfo from '../../components/endpoints/accessInfo';
+import ClientAccessInfo from '../endpoints/clientAccessInfo';
+import toFixed8 from '../../utils/toFixed8';
+import * as api from '../../utils/api';
+import Offering from '../vpn_list/acceptOffering';
+import TerminateContractButton from './terminateContractButton';
 
-export default class Connection extends React.Component<any, any>{
+class Connection extends React.Component<any, any>{
 
     constructor(props:any) {
         super(props);
         this.state = {
-            channel: props.connection
+            channel: props.connection,
+            offering: null
         };
+
+        this.updateOffering(props.connection.offering);
     }
 
     static getDerivedStateFromProps(props:any, state:any) {
         return {channel: props.connection};
     }
 
+    updateOffering(offeringId: string){
+
+        api.getClientOfferings()
+           .then(offerings => {
+
+               const offering = offerings.find(offering => offering.id === offeringId);
+
+               if(offering){
+                   this.setState({offering});
+               }
+           });
+    }
+
+    showOffering(evt:any){
+        evt.preventDefault();
+        this.props.render('Offering', <Offering mode='view' offering={this.state.offering} />);
+    }
+
     render(){
+
+        if(this.state.offering && this.props.connection.offering !== this.state.offering.id){
+            this.updateOffering(this.props.connection.offering);
+        }
 
         const sessionsColumns = [
             {
@@ -65,6 +95,9 @@ export default class Connection extends React.Component<any, any>{
         ];
         const sessionsData = [];
 
+        const lastUsageTime = this.state.channel.channelStatus.lastChanged;
+        const isValidLastUsageTime = (lastUsageTime !== '' && typeof(lastUsageTime) !== 'undefined' && lastUsageTime !== null);
+
         return <div>
             <div className='row'>
                 <div className='col-8'>
@@ -80,7 +113,12 @@ export default class Connection extends React.Component<any, any>{
                                         </tr>
                                         <tr>
                                             <td>Offering:</td>
-                                            <td>{this.state.channel.offering}</td>
+                                            <td>{this.state.offering
+                                                ? <a href='#' onClick={this.showOffering.bind(this)}>
+                                                    { new Buffer(this.state.offering.hash, 'base64').toString('hex') }
+                                                  </a>
+                                                : ''}
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td>Contract status:</td>
@@ -96,15 +134,15 @@ export default class Connection extends React.Component<any, any>{
                                         </tr>
                                         <tr>
                                             <td>Cost:</td>
-                                            <td>{(this.state.channel.usage.cost/1e8).toFixed(4)} PRIX</td>
+                                            <td>{toFixed8({number: (this.state.channel.usage.cost / 1e8)})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>Deposit:</td>
-                                            <td>{(this.state.channel.deposit/1e8).toFixed(4)} PRIX</td>
+                                            <td>{toFixed8({number: (this.state.channel.deposit / 1e8)})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>Last usage time:</td>
-                                            <td>{dateformat(new Date(Date.parse(this.state.channel.channelStatus.lastChanged)), 'mmm d yyyy hh:MM:ss')}</td>
+                                            <td>{ isValidLastUsageTime ? dateformat(new Date(Date.parse(lastUsageTime)), 'mmm d yyyy hh:MM:ss') : ''}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -112,14 +150,7 @@ export default class Connection extends React.Component<any, any>{
                         </div>
                     </div>
 
-                    <div className='card m-b-20'>
-                        <h5 className='card-header'>Access info</h5>
-                        <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
-                            <div className='card-body'>
-                               <AccessInfo channel={this.state.channel} />
-                            </div>
-                        </div>
-                    </div>
+                    <ClientAccessInfo channel={this.state.channel} />
                 </div>
 
 
@@ -143,35 +174,24 @@ export default class Connection extends React.Component<any, any>{
                     */ }
                     <div className='card m-b-20 card-body text-xs-center'>
                         <form>
-                            <p className='card-text'>This operation will permanently finish VPN usage.</p>
-                            <p className='card-text'>Your remaining deposit will be returned approx. in 12 min.</p>
+                            <p className='card-text'>Permanently stop using this service.</p>
+                            <p className='card-text'>Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.</p>
                             <ConfirmPopupSwal
                                 endpoint={`/client/channels/${this.state.channel.id}/status`}
                                 options={{method: 'put', body: {action: 'terminate'}}}
                                 title={'Finish'}
-                                text={<span>This operation will permanently finish VPN usage.<br />
-                                    Your remaining deposit will be returned approx. in 12 min.</span>}
+                                text={<span>Permanently stop using this service.<br />
+                                    Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.</span>}
                                 class={'btn btn-primary btn-custom btn-block'}
                                 swalType='warning'
                                 swalConfirmBtnText='Yes, finish it!'
                                 swalTitle='Are you sure?' />
                         </form>
                     </div>
-                    <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
-                        <form>
-                            <h5 className='card-title'>Warning Area</h5>
-                            <p className='card-text'>This operation will terminate the service and call the "Uncooperative close" procedure</p>
-                            <ConfirmPopupSwal
-                                endpoint={`/client/channels/${this.state.channel.id}/status`}
-                                options={{method: 'put', body: {action: 'terminate'}}}
-                                title={'Terminate contract'}
-                                text={<span>This operation will terminate the service and call the "Uncooperative close" procedure</span>}
-                                class={'btn btn-danger btn-custom btn-block'}
-                                swalType='danger'
-                                swalConfirmBtnText='Yes, terminate contract!'
-                                swalTitle='Are you sure?' />
-                        </form>
-                    </div>
+                    <TerminateContractButton
+                        channelId={this.state.channel.id}
+                        done={() => this.props.history.push('/client-history')}
+                    />
                 </div>
             </div>
 
@@ -194,3 +214,5 @@ export default class Connection extends React.Component<any, any>{
         </div>;
     }
 }
+
+export default withRouter(Connection);

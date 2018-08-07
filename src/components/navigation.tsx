@@ -1,45 +1,22 @@
 import * as React from 'react';
-import { NavLink } from 'react-router-dom';
-declare var window: any;
+import { connect } from 'react-redux';
+import { NavLink, withRouter } from 'react-router-dom';
+import {Mode} from '../typings/mode';
+import {State} from '../typings/state';
+
+// declare var window: any;
+
 interface Props {
-    mode: string;
+    mode: Mode;
 }
 
-export default class Navigation extends React.Component<Props, any> {
+class Navigation extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
         this.state = {
-            mode: props.mode,
             submenu: false,
         };
-    }
-
-    componentDidUpdate() {
-        // const $ = (window as any).jQuery;
-        // $.App.init();
-        // $.Sidemenu.init();
-    }
-    componentDidMount(){
-         const $ = (window as any).jQuery;
-         $.App.init();
-        [].slice.call(document.querySelectorAll('#sidebar-menu a')).forEach(function(elem: HTMLAnchorElement) {
-            var pageUrl = window.location.href.split(/[?#]/)[0];
-            if (elem.href === pageUrl) { 
-                $(elem).addClass('active');
-                $(elem).parent().addClass('active'); // add active to li of the current link
-                $(elem).parent().parent().prev().addClass('active'); // add active class to an anchor
-                $(elem).parent().parent().prev().click(); // click the item to make it drop
-            }
-        });
-        setTimeout(()=>{
-            // const $ = (window as any).jQuery;
-            // $.Sidemenu.init();
-        }, 1000);
-    }
-
-    static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        return {mode: nextProps.mode};
     }
 
     handleClick() {
@@ -56,13 +33,8 @@ export default class Navigation extends React.Component<Props, any> {
         this.setState({submenu: false});
     }
 
-
     render(){
-        setTimeout(function(){
-            const $ = (window as any).jQuery;
-            $.Sidemenu.init();
-        }, 1000);
-        return this.state.mode === undefined || this.state.mode === 'agent' ? <div className='left side-menu'>
+        return this.props.mode === Mode.AGENT ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
@@ -75,8 +47,8 @@ export default class Navigation extends React.Component<Props, any> {
 
                         <li className='has_sub' aria-current={this.state.submenu ? 'page' : null}>
                             <div onClick={this.handleClick.bind(this)}>
-                                <NavLink to='/channels/all' activeClassName='active' className='waves-effect' >
-                                    <i className='md md-list'></i> <span> Services </span> <span className='menu-arrow'></span>
+                                <NavLink to='/channels/all' activeClassName='active' className='waves-effect'>
+                                    <i className='fa fa-tasks'></i> <span> Services </span> <span className='menu-arrow'></span>
                                 </NavLink>
                             </div>
                             <ul className='list-unstyled sub_menu'>
@@ -88,13 +60,13 @@ export default class Navigation extends React.Component<Props, any> {
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/offerings/all' activeClassName='active' className='waves-effect'>
-                                <i className='md md-toc'></i><span> Offerings </span>
+                                <i className='ion-network'></i><span> Offerings </span>
                             </NavLink>
                         </li>
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
-                                <i className='md md-toc'></i><span> Servers </span>
+                                <i className='fa fa-server'></i><span> Servers </span>
                             </NavLink>
                         </li>
 
@@ -126,7 +98,7 @@ export default class Navigation extends React.Component<Props, any> {
                         {/*</li>*/}
                         <li className=''>
                             <NavLink exact to='/client-history' activeClassName='active' className='waves-effect'>
-                                <i className='md md-toc'></i><span> History </span>
+                                <i className='fa fa-history'></i><span> History </span>
                             </NavLink>
                         </li>
                     </ul>
@@ -136,3 +108,5 @@ export default class Navigation extends React.Component<Props, any> {
         </div>;
     }
 }
+
+export default withRouter(connect( (state: State) => ({mode: state.mode}) )(Navigation));

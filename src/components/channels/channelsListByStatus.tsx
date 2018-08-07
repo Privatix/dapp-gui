@@ -1,44 +1,107 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
-import ChannelsListPure from './channelsListPure';
+import { connect } from 'react-redux';
+import * as api from '../../utils/api';
+import ChannelsListSortTable from './channelsListSortTable';
+import Channel from './channel';
+import ModalWindow from '../modalWindow';
+import Product from '../products/product';
+import toFixed8 from '../../utils/toFixed8';
+import {State} from '../../typings/state';
+import {Channel as ChannelType, ServiceStatus} from '../../typings/channels';
+import {Product as ProductType} from '../../typings/products';
+import {asyncProviders} from '../../redux/actions';
 
+interface IProps{
+    status: ServiceStatus;
+    registerRefresh?: Function;
+}
 interface Props {
-    status: string;
+    status: ServiceStatus;
+    registerRefresh?: Function;
+    products: ProductType[];
+    dispatch: any;
 }
 
 class Channels extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
-        this.state = {status: props.status, channels: {active: [], terminated: []}, handler: 0};
-    }
 
-    componentDidMount(){
-        this.refresh();
-    }
+        this.state = {
+            status: props.status,
+            lastUpdatedStatus: null,
+            productsByChannels: [],
+            channels: [],
+            offerings: []
+        };
 
-    componentWillUnmount(){
-        if(this.state.handler){
-            clearTimeout(this.state.handler);
+        if ('function' === typeof props.registerRefresh) {
+            props.registerRefresh(this.refresh.bind(this));
         }
     }
 
-    async refresh(){
-        const endpoint = `/channels/?serviceStatus=active`;
-        const active = await fetch(endpoint, {});
-        const terminatedEndPoint = `/channels/?serviceStatus=terminated`;
-        const terminated = await fetch(terminatedEndPoint, {});
+    refreshIfStatusChanged() {
+        if (this.state.lastUpdatedStatus === this.state.status) {
+            return;
+        }
 
-        this.setState({channels: {active, terminated}, handler: setTimeout(this.refresh.bind(this), 3000)});
+        this.refresh();
     }
 
-    static getDerivedStateFromProps(nextProps: Props, prevState: any){
-        return {status: nextProps.status ? nextProps.status : prevState.status};
+    componentDidMount(){
+        this.props.dispatch(asyncProviders.updateProducts());
+    }
+
+    async refresh() {
+
+        const status = this.state.status;
+
+        const channels = await api.channels.getList(status);
+
+        const channelsOfferings = channels.map((channel: ChannelType) => api.getOfferingById(channel.offering));
+        const offerings = await Promise.all(channelsOfferings);
+        const productsByChannels = offerings.map(offering => offering.product);
+
+        this.setState({
+            lastUpdatedStatus: status,
+            productsByChannels,
+            channels,
+            offerings
+        });
+    }
+
+    static getDerivedStateFromProps(props: any, state: any){
+        return {status: props.status};
     }
 
     render (){
-        return <ChannelsListPure channels={this.state.channels[this.state.status]} />;
+        this.refreshIfStatusChanged();
+
+        const channelsDataArr = this.state.productsByChannels
+            .map((productId) => this.props.products.find(product => productId === product.id))
+            .map((product, index) => {
+            const channel = this.state.channels[index];
+            const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
+            return {
+                id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
+                server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
+                client: '0x'+channel.client,
+                contractStatus: channel.channelStatus,
+                serviceStatus: channel.serviceStatus,
+                usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
+                incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
+                serviceChangedTime: channel.serviceChangedTime
+            };
+        });
+
+        return <div className='row'>
+            <div className='col-12'>
+                <div className='card-box'>
+                    <ChannelsListSortTable data={channelsDataArr} />
+                </div>
+            </div>
+        </div>;
     }
 }
 
-export default Channels;
+export default connect( (state: State, ownProps: IProps) => Object.assign({}, {products: state.products}, ownProps))(Channels);

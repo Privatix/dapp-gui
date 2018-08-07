@@ -10,6 +10,7 @@ import ModalWindow from '../../components/modalWindow';
 import DateSorter from '../../components/utils/sorters/sortingDate';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import JobStatus from '../connections/jobStatus';
+import JobName from '../connections/jobName';
 
 export default class ClientHistory extends React.Component<any,any> {
 
@@ -36,7 +37,6 @@ export default class ClientHistory extends React.Component<any,any> {
     getHistoryData() {
         let endpoint = '/client/channels?serviceStatus=terminated';
         fetch(endpoint, {}).then(async (clientChannels) => {
-            console.log(clientChannels);
             const historyData = (clientChannels as any).filter((channel) => {
                 if (channel.channelStatus.channelStatus !== 'active') {
                     return true;
@@ -70,7 +70,7 @@ export default class ClientHistory extends React.Component<any,any> {
                     agent: channel.agent,
                     contractStatus: channel.channelStatus.channelStatus,
                     serviceStatus: channel.channelStatus.serviceStatus,
-                    jobStatus: <span>{channel.job.jobtype} ({jobStatus} {jobTime})</span>,
+                    jobStatus: <span><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</span>,
                     usage: channel.usage.current + ' ' + channel.usage.unit + ' of ' + channel.usage.maxUsage + ' ' + channel.usage.unit,
                     cost: channel.usage.cost / 1e8
                 };

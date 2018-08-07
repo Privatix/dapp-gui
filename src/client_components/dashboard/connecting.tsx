@@ -1,24 +1,25 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
+import { withRouter } from 'react-router-dom';
 import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import Countdown from 'react-countdown-now';
 import ActiveConnection from '../connections/active';
+import notice from '../../utils/notice';
+import * as api from '../../utils/api';
 
-    const countdownRender = ({ minutes, seconds }) => {
-        return <span>{minutes}:{seconds}</span>;
-    };
+const countdownRender = ({ minutes, seconds }) => {
+    return <span>{minutes}:{seconds}</span>;
+};
 
-    const completeRemaining = () => {
-        return <span>Waiting time is over. Finish procedure will be called automatically.</span>;
-    };
+const completeRemaining = () => {
+    return <span>Waiting time is over. Finish procedure will be called automatically.</span>;
+};
 
 
-
-export default class Connecting extends React.Component<any, any>{
+class Connecting extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-        this.state = {status: 'pending', handler: 0, channels: []};
+        this.state = {status: 'pending', handler: 0, channels: [], pendingTimeCounter: 0};
     }
 
     componentDidMount(){
@@ -32,12 +33,15 @@ export default class Connecting extends React.Component<any, any>{
     }
 
     async refresh(){
+        const pendingChannelsReq = api.channels.getClientList(null, 'pending');
+        const activeChannelsReq = api.channels.getClientList(null, 'active');
+        const suspendedChannelsReq = api.channels.getClientList(null, 'suspended');
 
-        const pendingChannelsReq = fetch('/client/channels?serviceStatus=pending', {});
-        const activeChannelsReq = fetch('/client/channels?serviceStatus=active', {});
-        const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
-
-        const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
+        const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([
+            pendingChannelsReq,
+            activeChannelsReq,
+            suspendedChannelsReq
+        ]);
 
         if((activeChannels as any).length > 0){
             this.setState({status: 'active', channels: activeChannels});
@@ -51,6 +55,17 @@ export default class Connecting extends React.Component<any, any>{
             }
         }else if((pendingChannels as any).length > 0){
             this.setState({status: 'pending', channels: pendingChannels});
+        } else {
+            let pendingTimeCounter = this.state.pendingTimeCounter + 1;
+
+            if (pendingTimeCounter >= 20) {
+                clearTimeout(this.state.handler);
+                notice({level: 'error', title: 'Attention!', msg: 'Failed to accept offering. Please, try another one.'}, 5000);
+                this.props.history.push('/client-dashboard-start');
+                return;
+            }
+
+            this.setState({status: 'pending', channels: pendingChannels, pendingTimeCounter});
         }
 
         this.setState({handler: setTimeout(this.refresh.bind(this), 3000)});
@@ -73,7 +88,6 @@ export default class Connecting extends React.Component<any, any>{
     }
 
     suspended(){
-
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
@@ -186,3 +200,5 @@ export default class Connecting extends React.Component<any, any>{
         return this[this.state.status]();
     }
 }
+
+export default withRouter(Connecting);
