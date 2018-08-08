@@ -38,7 +38,7 @@ export default class JobStatus extends React.Component<any, any>{
            ,'clientAfterOfferingPopUp' : 'update offering position' // 'offering pop up'
            ,'clientAfterOfferingDelete' : 'remove offering' // 'offering delete'
            ,'clientPreServiceUnsuspend' : 'unsuspend service'
-           ,'ClientPreServiceSuspend' : 'suspend service'
+           ,'clientPreServiceSuspend' : 'suspend service'
 
            ,'preAccountAddBalanceApprove' : 'aproving token transfer to service account' // 'preparing account add balance approve'
            ,'preAccountAddBalance' : 'add balance to service account' // 'preparing account add balance'
