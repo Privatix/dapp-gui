@@ -22,6 +22,8 @@ export default class JobStatus extends React.Component<any, any>{
            ,'agentAfterOfferingPopUp' : 'finalize offering popup' // 'offering pop up'
            ,'agentPreOfferingDelete' : 'request offering remove and return deposit' // 'preparing offering delete'
            ,'agentAfterOfferingDelete' : 'finalize offering remove' // 'offering delete'
+           ,'agentPreServiceUnsuspend' : 'unsuspend service'
+           ,'agentPreServiceSuspend' : 'suspend service'
 
            ,'clientAfterOfferingMsgBCPublish' : 'get offering data'
            ,'clientPreChannelCreate': 'place service deposit' // 'preparing channel create'
@@ -35,6 +37,8 @@ export default class JobStatus extends React.Component<any, any>{
            ,'clientAfterCooperativeClose' : 'finalize contract close' // 'cooperative close'
            ,'clientAfterOfferingPopUp' : 'update offering position' // 'offering pop up'
            ,'clientAfterOfferingDelete' : 'remove offering' // 'offering delete'
+           ,'clientPreServiceUnsuspend' : 'unsuspend service'
+           ,'clientPreServiceSuspend' : 'suspend service'
 
            ,'preAccountAddBalanceApprove' : 'aproving token transfer to service account' // 'preparing account add balance approve'
            ,'preAccountAddBalance' : 'add balance to service account' // 'preparing account add balance'
