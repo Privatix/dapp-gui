@@ -32,7 +32,7 @@ export default class JobStatus extends React.Component<any, any>{
            ,'clientAfterEndpointMsgSOMCGet' : 'finalize service setup' // 'endpoint message SOMC get'
            ,'clientPreServiceTerminate' : 'close service and request payment withdrawal'
            ,'clientAfterUncooperativeCloseRequest' : 'open contract dispute' // uncooperative close request'
-           ,'clientPreUncooperativeClose': 'get deposit back after challenge period' // 'preparing uncooperative close request'
+           ,'clientPreUncooperativeCloseRequest': 'get deposit back after challenge period' // 'preparing uncooperative close request'
            ,'clientAfterUncooperativeClose' : 'finalize dispute and contract close' // 'uncooperative close'
            ,'clientAfterCooperativeClose' : 'finalize contract close' // 'cooperative close'
            ,'clientAfterOfferingPopUp' : 'update offering position' // 'offering pop up'
