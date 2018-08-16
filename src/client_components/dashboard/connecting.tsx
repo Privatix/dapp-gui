@@ -149,7 +149,34 @@ class Connecting extends React.Component<any, any>{
                     </div>
                 </div>
 
-
+                <div className='col-5'>
+                    <div className='card m-b-20 card-body'>
+                        <form>
+                            <p className='card-text'>Permanently stop using this service.</p>
+                            <p className='card-text'>
+                                {this.state.channels[0].usage.cost === 0
+                                    ? 'You can request full deposit return, after service is terminated.'
+                                    : 'Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.'
+                                }
+                            </p>
+                            <ConfirmPopupSwal
+                                endpoint={`/client/channels/${this.state.channels[0].id}/status`}
+                                options={{method: 'put', body: {action: 'terminate'}}}
+                                title={'Finish'}
+                                text={
+                                    <span>Permanently stop using this service.<br />
+                                        {this.state.channels[0].usage.cost === 0
+                                            ? 'You can request full deposit return, after service is terminated.'
+                                            : 'Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.'
+                                        }
+                                    </span>}
+                                class={'btn btn-primary btn-custom btn-block'}
+                                swalType='warning'
+                                swalConfirmBtnText='Yes, finish it!'
+                                swalTitle='Are you sure?' />
+                        </form>
+                    </div>
+                </div>
             </div>
 
             <ActiveConnection channels={this.state.channels}/>

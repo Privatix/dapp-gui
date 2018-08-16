@@ -175,13 +175,23 @@ class Connection extends React.Component<any, any>{
                     <div className='card m-b-20 card-body text-xs-center'>
                         <form>
                             <p className='card-text'>Permanently stop using this service.</p>
-                            <p className='card-text'>Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.</p>
+                            <p className='card-text'>
+                                {this.state.channel.usage.cost === 0
+                                    ? 'You can request full deposit return, after service is terminated.'
+                                    : 'Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.'
+                                }
+                            </p>
                             <ConfirmPopupSwal
                                 endpoint={`/client/channels/${this.state.channel.id}/status`}
                                 options={{method: 'put', body: {action: 'terminate'}}}
                                 title={'Finish'}
-                                text={<span>Permanently stop using this service.<br />
-                                    Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.</span>}
+                                text={
+                                    <span>Permanently stop using this service.<br />
+                                        {this.state.channel.usage.cost === 0
+                                            ? 'You can request full deposit return, after service is terminated.'
+                                            : 'Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.'
+                                        }
+                                    </span>}
                                 class={'btn btn-primary btn-custom btn-block'}
                                 swalType='warning'
                                 swalConfirmBtnText='Yes, finish it!'
@@ -189,6 +199,7 @@ class Connection extends React.Component<any, any>{
                         </form>
                     </div>
                     <TerminateContractButton
+                        status='disabled'
                         channelId={this.state.channel.id}
                         done={() => this.props.history.push('/client-history')}
                     />
