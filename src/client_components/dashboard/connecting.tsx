@@ -5,6 +5,7 @@ import Countdown from 'react-countdown-now';
 import ActiveConnection from '../connections/active';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
+import FinishServiceButton from '../connections/finishServiceButton';
 
 const countdownRender = ({ minutes, seconds }) => {
     return <span>{minutes}:{seconds}</span>;
@@ -108,19 +109,7 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-2'></div>
 
                 <div className='col-5'>
-                    <div className='card m-b-20 card-body'>
-                        <p className='card-text'>This operation will permanently finish VPN usage.</p>
-                        <p className='card-text m-t-5 m-b-20'>Your remaining deposit will be returned approx. in 12 min.</p>
-                        <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
-                            options={{method: 'put', body: {action: 'terminate'}}}
-                            title={'Finish'}
-                            text={<span>This operation will permanently finish VPN usage</span>}
-                            class={'btn btn-danger btn-custom btn-block'}
-                            swalType='danger'
-                            swalConfirmBtnText='Yes, finish it!'
-                            swalTitle='Are you sure?' />
-                    </div>
+                    <FinishServiceButton channel={this.state.channels[0]} />
                 </div>
 
             </div>
@@ -149,7 +138,9 @@ class Connecting extends React.Component<any, any>{
                     </div>
                 </div>
 
-
+                <div className='col-5'>
+                    <FinishServiceButton channel={this.state.channels[0]} />
+                </div>
             </div>
 
             <ActiveConnection channels={this.state.channels}/>
@@ -178,19 +169,7 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-2'></div>
 
                 <div className='col-5'>
-                    <div className='card m-b-20 card-body'>
-                        <p className='card-text'>This operation will permanently finish VPN usage.</p>
-                        <p className='card-text m-t-5 m-b-20'>Your remaining deposit will be returned approx. in 12 min.</p>
-                        <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
-                            options={{method: 'put', body: {action: 'terminate'}}}
-                            title={'Finish'}
-                            text={<span>This operation will permanently finish VPN usage</span>}
-                            class={'btn btn-danger btn-custom btn-block'}
-                            swalType='danger'
-                            swalConfirmBtnText='Yes, finish it!'
-                            swalTitle='Are you sure?' />
-                    </div>
+                    <FinishServiceButton channel={this.state.channels[0]} />
                 </div>
             </div>
 
