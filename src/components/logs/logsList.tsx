@@ -1,4 +1,5 @@
 import * as React from 'react';
+import * as api from '../../utils/api';
 import {fetch} from '../../utils/fetch';
 import ModalWindow from '../modalWindow';
 import SortableTable from 'react-sortable-table-vilan';
@@ -8,11 +9,11 @@ import moment from 'moment/src/moment';
 import LogsTime from '../utils/logsTime';
 import LogsStack from './logsStack';
 import LogsContext from './logsContext';
-import * as api from '../../utils/api';
 import {LocalSettings} from '../../typings/settings';
 import {remote} from 'electron';
 const {dialog} = remote;
 import Pagination from 'react-js-pagination';
+import notice from '../../utils/notice';
 import 'react-datepicker/dist/react-datepicker.css';
 
 class Logs extends React.Component <any,any> {
@@ -24,10 +25,12 @@ class Logs extends React.Component <any,any> {
             logsData: null,
             logsDataExport: null,
             logsDataArr: [],
-            startDate: moment().subtract(1, 'day'),
-            endDate: moment(),
+            dateFrom: moment().subtract(1, 'day'),
+            dateTo: moment(),
             logsPerPage: 10,
-            activePage: 1
+            activePage: 1,
+            pages: 1,
+            levels: []
         };
     }
 
@@ -51,16 +54,29 @@ class Logs extends React.Component <any,any> {
         return settings.logsCountPerPage;
     }
 
-    async getLogsData() {
+    async getLogsData(dateFrom:any = null, dateTo:any = null, levels:string[] = []) {
+        const dateFromData = dateFrom === null ? this.state.dateFrom : dateFrom;
+        const dateToData = dateTo === null ? this.state.dateTo : dateTo;
+
+        const isoDateFrom = new Date(dateFromData).toISOString();
+        const isoDateTo = new Date(dateToData).toISOString();
         const logsPerPage = await this.getLogsPerPage();
+
+        // form query params
         let query = [];
         query.push(`perPage=${logsPerPage}`);
-        query.push(`page=1`);
+        query.push(`page=${this.state.activePage}`);
+        query.push(`dateFrom=${isoDateFrom}`);
+        query.push(`dateTo=${isoDateTo}`);
+        if (levels.length > 0 || this.state.levels.length > 0) {
+            const levelsData = levels.length > 0 ? levels : this.state.levels;
+            query.push(`level=${levelsData.join(',')}`);
+        }
 
-        const logs = await fetch('/logs?'+query.join('&'));
+        const logs = await api.logs.getLogs(query.join('&'));
 
         const logsDataArr = [];
-        (logs as any).map(log => {
+        (logs.items as any).map(log => {
             let context = atob(log.Context);
 
             let row = {
@@ -74,7 +90,15 @@ class Logs extends React.Component <any,any> {
             logsDataArr.push(row);
         });
 
-        this.setState({logsData: logs, logsDataArr, logsPerPage});
+        const activePage = logs.pages === 1 ? 1 : this.state.activePage;
+
+        this.setState({
+            logsData: logs.items,
+            logsDataArr,
+            logsPerPage,
+            pages: logs.pages,
+            activePage
+        });
     }
 
     getLogsDataExport() {
@@ -89,27 +113,47 @@ class Logs extends React.Component <any,any> {
         });
     }
 
-    handleChangeStartDate(date: any) {
-        this.setState({
-            startDate: date
-        });
+    handleChangeLevel(evt:any) {
+        const level = evt.target.dataset.level;
+
+        const levels = this.state.levels;
+        if (levels.indexOf(level) === -1) {
+            levels.push(level);
+        } else {
+            levels.splice(levels.indexOf(level), 1);
+        }
+
+        this.setState({levels});
+        this.getLogsData(null, null, levels);
     }
 
-    handleChangeEndDate(date: any) {
+    handleChangeDateFrom(date: any) {
+        this.alertOnBigDateRangeSelect(date, this.state.dateTo);
         this.setState({
-            endDate: date
+            dateFrom: date
         });
+        this.getLogsData(date);
+    }
+
+    handleChangeDateTo(date: any) {
+        this.alertOnBigDateRangeSelect(this.state.dateFrom, date);
+        this.setState({
+            dateTo: date
+        });
+        this.getLogsData(null, date);
     }
 
     handleNow() {
+        const date = moment();
         this.setState({
-            endDate: moment()
+            dateTo: date
         });
+        this.getLogsData(null, date);
     }
 
     handlePageChange(pageNumber:number) {
-        console.log(`active page is ${pageNumber}`);
         this.setState({activePage: pageNumber});
+        this.getLogsData();
     }
 
     exportToFile() {
@@ -120,11 +164,20 @@ class Logs extends React.Component <any,any> {
             if (fileName != null) {
                 const headers = ['time', 'level', 'message', 'context', 'stack'];
                 const data = this.getLogsDataExport();
-                console.log('Logs data', data);
                 data.unshift(headers);
                 fetch('/saveAs', {body: {fileName, data: data.map(row => row.join(',')).join('\n')}});
             }
         });
+    }
+
+    alertOnBigDateRangeSelect(dateFrom:string, dateTo:string) {
+        if (moment(dateTo, 'M/D/YYYY').diff(moment(dateFrom, 'M/D/YYYY'), 'days') > 5) {
+            notice({
+                level: 'warning',
+                title: 'Warning!',
+                msg: 'Please, don\'t select logs in more than 5 days. It can take a lot of time!'
+            });
+        }
     }
 
     render() {
@@ -174,7 +227,7 @@ class Logs extends React.Component <any,any> {
                         <div className='card-box'>
                             <div>
                                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-30'
-                                        onClick={this.exportToFile.bind(this)}>Export to a file</button>
+                                    onClick={this.exportToFile.bind(this)}>Export to a file</button>
                             </div>
                             {/*<div className='form-group row'>*/}
                                 {/*<div className='col-md-12 m-t-10 m-b-10'>*/}
@@ -188,11 +241,21 @@ class Logs extends React.Component <any,any> {
                             {/*</div>*/}
                             <div className='row m-b-20'>
                                 <div className='col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 button-list m-b-10 logsLevelFilterBl'>
-                                    <button className='btn btn-primary btn-rounded waves-effect waves-light w-xs'>debug</button>
-                                    <button className='btn btn-success btn-rounded waves-effect waves-light w-xs'>info</button>
-                                    <button className='btn btn-warning btn-rounded waves-effect waves-light w-xs'>warning</button>
-                                    <button className='btn btn-pink btn-rounded waves-effect waves-light w-xs'>error</button>
-                                    <button className='btn btn-danger btn-rounded waves-effect waves-light w-xs'>fatal</button>
+                                    <button className={'btn btn-primary btn-rounded waves-effect waves-light w-xs' +
+                                        (this.state.levels.length > 0 && this.state.levels.indexOf('debug') === -1 ? ' btn-custom btn-custom-rounded' : '')}
+                                            onClick={this.handleChangeLevel.bind(this)} data-level='debug'>debug</button>
+                                    <button className={'btn btn-success btn-rounded waves-effect waves-light w-xs' +
+                                        (this.state.levels.length > 0 && this.state.levels.indexOf('info') === -1 ? ' btn-custom btn-custom-rounded' : '')}
+                                            onClick={this.handleChangeLevel.bind(this)} data-level='info'>info</button>
+                                    <button className={'btn btn-warning btn-rounded waves-effect waves-light w-xs' +
+                                        (this.state.levels.length > 0 && this.state.levels.indexOf('warning') === -1 ? ' btn-custom btn-custom-rounded' : '')}
+                                            onClick={this.handleChangeLevel.bind(this)} data-level='warning'>warning</button>
+                                    <button className={'btn btn-pink btn-rounded waves-effect waves-light w-xs' +
+                                        (this.state.levels.length > 0 && this.state.levels.indexOf('error') === -1 ? ' btn-custom btn-custom-rounded' : '')}
+                                            onClick={this.handleChangeLevel.bind(this)} data-level='error'>error</button>
+                                    <button className={'btn btn-danger btn-rounded waves-effect waves-light w-xs' +
+                                        (this.state.levels.length > 0 && this.state.levels.indexOf('fatal') === -1 ? ' btn-custom btn-custom-rounded' : '')}
+                                            onClick={this.handleChangeLevel.bind(this)} data-level='fatal'>fatal</button>
                                 </div>
                                 <div className='col-xl-3 col-lg-12 col-md-6 col-sm-12 col-xs-12 col-12 logsTimeFilterFromBl'>
                                     <div className='form-group row'>
@@ -200,14 +263,14 @@ class Logs extends React.Component <any,any> {
                                         <div className='col-md-10 col-10'>
                                             <div className='input-group'>
                                                 <DatePicker
-                                                    selected={this.state.startDate}
+                                                    selected={this.state.dateFrom}
                                                     showTimeSelect
                                                     timeFormat='HH:mm'
                                                     timeIntervals={10}
                                                     dateFormat='h:mm A DD-MMM-YY'
                                                     timeCaption='time'
                                                     className='form-control form-control-datepicker'
-                                                    onChange={this.handleChangeStartDate.bind(this)}
+                                                    onChange={this.handleChangeDateFrom.bind(this)}
                                                 />
                                                 <div className='input-group-append'>
                                                     <span className='input-group-text'><i className='md md-event-note'></i></span>
@@ -222,14 +285,14 @@ class Logs extends React.Component <any,any> {
                                         <div className='col-md-10 col-10'>
                                             <div className='input-group'>
                                                 <DatePicker
-                                                    selected={this.state.endDate}
+                                                    selected={this.state.dateTo}
                                                     showTimeSelect
                                                     timeFormat='HH:mm'
                                                     timeIntervals={10}
                                                     dateFormat='h:mm A DD-MMM-YY'
                                                     timeCaption='time'
                                                     className='form-control form-control-datepicker'
-                                                    onChange={this.handleChangeEndDate.bind(this)}
+                                                    onChange={this.handleChangeDateTo.bind(this)}
                                                 />
                                                 
                                                 <div className='input-group-append'>
@@ -244,7 +307,7 @@ class Logs extends React.Component <any,any> {
                             </div>
 
                             <div className='bootstrap-table bootstrap-table-sortable'>
-                                <SortableTablegit s
+                                <SortableTable
                                     data={this.state.logsDataArr}
                                     columns={columns}/>
                             </div>
@@ -253,8 +316,8 @@ class Logs extends React.Component <any,any> {
                                 <Pagination
                                     activePage={this.state.activePage}
                                     itemsCountPerPage={this.state.logsPerPage}
-                                    totalItemsCount={20}
-                                    pageRangeDisplayed={5}
+                                    totalItemsCount={this.state.logsPerPage * this.state.pages}
+                                    pageRangeDisplayed={10}
                                     onChange={this.handlePageChange.bind(this)}
                                     prevPageText='‹'
                                     nextPageText='›'

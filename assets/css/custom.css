@@ -574,6 +574,31 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
 .table-striped-custom > tbody > tr:nth-of-type(even) {
     background-color: #f4f8fb !important;
 }
+.logsLevelFilterBl .btn-custom-rounded {
+    border-radius: 2em !important;
+}
+.logsLevelFilterBl .btn-custom.btn-primary:focus {
+    color: #5d9cec !important;
+}
+.logsLevelFilterBl .btn-custom.btn-success:focus {
+    color: #81c868 !important;
+}
+.logsLevelFilterBl .btn-custom.btn-warning:focus {
+    color: #ffbd4a !important;
+}
+.logsLevelFilterBl .btn-custom.btn-pink:focus {
+    color: #fb6d9d !important;
+}
+.logsLevelFilterBl .btn-custom.btn-danger:focus {
+    color: #f05050 !important;
+}
+.logsLevelFilterBl .btn-custom.btn-primary:focus,
+.logsLevelFilterBl .btn-custom.btn-success:focus,
+.logsLevelFilterBl .btn-custom.btn-warning:focus,
+.logsLevelFilterBl .btn-custom.btn-pink:focus,
+.logsLevelFilterBl .btn-custom.btn-danger:focus {
+    background: #fff !important;
+}
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
