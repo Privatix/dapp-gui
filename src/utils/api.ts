@@ -77,5 +77,5 @@ export const getClientOfferings = function(): Promise<ClientOffering[]>{
 };
 
 export const getSessions = function(channelId?: string): Promise<Session[]>{
-        return fetch('/sessions'+ (channelId)?`?channelId=${channelId}`:'', {method: 'GET'}) as Promise<Session[]>;
+        return fetch('/sessions'+ (channelId ? `?channelId=${channelId}` : ''), {}) as Promise<Session[]>;
 };
