@@ -558,8 +558,8 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     padding: 5px 10px;
     margin-right: 1px;
 }
-.width150{
-    width: 150px;
+.minWidth160{
+    min-width: 160px;
 }
 .padding20{
     padding: 20px;
