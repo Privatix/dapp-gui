@@ -569,7 +569,7 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     border-bottom-right-radius: 0.25rem !important;
 }
 .card-box .react-datepicker-popper {
-    z-index: 2;
+    z-index: 1001;
 }
 .table-striped-custom > tbody > tr:nth-of-type(even) {
     background-color: #f4f8fb !important;
@@ -598,6 +598,11 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
 .logsLevelFilterBl .btn-custom.btn-pink:focus,
 .logsLevelFilterBl .btn-custom.btn-danger:focus {
     background: #fff !important;
+}
+
+.logsTimeFilterFromBl .react-datepicker-popper,
+.logsTimeFilterToBl .react-datepicker-popper{
+    min-width: 300px;
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
