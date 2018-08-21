@@ -3,6 +3,7 @@ import {LocalSettings} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
 import {ClientOffering} from '../typings/clientOfferings.d.ts';
 import {Offering} from '../typings/offerings.d.ts';
+import {Session} from '../typings/session.d.ts';
 
 import * as Auth from './api/auth';
 export const auth = Auth;
@@ -21,6 +22,12 @@ export const products = Products;
 
 import * as Offerings from './api/offerings';
 export const offerings = Offerings;
+
+import * as Templates from './api/templates';
+export const templates = Templates;
+
+import * as Logs from './api/logs';
+export const logs = Logs;
 
 export const getTransactionsByAccount = async function(account: string): Promise<Transaction[]>{
     const endpoint = '/transactions' + (account === 'all' ? '' : `?relatedID=${account}&relatedType=account`);
@@ -70,4 +77,8 @@ export const getClientOfferings = function(): Promise<ClientOffering[]>{
     // or change call in client_components/connections/connection.tsx
     return fetch('/client/offerings', {}) as Promise<ClientOffering[]>;
 
+};
+
+export const getSessions = function(channelId?: string): Promise<Session[]>{
+        return fetch('/sessions'+ (channelId ? `?channelId=${channelId}` : ''), {}) as Promise<Session[]>;
 };

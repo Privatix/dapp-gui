@@ -180,15 +180,13 @@ class ServiceView extends React.Component <any,any> {
                     <ClientAccessInfo channel={this.state.service} />
 
                 </div>
-                {service.channelStatus.channelStatus === 'active' ?
-                    <div className='col-4'>
-                        <TerminateContractButton
-                            channelId={service.id}
-                            done={() => this.props.history.push('/client-history')}
-                        />
-                    </div>
-                    :<div></div>
-                }
+                <div className='col-4'>
+                    <TerminateContractButton
+                        status={service.channelStatus.serviceStatus !== 'terminated' ? 'disabled' : 'active'}
+                        channelId={service.id}
+                        done={() => this.props.history.push('/client-history')}
+                    />
+                </div>
             </div>
             { /*
             <div className='row m-t-30'>

@@ -54,8 +54,8 @@ export default class AsyncList extends React.Component<any,any> {
                     key: 'supply'
                 },
                 {
-                    header: 'Current supply',
-                    key: 'currentSupply'
+                    header: 'Available supply',
+                    key: 'availableSupply'
                 }
             ]
         };
@@ -97,7 +97,7 @@ export default class AsyncList extends React.Component<any,any> {
                         country: offering.country,
                         price: toFixed8({number: (offering.unitPrice / 1e8)}),
                         supply: offering.supply,
-                        currentSupply: offering.currentSupply,
+                        availableSupply: offering.currentSupply,
                         agent: '0x' + new Buffer(offering.agent, 'base64').toString('hex')
                     };
                 });
