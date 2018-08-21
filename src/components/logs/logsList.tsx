@@ -193,6 +193,7 @@ class Logs extends React.Component <any,any> {
             {
                 header: 'Date',
                 key: 'date',
+                dataProps: {className: 'minWidth160'},
                 descSortFunction: DateSorter.desc,
                 ascSortFunction: DateSorter.asc,
                 render: (date) => <LogsTime time={date} />
