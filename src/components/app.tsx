@@ -37,7 +37,7 @@ import ClientHistory from '../client_components/vpn_list/history';
 
 import handlers from '../redux/actions';
 
-import Logs from './logs/logs';
+import Logs from './logs/logsList';
 
 import {Mode} from '../typings/mode';
 

@@ -599,6 +599,22 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
 .logsLevelFilterBl .btn-custom.btn-danger:focus {
     background: #fff !important;
 }
+.logsTimeFilterFromBl .react-datepicker-popper,
+.logsTimeFilterToBl .react-datepicker-popper{
+    min-width: 300px;
+}
+.form-group .searchInputGroup .logsSearchInput{
+    border-radius: 4px !important;
+}
+.searchClear{
+    position: absolute;
+    right: 0;
+    z-index: 100;
+}
+
+.hidden {
+    display: none !important;
+}
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
