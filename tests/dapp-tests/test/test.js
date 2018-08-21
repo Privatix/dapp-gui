@@ -119,7 +119,7 @@ describe('dappctrl tests', function() {
             (async function worker (){
                 const body = [{
                     'key': 'user.isagent',
-                    'value': false,
+                    'value': 'true',
                     'description': 'Specifies user role. "true" - agent. "false" - client.',
                     'name': 'user role is agent'
                 }];
@@ -135,15 +135,15 @@ describe('dappctrl tests', function() {
 
 
                 const payload = {
-                    serviceName: 'test'
-                   ,description: 'test'
-                   ,country: 'UA'
+                    serviceName: 'test1'
+                   ,description: 'desc1'
+                   ,country: 'RU'
                    ,supply: 100
                    ,unitName: 'MB'
                    ,unitType: 'units'
-                   ,unitPrice: 0.1
+                   ,unitPrice: 10
                    ,billingType: 'prepaid'
-                   ,maxBillingUnitLag: 1800
+                   ,maxBillingUnitLag: 3
                    ,minUnits: 10
                    ,maxUnit: 20
                    ,maxSuspendTime: 1800
@@ -158,23 +158,19 @@ describe('dappctrl tests', function() {
                 payload.billingType = 'postpaid';
                 payload.additionalParams = Buffer.from('{}').toString('base64');
 
-                console.log('PAYLOAD', payload);
-
-                const response = await (await api(`${config.apiEndpoint}/offerings`, {method: 'post', body: payload})).json();
-                if(!response.length){
+                const createdOffering = await (await api(`${config.apiEndpoint}/offerings/`, {method: 'post', body: JSON.stringify(payload)})).json();
+                if(!createdOffering.id){
                     reject(new Error('offering did\'t created'));
                     return;
                 }
-                const createdOffering = response[0];
-
+                // const createdOffering = response[0];
                 const retrievedOfferings = await (await api(`${config.apiEndpoint}/offerings?id=${createdOffering.id}`, options)).json();
                 if(!retrievedOfferings.length){
                     reject(new Error('offering not found'));
                     return;
                 }
                 const retrievedOffering = retrievedOfferings[0];
-                    console.log(retrievedOffering, createdOffering);
-                if(!retrievedOffering.id != createdOffering.id){
+                if(retrievedOffering.id != createdOffering.id){
                     reject(new Error('offerings not the same'));
                     return;
                 }else{
@@ -185,6 +181,7 @@ describe('dappctrl tests', function() {
 
     });
 
+    /*
     it('should change status of offering when published', async function() {
         this.timeout(20000);
         // это тест проверяет только изменение статуса в базе при публикации офферинга
@@ -201,7 +198,7 @@ describe('dappctrl tests', function() {
 
         assert.equal(agentOffering.isPublished(), true);
     });
-
+*/
 /*
     it('should return -1 when the value is not present', async function() {
         app1.authorise(); // как? он должен знать пароль, аппликуха должна быть засетаплена (кошелек с деньгами и приксами)

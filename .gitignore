@@ -2,6 +2,7 @@
 build
 node_modules
 *.swp
+*.swn
 *.swo
 *.log
 xunit.xml
