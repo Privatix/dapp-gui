@@ -1,0 +1,18 @@
+{
+  "name": "dapp-tests",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "mocha": "^5.2.0"
+  },
+  "dependencies": {
+    "electron-fetch": "^1.2.1",
+    "node-fetch": "^2.2.0"
+  }
+}

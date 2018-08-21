@@ -1,0 +1,12 @@
+{
+   "apiEndpoint": "http://localhost:3000",
+   "pwd": "chubadanaja",
+   "gas": {
+        "acceptOffering": 100000,
+        "createOffering": 100000,
+        "transfer": 100000
+   },
+   "network": "rinkeby",
+   "release": "0.7.0",
+   "logsCountPerPage": 10
+}
