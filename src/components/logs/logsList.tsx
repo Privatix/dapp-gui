@@ -27,6 +27,7 @@ class Logs extends React.Component <any,any> {
             logsDataArr: [],
             dateFrom: moment().subtract(1, 'day'),
             dateTo: moment(),
+            searchText: '',
             logsPerPage: 10,
             activePage: 1,
             pages: 1,
@@ -68,9 +69,13 @@ class Logs extends React.Component <any,any> {
         query.push(`page=${this.state.activePage}`);
         query.push(`dateFrom=${isoDateFrom}`);
         query.push(`dateTo=${isoDateTo}`);
+
         if (levels.length > 0 || this.state.levels.length > 0) {
             const levelsData = levels.length > 0 ? levels : this.state.levels;
             query.push(`level=${levelsData.join(',')}`);
+        }
+        if (this.state.searchText !== '') {
+            query.push(`searchText=${this.state.searchText}`);
         }
 
         const logs = await api.logs.getLogs(query.join('&'));
@@ -156,6 +161,27 @@ class Logs extends React.Component <any,any> {
         this.getLogsData();
     }
 
+    handleSearch(evt:any) {
+        if (evt.key === 'Enter') {
+            const searchText = evt.target.value;
+            this.setState({searchText});
+            this.getLogsData();
+        }
+    }
+
+    handleChangeSearch(evt:any) {
+        this.setState({searchText: evt.target.value});
+    }
+
+    handleClearSearch() {
+        let searchText = this.state.searchText;
+        if (searchText !== '') {
+            searchText = '';
+            this.setState({searchText});
+            this.getLogsData();
+        }
+    }
+
     exportToFile() {
         (dialog.showSaveDialog as any)(null, {
             title: 'Saving logs',
@@ -230,16 +256,25 @@ class Logs extends React.Component <any,any> {
                                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-30'
                                     onClick={this.exportToFile.bind(this)}>Export to a file</button>
                             </div>
-                            {/*<div className='form-group row'>*/}
-                                {/*<div className='col-md-12 m-t-10 m-b-10'>*/}
-                                    {/*<div className='input-group searchInputGroup'>*/}
-                                        {/*<div className='input-group-prepend'>*/}
-                                            {/*<span className='input-group-text'><i className='fa fa-search'></i></span>*/}
-                                        {/*</div>*/}
-                                        {/*<input className='form-control' type='search' name='search' placeholder='search'/>*/}
-                                    {/*</div>*/}
-                                {/*</div>*/}
-                            {/*</div>*/}
+                            <div className='form-group row'>
+                                <div className='col-md-12 m-t-10 m-b-10'>
+                                    <div className='input-group searchInputGroup'>
+                                        <div className='input-group-prepend'>
+                                            <span className='input-group-text'><i className='fa fa-search'></i></span>
+                                        </div>
+                                        <input className='form-control logsSearchInput' type='search' name='query'
+                                               placeholder='search' value={this.state.searchText}
+                                               onKeyPress={this.handleSearch.bind(this)}
+                                               onChange={this.handleChangeSearch.bind(this)} />
+                                        <div className={'searchClear' + (this.state.searchText === '' ? ' hidden' : '')}>
+                                            <button className='btn btn-icon waves-effect waves-light btn-danger'
+                                                    onClick={this.handleClearSearch.bind(this)}>
+                                                <i className='fa fa-remove'></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                             <div className='row m-b-20'>
                                 <div className='col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 button-list m-b-10 logsLevelFilterBl'>
                                     <button className={'btn btn-primary btn-rounded waves-effect waves-light w-xs' +
