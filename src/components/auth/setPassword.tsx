@@ -1,13 +1,14 @@
 import * as React from 'react';
 import Steps from './steps';
-// import {LocalSettings} from '../../typings/settings';
 import { withRouter } from 'react-router-dom';
-// import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 import * as ReactTooltip from 'react-tooltip';
 import {NextButton} from './utils';
 import * as api from '../../utils/api';
+import { translate } from 'react-i18next';
+import SelectLanguage from '../../i18next/selectLanguage';
 
+@translate(['auth/setPassword'])
 class SetPassword extends React.Component<any, any>{
 
     constructor(props:any){
@@ -69,10 +70,13 @@ class SetPassword extends React.Component<any, any>{
     }
 
     render(){
-
+        const { t } = this.props;
         return <div className='card-box'>
             <div className='panel-heading'>
-                <h4 className='text-center'> Set the password to <strong className='text-custom'>Privatix</strong> </h4>
+                <h4 className='text-center'> {t('setThePassword')} <strong className='text-custom'>Privatix</strong></h4>
+            </div>
+            <div className='col-2'>
+                <SelectLanguage />
             </div>
             <form className='form-horizontal m-t-20' action='#' onSubmit={this.onSubmit.bind(this)} >
             <div className='p-20 wizard clearfix'>

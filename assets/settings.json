@@ -10,5 +10,6 @@
    "network": "rinkeby",
    "bugsnagKey": "f8f572a4fff86dd59cc2a36f6e9fe8d0",
    "bugsnagEnable": true,
-   "release": "0.7.0"
+   "release": "0.7.0",
+   "lang": "en"
 }

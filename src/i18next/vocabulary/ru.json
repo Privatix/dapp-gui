@@ -1,0 +1,5 @@
+{
+    "auth/setPassword": {
+        "setThePassword": "Установка пароля для"
+    }
+}
