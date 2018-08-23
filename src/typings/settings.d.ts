@@ -14,6 +14,7 @@ export interface LocalSettings {
     bugsnagEnable: boolean;
     release: string;
     logsCountPerPage: number;
+    lang: string;
 }
 
 export interface DbSetting {
