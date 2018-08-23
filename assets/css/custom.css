@@ -538,3 +538,100 @@ input:checked + .slider:before {
 .form-group input[type="text"]::placeholder {
     opacity: 0.7;
 }
+
+.input-group .form-control-datepicker {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+    padding: 8px 12px;
+}
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list{
+    padding: 0 !important;
+}
+.react-datepicker .react-datepicker__time-container {
+    width: 55px;
+}
+.react-datepicker__time-box::-webkit-scrollbar {
+    display: none;
+}
+.react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box
+ul.react-datepicker__time-list li.react-datepicker__time-list-item {
+    padding: 5px 10px;
+    margin-right: 1px;
+}
+.minWidth160{
+    min-width: 160px;
+}
+.padding20{
+    padding: 20px;
+}
+.input-group-text-bordered{
+    border-top-right-radius: 0.25rem !important;
+    border-bottom-right-radius: 0.25rem !important;
+}
+.card-box .react-datepicker-popper {
+    z-index: 1001;
+}
+.table-striped-custom > tbody > tr:nth-of-type(even) {
+    background-color: #f4f8fb !important;
+}
+.logsLevelFilterBl .btn-custom-rounded {
+    border-radius: 2em !important;
+}
+.logsLevelFilterBl .btn-custom.btn-primary:focus {
+    color: #5d9cec !important;
+}
+.logsLevelFilterBl .btn-custom.btn-success:focus {
+    color: #81c868 !important;
+}
+.logsLevelFilterBl .btn-custom.btn-warning:focus {
+    color: #ffbd4a !important;
+}
+.logsLevelFilterBl .btn-custom.btn-pink:focus {
+    color: #fb6d9d !important;
+}
+.logsLevelFilterBl .btn-custom.btn-danger:focus {
+    color: #f05050 !important;
+}
+.logsLevelFilterBl .btn-custom.btn-primary:focus,
+.logsLevelFilterBl .btn-custom.btn-success:focus,
+.logsLevelFilterBl .btn-custom.btn-warning:focus,
+.logsLevelFilterBl .btn-custom.btn-pink:focus,
+.logsLevelFilterBl .btn-custom.btn-danger:focus {
+    background: #fff !important;
+}
+.logsTimeFilterFromBl .react-datepicker-popper,
+.logsTimeFilterToBl .react-datepicker-popper{
+    min-width: 300px;
+}
+.form-group .searchInputGroup .logsSearchInput{
+    border-radius: 4px !important;
+}
+.searchClear{
+    position: absolute;
+    right: 0;
+    z-index: 100;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.logsTimeFilterFromBl .react-datepicker-popper,
+.logsTimeFilterToBl .react-datepicker-popper{
+    min-width: 300px;
+}
+
+@media only screen and (min-width: 1200px) and (max-width: 1600px) {
+    .logsLevelFilterBl{
+        max-width: 100%;
+        flex: 0 0 100%;
+    }
+    .logsTimeFilterFromBl{
+        max-width: 36%;
+        flex: 0 0 36%;
+    }
+    .logsTimeFilterToBl{
+        max-width: 64%;
+        flex: 0 0 64%;
+    }
+}

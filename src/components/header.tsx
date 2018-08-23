@@ -104,9 +104,9 @@ class Header extends React.Component<any, any>{
                                 <NavLink to='/settings' className='dropdown-item notify-item'>
                                     <i className='md md-settings'></i> <span>Settings</span>
                                 </NavLink>
-                                {/*<NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>*/}
-                                    {/*<i className='dripicons-blog'></i><span>Logs</span>*/}
-                                {/*</NavLink>*/}
+                                <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
+                                    <i className='dripicons-blog'></i><span>Logs</span>
+                                </NavLink>
                             </div>
                     </li>
 

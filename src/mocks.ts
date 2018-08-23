@@ -1,6 +1,5 @@
 const mocks = [
-    {endpoint: /\/logs/, method: 'get', res: [{severity: 'warning', date: '5:30 PM 09-Apr-18', event: 'low balance'}, {severity: 'error', date: '5:30 PM 09-Apr-18', event: 'connection error'}, {severity: 'info', date: '5:30 PM 09-Apr-18', event: 'channel created'}]}
-   ,{endpoint: /\/product\/.*\/status/, method: 'get', res: {code: 200, status: 'mocked!!!'}}
+    {endpoint: /\/product\/.*\/status/, method: 'get', res: {code: 200, status: 'mocked!!!'}}
 ];
 
 export default {

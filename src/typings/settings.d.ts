@@ -13,6 +13,7 @@ export interface LocalSettings {
     bugsnagKey: string;
     bugsnagEnable: boolean;
     release: string;
+    logsCountPerPage: number;
     lang: string;
 }
 
