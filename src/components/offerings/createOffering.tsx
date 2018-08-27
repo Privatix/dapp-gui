@@ -117,8 +117,8 @@ class CreateOffering extends React.Component<any, any>{
            ,maxSuspendTime: 'max suspend time'
            ,maxInactiveTimeSec: 'max inactive time'
         };
-        const required = ['serviceName', 'description', 'country', 'supply', 'unitPrice', 'maxBillingUnitLag', 'minUnits', 'maxSuspendTime', 'maxInactiveTimeSec'];
-        const optional = ['maxUnit'];
+        const required = ['serviceName', 'country', 'supply', 'unitPrice', 'maxBillingUnitLag', 'minUnits', 'maxSuspendTime', 'maxInactiveTimeSec'];
+        const optional = ['description', 'maxUnit'];
         const integers = ['supply', 'maxBillingUnitLag', 'minUnits', 'maxUnit', 'maxSuspendTime', 'maxInactiveTimeSec'];
         const strings = ['serviceName', 'description', 'country'];
         const cantBeZero = ['supply', 'maxBillingUnitLag', 'minUnits', 'maxSuspendTime', 'maxInactiveTimeSec'];
@@ -158,7 +158,7 @@ class CreateOffering extends React.Component<any, any>{
 
         payload.unitPrice = parseFloatPrix(payload.unitPrice);
 
-        const emptyStrings = strings.filter((key: string) => !mustBeFilled.includes(key) && payload[key].trim() === '');
+        const emptyStrings = strings.filter((key: string) => required.includes(key) && payload[key].trim() === '');
 
         if(mustBeFilled.length || emptyStrings.length || payload.unitPrice !== payload.unitPrice || payload.unitPrice <= 0){
             err = true;
@@ -195,7 +195,7 @@ class CreateOffering extends React.Component<any, any>{
                 msg += (`${mustBePositive.map(key => aliases[key]).join(', ')} have negative value. ` as any).capitalize();
             }
             if(emptyStrings.length){
-                msg += (`${emptyStrings.map(key => aliases[key]).join(', ')} can't be emty. ` as any).capitalize();
+                msg += (`${emptyStrings.map(key => aliases[key]).join(', ')} can't be empty. ` as any).capitalize();
             }
             if(!wrongKeys.includes('unitPrice') && payload.unitPrice !== payload.unitPrice){
                 msg += 'Unit price must be a number.';
