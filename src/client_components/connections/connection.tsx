@@ -10,6 +10,7 @@ import * as api from '../../utils/api';
 import Offering from '../vpn_list/acceptOffering';
 import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
+import notice from '../../utils/notice';
 
 class Connection extends React.Component<any, any>{
 
@@ -159,7 +160,12 @@ class Connection extends React.Component<any, any>{
                     <TerminateContractButton
                         status='disabled'
                         channelId={this.state.channel.id}
-                        done={() => this.props.history.push('/client-history')}
+                        done={() => {
+                            notice({
+                                level: 'info',
+                                msg: 'The contract has been terminated'
+                            });
+                        }}
                     />
                 </div>
             </div>
