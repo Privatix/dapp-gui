@@ -1,10 +1,12 @@
 import * as React from 'react';
-import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-import {PreviousButton, createPrivateKey} from './utils';
+import { translate } from 'react-i18next';
+import Steps from './steps';
+import {PreviousButton, NextButton, createPrivateKey} from './utils';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
 
+@translate(['auth/generateKey', 'auth/setAccount', 'utils/notice'])
 class GenerateKey extends React.Component<any, any>{
 
     constructor(props: any){
@@ -20,17 +22,19 @@ class GenerateKey extends React.Component<any, any>{
 
         evt.preventDefault();
 
+        const { t } = this.props;
         const name = this.state.name;
+
         let msg = '';
         let err = false;
 
         if(name === ''){
-            msg += ' Accounts name can\'t be empty.';
+            msg += ' ' + t('AccountsNameCantBeEmpty');
             err = true;
         }
 
         if(err){
-            notice({level: 'error', header: 'Attention!', msg});
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             return;
         }
 
@@ -45,18 +49,11 @@ class GenerateKey extends React.Component<any, any>{
 
     render(){
 
-        const GenerateNewAccButton = withRouter(({ history }) => <button
-            className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
-            type='button'
-            onClick={this.onSubmit.bind(this)}
-          >
-            Next
-          </button>
-        );
+        const { t } = this.props;
 
         return <div className='card-box'>
             <div className='panel-heading'>
-                <h4 className='text-center'> Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>
+                <h4 className='text-center'> {t('auth/setAccount:SetTheContractAccount')} <strong className='text-custom'>Privatix</strong> </h4>
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
@@ -64,16 +61,22 @@ class GenerateKey extends React.Component<any, any>{
                     <div className='content clearfix'>
                         <section>
                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Name:</label>
+                                <label className='col-2 col-form-label'>{t('Name')}:</label>
                                 <div className='col-8'>
-                                    <input data-payload-value='name' type='text' name='name' className='form-control' onChange={this.onUserInput.bind(this)} value={this.state.name}/>
+                                    <input data-payload-value='name'
+                                           type='text'
+                                           name='name'
+                                           className='form-control'
+                                           onChange={this.onUserInput.bind(this)}
+                                           value={this.state.name}
+                                    />
                                 </div>
                            </div>
-                           <p>While next button will be pressed, we will generate a new account.</p>
-                           <p>If you lose the password you use to encrypt your account, you will not be able to access that account</p>
+                           <p>{t('WhileNextButton')}</p>
+                           <p>{t('IfYouLoseThePassword')}</p>
                            <div className='form-group text-right m-t-40'>
                                 <PreviousButton />
-                                <GenerateNewAccButton />
+                                <NextButton onSubmit={this.onSubmit.bind(this)} />
                            </div>
                         </section>
                     </div>

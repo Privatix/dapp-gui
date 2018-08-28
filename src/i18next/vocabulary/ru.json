@@ -1,5 +1,70 @@
 {
     "auth/setPassword": {
-        "setThePassword": "Установка пароля для"
+        "setThePassword": "Установка пароля для",
+        "Password": "Пароль",
+        "Confirmation": "Подтверждение",
+        "PasswordAndConfirmationAreNotEqual" : "Пароль и подтверждение не совпадают!",
+        "PasswordLengthMustBe": "Длина пароля должна быть не меньше 8-ми и не больше 24-х символов.",
+        "ThePasswordMustBeStrong": "Пароль должен быть сложным.",
+        "InCaseYouLostYourPassword": "В случае утери пароля Вы теряете все свои данные. НЕВОЗМОЖНО получить доступ к аккаунту без пароля и имейте ввиду - опция 'Сбросить пароль' недоступна. Помните об этом.",
+        "WeWillUseThisPassword" : "Мы будем использовать этот пароль для шифрования Ваших приватных ключей.",
+        "WeStoreYourPrivateKeys": "Мы храним Ваши приватные ключи зашифрованными<br />и в том же формате что и ноды ethereum"
+    },
+    "auth/setAccount": {
+        "SetTheContractAccount": "Укажите аккаунт контракта для",
+        "ForTokenTransfers" : "Для трансфера токенов Вы должны добавить Ваш приватный ключ для адреса на котором хранятся PRIX",
+        "WeRecommendYou" : "Мы рекомендуем Вам",
+        "createASeparateAccount": "создать отдельный кошелек",
+        "transferToThem": "перевести на него небольшое количество PRIX и ETH",
+        "useThisSeparateAccount" : "использовать только этот кошелек в этом приложении",
+        "PleaseChooseTheWay": "Выберите пожалуйста способ импорта кошелька Ethereum",
+        "GenerateNew": "Сгенерировать новый (рекомендуется)",
+        "ImportKeyInHex": "Импорт приватного ключа в hex формате",
+        "ImportFromJSON": "Импорт приватного ключа в JSON Keystore формате"
+    },
+    "auth/generateKey":{
+        "Name": "Название",
+        "WhileNextButton": "После нажатия кнопки ДАЛЕЕ мы сгенерируем новый кошелек.",
+        "IfYouLoseThePassword": "Если вы потеряете пароль которым защищен кошелек, Вы не сможете получить доступ к этому кошельку.",
+        "AccountsNameCantBeEmpty": "Название кошелька не может быть пустым."
+    },
+    "auth/importJsonKey":{
+        "NoFileChosen": "Файл не выбран.",
+        "PleaseSetThePassword": "Пожалуйста, укажите пароль.",
+        "PleaseEnterAValidPassword": "Пожалуйста, введите правильный пароль .",
+        "PathToJSONKeystoreFile": "Путь к JSON Keystore файлу",
+        "PasswordWillBeUsed": "Пароль (будет использован для расшифровки JSON)",
+        "MoreInformation": "Узнать больше о Ethereum Private Key"
+    },
+    "auth/importHexKey": {
+        "PleaseInputHexRepresentation": "Пожалуйста введите в шестнадцатеричном виде Ваш приватный ключ для кошелька на котором хранятся PRIX",
+        "PrivateKey": "Приватный ключ",
+        "PrivateKeyMustHave": "Приватный ключ должен состоять строго из 64 символов."
+    },
+    "auth/backup": {
+        "generateKey": "новый ключ успешно сгенерирован и зарегистрирован!",
+        "importHexKey": "ключ был успешно импортирован в систему!",
+        "importJsonKey": "JSON Keystore файл был успешно импортирован в систему!",
+        "PleaseBackupYourAccount": "Пожалуйста сделайте резервную копию кошелька перед началом работы.",
+        "SomeErrorOccured": "Произошла ошибка. Файл не может быть сохранен по указанному пути.",
+        "ToPreventEthereumAddress": "Для предотвращения утери данных Вам необходимо сделать резервную копию приватного ключа в надежном месте.",
+        "NoteWeEncryptThisFile": "Внимание: Мы зашифруем этот файл используя Ваш пароль для приложения. Не забудьте это!",
+        "Browse": "Выбрать"
+    },
+    "auth/steps": {
+        "Password": "Пароль",
+        "Import": "Импорт ключей",
+        "Account": "Аккаунт",
+        "Backup" : "Резервное копирование",
+        "currentStep": "текущий этап"
+    },
+    "auth/utils": {
+        "Next": "Далее",
+        "Previous": "Назад"
+    },
+    "utils/notice": {
+        "Error!": "Ошибка!",
+        "Attention!": "Внимание!",
+        "Congratulations!": "Поздравляем!"
     }
 }
