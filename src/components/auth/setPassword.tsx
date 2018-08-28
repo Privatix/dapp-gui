@@ -8,7 +8,7 @@ import * as api from '../../utils/api';
 import { translate } from 'react-i18next';
 import SelectLanguage from '../../i18next/selectLanguage';
 
-@translate(['auth/setPassword'])
+@translate(['auth/setPassword', 'utils/notice'])
 class SetPassword extends React.Component<any, any>{
 
     constructor(props:any){
@@ -39,7 +39,7 @@ class SetPassword extends React.Component<any, any>{
     }
 
     async onSubmit(evt: any){
-
+        const { t } = this.props;
         evt.preventDefault();
 
         const {pwd, conf} = this.state;
@@ -47,17 +47,17 @@ class SetPassword extends React.Component<any, any>{
         let err = false;
 
         if(pwd !== conf){
-            msg += 'Password and confirmation are not equal!';
+            msg += t('PasswordAndConfirmationAreNotEqual');
             err = true;
         }
 
         if(pwd.length < 8 || pwd.length > 24){
-            msg += ' Password length must be at least 8 and at most 24 symbols.';
+            msg += ' ' + t('PasswordLengthMustBe');
             err = true;
         }
 
         if(err){
-            notice({level: 'error', header: 'Attention!', msg});
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             return;
         }
 
@@ -83,18 +83,18 @@ class SetPassword extends React.Component<any, any>{
                     <Steps step='1' />
                     <div className='content clearfix'>
                         <section className='setPasswordsBl'>
-                            <p> The password must be strong.</p>
+                            <p> {t('ThePasswordMustBeStrong')}</p>
                             <p className='row'>
                                 <span className='col-11'>
-                                    In case you lost your password, you lost all your data. It is NOT possible to access your account without a password and there is no forgot my password option here. Do not forget it.
+                                {t('InCaseYouLostYourPassword')}
                                 </span>
                                 <span className='col-1 pull-right'>
-                                    <a data-tip='We store your private keys encrypted and <br />in same format as ethereum node' data-html={true} className='font-18'>
+                                    <a data-tip={t('WeStoreYourPrivateKeys')} data-html={true} className='font-18'>
                                         <i className='md md-help' />
                                     </a>
                                 </span>
                             </p>
-                            <p>We will use this password as a key for encrypting your private key.</p>
+                            <p>{t('WeWillUseThisPassword')}</p>
                             <div className='form-group'>
                                 <div className='col-12'>
                                     <input
@@ -102,7 +102,7 @@ class SetPassword extends React.Component<any, any>{
                                         type='password'
                                         data-payload-value='pwd'
                                         required={true}
-                                        placeholder='Password'
+                                        placeholder={t('Password')}
                                         onChange={this.onUserInput.bind(this)}
                                         value={this.state.pwd}
                                     />
@@ -115,7 +115,7 @@ class SetPassword extends React.Component<any, any>{
                                         type='password'
                                         data-payload-value='conf'
                                         required={true}
-                                        placeholder='Confirmation'
+                                        placeholder={t('Confirmation')}
                                         onChange={this.onUserInput.bind(this)}
                                         value={this.state.conf}
                                     />

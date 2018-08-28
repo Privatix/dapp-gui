@@ -1,10 +1,13 @@
 import * as React from 'react';
-import Steps from './steps';
 import { withRouter } from 'react-router-dom';
-import {PreviousButton, createPrivateKey} from './utils';
+import { translate } from 'react-i18next';
+
+import Steps from './steps';
+import {PreviousButton, NextButton, createPrivateKey} from './utils';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
 
+@translate(['auth/importHexKey', 'auth/setAccount', 'auth/generateKey', 'auth/importJsonKey', 'utils/notice'])
 class ImportHexKey extends React.Component<any, any>{
 
     constructor(props: any){
@@ -21,6 +24,7 @@ class ImportHexKey extends React.Component<any, any>{
 
         evt.preventDefault();
 
+        const { t } = this.props;
         let {privateKey, name} = this.state;
         let msg = '';
         let err = false;
@@ -29,16 +33,16 @@ class ImportHexKey extends React.Component<any, any>{
             privateKey = privateKey.substr(2);
         }
         if(!/^[0-9a-z]{64}$/i.test(privateKey)){
-            msg += ' Private key must have exactly 64 hex symbols.';
+            msg += ' ' + t('PrivateKeyMustHave');
             err = true;
         }
         if(name === ''){
-            msg += ' Accounts name can\'t be empty.';
+            msg += ' ' + t('auth/generateKey:AccountsNameCantBeEmpty');
             err = true;
         }
 
         if(err){
-            notice({level: 'error', header: 'Attention!', msg});
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             return;
         }
 
@@ -57,17 +61,11 @@ class ImportHexKey extends React.Component<any, any>{
 
     render(){
 
-        const GenerateNewAccButton = () => <button
-            className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
-            type='button'
-            onClick={this.onSubmit.bind(this)}
-          >
-            Next
-          </button>;
+        const { t } = this.props;
 
         return <div className='card-box'>
             <div className='panel-heading'>
-                <h4 className='text-center'> Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>
+                <h4 className='text-center'> {t('auth/setAccount:SetTheContractAccount')} <strong className='text-custom'>Privatix</strong> </h4>
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
@@ -75,22 +73,27 @@ class ImportHexKey extends React.Component<any, any>{
                     <div className='content clearfix'>
                         <section>
                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Name:</label>
+                                <label className='col-2 col-form-label'>{t('auth/generateKey:Name')}:</label>
                                 <div className='col-8'>
-                                    <input data-payload-value='name' type='text' name='name' className='form-control' onChange={this.onUserInput.bind(this)} />
+                                    <input data-payload-value='name'
+                                           type='text'
+                                           name='name'
+                                           className='form-control'
+                                           onChange={this.onUserInput.bind(this)}
+                                    />
                                 </div>
                            </div>
-                           <p>Please, input hex representation of your Private Key for address, that holds PRIX</p>
+                           <p>{t('PleaseInputHexRepresentation')}</p>
                            <div className='form-group row'>
                             <div className='col-12'>
-                                <label>Private key:</label>
+                                <label>{t('PrivateKey')}:</label>
                                 <textarea data-payload-value='privateKey' className='form-control' onChange={this.onUserInput.bind(this)} ></textarea>
                               </div>
                            </div>
-                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>More information about Ethereum Private Key</a>
+                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('auth/importJsonKey:MoreInformation')}</a>
                            <div className='form-group text-right m-t-40'>
                                 <PreviousButton />
-                                <GenerateNewAccButton />
+                                <NextButton onSubmit={this.onSubmit.bind(this)} />
                            </div>
                         </section>
                     </div>

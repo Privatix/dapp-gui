@@ -1,12 +1,15 @@
 import * as React from 'react';
-import Steps from './steps';
 import { withRouter } from 'react-router-dom';
+import { translate } from 'react-i18next';
 import * as keythereum from 'keythereum';
+
+import Steps from './steps';
+import {PreviousButton, NextButton, createPrivateKey} from './utils';
 import {fetch} from '../../utils/fetch';
-import {PreviousButton, createPrivateKey} from './utils';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
 
+@translate(['auth/importJsonKey', 'auth/setAccount', 'auth/generateKey', 'utils/notice'])
 class ImportJsonKey extends React.Component<any, any>{
 
     constructor(props: any){
@@ -27,25 +30,26 @@ class ImportJsonKey extends React.Component<any, any>{
     async onSubmit(evt: any){
         evt.preventDefault();
 
+        const { t } = this.props;
         const {pwd, fileName, name} = this.state;
         let msg = '';
         let err = false;
 
         if(name === ''){
-            msg += ' Account\'s name can\'t be empty.';
+            msg += ' ' + t('auth/generateKey:AccountsNameCantBeEmpty');
             err = true;
         }
         if(fileName === ''){
-            msg += ' No file chosen.';
+            msg += ' ' + t('NoFileChosen');
             err = true;
         }
         if(pwd === ''){
-            msg += ' Please set the password.';
+            msg += ' ' + t('PleaseSetThePassword');
             err = true;
         }
 
         if(err){
-            notice({level: 'error', header: 'attention!', msg});
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             return;
         }
 
@@ -56,8 +60,8 @@ class ImportJsonKey extends React.Component<any, any>{
         try {
             pk = keythereum.recover(pwd, keyObject);
         } catch (err) {
-            msg = 'Please enter a valid password.';
-            notice({level: 'error', header: 'attention!', msg});
+            msg = t('PleaseEnterAValidPassword');
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             return;
         }
         const key = pk.toString('base64').split('+').join('-').split('/').join('_');
@@ -74,18 +78,11 @@ class ImportJsonKey extends React.Component<any, any>{
 
     render(){
 
-        const GenerateNewAccButton = () => <button
-            className='btn btn-default text-uppercase waves-effect waves-light m-l-5'
-            type='button'
-            onClick={this.onSubmit.bind(this)}
-          >
-            Next
-          </button>;
-
+        const { t } = this.props;
 
         return <div className='card-box'>
             <div className='panel-heading'>
-                <h4 className='text-center'> Set the contract account of <strong className='text-custom'>Privatix</strong> </h4>
+                <h4 className='text-center'> {t('auth/setAccount:SetTheContractAccount')} <strong className='text-custom'>Privatix</strong> </h4>
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
@@ -93,27 +90,38 @@ class ImportJsonKey extends React.Component<any, any>{
                     <div className='content clearfix'>
                         <section>
                            <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Name:</label>
+                                <label className='col-2 col-form-label'>{t('auth/generateKey:Name')}:</label>
                                 <div className='col-8'>
-                                    <input data-payload-value='name' type='text' name='name' className='form-control' value={this.state.name}  onChange={this.onUserInput.bind(this)} />
+                                    <input data-payload-value='name'
+                                           type='text'
+                                           name='name'
+                                           className='form-control'
+                                           value={this.state.name}
+                                           onChange={this.onUserInput.bind(this)}
+                                    />
                                 </div>
                            </div>
                            <div className='form-group row'>
                             <div className='col-12'>
-                                <label>Path to JSON Keystore File:</label>
+                                <label>{t('PathToJSONKeystoreFile')}:</label>
                                 <input type='file' className='form-control' onChange={this.onFileSelected.bind(this)} />
                               </div>
                            </div>
                            <div className='form-group row'>
                             <div className='col-12'>
-                                <label>Password (will be used to decrypt JSON)</label>
-                                <input data-payload-value='pwd' type='password' className='form-control' value={this.state.pwd}  onChange={this.onUserInput.bind(this)}/>
+                                <label>{t('PasswordWillBeUsed')}</label>
+                                <input data-payload-value='pwd'
+                                       type='password'
+                                       className='form-control'
+                                       value={this.state.pwd}
+                                       onChange={this.onUserInput.bind(this)}
+                                />
                               </div>
                            </div>
-                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>More information about Ethereum Private Key</a>
+                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('MoreInformation')}</a>
                            <div className='form-group text-right m-t-40'>
                                 <PreviousButton />
-                                <GenerateNewAccButton />
+                                <NextButton onSubmit={this.onSubmit.bind(this)} />
                             </div>
                         </section>
                     </div>
