@@ -42,7 +42,6 @@ class Backup extends React.Component<any, any>{
         fetch('/backup', {body: {pk: this.props.privateKey, fileName: this.state.fileName}})
             .then((res:any) => {
                 if(res.err){
-                    console.log(res);
                     notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
                 }else{
                     this.props.history.push(this.props.entryPoint);
