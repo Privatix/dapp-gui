@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
+import { translate } from 'react-i18next';
 import {Mode} from '../typings/mode';
 import {State} from '../typings/state';
 
@@ -8,8 +9,10 @@ import {State} from '../typings/state';
 
 interface Props {
     mode: Mode;
+    t: any;
 }
 
+@translate(['navigation'])
 class Navigation extends React.Component<Props, any> {
 
     constructor(props: Props) {
@@ -34,6 +37,9 @@ class Navigation extends React.Component<Props, any> {
     }
 
     render(){
+
+        const { t } = this.props;
+
         return this.props.mode === Mode.AGENT ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
@@ -41,32 +47,38 @@ class Navigation extends React.Component<Props, any> {
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/' activeClassName='active' className='waves-effect'>
-                                <i className='ti-home'></i><span> Dashboard </span>
+                                <i className='ti-home'></i><span> {t('Dashboard')} </span>
                             </NavLink>
                         </li>
 
                         <li className='has_sub' aria-current={this.state.submenu ? 'page' : null}>
                             <div onClick={this.handleClick.bind(this)}>
                                 <NavLink to='/channels/all' activeClassName='active' className='waves-effect'>
-                                    <i className='fa fa-tasks'></i> <span> Services </span> <span className='menu-arrow'></span>
+                                    <i className='fa fa-tasks'></i> <span> {t('Services')} </span> <span className='menu-arrow'></span>
                                 </NavLink>
                             </div>
                             <ul className='list-unstyled sub_menu'>
-                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/active' className='waves-effect'>Active</NavLink></li>
-                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/channelsByStatus/terminated' className='waves-effect'>History</NavLink></li>
-                                <li onClick={this.handleClickTrue.bind(this)}><NavLink activeClassName='active_sub' exact to='/sessions/all' className='waves-effect'>Sessions</NavLink></li>
+                                <li onClick={this.handleClickTrue.bind(this)}>
+                                    <NavLink activeClassName='active_sub' exact to='/channelsByStatus/active' className='waves-effect'>{t('Active')}</NavLink>
+                                </li>
+                                <li onClick={this.handleClickTrue.bind(this)}>
+                                    <NavLink activeClassName='active_sub' exact to='/channelsByStatus/terminated' className='waves-effect'>{t('History')}</NavLink>
+                                </li>
+                                <li onClick={this.handleClickTrue.bind(this)}>
+                                    <NavLink activeClassName='active_sub' exact to='/sessions/all' className='waves-effect'>{t('Sessions')}</NavLink>
+                                </li>
                             </ul>
                         </li>
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/offerings/all' activeClassName='active' className='waves-effect'>
-                                <i className='ion-network'></i><span> Offerings </span>
+                                <i className='ion-network'></i><span> {t('Offerings')} </span>
                             </NavLink>
                         </li>
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
-                                <i className='fa fa-server'></i><span> Servers </span>
+                                <i className='fa fa-server'></i><span> {t('Servers')} </span>
                             </NavLink>
                         </li>
 
@@ -83,12 +95,12 @@ class Navigation extends React.Component<Props, any> {
                     <ul>
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/client-dashboard-start' activeClassName='active' className='waves-effect'>
-                                <i className='ti-home'></i><span> Client Dashboard </span>
+                                <i className='ti-home'></i><span> {t('ClientDashboard')} </span>
                             </NavLink>
                         </li>
                         <li className=''>
                             <NavLink exact to='/client-vpn-list' activeClassName='active' className='waves-effect'>
-                                <i className='md md-toc'></i><span> VPN List </span>
+                                <i className='md md-toc'></i><span> {t('VPNList')} </span>
                             </NavLink>
                         </li>
                         {/*<li className=''>*/}
@@ -98,7 +110,7 @@ class Navigation extends React.Component<Props, any> {
                         {/*</li>*/}
                         <li className=''>
                             <NavLink exact to='/client-history' activeClassName='active' className='waves-effect'>
-                                <i className='fa fa-history'></i><span> History </span>
+                                <i className='fa fa-history'></i><span> {t('History')} </span>
                             </NavLink>
                         </li>
                     </ul>

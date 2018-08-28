@@ -62,6 +62,37 @@
         "Next": "Далее",
         "Previous": "Назад"
     },
+    "header": {
+        "Accounts": "Аккаунты",
+        "Help": "Помощь",
+        "SwitchToClient": "в режим Клиент",
+        "SwitchToAgent": "в режим Агент",
+        "Settings": "Настройки",
+        "Logs": "Логи",
+        "user": "пользователь",
+        "SomethingWentWrong": "Что то пошло не так!",
+        "UserWasSwitchedToAGENT": "Успешно переключено в режим Агент",
+        "UserWasSwitchedToCLIENT": "Успешно переключено в режим Клиент"
+    },
+    "navigation": {
+        "Dashboard": "Панель управления",
+        "Services": "Сервисы",
+        "Active": "Активные",
+        "History": "История",
+        "Sessions": "Сессии",
+        "Offerings": "Офферинги",
+        "Servers": "Серверы",
+        "ClientDashboard": "Панель управления клиента",
+        "VPNList": "Список VPN"
+    },
+    "topPanel": {
+        "ETHBalance": "Баланс ETH",
+        "ExchangeBalance": "Баланс контракта",
+        "ServiceBalance": "Баланс сервиса",
+        "ActiveServices": "Активно сервисов",
+        "Status": "Статус",
+        "TotalTraffic": "Всего трафика"
+    },
     "utils/notice": {
         "Error!": "Ошибка!",
         "Attention!": "Внимание!",

@@ -25,6 +25,8 @@ async function AsyncStart (props:any){
 
     const settings = await api.settings.getLocal();
 
+    i18n.changeLanguage(settings.lang);
+
     const MemoryHistory = createMemoryHistory();
     const wizard = <Router history={MemoryHistory as any}>
         <Switch>
