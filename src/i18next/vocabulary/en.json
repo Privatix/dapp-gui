@@ -61,6 +61,37 @@
         "Next": "Next",
         "Previous": "Previous"
     },
+    "header": {
+        "Accounts": "Accounts",
+        "Help": "Help",
+        "SwitchToClient": "Switch to Client",
+        "SwitchToAgent": "Switch to Agent",
+        "Settings": "Settings",
+        "Logs": "Logs",
+        "user": "user",
+        "SomethingWentWrong": "Something went wrong!",
+        "UserWasSwitchedToAGENT": "User mode was successfully switched to AGENT",
+        "UserWasSwitchedToCLIENT": "User mode was successfully switched to CLIENT"
+    },
+    "navigation": {
+        "Dashboard": "Dashboard",
+        "Services": "Services",
+        "Active": "Active",
+        "History": "History",
+        "Sessions": "Sessions",
+        "Offerings": "Offerings",
+        "Servers": "Servers",
+        "ClientDashboard": "Client Dashboard",
+        "VPNList": "VPN List"
+    },
+    "topPanel": {
+        "ETHBalance": "ETH Balance",
+        "ExchangeBalance": "Exchange Balance",
+        "ServiceBalance": "Service balance",
+        "ActiveServices": "Active Services",
+        "Status": "Status",
+        "TotalTraffic": "Total Traffic"
+    },
     "utils/notice": {
         "Error!": "Error!",
         "Attention!": "Attention!",

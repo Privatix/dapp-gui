@@ -64,7 +64,7 @@ export const asyncProviders: AsyncProviders = {
                 });
         };
     },
-    setMode: function(mode:Mode, history: any){
+    setMode: function(mode:Mode, history: any, t: any){
         return function(dispatch: any){
             api.setUserMode(mode)
                .then(res => {
@@ -76,9 +76,9 @@ export const asyncProviders: AsyncProviders = {
                        } else {
                            history.push('/client-dashboard-start');
                        }
-                       notice({level: 'info', title: 'Congratulations!', msg: 'User mode was successfully switched to ' + mode.toUpperCase()});
+                       notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('UserWasSwitchedTo' + mode.toUpperCase())});
                    } else {
-                       notice({level: 'error', title: 'Attention!', msg: 'Something went wrong!'});
+                       notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
                    }
                });
         };
