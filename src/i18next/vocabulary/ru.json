@@ -66,5 +66,25 @@
         "Error!": "Ошибка!",
         "Attention!": "Внимание!",
         "Congratulations!": "Поздравляем!"
+    },
+    "logs/logsList": {
+        "LogsHeader": "Список логов",
+        "ExportBtn": "Экспорт в файл",
+        "LogsFilterFrom": "От:",
+        "LogsFilterTo": "До:",
+        "LogsFilterTime": "время",
+        "LogsSearchPlaceholder": "поиск",
+        "NowBtn": "Сейчас",
+        "Level": "Уровень",
+        "Date": "Дата",
+        "Message": "Сообщение",
+        "Context": "Контекст",
+        "Stack": "Стек",
+        "ShowBtn": "показать",
+        "StackTrace": "Стек вывода:"
+    },
+    "logs/logsContext": {
+        "Key": "Ключ",
+        "Value": "Значение"
     }
 }

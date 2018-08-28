@@ -1,4 +1,7 @@
 import * as React from 'react';
+import { translate } from 'react-i18next';
+
+@translate('logs/logsContext')
 
 export default class LogsContext extends React.Component <any, any> {
 
@@ -21,12 +24,14 @@ export default class LogsContext extends React.Component <any, any> {
     }
 
     render() {
+        const { t } = this.props;
+
         return <div>
             <table className='table table-striped-custom table-bordered table-hover'>
                 <thead>
                     <tr>
-                        <th>Key</th>
-                        <th>Value</th>
+                        <th>{t('Key')}</th>
+                        <th>{t('Value')}</th>
                     </tr>
                 </thead>
                 <tbody>

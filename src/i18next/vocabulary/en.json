@@ -65,5 +65,25 @@
         "Error!": "Error!",
         "Attention!": "Attention!",
         "Congratulations!": "Congratulations!"
+    },
+    "logs/logsList": {
+        "LogsHeader": "Logs list",
+        "ExportBtn": "Export to a file",
+        "LogsFilterFrom": "From:",
+        "LogsFilterTo": "To:",
+        "LogsFilterTime": "time",
+        "LogsSearchPlaceholder": "search",
+        "NowBtn": "Now",
+        "Level": "Level",
+        "Date": "Date",
+        "Message": "Message",
+        "Context": "Context",
+        "Stack": "Stack",
+        "ShowBtn": "show",
+        "StackTrace": "Stack trace:"
+    },
+    "logs/logsContext": {
+        "Key": "Key",
+        "Value": "Value"
     }
 }

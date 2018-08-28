@@ -5,7 +5,7 @@ import ModalWindow from '../modalWindow';
 import SortableTable from 'react-sortable-table-vilan';
 import DateSorter from '../utils/sorters/sortingDate';
 import DatePicker from 'react-datepicker';
-import moment from 'moment/src/moment';
+import * as moment from 'moment';
 import LogsTime from '../utils/logsTime';
 import LogsStack from './logsStack';
 import LogsContext from './logsContext';
@@ -14,7 +14,10 @@ import {remote} from 'electron';
 const {dialog} = remote;
 import Pagination from 'react-js-pagination';
 import notice from '../../utils/notice';
+import { translate } from 'react-i18next';
 import 'react-datepicker/dist/react-datepicker.css';
+
+@translate('logs/logsList')
 
 class Logs extends React.Component <any,any> {
 
@@ -79,6 +82,7 @@ class Logs extends React.Component <any,any> {
         }
 
         const logs = await api.logs.getLogs(query.join('&'));
+        const { t } = this.props;
 
         const logsDataArr = [];
         (logs.items as any).map(log => {
@@ -88,8 +92,8 @@ class Logs extends React.Component <any,any> {
                 level: log.Level,
                 date: log.Time,
                 message: log.Message,
-                context: context !== '{}' ? <ModalWindow customClass='btn btn-link waves-effect' modalTitle='Context' text='show' component={<LogsContext context={log.Context} />} /> : '',
-                stack:  log.Stack !== null ? <ModalWindow customClass='btn btn-link waves-effect' modalTitle='Stack trace:' text='show' component={<LogsStack context={log.Stack} />} /> : ''
+                context: context !== '{}' ? <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('Context')} text={t('ShowBtn')} component={<LogsContext context={log.Context} />} /> : '',
+                stack:  log.Stack !== null ? <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('StackTrace')} text={t('ShowBtn')} component={<LogsStack context={log.Stack} />} /> : ''
             };
 
             logsDataArr.push(row);
@@ -200,24 +204,24 @@ class Logs extends React.Component <any,any> {
         if (moment(dateTo, 'M/D/YYYY').diff(moment(dateFrom, 'M/D/YYYY'), 'days') > 5) {
             notice({
                 level: 'warning',
-                title: 'Warning!',
                 msg: 'Please, don\'t select logs in more than 5 days. It can take a lot of time!'
             });
         }
     }
 
     render() {
+        const { t } = this.props;
 
         const columns = [
             {
-                header: 'Level',
+                header: t('Level'),
                 key: 'level',
                 render: (level) => {
                     return <span className={`label label-table label-${this.labelClasses[level]}`}>{level}</span>;
                 }
             },
             {
-                header: 'Date',
+                header: t('Date'),
                 key: 'date',
                 dataProps: {className: 'minWidth160'},
                 descSortFunction: DateSorter.desc,
@@ -225,17 +229,17 @@ class Logs extends React.Component <any,any> {
                 render: (date) => <LogsTime time={date} />
             },
             {
-                header: 'Message',
+                header: t('Message'),
                 key: 'message',
                 sortable: false
             },
             {
-                header: 'Context',
+                header: t('Context'),
                 key: 'context',
                 sortable: false
             },
             {
-                header: 'Stack',
+                header: t('Stack'),
                 key: 'stack',
                 sortable: false
 
@@ -246,7 +250,7 @@ class Logs extends React.Component <any,any> {
             <div className='container-fluid'>
                 <div className='row'>
                     <div className='col-sm-12 m-b-15'>
-                        <h3 className='page-title'>Logs list</h3>
+                        <h3 className='page-title'>{t('LogsHeader')}</h3>
                     </div>
                 </div>
                 <div className='row'>
@@ -254,7 +258,7 @@ class Logs extends React.Component <any,any> {
                         <div className='card-box'>
                             <div>
                                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-30'
-                                    onClick={this.exportToFile.bind(this)}>Export to a file</button>
+                                    onClick={this.exportToFile.bind(this)}>{t('ExportBtn')}</button>
                             </div>
                             <div className='form-group row'>
                                 <div className='col-md-12 m-t-10 m-b-10'>
@@ -263,7 +267,7 @@ class Logs extends React.Component <any,any> {
                                             <span className='input-group-text'><i className='fa fa-search'></i></span>
                                         </div>
                                         <input className='form-control logsSearchInput' type='search' name='query'
-                                               placeholder='search' value={this.state.searchText}
+                                               placeholder={t('LogsSearchPlaceholder')} value={this.state.searchText}
                                                onKeyPress={this.handleSearch.bind(this)}
                                                onChange={this.handleChangeSearch.bind(this)} />
                                         <div className={'searchClear' + (this.state.searchText === '' ? ' hidden' : '')}>
@@ -295,7 +299,7 @@ class Logs extends React.Component <any,any> {
                                 </div>
                                 <div className='col-xl-3 col-lg-12 col-md-6 col-sm-12 col-xs-12 col-12 logsTimeFilterFromBl'>
                                     <div className='form-group row'>
-                                        <label className='col-md-2 col-2 col-form-label text-right'>From:</label>
+                                        <label className='col-md-2 col-2 col-form-label text-right'>{t('LogsFilterFrom')}</label>
                                         <div className='col-md-10 col-10'>
                                             <div className='input-group'>
                                                 <DatePicker
@@ -304,7 +308,7 @@ class Logs extends React.Component <any,any> {
                                                     timeFormat='HH:mm'
                                                     timeIntervals={10}
                                                     dateFormat='h:mm A DD-MMM-YY'
-                                                    timeCaption='time'
+                                                    timeCaption={t('LogsFilterTime')}
                                                     className='form-control form-control-datepicker'
                                                     onChange={this.handleChangeDateFrom.bind(this)}
                                                 />
@@ -317,7 +321,7 @@ class Logs extends React.Component <any,any> {
                                 </div>
                                 <div className='col-xl-4 col-lg-12 col-md-6 col-sm-12 col-xs-12 col-12 logsTimeFilterToBl'>
                                     <div className='form-group row'>
-                                        <label className='col-md-2 col-2 col-form-label text-right'>To:</label>
+                                        <label className='col-md-2 col-2 col-form-label text-right'>{t('LogsFilterTo')}</label>
                                         <div className='col-md-10 col-10'>
                                             <div className='input-group'>
                                                 <DatePicker
@@ -326,7 +330,7 @@ class Logs extends React.Component <any,any> {
                                                     timeFormat='HH:mm'
                                                     timeIntervals={10}
                                                     dateFormat='h:mm A DD-MMM-YY'
-                                                    timeCaption='time'
+                                                    timeCaption={t('LogsFilterTime')}
                                                     className='form-control form-control-datepicker'
                                                     onChange={this.handleChangeDateTo.bind(this)}
                                                 />
@@ -335,7 +339,7 @@ class Logs extends React.Component <any,any> {
                                                     <span className='input-group-text input-group-text-bordered'><i className='md md-event-note'></i></span>
                                                 </div>
 
-                                                <button className='btn btn-white waves-effect m-l-15 p-t-7 p-b-8' onClick={this.handleNow.bind(this)}>Now</button>
+                                                <button className='btn btn-white waves-effect m-l-15 p-t-7 p-b-8' onClick={this.handleNow.bind(this)}>{t('NowBtn')}</button>
                                             </div>
                                         </div>
                                     </div>

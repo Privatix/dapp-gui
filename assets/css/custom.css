@@ -620,6 +620,9 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
 .logsTimeFilterToBl .react-datepicker-popper{
     min-width: 300px;
 }
+.react-datepicker__time-container  .react-datepicker-time__header{
+    font-size: 14px;
+}
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
