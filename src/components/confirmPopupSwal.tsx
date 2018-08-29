@@ -2,6 +2,9 @@ import * as React from 'react';
 
 import ReactSweetAlert from 'react-sweetalert-vilan';
 import {fetch} from '../utils/fetch';
+import { translate } from 'react-i18next';
+
+@translate('confirmPopupSwal')
 
 export default class ConfirmPopupSwal extends React.Component<any, any>{
 
@@ -37,6 +40,8 @@ export default class ConfirmPopupSwal extends React.Component<any, any>{
     }
 
     render(){
+        const { t } = this.props;
+
         return (
             <div>
                 <p><button onClick={this.showPopUpSwal.bind(this)} className={this.props.class}>{this.props.title}</button></p>
@@ -46,6 +51,7 @@ export default class ConfirmPopupSwal extends React.Component<any, any>{
                     showCancel
                     closeOnClickOutside={false}
                     confirmBtnText={this.props.swalConfirmBtnText}
+                    cancelBtnText={t('CancelBtn')}
                     confirmBtnCssClass='swal2-styled'
                     cancelBtnCssClass='swal2-styled'
                     title={this.props.swalTitle}

@@ -111,10 +111,71 @@
         "Context": "Context",
         "Stack": "Stack",
         "ShowBtn": "show",
-        "StackTrace": "Stack trace:"
+        "StackTrace": "Stack trace:",
+        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!"
     },
     "logs/logsContext": {
         "Key": "Key",
         "Value": "Value"
+    },
+    "accounts/accountsList": {
+        "Title": "Accounts",
+        "CreateBtn": "Create an account",
+        "Name": "Name",
+        "EthereumAddress": "Ethereum address",
+        "ETH": "ETH",
+        "ExchangeBalance": "Exchange balance",
+        "ServiceBalance": "Service balance",
+        "IsDefault": "Is Default",
+        "Actions": "Actions",
+        "CheckBalanceBtn": "Check balance",
+        "ModalTitle": "Account",
+        "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes."
+    },
+    "accounts/accountView": {
+        "ErrorMoreThanZero": "Amount must be more than zero.",
+        "ErrorNotEnoughExchangeFunds": " Not enough funds on Exchange balance.",
+        "ErrorNotEnoughServiceFunds": " Not enough funds on Service balance.",
+        "ErrorNotEnoughPublishFunds": " Not enough funds to publish transaction.",
+        "SuccessMessage": "The data was successfully transmitted. Once the transaction will in the blockchain, you will see it in the list below.",
+        "GeneralInfo": "General Info",
+        "Name": "Name:",
+        "Address": "Address:",
+        "BalanceInfo": "Balance Info",
+        "ExchangeBalance": "Exchange balance:",
+        "ServiceBalance": "Service balance:",
+        "Transfer": "Transfer",
+        "TransferBtn": "Transfer",
+        "From": "From:",
+        "To": "To:",
+        "ExchangeBalanceOption": "Exchange balance",
+        "ServiceBalanceOption": "Service balance",
+        "Amount": "Amount:",
+        "TransactionLog": "Transaction Log",
+        "TransferConfirmBtn": "Yes, transfer!",
+        "TransferSwalTitle": "Are you sure?",
+        "ServiceSwalBalanceFrom": "Service balance",
+        "ExchangeSwalBalanceFrom": "Exchange balance",
+        "ServiceSwalBalance": "Service balance",
+        "ExchangeSwalBalance": "Exchange balance",
+        "TransferSwalText1": "This action will transfer your tokens from",
+        "TransferSwalText2": "to",
+        "TransferSwalText3": ".",
+        "TransferSwalText4": "This operation takes time and gas.",
+        "TransferSwalText5": "You can monitor transaction status in the Transaction log."
+    },
+    "utils/gasRange": {
+        "GasPrice": "Gas price",
+        "AveragePublicationTimeText": "Average publication time:",
+        "AverageAcceptanceTimeText": "Average acceptance time:",
+        "AverageTime": "min",
+        "MoreInformation": "More information:"
+    },
+    "transactions/transactionsList": {
+        "Date": "Date",
+        "EthereumLink": "Ethereum link"
+    },
+    "confirmPopupSwal": {
+        "CancelBtn": "Cancel"
     }
 }

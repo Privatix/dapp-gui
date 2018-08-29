@@ -34,12 +34,14 @@ class Logs extends React.Component <any,any> {
             logsPerPage: 10,
             activePage: 1,
             pages: 1,
-            levels: []
+            levels: [],
+            lang: null
         };
     }
 
     componentDidMount() {
         this.getLogsData();
+        this.getActiveLang();
     }
 
     get labelClasses() {
@@ -52,10 +54,13 @@ class Logs extends React.Component <any,any> {
         };
     }
 
-    async getLogsPerPage() {
-        const settings = (await api.settings.getLocal()) as LocalSettings;
+    async getSettings() {
+        return (await api.settings.getLocal()) as LocalSettings;
+    }
 
-        return settings.logsCountPerPage;
+    async getActiveLang() {
+        const settings = await this.getSettings();
+        this.setState({lang: settings.lang});
     }
 
     async getLogsData(dateFrom:any = null, dateTo:any = null, levels:string[] = []) {
@@ -64,7 +69,8 @@ class Logs extends React.Component <any,any> {
 
         const isoDateFrom = new Date(dateFromData).toISOString();
         const isoDateTo = new Date(dateToData).toISOString();
-        const logsPerPage = await this.getLogsPerPage();
+        const settings = await this.getSettings();
+        const logsPerPage = settings.logsCountPerPage;
 
         // form query params
         let query = [];
@@ -202,9 +208,10 @@ class Logs extends React.Component <any,any> {
 
     alertOnBigDateRangeSelect(dateFrom:string, dateTo:string) {
         if (moment(dateTo, 'M/D/YYYY').diff(moment(dateFrom, 'M/D/YYYY'), 'days') > 5) {
+            const { t } = this.props;
             notice({
                 level: 'warning',
-                msg: 'Please, don\'t select logs in more than 5 days. It can take a lot of time!'
+                msg: t('WarningDateMessage')
             });
         }
     }
@@ -311,6 +318,7 @@ class Logs extends React.Component <any,any> {
                                                     timeCaption={t('LogsFilterTime')}
                                                     className='form-control form-control-datepicker'
                                                     onChange={this.handleChangeDateFrom.bind(this)}
+                                                    locale={this.state.lang}
                                                 />
                                                 <div className='input-group-append'>
                                                     <span className='input-group-text'><i className='md md-event-note'></i></span>
@@ -333,6 +341,7 @@ class Logs extends React.Component <any,any> {
                                                     timeCaption={t('LogsFilterTime')}
                                                     className='form-control form-control-datepicker'
                                                     onChange={this.handleChangeDateTo.bind(this)}
+                                                    locale={this.state.lang}
                                                 />
                                                 
                                                 <div className='input-group-append'>

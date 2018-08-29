@@ -3,10 +3,14 @@ import SortableTable from 'react-sortable-table-vilan';
 import DateSorter from '../utils/sorters/sortingDates';
 import ExternalLink from '../utils/externalLink';
 import PgTime from '../utils/pgTime';
+import { translate } from 'react-i18next';
+
+@translate('transactions/transactionsList')
 
 export default class Transactions extends React.Component<any, any>{
 
     render() {
+        const {t} = this.props;
 
         const transactionsDataArr = (this.props.transactions as any).map((transaction: any) => {
             const tx = `0x${Buffer.from(transaction.hash, 'base64').toString('hex')}`;
@@ -20,14 +24,14 @@ export default class Transactions extends React.Component<any, any>{
 
         const columns = [
             {
-                header: 'Date',
+                header: t('Date'),
                 key: 'date',
                 defaultSorting: 'DESC',
                 descSortFunction: DateSorter.desc,
                 ascSortFunction: DateSorter.asc
             },
             {
-                header: 'Ethereum link',
+                header: t('EthereumLink'),
                 key: 'ethereumLink',
                 sortable: false
             }
