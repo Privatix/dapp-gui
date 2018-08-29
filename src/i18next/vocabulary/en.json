@@ -182,5 +182,8 @@
     },
     "confirmPopupSwal": {
         "CancelBtn": "Cancel"
+    },
+    "client/dashboard/start": {
+        "StartUsingVPN": "Start using VPN"
     }
 }

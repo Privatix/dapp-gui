@@ -70,8 +70,8 @@
     "header": {
         "Accounts": "Аккаунты",
         "Help": "Помощь",
-        "SwitchToClient": "в режим Клиент",
-        "SwitchToAgent": "в режим Агент",
+        "SwitchToClient": "В режим Клиент",
+        "SwitchToAgent": "В режим Агент",
         "Settings": "Настройки",
         "Logs": "Логи",
         "user": "пользователь",
@@ -87,7 +87,7 @@
         "Sessions": "Сессии",
         "Offerings": "Офферинги",
         "Servers": "Серверы",
-        "ClientDashboard": "Панель управления клиента",
+        "ClientDashboard": "Панель управления",
         "VPNList": "Список VPN"
     },
     "topPanel": {
@@ -183,5 +183,8 @@
     },
     "confirmPopupSwal": {
         "CancelBtn": "Отменить"
+    },
+    "client/dashboard/start": {
+        "StartUsingVPN": "Начать использование VPN"
     }
 }

@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import * as api from '../../utils/api';
+import { translate } from 'react-i18next';
+
+@translate('client/dashboard/start')
 
 class StartVPN extends React.Component <any,any> {
 
@@ -31,13 +34,15 @@ class StartVPN extends React.Component <any,any> {
     }
 
     render() {
+        const { t } = this.props;
+
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-t-20'>
                     <button type='button'
                             className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light'
                             onClick={this.startVPNBtnHandler.bind(this)}>
-                        Start using VPN
+                        {t('StartUsingVPN')}
                     </button>
                 </div>
             </div>
