@@ -2,6 +2,7 @@ import * as React from 'react';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 import {asyncReactor} from 'async-reactor';
+import SetLanguage from './auth/setLanguage';
 import SetPassword from './auth/setPassword';
 import SetAccount from './auth/setAccount';
 import GenerateKey from './auth/generateKey';
@@ -30,7 +31,8 @@ async function AsyncStart (props:any){
     const MemoryHistory = createMemoryHistory();
     const wizard = <Router history={MemoryHistory as any}>
         <Switch>
-            <Route exact path='/' component={SetPassword} />
+            <Route exact path='/' component={SetLanguage} />
+            <Route exact path='/setPassword' component={SetPassword} />
             <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
             <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
             <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />

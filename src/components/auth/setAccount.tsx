@@ -33,7 +33,7 @@ class SetAccount extends React.Component<any, any> {
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step='2' />
+                    <Steps step='3' />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('ForTokenTransfers')}</p>

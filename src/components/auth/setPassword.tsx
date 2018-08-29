@@ -3,10 +3,9 @@ import Steps from './steps';
 import { withRouter } from 'react-router-dom';
 import notice from '../../utils/notice';
 import * as ReactTooltip from 'react-tooltip';
-import {NextButton} from './utils';
+import {NextButton, PreviousButton, back} from './utils';
 import * as api from '../../utils/api';
 import { translate } from 'react-i18next';
-import SelectLanguage from '../../i18next/selectLanguage';
 
 @translate(['auth/setPassword', 'utils/notice'])
 class SetPassword extends React.Component<any, any>{
@@ -15,6 +14,8 @@ class SetPassword extends React.Component<any, any>{
         super(props);
         this.state = {pwd: '', conf: ''};
     }
+
+    back = back('/').bind(this);
 
     equality(){
 
@@ -38,7 +39,7 @@ class SetPassword extends React.Component<any, any>{
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
     }
 
-    async onSubmit(evt: any){
+    onSubmit = async (evt: any) => {
         const { t } = this.props;
         evt.preventDefault();
 
@@ -75,12 +76,9 @@ class SetPassword extends React.Component<any, any>{
             <div className='panel-heading'>
                 <h4 className='text-center'> {t('setThePassword')} <strong className='text-custom'>Privatix</strong></h4>
             </div>
-            <div className='col-2'>
-                <SelectLanguage />
-            </div>
             <form className='form-horizontal m-t-20' action='#' onSubmit={this.onSubmit.bind(this)} >
             <div className='p-20 wizard clearfix'>
-                    <Steps step='1' />
+                    <Steps step='2' />
                     <div className='content clearfix'>
                         <section className='setPasswordsBl'>
                             <p> {t('ThePasswordMustBeStrong')}</p>
@@ -123,7 +121,8 @@ class SetPassword extends React.Component<any, any>{
                             </div>
                             <div className='form-group text-right m-t-40'>
                                 <div className='col-12'>
-                                    <NextButton onSubmit={this.onSubmit.bind(this)} />
+                                    <PreviousButton onSubmit={this.back} />
+                                    <NextButton onSubmit={this.onSubmit} />
                                 </div>
                             </div>
                             <ReactTooltip place='top' type='dark' effect='float'/>

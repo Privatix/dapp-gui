@@ -4,7 +4,7 @@ import { translate } from 'react-i18next';
 import * as keythereum from 'keythereum';
 
 import Steps from './steps';
-import {PreviousButton, NextButton, createPrivateKey} from './utils';
+import {PreviousButton, NextButton, back, createPrivateKey} from './utils';
 import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
@@ -17,6 +17,8 @@ class ImportJsonKey extends React.Component<any, any>{
         this.state = {name: '', fileName: '', pwd: ''};
     }
 
+    back = back('/setAccount').bind(this);
+
     onUserInput(evt: any){
 
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
@@ -27,7 +29,7 @@ class ImportJsonKey extends React.Component<any, any>{
         this.setState({fileName});
     }
 
-    async onSubmit(evt: any){
+    onSubmit = async (evt: any) => {
         evt.preventDefault();
 
         const { t } = this.props;
@@ -86,7 +88,7 @@ class ImportJsonKey extends React.Component<any, any>{
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step='3' />
+                    <Steps step='4' />
                     <div className='content clearfix'>
                         <section>
                            <div className='form-group row'>
@@ -120,8 +122,8 @@ class ImportJsonKey extends React.Component<any, any>{
                            </div>
                            <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('MoreInformation')}</a>
                            <div className='form-group text-right m-t-40'>
-                                <PreviousButton />
-                                <NextButton onSubmit={this.onSubmit.bind(this)} />
+                                <PreviousButton onSubmit={this.back} />
+                                <NextButton onSubmit={this.onSubmit} />
                             </div>
                         </section>
                     </div>

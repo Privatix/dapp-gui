@@ -59,7 +59,7 @@ class Backup extends React.Component<any, any>{
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step='4' />
+                    <Steps step='5' />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('ToPreventEthereumAddress')}</p>
