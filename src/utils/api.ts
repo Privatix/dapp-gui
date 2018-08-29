@@ -76,7 +76,11 @@ export const getClientOfferings = function(): Promise<ClientOffering[]>{
     // if you need to add parameters to this function - just make them optional
     // or change call in client_components/connections/connection.tsx
     return fetch('/client/offerings', {}) as Promise<ClientOffering[]>;
+};
 
+export const getClientOfferingById = function(offeringId: string): Promise<Offering>{
+    return (fetch(`/client/offerings/?id=${offeringId}`) as Promise<Offering[]>)
+        .then(offerings => offerings.length ? offerings[0] : null);
 };
 
 export const getSessions = function(channelId?: string): Promise<Session[]>{
