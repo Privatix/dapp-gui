@@ -28,12 +28,8 @@ class Connection extends React.Component<any, any>{
     }
 
     updateOffering(offeringId: string){
-
-        api.getClientOfferings()
-           .then(offerings => {
-
-               const offering = offerings.find(offering => offering.id === offeringId);
-
+        api.getClientOfferingById(offeringId)
+           .then(offering => {
                if(offering){
                    this.setState({offering});
                }
