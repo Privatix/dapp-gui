@@ -64,7 +64,7 @@ class CreateOffering extends React.Component<any, any>{
                 const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
                 const template = templates[0];
-                template.raw = JSON.parse(atob(template.raw));
+                // template.raw = JSON.parse(atob(template.raw));
                 this.setState({payload, template});
             });
     }
