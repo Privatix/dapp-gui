@@ -1,4 +1,8 @@
 {
+    "auth/setLanguage": {
+        "chooseTheLanguage": "Выберите язык интерфейса",
+        "PleaseSelectLanguage": "Выберите пожалуйста язык"
+    },
     "auth/setPassword": {
         "setThePassword": "Установка пароля для",
         "Password": "Пароль",
@@ -52,6 +56,7 @@
         "Browse": "Выбрать"
     },
     "auth/steps": {
+        "Language": "Язык",
         "Password": "Пароль",
         "Import": "Импорт ключей",
         "Account": "Аккаунт",
