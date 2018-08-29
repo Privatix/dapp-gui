@@ -185,5 +185,11 @@
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
+    },
+    "agent/dashboard": {
+        "TotalIncome": "Total income:",
+        "RefreshAllBtn": "Refresh all",
+        "ActiveServices": "Active Services",
+        "ActiveOfferings": "Active Offerings"
     }
 }

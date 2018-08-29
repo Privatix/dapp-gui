@@ -186,5 +186,11 @@
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Начать использование VPN"
+    },
+    "agent/dashboard": {
+        "TotalIncome": "Общая прибыль:",
+        "RefreshAllBtn": "Обновить все",
+        "ActiveServices": "Активные Сервисы",
+        "ActiveOfferings": "Активные Предложения"
     }
 }
