@@ -7,6 +7,9 @@ import { withRouter } from 'react-router-dom';
 import GasRange from '../../components/utils/gasRange';
 import {LocalSettings} from '../../typings/settings';
 import toFixed8 from '../../utils/toFixed8';
+import { translate } from 'react-i18next';
+
+@translate('utils/gasRange')
 
 class AcceptOffering extends React.Component<any, any>{
 
@@ -100,7 +103,7 @@ class AcceptOffering extends React.Component<any, any>{
 
 
     render(){
-
+        const {t} = this.props;
         const offering = this.props.offering;
 
         const selectAccount =  <Select className='form-control'
@@ -196,7 +199,7 @@ class AcceptOffering extends React.Component<any, any>{
                                 </div>
                             </div>
                             <GasRange onChange={this.onGasPriceChanged.bind(this)} value={Math.floor(this.state.gasPrice/1e9)}
-                                      extLinkText='Information about Gas price' averageTimeText={'acceptance'} />
+                                      extLinkText='Information about Gas price' averageTimeText={t('AverageAcceptanceTimeText')} />
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
                                 <div className='col-6 col-form-label font-18'>

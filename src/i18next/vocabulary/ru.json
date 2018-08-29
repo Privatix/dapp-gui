@@ -112,10 +112,71 @@
         "Context": "Контекст",
         "Stack": "Стек",
         "ShowBtn": "показать",
-        "StackTrace": "Стек вывода:"
+        "StackTrace": "Стек вывода:",
+        "WarningDateMessage": "Пожалуйста, не выбирайте логи более чем за 5 дней. Это может занять много времени!"
     },
     "logs/logsContext": {
         "Key": "Ключ",
         "Value": "Значение"
+    },
+    "accounts/accountsList": {
+        "Title": "Аккаунт",
+        "CreateBtn": "Создать аккаунт",
+        "Name": "Имя",
+        "EthereumAddress": "Ethereum адрес",
+        "ETH": "ETH",
+        "ExchangeBalance": "Баланс контракта",
+        "ServiceBalance": "Баланс сервиса",
+        "IsDefault": "По умолчанию",
+        "Actions": "Действия",
+        "CheckBalanceBtn": "Проверить баланс",
+        "ModalTitle": "Аккаунт",
+        "RefreshingAccountBalanceMsg": "Обновление баланса счета. Подождите 1-2 минуты."
+    },
+    "accounts/accountView": {
+        "ErrorMoreThanZero": "Сумма должна быть больше нуля.",
+        "ErrorNotEnoughExchangeFunds": " Недостаточно средств на балансе контракта.",
+        "ErrorNotEnoughServiceFunds": " Недостаточно средств на балансе сервиса.",
+        "ErrorNotEnoughPublishFunds": " Недостаточно средств для публикации транзакции.",
+        "SuccessMessage": "Данные были успешно переданы. Как только транзакция будет в блокчейне, вы увидите ее в списке ниже.",
+        "GeneralInfo": "Главная информация",
+        "Name": "Имя:",
+        "Address": "Адрес:",
+        "BalanceInfo": "Информация о балансе",
+        "ExchangeBalance": "Баланс контракта:",
+        "ServiceBalance": "Баланс сервиса:",
+        "Transfer": "Перевод",
+        "TransferBtn": "Перевести",
+        "From": "Из:",
+        "To": "На:",
+        "ExchangeBalanceOption": "Баланс контракта",
+        "ServiceBalanceOption": "Баланс сервиса",
+        "Amount": "Сумма:",
+        "TransactionLog": "Журнал транзакций",
+        "TransferConfirmBtn": "Да, перевести!",
+        "TransferSwalTitle": "Вы уверены?",
+        "ServiceSwalBalanceFrom": "баланса сервиса",
+        "ExchangeSwalBalanceFrom": "баланса контракта",
+        "ServiceSwalBalance": "баланс сервиса",
+        "ExchangeSwalBalance": "баланс контракта",
+        "TransferSwalText1": "Это действие переведет ваши токены из",
+        "TransferSwalText2": "на",
+        "TransferSwalText3": ".",
+        "TransferSwalText4": "Эта операция требует времени и газа.",
+        "TransferSwalText5": "Вы можете контролировать статус транзакции в журнале транзакций."
+    },
+    "utils/gasRange": {
+        "GasPrice": "Цена газа",
+        "AveragePublicationTimeText": "Среднее время публикации:",
+        "AverageAcceptanceTimeText": "Среднее время приема:",
+        "AverageTime": "мин",
+        "MoreInformation": "Больше информации:"
+    },
+    "transactions/transactionsList": {
+        "Date": "Дата",
+        "EthereumLink": "Ссылка Ethereum"
+    },
+    "confirmPopupSwal": {
+        "CancelBtn": "Отменить"
     }
 }
