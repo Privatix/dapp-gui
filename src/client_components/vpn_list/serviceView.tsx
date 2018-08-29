@@ -6,6 +6,7 @@ import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
 import { withRouter } from 'react-router-dom';
 import TerminateContractButton from '../connections/terminateContractButton';
+import notice from '../../utils/notice';
 
 class ServiceView extends React.Component <any,any> {
 
@@ -180,11 +181,17 @@ class ServiceView extends React.Component <any,any> {
                     <ClientAccessInfo channel={this.state.service} />
 
                 </div>
-                <div className='col-4'>
+                <div className={service.channelStatus.channelStatus === 'active' ? 'col-4' : 'hidden'}>
                     <TerminateContractButton
                         status={service.channelStatus.serviceStatus !== 'terminated' ? 'disabled' : 'active'}
                         channelId={service.id}
-                        done={() => this.props.history.push('/client-history')}
+                        done={() => {
+                            notice({
+                                level: 'info',
+                                msg: 'The contract has been terminated'
+                            });
+                            this.props.history.push('/client-dashboard-start');
+                        }}
                     />
                 </div>
             </div>

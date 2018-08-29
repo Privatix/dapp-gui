@@ -27,8 +27,7 @@ export default class TerminateContractButton extends React.Component<any, any>{
                         swalType='danger'
                         swalConfirmBtnText='Yes, terminate contract!'
                         swalTitle='Are you sure?'
-                        redirectTo='/client-history'
-                        done={this.props.done}/>
+                        done={this.props.done} />
                 </form>
             </div>;
     }
