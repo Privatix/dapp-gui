@@ -30,7 +30,8 @@ class AcceptOffering extends React.Component<any, any>{
         this.state = {
             accounts: [],
             gasPrice: 6*1e9,
-            deposit: (props.offering.unitPrice*props.offering.minUnits),
+            deposit: props.offering.unitPrice * props.offering.minUnits,
+            customDeposit: props.offering.unitPrice * props.offering.minUnits,
             acceptOfferingBtnBl: acceptOfferingBtnBl
         };
     }
@@ -72,11 +73,30 @@ class AcceptOffering extends React.Component<any, any>{
         this.setState({gasPrice: Math.floor(evt.target.value * 1e9)});
     }
 
+    changeDepositHandler(evt:any) {
+        let customDeposit = evt.target.value * 1e8;
+        this.setState({customDeposit});
+    }
+
     async onSubmit(evt: any){
         evt.preventDefault();
         let err = false;
         let msg = '';
         const settings = (await api.settings.getLocal()) as LocalSettings;
+
+        if(this.state.customDeposit < this.state.deposit) {
+            err=true;
+            msg += ' Deposit must be more than ' + toFixed8({number: (this.state.deposit / 1e8)}) + ' PRIX.';
+        }
+
+        if(this.props.offering.maxUnit && parseFloat(this.props.offering.maxUnit) > 0) {
+            const topDepositLimit = this.props.offering.maxUnit * this.props.offering.unitPrice;
+            if (this.state.customDeposit > topDepositLimit) {
+                err = true;
+                msg += ' Deposit must be less than ' + toFixed8({number: (topDepositLimit / 1e8)}) + ' PRIX.';
+            }
+        }
+
 
         if(this.state.account.psc_balance < this.state.deposit){
             err=true;
@@ -93,7 +113,7 @@ class AcceptOffering extends React.Component<any, any>{
             return;
         }
 
-        api.offerings.changeClientOfferingsStatus(this.props.offering.id, 'accept', this.state.account.id, this.state.gasPrice) 
+        api.offerings.changeClientOfferingsStatus(this.props.offering.id, 'accept', this.state.account.id, this.state.gasPrice, this.state.customDeposit)
             .then((res) =>{
                 notice({level: 'info', title: 'Congratulations!', msg: 'offering accepted!'});
                 document.body.classList.remove('modal-open');
@@ -190,7 +210,9 @@ class AcceptOffering extends React.Component<any, any>{
                                 <label className='col-2 col-form-label'>Deposit:</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
-                                        <input id='offeringDeposit' type='text' className='form-control' value={toFixed8({number: (this.state.deposit / 1e8)})} readOnly/>
+                                        <input id='offeringDeposit' type='number' className='form-control' min='0' step='0.01'
+                                               value={toFixed8({number: (this.state.customDeposit / 1e8)})}
+                                               onChange={this.changeDepositHandler.bind(this)}/>
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                     <span className='help-block'>

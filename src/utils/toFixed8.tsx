@@ -1,7 +1,7 @@
 export default function (props: any) {
     const number = props.number;
 
-    if (typeof number === 'undefined' || number === null) {
+    if (typeof number === 'undefined' || number === null || isNaN(number)) {
         return 0;
     }
 
