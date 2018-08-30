@@ -1,4 +1,8 @@
 {
+    "common": {
+        "RefreshAll": "Обновить все",
+        "Select": "Выберите"
+    },
     "auth/setLanguage": {
         "chooseTheLanguage": "Выберите язык интерфейса",
         "PleaseSelectLanguage": "Выберите пожалуйста язык"
@@ -66,6 +70,68 @@
     "auth/utils": {
         "Next": "Далее",
         "Previous": "Назад"
+    },
+    "offerings": {
+        "CreateAnOffering": "Создать офферинг"
+    },
+    "offerings/offerings": {
+        "CreateOffering": "Создать офферинг",
+        "Offerings": "Офферинги"
+    },
+    "offerings/createOffering": {
+        "Server": "Сервер",
+        "GeneralInfo": "Общая информация",
+        "Name": "Название",
+        "serviceNameTitle": "Название сервиса, например VPN",
+        "Description": "Описание",
+        "description": "описание",
+        "Country": "Страна",
+        "Supply": "Количесто слотов",
+        "ie": "например",
+        "MaximumSupplyOfServices": "Максимальное количество слотов согласно предложению.",
+        "ItRepresentsTheMaximum": "Указывает аксимальное число клиентов которые могут одновременно пользоваться услугами сервиса.",
+        "BillingInfo": "Платежная информация",
+        "UnitType": "Единица измерения",
+        "PricePerMB": "Цена за 1 MB",
+        "MaxBillingUnitLag": "Максимальная отсрочка платежа",
+        "MaximumPaymentLagInUnits" : "Максимальное число неоплаченных юнитов (в единицах измерения) после которого Агент прекратит предоставлять услуги.",
+        "MinUnits": "Минимальное число юнитов",
+        "UsedToCalculateMinimumDeposit": "Используется для вычисления минимально необходимого депозита.",
+        "MaxUnits": "Максимальное число юнитов",
+        "UsedToSpecifyMaximumUnits": "Используется для указания максимального числа юниитов которые может предоставить сервис. Необязательно к заполнению.",
+        "ConnectionInfo": "Информация о соединении",
+        "MaxSuspendTime": "Максимальное время ожидания",
+        "sec": "секунд",
+        "MaximumTimeServiceCan": "Максимальное время в течении которого сервис может быть в приостановленном состоянии в ожидании оплаты.",
+        "AfterThisTimePeriodService": "По истечении этого срока сервис будет отключен если оплата не будет получена.",
+        "PeriodIsSpecifiedInSeconds": "Период указан в секундах",
+        "MaxInactiveTime": "Максимальное время бездействия",
+        "MaximumTimeWithoutServiceUsage": "Максимальное время в течении которого пользователь может не пользоваться сервисом",
+        "AgentWillConsider": "По истечении этого срока Агент предполагает что пользователь отказался от услуги и прекращает предоставление сервиса.",
+        "PeriodIsSpecified": "Период указан в секундах.",
+        "PublicationPrice": "Цена публикации предложения",
+        "Account": "Аккаунт",
+        "Deposit": "Депозит",
+        "ThisDepositWillBeLocked": "Эта сумма будет заблокирована пока предложение активно.",
+        "ToReturnDeposit": "Для возврата депозита необходимо отменить предложение.",
+        "CreateAndPublish": "Создать и Опубликовать",
+        "UnitPriceMustBeANumber": "Цена за юнит должна быть числом.",
+        "UnitPriceMustBeMoreThen0": "Цена за юнит должна быть больше 0.",
+        "DepositIsGreaterThenServiceBalance": "Депозит больше чем баланс на контракте. Выберите другой аккаунт или пополните баланс.",
+        "NotEnoughFunds": "Недостаточно средств для публикации транзакции. выберите пожалуйста другой аккаунт.",
+        "MaximumUnitsMustBeEqual": "Максимальное число юнитов должно быть больше либо равно минимальному числу юнитов.",
+        "Field": "Поле",
+        "Field_plural": "Поля",
+        "MustBeInteger": "должно быть целым.",
+        "MustBeInteger_plural": "должны быть целыми.",
+        "isRequired": "обязательно для заполнения.",
+        "isRequired_plural": "обязательны для заполнения.",
+        "haveZeroValue": "имеет нулевое значение.",
+        "haveZeroValue_plural": "имеют нулевое значение.",
+        "haveNegativeValue": "имеет отрицательное значение.",
+        "haveNegativeValue_plural": "имеют отрицательное значение.",
+        "cantBeEmpty": "не может быть пустым.",
+        "cantBeEmpty_plural": "не могут быть пустыми."
     },
     "header": {
         "Accounts": "Аккаунты",
