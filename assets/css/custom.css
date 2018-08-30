@@ -624,6 +624,14 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     font-size: 14px;
 }
 
+.selectLangStep{
+    margin: 20px auto 50px;
+}
+.langSelectBl{
+    width: 200px;
+    margin: 15px auto;
+}
+
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
         max-width: 100%;

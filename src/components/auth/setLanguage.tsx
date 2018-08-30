@@ -25,9 +25,11 @@ class SetLanguage extends React.Component<any, any>{
             <div className='p-20 wizard clearfix'>
                 <Steps step='1' />
                 <div className='content clearfix text-center'>
-                    <div className='col-3' style={{margin: 'auto', position: 'absolute', left: 0, right: 0, top: 0, bottom: 0}} >
-                        <span className='col-3 col-form-label'>{t('PleaseSelectLanguage')}</span><br /><br />
-                        <SelectLanguage />
+                    <div className='col-6 selectLangStep'>
+                        <span className='col-4 col-form-label'>{t('PleaseSelectLanguage')}</span>
+                        <div className='langSelectBl'>
+                            <SelectLanguage />
+                        </div>
                     </div>
                     <section className='setPasswordsBl'>
                         <div className='form-group text-right m-t-40'>
