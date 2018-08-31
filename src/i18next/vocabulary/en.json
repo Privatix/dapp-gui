@@ -5,7 +5,7 @@
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "Choose the language",
-        "PleaseSelectLanguage": "Please, select the language"
+        "PleaseSelectLanguage": "Please, select your language:"
     },
     "auth/setPassword": {
         "setThePassword": "Set the password to",
@@ -50,9 +50,9 @@
         "PrivateKeyMustHave": "Private key must have exactly 64 hex symbols."
     },
     "auth/backup": {
-        "generateKey": "new key hase been succesfully generated and registered!",
-        "importHexKey": "hex key hase been succesfully imported and registered!",
-        "importJsonKey": "JSON Keystore File hase been succesfully imported!",
+        "generateKey": "new key has been successfully generated and registered!",
+        "importHexKey": "hex key has been successfully imported and registered!",
+        "importJsonKey": "JSON Keystore File has been successfully imported!",
         "PleaseBackupYourAccount": "Please backup your account before start working.",
         "SomeErrorOccured": "Some error occured. Can't save file by specified path.",
         "ToPreventEthereumAddress": "To prevent Ethereum address data lost you need to backup your Private Key in a safe location as a file.",
@@ -116,7 +116,7 @@
         "CreateAndPublish": "Create and Publish",
         "UnitPriceMustBeANumber": "Unit price must be a number.",
         "UnitPriceMustBeMoreThen0": "Unit price must be more then 0.",
-        "DepositIsGreaterThenServiceBalance": "Deposit is greater then service balance. Please choose another account or top up the balance.",
+        "DepositIsGreaterThenServiceBalance": "Deposit is greater than service balance. Please choose another account or top up the balance.",
         "NotEnoughFunds": "Not enough funds for publish transaction. Please, select another account.",
         "MaximumUnitsMustBeEqual": "Maximum units must be equal or greater then minimum units.",
         "Field": "Field",
