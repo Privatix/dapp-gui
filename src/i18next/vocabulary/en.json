@@ -1,6 +1,7 @@
 {
     "common": {
         "RefreshAll": "Refresh all",
+        "Refresh": "Refresh",
         "Select": "Select"
     },
     "auth/setLanguage": {
@@ -168,6 +169,39 @@
         "Save": "Save",
         "HostWasSuccessfullyUpdated": "Host was successfully updated!",
         "SomethingWentWrong": "Something went wrong. Try again later!"
+    },
+    "channels/channelsByStatus": {
+        "ActiveServices": "Active Services",
+        "History": "History"
+    },
+    "channels/channelsList": {
+        "AllServices": "All Services"
+    },
+    "channels/channelsListSortTable":{
+        "Server": "Server",
+        "Client": "Client",
+        "ContractStatus": "Contract Status",
+        "ServiceStatus": "Service Status",
+        "Usage": "Usage",
+        "Income": "Income (PRIX)",
+        "ServiceChangedTime": "Service Changed Time"
+    },
+    "sessions/sessionsList": {
+        "TotalStatistics": "Total Statistics",
+        "TotalUsage": "Total usage",
+        "TotalIncome": "Total income",
+        "SessionsCount": "Sessions count",
+        "DetailedStatistics": "Detailed Statistics",
+        "ExportToAFile": "Export to a file",
+        "SavingSessions": "saving sessions",
+        "sessionId": "Session id",
+        "channelId": "Channel id",
+        "Started": "Started",
+        "Stopped": "Stopped",
+        "Usage": "Usage",
+        "LastUsageTime": "Last Usage Time",
+        "ClientIP": "Client IP",
+        "ClientPort": "Client port"
     },
     "header": {
         "Accounts": "Accounts",

@@ -1,6 +1,7 @@
 {
     "common": {
         "RefreshAll": "Обновить все",
+        "Refresh": "Обновить",
         "Select": "Выберите"
     },
     "auth/setLanguage": {
@@ -169,6 +170,39 @@
         "Save": "Сохранить",
         "HostWasSuccessfullyUpdated": "Хост был успешно обновлен!",
         "SomethingWentWrong": "Что то пошло не так! Попробуйте снова позже."
+    },
+    "channels/channelsByStatus": {
+        "ActiveServices": "Активные Сервисы",
+        "History": "История"
+    },
+    "channels/channelsList": {
+        "AllServices": "Все сервисы"
+    },
+    "channels/channelsListSortTable":{
+        "Server": "Сервер",
+        "Client": "Клиент",
+        "ContractStatus": "Статус контракта",
+        "ServiceStatus": "Статус сервиса",
+        "Usage": "Использовано",
+        "Income": "Доход (PRIX)",
+        "ServiceChangedTime": "Время  последнего изменения сервиса"
+    },
+    "sessions/sessionsList": {
+        "TotalStatistics": "Общая статистика",
+        "TotalUsage": "Всего использовано",
+        "TotalIncome": "Общий доход",
+        "SessionsCount": "Количество сессий",
+        "DetailedStatistics": "Детальная статистика",
+        "ExportToAFile": "Экспорт в файл",
+        "SavingSessions": "сохранение сессий",
+        "sessionId": "Id сессии",
+        "channelId": "Id канала",
+        "Started": "Запущен",
+        "Stopped": "Остановлен",
+        "Usage": "Использовано",
+        "LastUsageTime": "Время последней активности",
+        "ClientIP": "IP клиента",
+        "ClientPort": "Порт клиента"
     },
     "header": {
         "Accounts": "Аккаунты",

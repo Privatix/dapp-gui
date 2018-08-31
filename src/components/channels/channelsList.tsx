@@ -1,5 +1,8 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
+
 import {fetch} from '../../utils/fetch';
 import { GetProductIdByOfferingId } from '../products/productByOffering';
 import ChannelsListSortTable from './channelsListSortTable';
@@ -7,11 +10,11 @@ import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
 import toFixed8 from '../../utils/toFixed8';
-import { connect } from 'react-redux';
 import { State } from '../../typings/state';
 import {asyncProviders} from '../../redux/actions';
 import * as api from '../../utils/api';
 
+@translate(['channels/channelsList', 'common'])
 class AsyncChannels extends React.Component<any, any> {
 
     constructor(props: any) {
@@ -45,6 +48,9 @@ class AsyncChannels extends React.Component<any, any> {
     }
 
     render() {
+
+        const { t } = this.props;
+
         const channelsDataArr = (this.state.products as any)
             .map((productId) => this.props.products.find((product) => product.id === productId))
             .map((product, index) => {
@@ -68,13 +74,15 @@ class AsyncChannels extends React.Component<any, any> {
             <div className='container-fluid'>
                 <div className='row'>
                     <div className='col-sm-12 m-b-15'>
-                        <h3 className='page-title'>All Services</h3>
+                        <h3 className='page-title'>{t('AllServices')}</h3>
                     </div>
                 </div>
                 <div className='row'>
                     <div className='col-sm-12 m-b-15'>
                         <div className='m-t-15'>
-                            <a onClick={this.refresh.bind(this)} className='btn btn-default btn-custom waves-effect waves-light' href='#'>Refresh all</a>
+                            <a onClick={this.refresh.bind(this)} className='btn btn-default btn-custom waves-effect waves-light' href='#'>
+                                {t('common:RefreshAll')}
+                            </a>
                         </div>
                     </div>
                 </div>
