@@ -151,6 +151,24 @@
         "AvailableSupply": "Available supply",
         "Supply": "Supply"
     },
+    "products/productsList":{
+        "ServersList": "Servers list",
+        "Name": "Name",
+        "OfferingTemplate": "Offering template",
+        "AccessTemplate": "Access template",
+        "OfferingCount": "Offering count"
+    },
+    "products/productItem": {
+        "ServerInfo": "Server info"
+    },
+    "products/productView": {
+        "PleaseInsertIPorDNS": "Please, insert IP or DNS only!",
+        "Name": "Name",
+        "Host": "Host",
+        "Save": "Save",
+        "HostWasSuccessfullyUpdated": "Host was successfully updated!",
+        "SomethingWentWrong": "Something went wrong. Try again later!"
+    },
     "header": {
         "Accounts": "Accounts",
         "Help": "Help",

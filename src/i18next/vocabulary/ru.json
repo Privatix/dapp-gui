@@ -152,6 +152,24 @@
         "AvailableSupply": "Доступно слотов",
         "Supply": "Слотов"
     },
+    "products/productsList":{
+        "ServersList": "Список серверов",
+        "Name": "Название",
+        "OfferingTemplate": "Шаблон офферинга",
+        "AccessTemplate": "Шаблон акцепта",
+        "OfferingCount": "Число офферингов"
+    },
+    "products/productItem": {
+        "ServerInfo": "Информация о сервере"
+    },
+    "products/productView": {
+        "PleaseInsertIPorDNS": "Пожалуйста введите либо IP либо DNS!",
+        "Name": "Название",
+        "Host": "Хост",
+        "Save": "Сохранить",
+        "HostWasSuccessfullyUpdated": "Хост был успешно обновлен!",
+        "SomethingWentWrong": "Что то пошло не так! Попробуйте снова позже."
+    },
     "header": {
         "Accounts": "Аккаунты",
         "Help": "Помощь",
