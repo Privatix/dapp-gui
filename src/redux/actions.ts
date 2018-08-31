@@ -1,5 +1,4 @@
 import * as api from '../utils/api';
-import notice from '../utils/notice';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
 import {DbSetting as Setting} from '../typings/settings';
@@ -66,20 +65,10 @@ export const asyncProviders: AsyncProviders = {
     },
     setMode: function(mode:Mode, history: any, t: any){
         return function(dispatch: any){
-            api.setUserMode(mode)
-               .then(res => {
+            api.getUserRole()
+               .then(role => {
                    // TODO check if error
-                   dispatch(handlers.setMode(mode));
-                   if (res.message === 'updated.') {
-                       if (mode === Mode.AGENT) {
-                           history.push('/');
-                       } else {
-                           history.push('/client-dashboard-start');
-                       }
-                       notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('UserWasSwitchedTo' + mode.toUpperCase())});
-                   } else {
-                       notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
-                   }
+                   dispatch(handlers.setMode(role));
                });
         };
     }
