@@ -1,4 +1,8 @@
 {
+    "common": {
+        "RefreshAll": "Refresh all",
+        "Select": "Select"
+    },
     "auth/setLanguage": {
         "chooseTheLanguage": "Choose the language",
         "PleaseSelectLanguage": "Please, select the language"
@@ -65,6 +69,87 @@
     "auth/utils": {
         "Next": "Next",
         "Previous": "Previous"
+    },
+    "offerings": {
+        "CreateAnOffering": "Create an offering"
+    },
+    "offerings/offerings": {
+        "CreateOffering": "Create offering",
+        "Offerings": "Offerings"
+    },
+    "offerings/createOffering": {
+        "Server": "Server",
+        "GeneralInfo": "General info",
+        "Name": "Name",
+        "serviceNameTitle": "Название сервиса, например VPN",
+        "Description": "Description",
+        "description": "description",
+        "Country": "Country",
+        "Supply": "Supply",
+        "ie": "i.e.",
+        "MaximumSupplyOfServices": "Maximum supply of services according to service offerings.",
+        "ItRepresentsTheMaximum": "It represents the maximum number of clients that can consume this service offering concurrently.",
+        "BillingInfo": "Billing info",
+        "UnitType": "Unit type",
+        "PricePerMB": "Price per MB",
+        "MaxBillingUnitLag": "Max billing unit lag",
+        "MaximumPaymentLagInUnits" : "Maximum payment lag in units after which Agent will suspend service usage.",
+        "MinUnits": "Min units",
+        "UsedToCalculateMinimumDeposit": "Used to calculate minimum deposit required.",
+        "MaxUnits": "Max units",
+        "UsedToSpecifyMaximumUnits": "Used to specify maximum units of service that will be supplied. Can be empty.",
+        "ConnectionInfo": "Connection info",
+        "MaxSuspendTime": "Max suspend time",
+        "sec": "sec",
+        "MaximumTimeServiceCan": "Maximum time service can be in Suspended status due to payment lag.",
+        "AfterThisTimePeriodService": "After this time period service will be terminated, if no sufficient payment was received.",
+        "PeriodIsSpecifiedInSeconds": "Period is specified in seconds.",
+        "MaxInactiveTime": "Max inactive time",
+        "MaximumTimeWithoutServiceUsage": "Maximum time without service usage.",
+        "AgentWillConsider": "Agent will consider that Client will not use service and stop providing it.",
+        "PeriodIsSpecified": "Period is specified in seconds.",
+        "PublicationPrice": "Publication price",
+        "Account": "Account",
+        "Deposit": "Deposit",
+        "ThisDepositWillBeLocked": "This deposit will be locked while offering is active.",
+        "ToReturnDeposit": "To return deposit close your offering.",
+        "CreateAndPublish": "Create and Publish",
+        "UnitPriceMustBeANumber": "Unit price must be a number.",
+        "UnitPriceMustBeMoreThen0": "Unit price must be more then 0.",
+        "DepositIsGreaterThenServiceBalance": "Deposit is greater then service balance. Please choose another account or top up the balance.",
+        "NotEnoughFunds": "Not enough funds for publish transaction. Please, select another account.",
+        "MaximumUnitsMustBeEqual": "Maximum units must be equal or greater then minimum units.",
+        "Field": "Field",
+        "Field_plural": "Fields",
+        "MustBeInteger": "must be integer.",
+        "MustBeInteger_plural": "must be integers.",
+        "isRequired": "is required.",
+        "isRequired_plural": "are required.",
+        "haveZeroValue": "have zero value.",
+        "haveZeroValue_plural": "have zero value.",
+        "haveNegativeValue": "have negative value.",
+        "haveNegativeValue_plural": "have negative value.",
+        "cantBeEmpty": "can't be empty.",
+        "cantBeEmpty_plural": "can't be empty."
+    },
+    "offeringTools":{
+        "WarningArea": "Warning Area",
+        "Popup": "Popup",
+        "Remove": "Remove",
+        "popupInfo": "This operation will notify Clients that your offering is actual, improving your chances for a deal.",
+        "removeInfo": "This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for {{minutes}} past minutes.",
+        "YesPopUpIt": "Yes, pop up it!",
+        "YesRemoveIt": "Yes, remove it!",
+        "WouldYouLikeToProceed": "Would you like to proceed?"
+    },
+    "offerings/offeringsList":{
+        "Offering": "Offering",
+        "ServerInfo": "Server info",
+        "ServiceName": "Service name",
+        "Server": "Server",
+        "Status": "Status",
+        "AvailableSupply": "Available supply",
+        "Supply": "Supply"
     },
     "header": {
         "Accounts": "Accounts",
@@ -181,7 +266,8 @@
         "EthereumLink": "Ethereum link"
     },
     "confirmPopupSwal": {
-        "CancelBtn": "Cancel"
+        "CancelBtn": "Cancel",
+        "AreYouSure": "'Are you sure?"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"

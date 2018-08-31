@@ -12,6 +12,7 @@ const resources = {ru, en};
 
 export default i18next
   .init({
+    debug: true,
     fallbackLng: defLang,
     react: {
       wait: true,
