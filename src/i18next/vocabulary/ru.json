@@ -185,7 +185,7 @@
         "ServiceStatus": "Статус сервиса",
         "Usage": "Использовано",
         "Income": "Доход (PRIX)",
-        "ServiceChangedTime": "Время  последнего изменения сервиса"
+        "ServiceChangedTime": "Время последнего изменения сервиса"
     },
     "sessions/sessionsList": {
         "TotalStatistics": "Общая статистика",
