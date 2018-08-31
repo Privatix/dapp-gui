@@ -14,8 +14,8 @@ function Loader() {
 }
 
 async function AsyncApp(props:any){
-    const userMode = await api.getUserMode();
-    return <App mode={userMode} />;
+    const userRole = await api.getUserRole();
+    return <App mode={userRole} />;
 }
 
 export default asyncReactor(AsyncApp, Loader);
