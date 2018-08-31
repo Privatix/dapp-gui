@@ -341,5 +341,48 @@
         "Deposit": "Депозит:",
         "UnusedPrixWillBeReturnedSmallText": "По окончании использования будут возвращены неиспользованные PRIXы.",
         "AcceptancePrice": "Цена принятия:"
+    },
+    "client/history": {
+        "SuccessfullyRefreshed": "Страница успешно обновлена!",
+        "Service": "Сервис",
+        "of": " с ",
+        "Id": "Id",
+        "Agent": "Агент",
+        "ContractStatus": "Статус контракта",
+        "ServiceStatus": "Статус сервиса",
+        "JobStatus": "Job статус",
+        "Usage": "Использовано",
+        "CostPRIX": "Стоимость (PRIX)",
+        "LastUsed": "Последнее использование",
+        "Refresh": "Обновить",
+        "AwaitForTerminate": "Ожидают прекращения",
+        "History": "История"
+    },
+    "client/serviceView": {
+        "CommonInfo": "Общая информация",
+        "IdTd": "Id:",
+        "Offering": "Offering:",
+        "ContractStatusTd": "Статус контракта:",
+        "ServiceStatusTd": "Статус сервиса:",
+        "Transferred": "Передано:",
+        "Cost": "Стоимость:",
+        "Deposit": "Депозит:",
+        "LastUsageTime": "Время последнего использования:",
+        "ContractHasBeenTerminated": "Контракт был расторгнут"
+    },
+    "client/clientAccessInfo": {
+        "AccessInfo": "Информация о доступе",
+        "ServiceAddress": "Адрес сервиса:",
+        "PaymentAddress": "Адрес платежа:"
+    },
+    "client/terminateContractBlock": {
+        "ToOpenDisputeFinishService": "Чтобы открыть спор, завершите использование сервиса",
+        "TerminateContract": "Расторгнуть договор",
+        "WarningArea": "Предупреждение",
+        "RequestFullDepositReturn": "Запросить полный возврат депозита.",
+        "UseIfAgentDoNotCloseContract": "Используйте только, если агент не закрывает контракт в течение очень длительного времени.",
+        "YouPayMultipleTransactionFees": "Вы платите несколько комиссий за транзакции.",
+        "YesTerminateContract": "Да, расторгнуть!",
+        "AreYouSure": "Вы уверены?"
     }
 }

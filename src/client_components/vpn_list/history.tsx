@@ -11,6 +11,9 @@ import DateSorter from '../../components/utils/sorters/sortingDate';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import JobStatus from '../connections/jobStatus';
 import JobName from '../connections/jobName';
+import { translate } from 'react-i18next';
+
+@translate(['client/history', 'utils/notice'])
 
 export default class ClientHistory extends React.Component<any,any> {
 
@@ -31,11 +34,13 @@ export default class ClientHistory extends React.Component<any,any> {
     refresh() {
         this.getHistoryData();
         this.getAwaitForTerminateColumns();
-        notice({level: 'info', title: 'Congratulations!', msg: 'Page was successfully refreshed!'});
+        const { t } = this.props;
+        notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('SuccessfullyRefreshed')});
     }
 
     getHistoryData() {
         let endpoint = '/client/channels?serviceStatus=terminated';
+        const { t } = this.props;
         fetch(endpoint, {}).then(async (clientChannels) => {
             const historyData = (clientChannels as any).filter((channel) => {
                 if (channel.channelStatus.channelStatus !== 'active') {
@@ -43,7 +48,7 @@ export default class ClientHistory extends React.Component<any,any> {
                 }
             }).map((channel) => {
                 return {
-                    id: <ModalWindow customClass='' modalTitle='Service' text={channel.id}
+                    id: <ModalWindow customClass='' modalTitle={t('Service')} text={channel.id}
                                      component={<ServiceView service={channel}/>}/>,
                     agent: channel.agent,
                     contractStatus: channel.channelStatus.channelStatus,
@@ -59,6 +64,7 @@ export default class ClientHistory extends React.Component<any,any> {
 
     getAwaitForTerminateColumns() {
         let endpoint = '/client/channels?channelStatus=active&serviceStatus=terminated';
+        const { t } = this.props;
         fetch(endpoint, {}).then(async (clientChannels) => {
             const data = (clientChannels as any).map((channel) => {
                 let jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
@@ -66,12 +72,12 @@ export default class ClientHistory extends React.Component<any,any> {
                 const jobStatus = <JobStatus status={channel.job.status} />;
 
                 return {
-                    id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<ServiceView service={channel} />} />,
+                    id: <ModalWindow customClass='' modalTitle={t('Service')} text={channel.id} component={<ServiceView service={channel} />} />,
                     agent: channel.agent,
                     contractStatus: channel.channelStatus.channelStatus,
                     serviceStatus: channel.channelStatus.serviceStatus,
                     jobStatus: <span><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</span>,
-                    usage: channel.usage.current + ' ' + channel.usage.unit + ' of ' + channel.usage.maxUsage + ' ' + channel.usage.unit,
+                    usage: channel.usage.current + ' ' + channel.usage.unit + t('of') + channel.usage.maxUsage + ' ' + channel.usage.unit,
                     cost: channel.usage.cost / 1e8
                 };
             });
@@ -81,74 +87,75 @@ export default class ClientHistory extends React.Component<any,any> {
     }
 
     render() {
+        const { t } = this.props;
         const awaitForTerminateColumns = [
             {
-                header: 'Id',
+                header: t('Id'),
                 key: 'id',
                 descSortFunction: ModalPropTextSorter.desc,
                 ascSortFunction: ModalPropTextSorter.asc
             },
             {
-                header: 'Agent',
+                header: t('Agent'),
                 key: 'agent'
             },
             {
-                header: 'Contract status',
+                header: t('ContractStatus'),
                 key: 'contractStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
                 render: (contractStatus) => <ContractStatus contractStatus={contractStatus} />
             },
             {
-                header: 'Service status',
+                header: t('ServiceStatus'),
                 key: 'serviceStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
                 render: (serviceStatus) => <ChannelStatus serviceStatus={serviceStatus} />
             },
             {
-                header: 'Job status',
+                header: t('JobStatus'),
                 key: 'jobStatus',
                 sortable: false
             },
             {
-                header: 'Usage',
+                header: t('Usage'),
                 key: 'usage'
             },
             {
-                header: 'Cost (PRIX)',
+                header: t('CostPRIX'),
                 key: 'cost'
             }
         ];
 
         const historyColumns = [
             {
-                header: 'Id',
+                header: t('Id'),
                 key: 'id',
                 descSortFunction: ModalPropTextSorter.desc,
                 ascSortFunction: ModalPropTextSorter.asc
             },
             {
-                header: 'Agent',
+                header: t('Agent'),
                 key: 'agent'
             },
             {
-                header: 'Contract status',
+                header: t('ContractStatus'),
                 key: 'contractStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
                 render: (contractStatus) => <ContractStatus contractStatus={contractStatus} />
             },
             {
-                header: 'Usage',
+                header: t('Usage'),
                 key: 'usage'
             },
             {
-                header: 'Cost (PRIX)',
+                header: t('CostPRIX'),
                 key: 'cost'
             },
             {
-                header: 'Last used',
+                header: t('LastUsed'),
                 key: 'lastUsed',
                 render: (lastUsed) => <PgTime time={lastUsed} />,
                 descSortFunction: DateSorter.desc,
@@ -159,10 +166,10 @@ export default class ClientHistory extends React.Component<any,any> {
 
         return <div className='col-lg-12 col-md-12'>
             <div className='m-t-5 m-b-20'>
-                <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this)}>Refresh</button>
+                <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this)}>{t('Refresh')}</button>
             </div>
             <div className='card m-b-20'>
-                <h5 className='card-header'>Awaite for terminate</h5>
+                <h5 className='card-header'>{t('AwaitForTerminate')}</h5>
                 <div className='card-body'>
                     <div className='bootstrap-table bootstrap-table-sortable'>
                         <SortableTable
@@ -173,7 +180,7 @@ export default class ClientHistory extends React.Component<any,any> {
             </div>
 
             <div className='card m-b-20'>
-                <h5 className='card-header'>History</h5>
+                <h5 className='card-header'>{t('History')}</h5>
                 <div className='card-body'>
                     <div className='bootstrap-table bootstrap-table-sortable'>
                         <SortableTable
