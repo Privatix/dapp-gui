@@ -86,14 +86,14 @@ class AcceptOffering extends React.Component<any, any>{
 
         if(this.state.customDeposit < this.state.deposit) {
             err=true;
-            msg += ' Deposit must be more than ' + toFixed8({number: (this.state.deposit / 1e8)}) + ' PRIX.';
+            msg += ' The deposit must be more than ' + toFixed8({number: (this.state.deposit / 1e8)}) + ' PRIX.';
         }
 
         if(this.props.offering.maxUnit && parseFloat(this.props.offering.maxUnit) > 0) {
             const topDepositLimit = this.props.offering.maxUnit * this.props.offering.unitPrice;
             if (this.state.customDeposit > topDepositLimit) {
                 err = true;
-                msg += ' Deposit must be less than ' + toFixed8({number: (topDepositLimit / 1e8)}) + ' PRIX.';
+                msg += ' The deposit must be less or equal than ' + toFixed8({number: (topDepositLimit / 1e8)}) + ' PRIX.';
             }
         }
 
@@ -225,7 +225,7 @@ class AcceptOffering extends React.Component<any, any>{
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{toFixed8({number: (this.state.deposit / 1e8)})} PRIX</strong>
+                                    <strong>{toFixed8({number: (this.state.customDeposit / 1e8)})} PRIX</strong>
                                 </div>
                             </div>
                         </div>

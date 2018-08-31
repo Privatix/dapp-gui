@@ -125,7 +125,7 @@
         "Value": "Значение"
     },
     "accounts/accountsList": {
-        "Title": "Аккаунт",
+        "Title": "Аккаунты",
         "CreateBtn": "Создать аккаунт",
         "Name": "Имя",
         "EthereumAddress": "Ethereum адрес",
