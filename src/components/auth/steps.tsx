@@ -26,7 +26,7 @@ export default translate('auth/steps')(({step, t}) => (
                     {t('Import')}
                 </Link>
             </li>
-            <li role='tab' className={ step >= 4 ? (step > 3 ? 'done' : 'current') : 'disabled'} style={{width:'auto'}}>
+            <li role='tab' className={ step >= 4 ? (step > 4 ? 'done' : 'current') : 'disabled'} style={{width:'auto'}}>
                 <a id='steps-uid-0-t-2' href='#'>
                     <span className='number'>4.</span>
                     {t('Account')}
