@@ -133,6 +133,25 @@
         "cantBeEmpty": "не может быть пустым.",
         "cantBeEmpty_plural": "не могут быть пустыми."
     },
+    "offerings/offeringTools":{
+        "WarningArea": "Внимание!",
+        "Popup": "Поднять",
+        "Remove": "Удалить",
+        "popupInfo": "Эта операция уведомит Клиентов о том что Ваш офферинг все еще актуален, увеличивая тем самым шансы на сделку.",
+        "removeInfo": "Эта операция удаляет офферинг. Вы получите свой депозит обратно. Клиенты не смогут больше принимать это предложение. Офферинг может быть удален только если он был неактивен последние {{minutes}} минут.",
+        "YesPopUpIt": "Да, поднять!",
+        "YesRemoveIt": "Да, удалить!",
+        "WouldYouLikeToProceed": "Хотите продолжить?"
+    },
+    "offerings/offeringsList":{
+        "Offering": "Офферинг",
+        "ServerInfo": "Информация о сервере",
+        "ServiceName": "Название сервиса",
+        "Server": "Сервер",
+        "Status": "Статус",
+        "AvailableSupply": "Доступно слотов",
+        "Supply": "Слотов"
+    },
     "header": {
         "Accounts": "Аккаунты",
         "Help": "Помощь",
@@ -248,7 +267,8 @@
         "EthereumLink": "Ссылка Ethereum"
     },
     "confirmPopupSwal": {
-        "CancelBtn": "Отменить"
+        "CancelBtn": "Отменить",
+        "AreYouSure": "Вы уверены?"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Начать использование VPN"

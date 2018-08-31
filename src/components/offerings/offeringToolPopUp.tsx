@@ -1,6 +1,11 @@
 import * as React from 'react';
+import { translate } from 'react-i18next';
 import Button from '../button';
 
-export default function(props:any){
-    return <Button endpoint={`/offerings/${props.offeringId}/status`} options={{method: 'put', body: {action: 'popup'}}} title={'Popup'} class='btn btn-primary btn-custom btn-block'/>;
-}
+export default translate('offerings/offeringTools')(({t}) => {
+    return <Button endpoint={`/offerings/${props.offeringId}/status`}
+                   options={{method: 'put', body: {action: 'popup'}}}
+                   title={t('Popup')}
+                   class='btn btn-primary btn-custom btn-block'
+           />;
+});

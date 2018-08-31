@@ -132,6 +132,25 @@
         "cantBeEmpty": "can't be empty.",
         "cantBeEmpty_plural": "can't be empty."
     },
+    "offeringTools":{
+        "WarningArea": "Warning Area",
+        "Popup": "Popup",
+        "Remove": "Remove",
+        "popupInfo": "This operation will notify Clients that your offering is actual, improving your chances for a deal.",
+        "removeInfo": "This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for {{minutes}} past minutes.",
+        "YesPopUpIt": "Yes, pop up it!",
+        "YesRemoveIt": "Yes, remove it!",
+        "WouldYouLikeToProceed": "Would you like to proceed?"
+    },
+    "offerings/offeringsList":{
+        "Offering": "Offering",
+        "ServerInfo": "Server info",
+        "ServiceName": "Service name",
+        "Server": "Server",
+        "Status": "Status",
+        "AvailableSupply": "Available supply",
+        "Supply": "Supply"
+    },
     "header": {
         "Accounts": "Accounts",
         "Help": "Help",
@@ -247,7 +266,8 @@
         "EthereumLink": "Ethereum link"
     },
     "confirmPopupSwal": {
-        "CancelBtn": "Cancel"
+        "CancelBtn": "Cancel",
+        "AreYouSure": "'Are you sure?"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
