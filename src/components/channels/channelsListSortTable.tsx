@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
+import { translate } from 'react-i18next';
+
 import PgTime from '../utils/pgTime';
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
@@ -8,6 +10,7 @@ import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import DateSorter from '../utils/sorters/sortingDate';
 import ChannelUsage from './channelUsage';
 
+@translate(['channels/channelsListSortTable'])
 class ChannelsTable extends React.Component<any, any> {
 
     constructor(props: any) {
@@ -25,6 +28,9 @@ class ChannelsTable extends React.Component<any, any> {
     }
 
     render() {
+
+        const { t } = this.props;
+
         const columns = [
             {
                 header: 'ID',
@@ -33,42 +39,42 @@ class ChannelsTable extends React.Component<any, any> {
                 ascSortFunction: ModalPropTextSorter.asc
             },
             {
-                header: 'Server',
+                header: t('Server'),
                 key: 'server',
                 descSortFunction: ModalPropTextSorter.desc,
                 ascSortFunction: ModalPropTextSorter.asc
             },
             {
-                header: 'Client',
+                header: t('Client'),
                 key: 'client'
             },
             {
-                header: 'Contract Status',
+                header: t('ContractStatus'),
                 key: 'contractStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
                 render: (channelStatus) => <ContractStatus contractStatus={channelStatus} />
             },
             {
-                header: 'Service Status',
+                header: t('ServiceStatus'),
                 key: 'serviceStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
                 render: (serviceStatus) => <ChannelStatusStyle serviceStatus={serviceStatus} />
             },
             {
-                header: 'Usage',
+                header: t('Usage'),
                 key: 'usage',
                 render: (channelId) => {return (typeof channelId as any)=== 'object'? <ChannelUsage channelId={channelId[0]} trafficLimit={channelId[1]}/>:<ChannelUsage channelId={channelId}/>;}
             },
             {
-                header: 'Income (PRIX)',
+                header: t('Income'),
                 key: 'incomePRIX',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
             },
             {
-                header: 'Service Changed Time',
+                header: t('ServiceChangedTime'),
                 key: 'serviceChangedTime',
                 defaultSorting: 'DESC',
                 descSortFunction: DateSorter.desc,

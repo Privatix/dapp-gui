@@ -1,11 +1,14 @@
 import * as React from 'react';
 import {remote} from 'electron';
 const {dialog} = remote;
+import { translate } from 'react-i18next';
+
 import {fetch} from '../../utils/fetch';
 import SessionItem from './sessionItem';
 import toFixed8 from '../../utils/toFixed8';
 import * as api from '../../utils/api';
 
+@translate(['sessions/sessionsList'])
 export default class Sessions extends React.Component <any,any> {
 
     constructor(props:any) {
@@ -50,12 +53,15 @@ export default class Sessions extends React.Component <any,any> {
     }
 
     exportToFile() {
+
+        const { t } = this.props;
+
         (dialog.showSaveDialog as any)(null, {
-            title: 'saving sessions',
+            title: t('SavingSessions'),
             defaultPath: 'sessions.csv'
         }, (fileName: string) => {
             if (fileName != null) {
-                const headers = ['session id', 'channel id', 'started', 'stopped', 'units used', 'client IP', 'client port'];
+                const headers = [t('sessionId'), t('channelId'), t('Started'), t('Stopped'), t('Usage'), t('ClientIP'), t('ClientPort')];
                 const data = (this.state.sessions as any).map(session => [session.id
                     , session.channel
                     , session.started
@@ -71,26 +77,29 @@ export default class Sessions extends React.Component <any,any> {
     }
 
     render() {
+
+        const { t } = this.props;
+
         return <div className='container-fluid'>
 
             <div className='row'>
                 <div className='col-sm-12 col-xs-12'>
                     <div className='card m-b-20'>
-                        <h5 className='card-header'>Total Statistics</h5>
+                        <h5 className='card-header'>{t('TotalStatistics')}</h5>
                         <div className='col-md-4 col-sm-12 col-xs-12 p-0'>
                             <div className='card-body'>
                                 <table className='table table-striped'>
                                     <tbody>
                                     <tr>
-                                        <td>Total usage:</td>
+                                        <td>{t('TotalUsage')}:</td>
                                         <td>{(this.state.usage / 1024).toFixed(3)} GB</td>
                                     </tr>
                                     <tr>
-                                        <td>Total income:</td>
+                                        <td>{t('TotalIncome')}:</td>
                                         <td>{toFixed8({number: this.state.income / 1e8})} PRIX</td>
                                     </tr>
                                     <tr>
-                                        <td>Sessions count:</td>
+                                        <td>{t('SessionsCount')}:</td>
                                         <td>{(this.state.sessions as any).length}</td>
                                     </tr>
                                     </tbody>
@@ -104,21 +113,21 @@ export default class Sessions extends React.Component <any,any> {
             <div className='row'>
                 <div className='col-12'>
                     <div className='card m-b-20'>
-                        <h5 className='card-header'>Detailed Statistics</h5>
+                        <h5 className='card-header'>{t('DetailedStatistics')}</h5>
                         <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                             <div className='card-body'>
                                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-20'
-                                        onClick={this.exportToFile.bind(this)}>Export to a file
+                                        onClick={this.exportToFile.bind(this)}>{t('ExportToAFile')}
                                 </button>
                                 <table className='table table-bordered table-striped'>
                                     <thead>
                                     <tr>
                                         <th>Id</th>
-                                        <th>Started</th>
-                                        <th>Stopped</th>
-                                        <th>Usage</th>
-                                        <th>Last Usage Time</th>
-                                        <th>Client Ip</th>
+                                        <th>{t('Started')}</th>
+                                        <th>{t('Stopped')}</th>
+                                        <th>{t('Usage')}</th>
+                                        <th>{t('LastUsageTime')}</th>
+                                        <th>{t('ClientIP')}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
