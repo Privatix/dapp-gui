@@ -373,6 +373,49 @@
         "Balance": "Balance:",
         "Deposit": "Deposit:",
         "UnusedPrixWillBeReturnedSmallText": "After the end of using, the unused PRIX will be returned.",
-        "AcceptancePrice": "Acceptance price:"
+        "AcceptancePrice": "Acceptance Price:"
+    },
+    "client/history": {
+        "SuccessfullyRefreshed": "Page was successfully refreshed!",
+        "Service": "Service",
+        "of": " of ",
+        "Id": "Id",
+        "Agent": "Agent",
+        "ContractStatus": "Contract status",
+        "ServiceStatus": "Service status",
+        "JobStatus": "Job status",
+        "Usage": "Usage",
+        "CostPRIX": "Cost (PRIX)",
+        "LastUsed": "Last used",
+        "Refresh": "Refresh",
+        "AwaitForTerminate": "Await for terminate",
+        "History": "History"
+    },
+    "client/serviceView": {
+        "CommonInfo": "Common Info",
+        "IdTd": "Id:",
+        "Offering": "Offering:",
+        "ContractStatusTd": "Contract status:",
+        "ServiceStatusTd": "Service status:",
+        "Transferred": "Transferred:",
+        "Cost": "Cost:",
+        "Deposit": "Deposit:",
+        "LastUsageTime": "Last usage time:",
+        "ContractHasBeenTerminated": "The contract has been terminated"
+    },
+    "client/clientAccessInfo": {
+        "AccessInfo": "Access info",
+        "ServiceAddress": "Service address:",
+        "PaymentAddress": "Payment address:"
+    },
+    "client/terminateContractBlock": {
+        "ToOpenDisputeFinishService": "To open dispute, finish using the service",
+        "TerminateContract": "Terminate contract",
+        "WarningArea": "Warning Area",
+        "RequestFullDepositReturn": "Request full deposit return.",
+        "UseIfAgentDoNotCloseContract": "Use only, if Agent doesn’t closes contract for very long time.",
+        "YouPayMultipleTransactionFees": "You pay multiple transaction fees.",
+        "YesTerminateContract": "Yes, terminate contract!",
+        "AreYouSure": "Are you sure?"
     }
 }
