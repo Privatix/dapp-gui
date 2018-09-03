@@ -5,8 +5,6 @@ import { translate } from 'react-i18next';
 
 import { NavLink } from 'react-router-dom';
 import TopPanel from './topPanel';
-import {asyncProviders} from '../redux/actions';
-import {Mode} from '../typings/mode';
 import {State} from '../typings/state';
 
 declare var window: any;
@@ -16,11 +14,6 @@ class Header extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-    }
-
-    onSwitchMode(){
-        const { history, t } = this.props;
-        this.props.dispatch(asyncProviders.setMode(this.props.mode === Mode.CLIENT ? Mode.AGENT : Mode.CLIENT, history, t));
     }
 
     launchFullscreen(element: any) {
@@ -102,9 +95,6 @@ class Header extends React.Component<any, any>{
                                 </NavLink>
                                 <NavLink to='#' className='dropdown-item notify-item'>
                                     <i className='md md-help'></i> <span>{t('Help')}</span>
-                                </NavLink>
-                                <NavLink to='#' onClick={this.onSwitchMode.bind(this)} className='dropdown-item notify-item'>
-                                    <i className='ion-arrow-swap'></i> <span>{t(`SwitchTo${this.props.mode === Mode.AGENT ? 'Client' : 'Agent'}`)}</span>
                                 </NavLink>
                                 <NavLink to='/settings' className='dropdown-item notify-item'>
                                     <i className='md md-settings'></i> <span>{t('Settings')}</span>

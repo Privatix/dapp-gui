@@ -9,12 +9,14 @@ import {LocalSettings} from '../../typings/settings';
 import toFixed8 from '../../utils/toFixed8';
 import { translate } from 'react-i18next';
 
-@translate('utils/gasRange')
+@translate(['client/acceptOffering', 'utils/gasRange', 'utils/notice'])
 
 class AcceptOffering extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
+
+        const { t } = props;
 
         const acceptOfferingBtnBl = <div className='form-group row'>
             <div className='col-md-12'>
@@ -22,7 +24,7 @@ class AcceptOffering extends React.Component<any, any>{
                         onClick={this.onSubmit.bind(this)}
                         className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
                 >
-                    Accept
+                    {t('Accept')}
                 </button>
             </div>
         </div>;
@@ -54,10 +56,12 @@ class AcceptOffering extends React.Component<any, any>{
         if((activeChannels as any).length > 0
             || (suspendedChannels as any).length > 0
             || (pendingChannels as any).length > 0) {
+            const { t } = this.props;
+
             this.setState({
                 acceptOfferingBtnBl: <div className='form-group row'>
                     <div className='col-md-12'>
-                        <div className='text-danger'>Note. You can have only one VPN connection. To accept another, terminate the current connection.</div>
+                        <div className='text-danger'>{t('CanHaveOneVPNConnection')}</div>
                     </div>
                 </div>
             });
@@ -83,39 +87,40 @@ class AcceptOffering extends React.Component<any, any>{
         let err = false;
         let msg = '';
         const settings = (await api.settings.getLocal()) as LocalSettings;
+        const { t } = this.props;
 
         if(this.state.customDeposit < this.state.deposit) {
             err=true;
-            msg += ' Deposit must be more than ' + toFixed8({number: (this.state.deposit / 1e8)}) + ' PRIX.';
+            msg += t('DepositMustBeMoreThan') + toFixed8({number: (this.state.deposit / 1e8)}) + ' PRIX.';
         }
 
         if(this.props.offering.maxUnit && parseFloat(this.props.offering.maxUnit) > 0) {
             const topDepositLimit = this.props.offering.maxUnit * this.props.offering.unitPrice;
             if (this.state.customDeposit > topDepositLimit) {
                 err = true;
-                msg += ' Deposit must be less than ' + toFixed8({number: (topDepositLimit / 1e8)}) + ' PRIX.';
+                msg += t('DepositMustBeLessOrEqualThan') + toFixed8({number: (topDepositLimit / 1e8)}) + ' PRIX.';
             }
         }
 
 
         if(this.state.account.psc_balance < this.state.deposit){
             err=true;
-            msg += ' Not enough PRIXes for deposit. Please, select another account.';
+            msg += t('NotEnoughPrixForDeposit');
         }
 
         if(this.state.account.ethBalance < settings.gas.acceptOffering*this.state.gasPrice){
             err=true;
-            msg += ' Not enough funds for publish transaction. Please, select another account.';
+            msg += t('NotEnoughToPublishTransaction');
         }
 
         if(err){
-            notice({level: 'error', title: 'Attention!', msg});
+            notice({level: 'error', title: t('utils/notice:Attention!'), msg});
             return;
         }
 
         api.offerings.changeClientOfferingsStatus(this.props.offering.id, 'accept', this.state.account.id, this.state.gasPrice, this.state.customDeposit)
             .then((res) =>{
-                notice({level: 'info', title: 'Congratulations!', msg: 'offering accepted!'});
+                notice({level: 'info', title: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
                 document.body.classList.remove('modal-open');
                 this.props.history.push('/client-dashboard-connecting');
             });
@@ -135,10 +140,10 @@ class AcceptOffering extends React.Component<any, any>{
 
         return <div className='col-lg-12 col-md-12'>
             <div className='card m-b-20'>
-                <h5 className='card-header'>VPN Info</h5>
+                <h5 className='card-header'>{t('VPNInfo')}</h5>
                 <div className='card-body'>
                     <div className='form-group row'>
-                        <label className='col-3 col-form-label'>Country: </label>
+                        <label className='col-3 col-form-label'>{t('Country')}</label>
                         <div className='col-9'>
                             <input type='text' className='form-control' value={offering.country} readOnly/>
                         </div>
@@ -147,10 +152,10 @@ class AcceptOffering extends React.Component<any, any>{
             </div>
 
             <div className='card m-b-20'>
-                <h5 className='card-header'>Billing Info</h5>
+                <h5 className='card-header'>{t('BillingInfo')}</h5>
                 <div className='card-body'>
                     <div className='form-group row'>
-                        <label className='col-3 col-form-label'>Price per MB:</label>
+                        <label className='col-3 col-form-label'>{t('PricePerMB')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
                                 <input type='text' className='form-control' value={toFixed8({number: (offering.unitPrice / 1e8)})} readOnly/>
@@ -162,19 +167,17 @@ class AcceptOffering extends React.Component<any, any>{
             </div>
 
             <div className='card m-b-20'>
-                <h5 className='card-header'>Connection Info</h5>
+                <h5 className='card-header'>{t('ConnectionInfo')}</h5>
                 <div className='card-body'>
                     <div className='form-group row'>
-                        <label className='col-3 col-form-label'>Max inactive time:</label>
+                        <label className='col-3 col-form-label'>{t('MaxInactiveTime')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
                                 <input type='text' className='form-control' value={offering.maxInactiveTimeSec} readOnly/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>{t('sec')}</span>
                             </div>
                             <span className='help-block'>
-                                <small>Maximum time without service usage.
-                                    Agent will consider that Client will not use service and stop providing it.
-                                    Period is specified in seconds.</small>
+                                <small>{t('MaxTimeWithoutServiceSmallText')}</small>
                             </span>
                         </div>
                     </div>
@@ -195,19 +198,19 @@ class AcceptOffering extends React.Component<any, any>{
                 ? ''
                 : <div>
                     <div className='card m-b-20'>
-                        <h5 className='card-header'>Pay Info:</h5>
+                        <h5 className='card-header'>{t('PayInfo')}</h5>
                         <div className='card-body'>
                             <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Account:</label>
+                                <label className='col-2 col-form-label'>{t('Account')}</label>
                                 <div className='col-6'>
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    Balance: <span>{this.state.account ? toFixed8({number: (this.state.account.psc_balance / 1e8)}) : 0} PRIX / {this.state.account ? toFixed8({number: (this.state.account.ethBalance / 1e18)}) : 0} ETH</span>
+                                    {t('Balance')} <span>{this.state.account ? toFixed8({number: (this.state.account.psc_balance / 1e8)}) : 0} PRIX / {this.state.account ? toFixed8({number: (this.state.account.ethBalance / 1e18)}) : 0} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>
-                                <label className='col-2 col-form-label'>Deposit:</label>
+                                <label className='col-2 col-form-label'>{t('Deposit')}</label>
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
                                         <input id='offeringDeposit' type='number' className='form-control' min='0' step='0.01'
@@ -216,16 +219,16 @@ class AcceptOffering extends React.Component<any, any>{
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                     <span className='help-block'>
-                                        <small>After the end of using, the unused PRIX will be returned.</small>
+                                        <small>{t('UnusedPrixWillBeReturnedSmallText')}</small>
                                     </span>
                                 </div>
                             </div>
                             <GasRange onChange={this.onGasPriceChanged.bind(this)} value={Math.floor(this.state.gasPrice/1e9)}
-                                      extLinkText='Information about Gas price' averageTimeText={t('AverageAcceptanceTimeText')} />
+                                      extLinkText='Information about Gas price' averageTimeText={t('utils/gasRange:AverageAcceptanceTimeText')} />
                             <div className='form-group row'>
-                                <div className='col-2 col-form-label font-18'><strong>Acceptance Price:</strong></div>
+                                <div className='col-2 col-form-label font-18'><strong>{t('AcceptancePrice')}</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{toFixed8({number: (this.state.deposit / 1e8)})} PRIX</strong>
+                                    <strong>{toFixed8({number: (this.state.customDeposit / 1e8)})} PRIX</strong>
                                 </div>
                             </div>
                         </div>

@@ -6,7 +6,7 @@
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "Choose the language",
-        "PleaseSelectLanguage": "Please, select the language"
+        "PleaseSelectLanguage": "Please, select your language:"
     },
     "auth/setPassword": {
         "setThePassword": "Set the password to",
@@ -51,9 +51,9 @@
         "PrivateKeyMustHave": "Private key must have exactly 64 hex symbols."
     },
     "auth/backup": {
-        "generateKey": "new key hase been succesfully generated and registered!",
-        "importHexKey": "hex key hase been succesfully imported and registered!",
-        "importJsonKey": "JSON Keystore File hase been succesfully imported!",
+        "generateKey": "new key has been successfully generated and registered!",
+        "importHexKey": "hex key has been successfully imported and registered!",
+        "importJsonKey": "JSON Keystore File has been successfully imported!",
         "PleaseBackupYourAccount": "Please backup your account before start working.",
         "SomeErrorOccured": "Some error occured. Can't save file by specified path.",
         "ToPreventEthereumAddress": "To prevent Ethereum address data lost you need to backup your Private Key in a safe location as a file.",
@@ -117,7 +117,7 @@
         "CreateAndPublish": "Create and Publish",
         "UnitPriceMustBeANumber": "Unit price must be a number.",
         "UnitPriceMustBeMoreThen0": "Unit price must be more then 0.",
-        "DepositIsGreaterThenServiceBalance": "Deposit is greater then service balance. Please choose another account or top up the balance.",
+        "DepositIsGreaterThenServiceBalance": "Deposit is greater than service balance. Please choose another account or top up the balance.",
         "NotEnoughFunds": "Not enough funds for publish transaction. Please, select another account.",
         "MaximumUnitsMustBeEqual": "Maximum units must be equal or greater then minimum units.",
         "Field": "Field",
@@ -329,5 +329,50 @@
         "RefreshAllBtn": "Refresh all",
         "ActiveServices": "Active Services",
         "ActiveOfferings": "Active Offerings"
+    },
+    "client/vpnList": {
+        "Block": "Block",
+        "Hash": "Hash",
+        "Country": "Country",
+        "Price": "Price (PRIX/MB)",
+        "SupplyTotal": "Supply (total)",
+        "AvailableSupply": "Available supply",
+        "SuccessUpdateMsg": "VPN list was successfully updated!",
+        "AcceptOffering": "Accept Offering",
+        "ShowAllBtn": "show all...",
+        "HideBtn": "hide",
+        "Search": "search",
+        "WaitForDownloading": "Please, wait for downloading....",
+        "CurrentlyWeAreDownloading": "Currently, we are downloading VPN list.",
+        "TakesTimeOnFirstRun": "It takes time only on the first run.",
+        "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
+        "Refresh": "Refresh",
+        "Agent": "agent",
+        "PriceFilter": "Price (PRIX/MB):",
+        "From": "from",
+        "To": "to"
+    },
+    "client/acceptOffering": {
+        "Accept": "Accept",
+        "CanHaveOneVPNConnection": "Note. You can have only one VPN connection. To accept another, terminate the current connection.",
+        "DepositMustBeMoreThan": " The deposit must be more than ",
+        "DepositMustBeLessOrEqualThan": " The deposit must be less or equal than ",
+        "NotEnoughPrixForDeposit": " Not enough PRIXes for deposit. Please, select another account.",
+        "NotEnoughToPublishTransaction": " Not enough funds for publish transaction. Please, select another account.",
+        "OfferingAccepted": "Offering accepted!",
+        "VPNInfo": "VPN Info",
+        "Country": "Country: ",
+        "BillingInfo": "Billing Info",
+        "PricePerMB": "Price per MB:",
+        "ConnectionInfo": "Connection Info",
+        "MaxInactiveTime": "Max inactive time:",
+        "sec": "sec",
+        "MaxTimeWithoutServiceSmallText": "Maximum time without service usage. Agent will consider that Client will not use service and stop providing it. Period is specified in seconds.",
+        "PayInfo": "Pay Info:",
+        "Account": "Account:",
+        "Balance": "Balance:",
+        "Deposit": "Deposit:",
+        "UnusedPrixWillBeReturnedSmallText": "After the end of using, the unused PRIX will be returned.",
+        "AcceptancePrice": "Acceptance Price:"
     }
 }

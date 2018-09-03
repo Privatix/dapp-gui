@@ -29,6 +29,9 @@ export const templates = Templates;
 import * as Logs from './api/logs';
 export const logs = Logs;
 
+import * as UserRole from './api/userrole';
+export const userrole = UserRole;
+
 export const getTransactionsByAccount = async function(account: string): Promise<Transaction[]>{
     const endpoint = '/transactions' + (account === 'all' ? '' : `?relatedID=${account}&relatedType=account`);
     return fetch(endpoint, {}) as Promise<Transaction[]>;
@@ -40,31 +43,10 @@ export const getLocalSettings = function(): Promise<LocalSettings>{
 };
 
 
-export const getUserMode = async function(): Promise<string> {
-    const oldSettings = await settings.get();
-    const isAgentSetting = oldSettings.filter((settingsItem:any) => {
-        if (settingsItem.key === 'user.isagent') {
-            return true;
-        }
-    }).map((settingsItem:any) => {
-        return settingsItem.value;
-    })[0];
+export const getUserRole = async function(): Promise<string> {
+    const userRole = await userrole.get();
 
-    if (isAgentSetting === 'true') {
-        return 'agent';
-    }
-    return 'client';
-};
-
-export const setUserMode = function(userMode:string) {
-    const userModeValue = userMode === 'agent' ? 'true' : 'false';
-    const body = [{
-        'key': 'user.isagent',
-        'value': userModeValue,
-        'description': 'Specifies user role. "true" - agent. "false" - client.',
-        'name': 'user role is agent'
-    }];
-    return settings.save(body);
+    return userRole;
 };
 
 export const getOfferingById = function(offeringId: string): Promise<Offering>{
