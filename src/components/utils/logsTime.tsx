@@ -1,10 +1,12 @@
 import * as React from 'react';
-import * as dateformat from 'dateformat';
+import * as moment from 'moment';
 
 export default function (props: any) {
     if (props.time) {
+        moment.locale(props.lang);
+
         const date = new Date(Date.parse(props.time));
-        const formattedDate = dateformat(date, 'h:MM TT dd-mmm-yy');
+        const formattedDate = moment(date).format('h:mm A DD-MMM-YY');
 
         return <span>{formattedDate}</span>;
     } else {
