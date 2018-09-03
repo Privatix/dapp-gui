@@ -169,10 +169,10 @@
         "Host": "Хост",
         "Save": "Сохранить",
         "HostWasSuccessfullyUpdated": "Хост был успешно обновлен!",
-        "SomethingWentWrong": "Что то пошло не так! Попробуйте снова позже."
+        "SomethingWentWrong": "Что-то пошло не так! Попробуйте снова позже."
     },
     "channels/channelsByStatus": {
-        "ActiveServices": "Активные Сервисы",
+        "ActiveServices": "Активные сервисы",
         "History": "История"
     },
     "channels/channelsList": {
