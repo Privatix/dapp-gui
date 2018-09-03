@@ -353,7 +353,7 @@
         "JobStatus": "Job статус",
         "Usage": "Использовано",
         "CostPRIX": "Стоимость (PRIX)",
-        "LastUsed": "Последнее использование",
+        "LastUsed": "Время последнего использования",
         "Refresh": "Обновить",
         "AwaitForTerminate": "Ожидают прекращения",
         "History": "История"
@@ -361,7 +361,7 @@
     "client/serviceView": {
         "CommonInfo": "Общая информация",
         "IdTd": "Id:",
-        "Offering": "Offering:",
+        "Offering": "Предложение:",
         "ContractStatusTd": "Статус контракта:",
         "ServiceStatusTd": "Статус сервиса:",
         "Transferred": "Передано:",
@@ -371,9 +371,9 @@
         "ContractHasBeenTerminated": "Контракт был расторгнут"
     },
     "client/clientAccessInfo": {
-        "AccessInfo": "Информация о доступе",
+        "AccessInfo": "Адреса сервисов",
         "ServiceAddress": "Адрес сервиса:",
-        "PaymentAddress": "Адрес платежа:"
+        "PaymentAddress": "Адрес платежного сервиса:"
     },
     "client/terminateContractBlock": {
         "ToOpenDisputeFinishService": "Чтобы открыть спор, завершите использование сервиса",
