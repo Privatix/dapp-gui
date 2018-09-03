@@ -82,7 +82,7 @@
         "Server": "Server",
         "GeneralInfo": "General info",
         "Name": "Name",
-        "serviceNameTitle": "Название сервиса, например VPN",
+        "serviceNameTitle": "Service name, e.g. VPN",
         "Description": "Description",
         "description": "description",
         "Country": "Country",
@@ -114,7 +114,7 @@
         "Deposit": "Deposit",
         "ThisDepositWillBeLocked": "This deposit will be locked while offering is active.",
         "ToReturnDeposit": "To return deposit close your offering.",
-        "CreateAndPublish": "Create and Publish",
+        "CreateAndPublish": "Create and publish",
         "UnitPriceMustBeANumber": "Unit price must be a number.",
         "UnitPriceMustBeMoreThen0": "Unit price must be more then 0.",
         "DepositIsGreaterThenServiceBalance": "Deposit is greater than service balance. Please choose another account or top up the balance.",
@@ -134,7 +134,7 @@
         "cantBeEmpty_plural": "can't be empty."
     },
     "offeringTools":{
-        "WarningArea": "Warning Area",
+        "WarningArea": "Warning area",
         "Popup": "Popup",
         "Remove": "Remove",
         "popupInfo": "This operation will notify Clients that your offering is actual, improving your chances for a deal.",
@@ -171,27 +171,27 @@
         "SomethingWentWrong": "Something went wrong. Try again later!"
     },
     "channels/channelsByStatus": {
-        "ActiveServices": "Active Services",
+        "ActiveServices": "Active services",
         "History": "History"
     },
     "channels/channelsList": {
-        "AllServices": "All Services"
+        "AllServices": "All services"
     },
     "channels/channelsListSortTable":{
         "Server": "Server",
         "Client": "Client",
-        "ContractStatus": "Contract Status",
-        "ServiceStatus": "Service Status",
+        "ContractStatus": "Contract status",
+        "ServiceStatus": "Service status",
         "Usage": "Usage",
         "Income": "Income (PRIX)",
-        "ServiceChangedTime": "Service Changed Time"
+        "ServiceChangedTime": "Service changed time"
     },
     "sessions/sessionsList": {
-        "TotalStatistics": "Total Statistics",
+        "TotalStatistics": "Total statistics",
         "TotalUsage": "Total usage",
         "TotalIncome": "Total income",
         "SessionsCount": "Sessions count",
-        "DetailedStatistics": "Detailed Statistics",
+        "DetailedStatistics": "Detailed statistics",
         "ExportToAFile": "Export to a file",
         "SavingSessions": "saving sessions",
         "sessionId": "Session id",
@@ -199,7 +199,7 @@
         "Started": "Started",
         "Stopped": "Stopped",
         "Usage": "Usage",
-        "LastUsageTime": "Last Usage Time",
+        "LastUsageTime": "Last usage time",
         "ClientIP": "Client IP",
         "ClientPort": "Client port"
     },
@@ -223,16 +223,16 @@
         "Sessions": "Sessions",
         "Offerings": "Offerings",
         "Servers": "Servers",
-        "ClientDashboard": "Client Dashboard",
+        "ClientDashboard": "Client dashboard",
         "VPNList": "VPN List"
     },
     "topPanel": {
-        "ETHBalance": "ETH Balance",
-        "ExchangeBalance": "Exchange Balance",
+        "ETHBalance": "ETH balance",
+        "ExchangeBalance": "Exchange balance",
         "ServiceBalance": "Service balance",
-        "ActiveServices": "Active Services",
+        "ActiveServices": "Active services",
         "Status": "Status",
-        "TotalTraffic": "Total Traffic"
+        "TotalTraffic": "Total traffic"
     },
     "utils/notice": {
         "Error!": "Error!",
@@ -280,7 +280,7 @@
         "ErrorNotEnoughServiceFunds": " Not enough funds on Service balance.",
         "ErrorNotEnoughPublishFunds": " Not enough funds to publish transaction.",
         "SuccessMessage": "The data was successfully transmitted. Once the transaction will in the blockchain, you will see it in the list below.",
-        "GeneralInfo": "General Info",
+        "GeneralInfo": "General info",
         "Name": "Name:",
         "Address": "Address:",
         "BalanceInfo": "Balance Info",
@@ -327,8 +327,8 @@
     "agent/dashboard": {
         "TotalIncome": "Total income:",
         "RefreshAllBtn": "Refresh all",
-        "ActiveServices": "Active Services",
-        "ActiveOfferings": "Active Offerings"
+        "ActiveServices": "Active services",
+        "ActiveOfferings": "Active offerings"
     },
     "client/vpnList": {
         "Block": "Block",
@@ -338,7 +338,7 @@
         "SupplyTotal": "Supply (total)",
         "AvailableSupply": "Available supply",
         "SuccessUpdateMsg": "VPN list was successfully updated!",
-        "AcceptOffering": "Accept Offering",
+        "AcceptOffering": "Accept offering",
         "ShowAllBtn": "show all...",
         "HideBtn": "hide",
         "Search": "search",
@@ -360,19 +360,19 @@
         "NotEnoughPrixForDeposit": " Not enough PRIXes for deposit. Please, select another account.",
         "NotEnoughToPublishTransaction": " Not enough funds for publish transaction. Please, select another account.",
         "OfferingAccepted": "Offering accepted!",
-        "VPNInfo": "VPN Info",
+        "VPNInfo": "VPN info",
         "Country": "Country: ",
-        "BillingInfo": "Billing Info",
+        "BillingInfo": "Billing info",
         "PricePerMB": "Price per MB:",
-        "ConnectionInfo": "Connection Info",
+        "ConnectionInfo": "Connection info",
         "MaxInactiveTime": "Max inactive time:",
         "sec": "sec",
         "MaxTimeWithoutServiceSmallText": "Maximum time without service usage. Agent will consider that Client will not use service and stop providing it. Period is specified in seconds.",
-        "PayInfo": "Pay Info:",
+        "PayInfo": "Pay info:",
         "Account": "Account:",
         "Balance": "Balance:",
         "Deposit": "Deposit:",
         "UnusedPrixWillBeReturnedSmallText": "After the end of using, the unused PRIX will be returned.",
-        "AcceptancePrice": "Acceptance Price:"
+        "AcceptancePrice": "Acceptance price:"
     }
 }
