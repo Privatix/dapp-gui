@@ -77,7 +77,7 @@ export default class ClientHistory extends React.Component<any,any> {
                     contractStatus: channel.channelStatus.channelStatus,
                     serviceStatus: channel.channelStatus.serviceStatus,
                     jobStatus: <span><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</span>,
-                    usage: channel.usage.current + ' ' + channel.usage.unit + t('of') + channel.usage.maxUsage + ' ' + channel.usage.unit,
+                    usage: channel.usage.current + ' ' + channel.usage.unit + ' ' + t('of') + ' ' + channel.usage.maxUsage + ' ' + channel.usage.unit,
                     cost: channel.usage.cost / 1e8
                 };
             });

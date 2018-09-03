@@ -91,26 +91,26 @@ class AcceptOffering extends React.Component<any, any>{
 
         if(this.state.customDeposit < this.state.deposit) {
             err=true;
-            msg += t('DepositMustBeMoreThan') + toFixed8({number: (this.state.deposit / 1e8)}) + ' PRIX.';
+            msg += ' ' + t('DepositMustBeMoreThan') + ' ' + toFixed8({number: (this.state.deposit / 1e8)}) + ' PRIX.';
         }
 
         if(this.props.offering.maxUnit && parseFloat(this.props.offering.maxUnit) > 0) {
             const topDepositLimit = this.props.offering.maxUnit * this.props.offering.unitPrice;
             if (this.state.customDeposit > topDepositLimit) {
                 err = true;
-                msg += t('DepositMustBeLessOrEqualThan') + toFixed8({number: (topDepositLimit / 1e8)}) + ' PRIX.';
+                msg += ' ' + t('DepositMustBeLessOrEqualThan') + ' ' + toFixed8({number: (topDepositLimit / 1e8)}) + ' PRIX.';
             }
         }
 
 
         if(this.state.account.psc_balance < this.state.deposit){
             err=true;
-            msg += t('NotEnoughPrixForDeposit');
+            msg += ' ' + t('NotEnoughPrixForDeposit');
         }
 
         if(this.state.account.ethBalance < settings.gas.acceptOffering*this.state.gasPrice){
             err=true;
-            msg += t('NotEnoughToPublishTransaction');
+            msg += ' ' + t('NotEnoughToPublishTransaction');
         }
 
         if(err){
