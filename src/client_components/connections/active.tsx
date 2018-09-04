@@ -8,6 +8,9 @@ import JobName from './jobName';
 import Usage from './usage';
 import { withRouter } from 'react-router-dom';
 import toFixed8 from '../../utils/toFixed8';
+import { translate } from 'react-i18next';
+
+@translate('client/connections/active')
 
 class ActiveConnection extends React.Component<any, any>{
 
@@ -24,6 +27,7 @@ class ActiveConnection extends React.Component<any, any>{
     }
 
     render() {
+        const { t } = this.props;
 
         const connections = this.state.channels.map((channel: any) => {
 
@@ -35,7 +39,7 @@ class ActiveConnection extends React.Component<any, any>{
                         <td>
                             <ModalWindow visible={this.state.popup}
                                          customClass='btn btn-link waves-effect'
-                                         modalTitle='Connection' text={channel.id} component={<Connection connection={channel} />}
+                                         modalTitle={t('Connection')} text={channel.id} component={<Connection connection={channel} />}
                             />
                         </td>
                         <td>{channel.agent}</td>
@@ -50,19 +54,19 @@ class ActiveConnection extends React.Component<any, any>{
         return <div className='row'>
             <div className='col-12'>
                 <div className='card m-b-20'>
-                    <h5 className='card-header'>Active Connection:</h5>
+                    <h5 className='card-header'>{t('ActiveConnection')}</h5>
                     <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                         <div className='card-body'>
                             <table className='table table-bordered table-striped'>
                                 <thead>
                                 <tr>
-                                    <th>Id</th>
-                                    <th>Agent</th>
-                                    <th>Contract status</th>
-                                    <th>Service status</th>
-                                    <th>Job status</th>
-                                    <th>Usage</th>
-                                    <th>Cost (PRIX)</th>
+                                    <th>{t('Id')}</th>
+                                    <th>{t('Agent')}</th>
+                                    <th>{t('ContractStatus')}</th>
+                                    <th>{t('ServiceStatus')}</th>
+                                    <th>{t('JobStatus')}</th>
+                                    <th>{t('Usage')}</th>
+                                    <th>{t('CostPRIX')}</th>
                                 </tr>
                                 </thead>
                                 <tbody>

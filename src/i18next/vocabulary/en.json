@@ -417,5 +417,49 @@
         "YouPayMultipleTransactionFees": "You pay multiple transaction fees.",
         "YesTerminateContract": "Yes, terminate contract!",
         "AreYouSure": "Are you sure?"
+    },
+    "client/connections/active": {
+        "Connection": "Connection",
+        "ActiveConnection": "Active Connection:",
+        "Id": "Id",
+        "Agent": "Agent",
+        "ContractStatus": "Contract status",
+        "ServiceStatus": "Service status",
+        "JobStatus": "Job status",
+        "Usage": "Usage",
+        "CostPRIX": "Cost (PRIX)"
+    },
+    "client/connections/usage": {
+        "of": "of"
+    },
+    "client/connections/finishServiceButton": {
+        "PermanentlyStopUsingService": "Permanently stop using this service.",
+        "CanRequestFullDepositReturn": "You can request full deposit return, after service is terminated.",
+        "RemainingDepositWillBeReturned": "Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.",
+        "Finish": "Finish",
+        "YesFinishIt": "Yes, finish it!",
+        "AreYouSure": "Are you sure?"
+    },
+    "client/connections/connection": {
+        "Offering": "Offering",
+        "Id": "Id",
+        "Agent": "Agent",
+        "Server": "Server",
+        "Started": "Started",
+        "Stopped": "Stopped",
+        "Usage": "Usage",
+        "CostPRIX": "Cost (PRIX)",
+        "LastUsageTime": "Last Usage time",
+        "ClientIP": "Client IP",
+        "CommonInfo": "Common Info",
+        "IdT": "Id:",
+        "OfferingT": "Offering:",
+        "ContractStatusT": "Contract status:",
+        "ServiceStatusT": "Service status:",
+        "TransferredT": "Transferred:",
+        "CostT": "Cost:",
+        "DepositT": "Deposit:",
+        "LastUsageTimeT": "Last usage time:",
+        "Sessions": "Sessions"
     }
 }
