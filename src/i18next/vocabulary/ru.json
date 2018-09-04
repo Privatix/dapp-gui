@@ -12,32 +12,32 @@
         "setThePassword": "Установка пароля для",
         "Password": "Пароль",
         "Confirmation": "Подтверждение",
-        "PasswordAndConfirmationAreNotEqual" : "Пароль и подтверждение не совпадают!",
+        "PasswordAndConfirmationAreNotEqual": "Пароль и подтверждение не совпадают!",
         "PasswordLengthMustBe": "Длина пароля должна быть не меньше 8-ми и не больше 24-х символов.",
         "ThePasswordMustBeStrong": "Пароль должен быть сложным.",
         "InCaseYouLostYourPassword": "В случае утери пароля Вы потеряете все свои данные. Будьте внимательны, восстановить данные или пароль будет невозможно.",
-        "WeWillUseThisPassword" : "Мы будем использовать этот пароль для шифрования Ваших приватных ключей.",
+        "WeWillUseThisPassword": "Мы будем использовать этот пароль для шифрования Ваших приватных ключей.",
         "WeStoreYourPrivateKeys": "Мы храним Ваши приватные ключи зашифрованными<br /> в том же формате, что и ноды ethereum"
     },
     "auth/setAccount": {
         "SetTheContractAccount": "Укажите аккаунт контракта для",
-        "ForTokenTransfers" : "Для перевода токенов Вы должны добавить приватный ключ адреса, на котором хранятся PRIX",
-        "WeRecommendYou" : "Мы рекомендуем Вам",
+        "ForTokenTransfers": "Для перевода токенов Вы должны добавить приватный ключ адреса, на котором хранятся PRIX",
+        "WeRecommendYou": "Мы рекомендуем Вам",
         "createASeparateAccount": "создать отдельный кошелек",
         "transferToThem": "перевести на него небольшое количество PRIX и ETH",
-        "useThisSeparateAccount" : "использовать только этот кошелек в этом приложении",
+        "useThisSeparateAccount": "использовать только этот кошелек в этом приложении",
         "PleaseChooseTheWay": "Пожалуйста, выберите способ импорта кошелька Ethereum",
         "GenerateNew": "Создать новый (рекомендуется)",
         "ImportKeyInHex": "Импорт приватного ключа в hex формате",
         "ImportFromJSON": "Импорт приватного ключа в JSON Keystore формате"
     },
-    "auth/generateKey":{
+    "auth/generateKey": {
         "Name": "Имя",
         "WhileNextButton": "После того, как Вы нажмете кнопку ДАЛЕЕ, мы создадим новый кошелек.",
         "IfYouLoseThePassword": "Если вы потеряете пароль, которым защищен кошелек, Вы не сможете получить доступ к этому кошельку.",
         "AccountsNameCantBeEmpty": "Имя кошелька не может быть пустым."
     },
-    "auth/importJsonKey":{
+    "auth/importJsonKey": {
         "NoFileChosen": "Файл не выбран.",
         "PleaseSetThePassword": "Пожалуйста, укажите пароль.",
         "PleaseEnterAValidPassword": "Пожалуйста, введите правильный пароль .",
@@ -65,7 +65,7 @@
         "Password": "Пароль",
         "Import": "Импорт ключей",
         "Account": "Аккаунт",
-        "Backup" : "Резервное копирование",
+        "Backup": "Резервное копирование",
         "currentStep": "текущий этап"
     },
     "auth/utils": {
@@ -95,7 +95,7 @@
         "UnitType": "Единица измерения",
         "PricePerMB": "Цена за 1 MB",
         "MaxBillingUnitLag": "Максимальная отсрочка платежа",
-        "MaximumPaymentLagInUnits" : "Максимальное число неоплаченных юнитов (в единицах измерения), после которого Агент прекратит предоставлять услуги.",
+        "MaximumPaymentLagInUnits": "Максимальное число неоплаченных юнитов (в единицах измерения), после которого Агент прекратит предоставлять услуги.",
         "MinUnits": "Минимальное число юнитов",
         "UsedToCalculateMinimumDeposit": "Используется для вычисления минимально необходимого депозита.",
         "MaxUnits": "Максимальное число юнитов",
@@ -134,7 +134,7 @@
         "cantBeEmpty": "не может быть пустым.",
         "cantBeEmpty_plural": "не могут быть пустыми."
     },
-    "offerings/offeringTools":{
+    "offerings/offeringTools": {
         "WarningArea": "Внимание!",
         "Popup": "Поднять",
         "Remove": "Удалить",
@@ -144,7 +144,7 @@
         "YesRemoveIt": "Да, удалить!",
         "WouldYouLikeToProceed": "Хотите продолжить?"
     },
-    "offerings/offeringsList":{
+    "offerings/offeringsList": {
         "Offering": "Предложение",
         "ServerInfo": "Информация о сервере",
         "ServiceName": "Название сервиса",
@@ -153,7 +153,7 @@
         "AvailableSupply": "Доступно слотов",
         "Supply": "Слотов"
     },
-    "products/productsList":{
+    "products/productsList": {
         "ServersList": "Список серверов",
         "Name": "Имя",
         "OfferingTemplate": "Шаблон предложения",
@@ -178,7 +178,7 @@
     "channels/channelsList": {
         "AllServices": "Все сервисы"
     },
-    "channels/channelsListSortTable":{
+    "channels/channelsListSortTable": {
         "Server": "Сервер",
         "Client": "Клиент",
         "ContractStatus": "Статус контракта",
@@ -434,5 +434,49 @@
         "YouPayMultipleTransactionFees": "Вы платите несколько комиссий за транзакции.",
         "YesTerminateContract": "Да, расторгнуть!",
         "AreYouSure": "Вы уверены?"
+    },
+    "client/connections/active": {
+        "Connection": "Соединение",
+        "ActiveConnection": "Активное соединение:",
+        "Id": "Id",
+        "Agent": "Агент",
+        "ContractStatus": "Статус контракта",
+        "ServiceStatus": "Статус сервиса",
+        "JobStatus": "Job статус",
+        "Usage": "Использовано",
+        "CostPRIX": "Стоимость (PRIX)"
+    },
+    "client/connections/usage": {
+        "of": "с"
+    },
+    "client/connections/finishServiceButton": {
+        "PermanentlyStopUsingService": "Завершить использование сервиса.",
+        "CanRequestFullDepositReturn": "Вы можете запросить полный возврат депозита после прекращения обслуживания.",
+        "RemainingDepositWillBeReturned": "Оставшийся депозит будет возвращен после того, как агент закроет контракт. Плата за транзакцию оплачивается агентом.",
+        "Finish": "Завершить",
+        "YesFinishIt": "Да, завершить!",
+        "AreYouSure": "Вы уверены?"
+    },
+    "client/connections/connection": {
+        "Offering": "Предложение",
+        "Id": "Id",
+        "Agent": "Агент",
+        "Server": "Сервер",
+        "Started": "Начато",
+        "Stopped": "Закончено",
+        "Usage": "Использовано",
+        "CostPRIX": "Стоимость (PRIX)",
+        "LastUsageTime": "Время последнего использования",
+        "ClientIP": "IP клиента",
+        "CommonInfo": "Общая информация",
+        "IdT": "Id:",
+        "OfferingT": "Предложение:",
+        "ContractStatusT": "Статус контракта:",
+        "ServiceStatusT": "Статус сервиса:",
+        "TransferredT": "Передано:",
+        "CostT": "Стоимость:",
+        "DepositT": "Депозит:",
+        "LastUsageTimeT": "Время последнего использования:",
+        "Sessions": "Сессии"
     }
 }
