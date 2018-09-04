@@ -133,7 +133,7 @@
         "cantBeEmpty": "can't be empty.",
         "cantBeEmpty_plural": "can't be empty."
     },
-    "offeringTools":{
+    "offerings/offeringTools":{
         "WarningArea": "Warning area",
         "Popup": "Popup",
         "Remove": "Remove",
@@ -319,7 +319,23 @@
     },
     "confirmPopupSwal": {
         "CancelBtn": "Cancel",
-        "AreYouSure": "'Are you sure?"
+        "AreYouSure": "Are you sure?"
+    },
+    "client/dashboard/connecting": {
+        "WaitingTimeIsOver": "Waiting time is over. Finish procedure will be called automatically.",
+        "FailedToAcceptOffering": "Failed to accept offering. Please, try another one.",
+        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the VPN.",
+        "Synchronizing": "Synchronizing",
+        "YouCanStartUsingVPN": "You can start using VPN",
+        "Connect": "Connect",
+        "YesConnectIt": "Yes, connect it!",
+        "ThisOperationWillPauseVPNUsage": "This operation will pause VPN usage.",
+        "ForThisContractMaxSuspendTimeIs": "For this contract, max suspend time is {{minutes}} min.",
+        "YesPauseIt": "Yes, pause it!",
+        "Remaining": "Remaining",
+        "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
+        "Resume": "Resume",
+        "YesResumeIt": "Yes, resume it!"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
@@ -417,5 +433,49 @@
         "YouPayMultipleTransactionFees": "You pay multiple transaction fees.",
         "YesTerminateContract": "Yes, terminate contract!",
         "AreYouSure": "Are you sure?"
+    },
+    "client/connections/active": {
+        "Connection": "Connection",
+        "ActiveConnection": "Active Connection:",
+        "Id": "Id",
+        "Agent": "Agent",
+        "ContractStatus": "Contract status",
+        "ServiceStatus": "Service status",
+        "JobStatus": "Job status",
+        "Usage": "Usage",
+        "CostPRIX": "Cost (PRIX)"
+    },
+    "client/connections/usage": {
+        "of": "of"
+    },
+    "client/connections/finishServiceButton": {
+        "PermanentlyStopUsingService": "Permanently stop using this service.",
+        "CanRequestFullDepositReturn": "You can request full deposit return, after service is terminated.",
+        "RemainingDepositWillBeReturned": "Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.",
+        "Finish": "Finish",
+        "YesFinishIt": "Yes, finish it!",
+        "AreYouSure": "Are you sure?"
+    },
+    "client/connections/connection": {
+        "Offering": "Offering",
+        "Id": "Id",
+        "Agent": "Agent",
+        "Server": "Server",
+        "Started": "Started",
+        "Stopped": "Stopped",
+        "Usage": "Usage",
+        "CostPRIX": "Cost (PRIX)",
+        "LastUsageTime": "Last Usage time",
+        "ClientIP": "Client IP",
+        "CommonInfo": "Common Info",
+        "IdT": "Id:",
+        "OfferingT": "Offering:",
+        "ContractStatusT": "Contract status:",
+        "ServiceStatusT": "Service status:",
+        "TransferredT": "Transferred:",
+        "CostT": "Cost:",
+        "DepositT": "Deposit:",
+        "LastUsageTimeT": "Last usage time:",
+        "Sessions": "Sessions"
     }
 }

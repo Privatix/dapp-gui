@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
-import * as dateformat from 'dateformat';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
@@ -10,6 +9,10 @@ import * as api from '../../utils/api';
 import Offering from '../vpn_list/acceptOffering';
 import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
+import PgTime from '../../components/utils/pgTime';
+import { translate } from 'react-i18next';
+
+@translate('client/connections/connection')
 
 class Connection extends React.Component<any, any>{
 
@@ -38,10 +41,12 @@ class Connection extends React.Component<any, any>{
 
     showOffering(evt:any){
         evt.preventDefault();
-        this.props.render('Offering', <Offering mode='view' offering={this.state.offering} />);
+        const { t } = this.props;
+        this.props.render(t('Offering'), <Offering mode='view' offering={this.state.offering} />);
     }
 
     render(){
+        const { t } = this.props;
 
         if(this.state.offering && this.props.connection.offering !== this.state.offering.id){
             this.updateOffering(this.props.connection.offering);
@@ -49,43 +54,43 @@ class Connection extends React.Component<any, any>{
 
         const sessionsColumns = [
             {
-                header: 'Id',
+                header: t('Id'),
                 key: 'id'
             },
             {
-                header: 'Agent',
+                header: t('Agent'),
                 key: 'agent'
             },
             {
-                header: 'Server',
+                header: t('Server'),
                 key: 'server'
             },
             {
-                header: 'Offering',
+                header: t('Offering'),
                 key: 'offering'
             },
             {
-                header: 'Started',
+                header: t('Started'),
                 key: 'started'
             },
             {
-                header: 'Stopped',
+                header: t('Stopped'),
                 key: 'stopped'
             },
             {
-                header: 'Usage',
+                header: t('Usage'),
                 key: 'usage'
             },
             {
-                header: 'Cost (PRIX)',
+                header: t('CostPRIX'),
                 key: 'cost'
             },
             {
-                header: 'Last Usage time',
+                header: t('LastUsageTime'),
                 key: 'lastUsageTime'
             },
             {
-                header: 'Client IP',
+                header: t('ClientIP'),
                 key: 'clientIP'
             }
         ];
@@ -98,17 +103,17 @@ class Connection extends React.Component<any, any>{
             <div className='row'>
                 <div className='col-8'>
                     <div className='card m-b-20'>
-                        <h5 className='card-header'>Common Info</h5>
+                        <h5 className='card-header'>{t('CommonInfo')}</h5>
                         <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                             <div className='card-body'>
                                 <table className='table table-bordered table-striped'>
                                     <tbody>
                                         <tr>
-                                            <td>Id:</td>
+                                            <td>{t('IdT')}</td>
                                             <td>{this.state.channel.id}</td>
                                         </tr>
                                         <tr>
-                                            <td>Offering:</td>
+                                            <td>{t('OfferingT')}</td>
                                             <td>{this.state.offering
                                                 ? <a href='#' onClick={this.showOffering.bind(this)}>
                                                     { new Buffer(this.state.offering.hash, 'base64').toString('hex') }
@@ -117,28 +122,28 @@ class Connection extends React.Component<any, any>{
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td>Contract status:</td>
+                                            <td>{t('ContractStatusT')}</td>
                                             <td><ContractStatus contractStatus={this.state.channel.channelStatus.channelStatus} /></td>
                                         </tr>
                                         <tr>
-                                            <td>Service status:</td>
+                                            <td>{t('ServiceStatusT')}</td>
                                             <td><ChannelStatus serviceStatus={this.state.channel.channelStatus.serviceStatus} /></td>
                                         </tr>
                                         <tr>
-                                            <td>Transferred:</td>
+                                            <td>{t('TransferredT')}</td>
                                             <td>{this.state.channel.usage.current} {this.state.channel.usage.unit}</td>
                                         </tr>
                                         <tr>
-                                            <td>Cost:</td>
+                                            <td>{t('CostT')}</td>
                                             <td>{toFixed8({number: (this.state.channel.usage.cost / 1e8)})} PRIX</td>
                                         </tr>
                                         <tr>
-                                            <td>Deposit:</td>
+                                            <td>{t('DepositT')}</td>
                                             <td>{toFixed8({number: (this.state.channel.deposit / 1e8)})} PRIX</td>
                                         </tr>
                                         <tr>
-                                            <td>Last usage time:</td>
-                                            <td>{ isValidLastUsageTime ? dateformat(new Date(Date.parse(lastUsageTime)), 'mmm d yyyy hh:MM:ss') : ''}</td>
+                                            <td>{t('LastUsageTimeT')}</td>
+                                            <td>{ isValidLastUsageTime ? <PgTime time={lastUsageTime} /> : ''}</td>
                                         </tr>
                                     </tbody>
                                 </table>
@@ -163,7 +168,7 @@ class Connection extends React.Component<any, any>{
             <div className='row m-t-30'>
                 <div className='col-12'>
                     <div className='card m-b-20'>
-                        <h5 className='card-header'>Sessions</h5>
+                        <h5 className='card-header'>{t('Sessions')}</h5>
                         <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                             <div className='card-body'>
                                 <div className='bootstrap-table bootstrap-table-sortable'>
