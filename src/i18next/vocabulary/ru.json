@@ -322,6 +322,22 @@
         "CancelBtn": "Отменить",
         "AreYouSure": "Вы уверены?"
     },
+    "client/dashboard/connecting": {
+        "WaitingTimeIsOver": "Время ожидания истекло. Процедура завершения будет вызвана автоматически.",
+        "FailedToAcceptOffering": "Не удалось принять предложение. Пожалуйста, попробуйте другое.",
+        "AfterTheConnectionIsReady": "После того как соединение будет готовы Вы сможете начать использовать VPN.",
+        "Synchronizing": "Синхронизация",
+        "YouCanStartUsingVPN": "Вы можете начать использовать VPN",
+        "Connect": "Подключение",
+        "YesConnectIt": "Да, подключиться!",
+        "ThisOperationWillPauseVPNUsage": "Эта операция приостановить использование VPN.",
+        "ForThisContractMaxSuspendTimeIs": "Для этого контракта максимальноe время ожидания составляет {{minutes}} минут.",
+        "YesPauseIt": "Да, поставить на паузу!",
+        "Remaining": "Осталось",
+        "AfterMaxInactivityTimeHasBeenReached": "По истечении срока максимальной неактивности процедура завершения будет вызвана автоматически.",
+        "Resume": "Восстановить",
+        "YesResumeIt": "Да, восстановить соединение!"
+    },
     "client/dashboard/start": {
         "StartUsingVPN": "Начать использование VPN"
     },

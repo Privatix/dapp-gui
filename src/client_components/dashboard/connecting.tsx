@@ -1,7 +1,9 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import ConfirmPopupSwal from '../../components/confirmPopupSwal';
+import { translate } from 'react-i18next';
 import Countdown from 'react-countdown-now';
+
+import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import ActiveConnection from '../connections/active';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
@@ -11,11 +13,11 @@ const countdownRender = ({ minutes, seconds }) => {
     return <span>{minutes}:{seconds}</span>;
 };
 
-const completeRemaining = () => {
-    return <span>Waiting time is over. Finish procedure will be called automatically.</span>;
-};
+const completeRemaining = translate('client/dashboard/connecting')(({t}) => {
+    return <span>{t('WaitingTimeIsOver')}</span>;
+});
 
-
+@translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal'])
 class Connecting extends React.Component<any, any>{
 
     constructor(props:any){
@@ -34,6 +36,9 @@ class Connecting extends React.Component<any, any>{
     }
 
     async refresh(){
+
+        const { t } = this.props;
+
         const pendingChannelsReq = api.channels.getClientList(null, 'pending');
         const activeChannelsReq = api.channels.getClientList(null, 'active');
         const suspendedChannelsReq = api.channels.getClientList(null, 'suspended');
@@ -61,7 +66,7 @@ class Connecting extends React.Component<any, any>{
 
             if (pendingTimeCounter >= 20) {
                 clearTimeout(this.state.handler);
-                notice({level: 'error', title: 'Attention!', msg: 'Failed to accept offering. Please, try another one.'}, 5000);
+                notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
                 this.props.history.push('/client-dashboard-start');
                 return;
             }
@@ -73,13 +78,16 @@ class Connecting extends React.Component<any, any>{
     }
 
     pending(){
+
+        const { t } = this.props;
+
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text'>After the connection is ready, you can start using the VPN.</p>
+                        <p className='card-text'>{t('AfterTheConnectionIsReady')}</p>
                         <button className='btn btn-inverse btn-block btn-lg disabled'>
-                            <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>Synchronizing...
+                            <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>{t('Synchronizing')}...
                         </button>
                     </div>
                 </div>
@@ -89,20 +97,23 @@ class Connecting extends React.Component<any, any>{
     }
 
     suspended(){
+
+        const { t } = this.props;
+
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text m-t-5 m-b-20'><strong>You can start using VPN</strong></p>
+                        <p className='card-text m-t-5 m-b-20'><strong>{t('YouCanStartUsingVPN')}</strong></p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'resume'}}}
-                            title={'Connect'}
+                            title={t('Connect')}
                             text={<span></span>}
                             class={'btn btn-primary btn-custom btn-block'}
                             swalType='warning'
-                            swalConfirmBtnText='Yes, connect it!'
-                            swalTitle='Are you sure?' />
+                            swalConfirmBtnText={t('YesConnectIt')}
+                            swalTitle={t('confirmPopupSwal:AreYouSure')} />
                     </div>
                 </div>
 
@@ -119,22 +130,26 @@ class Connecting extends React.Component<any, any>{
     }
 
     active(){
+
+        const { t } = this.props;
+
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text'>This operation will pause VPN usage.</p>
-                        <p className='card-text m-t-5 m-b-20'>For this contract, max suspend time is 12 min</p>
+                        <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
+                        { /* TODO insert real max suspend time */ }
+                        <p className='card-text m-t-5 m-b-20'>{t('ForThisContractMaxSuspendTimeIs', {minutes: 12})}</p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'pause'}}}
                             title={'Pause'}
-                            text={<span>This operation will pause VPN usage.<br />
-                            For this contract, max suspend time is 12 min.</span>}
+                            text={<span>{t('ThisOperationWillPauseVPNUsage')}<br />
+                            {t('ForThisContractMaxSuspendTimeIs')}</span>}
                             class={'btn btn-primary btn-custom btn-block'}
                             swalType='warning'
-                            swalConfirmBtnText='Yes, pause it!'
-                            swalTitle='Are you sure?' />
+                            swalConfirmBtnText={t('YesPauseIt')}
+                            swalTitle={t('confirmPopupSwal:AreYouSure')} />
                     </div>
                 </div>
 
@@ -148,21 +163,31 @@ class Connecting extends React.Component<any, any>{
     }
 
     paused(){
+
+        const { t } = this.props;
+
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text remainingText'>Remaining: <strong><Countdown date={Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000} renderer={countdownRender} onComplete={completeRemaining} /></strong> min</p>
-                        <p className='card-text m-t-5 m-b-20 text-muted'>After max. inactivity time has been reached, "Finish procedure" will be called automatically.</p>
+                        <p className='card-text remainingText'>{t('Remaining')}:
+                            <strong>
+                                <Countdown date={Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000}
+                                           renderer={countdownRender}
+                                           onComplete={completeRemaining}
+                                />
+                            </strong> min
+                        </p>
+                        <p className='card-text m-t-5 m-b-20 text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'resume'}}}
-                            title={'Resume'}
+                            title={t('Resume')}
                             text={<span></span>}
                             class={'btn btn-primary btn-custom btn-block'}
                             swalType='warning'
-                            swalConfirmBtnText='Yes, resume it!'
-                            swalTitle='Are you sure?' />
+                            swalConfirmBtnText={t('YesResumeIt')}
+                            swalTitle={t('confirmPopupSwal:AreYouSure')} />
                     </div>
                 </div>
 

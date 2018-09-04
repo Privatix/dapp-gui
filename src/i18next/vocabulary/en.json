@@ -319,7 +319,23 @@
     },
     "confirmPopupSwal": {
         "CancelBtn": "Cancel",
-        "AreYouSure": "'Are you sure?"
+        "AreYouSure": "Are you sure?"
+    },
+    "client/dashboard/connecting": {
+        "WaitingTimeIsOver": "Waiting time is over. Finish procedure will be called automatically.",
+        "FailedToAcceptOffering": "Failed to accept offering. Please, try another one.",
+        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the VPN.",
+        "Synchronizing": "Synchronizing",
+        "YouCanStartUsingVPN": "You can start using VPN",
+        "Connect": "Connect",
+        "YesConnectIt": "Yes, connect it!",
+        "ThisOperationWillPauseVPNUsage": "This operation will pause VPN usage.",
+        "ForThisContractMaxSuspendTimeIs": "For this contract, max suspend time is {{minutes}} min.",
+        "YesPauseIt": "Yes, pause it!",
+        "Remaining": "Remaining",
+        "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
+        "Resume": "Resume",
+        "YesResumeIt": "Yes, resume it!"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
