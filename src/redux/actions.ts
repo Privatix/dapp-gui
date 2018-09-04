@@ -1,5 +1,4 @@
 import * as api from '../utils/api';
-import notice from '../utils/notice';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
 import {DbSetting as Setting} from '../typings/settings';
@@ -64,22 +63,12 @@ export const asyncProviders: AsyncProviders = {
                 });
         };
     },
-    setMode: function(mode:Mode, history: any){
+    setMode: function(mode:Mode, history: any, t: any){
         return function(dispatch: any){
-            api.setUserMode(mode)
-               .then(res => {
+            api.getUserRole()
+               .then(role => {
                    // TODO check if error
-                   dispatch(handlers.setMode(mode));
-                   if (res.message === 'updated.') {
-                       if (mode === Mode.AGENT) {
-                           history.push('/');
-                       } else {
-                           history.push('/client-dashboard-start');
-                       }
-                       notice({level: 'info', title: 'Congratulations!', msg: 'User mode was successfully switched to ' + mode.toUpperCase()});
-                   } else {
-                       notice({level: 'error', title: 'Attention!', msg: 'Something went wrong!'});
-                   }
+                   dispatch(handlers.setMode(role));
                });
         };
     }

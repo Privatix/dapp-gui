@@ -1,0 +1,482 @@
+{
+    "common": {
+        "RefreshAll": "Обновить все",
+        "Refresh": "Обновить",
+        "Select": "Выберите"
+    },
+    "auth/setLanguage": {
+        "chooseTheLanguage": "Выбор языка",
+        "PleaseSelectLanguage": "Пожалуйста, выберите ваш язык"
+    },
+    "auth/setPassword": {
+        "setThePassword": "Установка пароля для",
+        "Password": "Пароль",
+        "Confirmation": "Подтверждение",
+        "PasswordAndConfirmationAreNotEqual": "Пароль и подтверждение не совпадают!",
+        "PasswordLengthMustBe": "Длина пароля должна быть не меньше 8-ми и не больше 24-х символов.",
+        "ThePasswordMustBeStrong": "Пароль должен быть сложным.",
+        "InCaseYouLostYourPassword": "В случае утери пароля Вы потеряете все свои данные. Будьте внимательны, восстановить данные или пароль будет невозможно.",
+        "WeWillUseThisPassword": "Мы будем использовать этот пароль для шифрования Ваших приватных ключей.",
+        "WeStoreYourPrivateKeys": "Мы храним Ваши приватные ключи зашифрованными<br /> в том же формате, что и ноды ethereum"
+    },
+    "auth/setAccount": {
+        "SetTheContractAccount": "Укажите аккаунт контракта для",
+        "ForTokenTransfers": "Для перевода токенов Вы должны добавить приватный ключ адреса, на котором хранятся PRIX",
+        "WeRecommendYou": "Мы рекомендуем Вам",
+        "createASeparateAccount": "создать отдельный кошелек",
+        "transferToThem": "перевести на него небольшое количество PRIX и ETH",
+        "useThisSeparateAccount": "использовать только этот кошелек в этом приложении",
+        "PleaseChooseTheWay": "Пожалуйста, выберите способ импорта кошелька Ethereum",
+        "GenerateNew": "Создать новый (рекомендуется)",
+        "ImportKeyInHex": "Импорт приватного ключа в hex формате",
+        "ImportFromJSON": "Импорт приватного ключа в JSON Keystore формате"
+    },
+    "auth/generateKey": {
+        "Name": "Имя",
+        "WhileNextButton": "После того, как Вы нажмете кнопку ДАЛЕЕ, мы создадим новый кошелек.",
+        "IfYouLoseThePassword": "Если вы потеряете пароль, которым защищен кошелек, Вы не сможете получить доступ к этому кошельку.",
+        "AccountsNameCantBeEmpty": "Имя кошелька не может быть пустым."
+    },
+    "auth/importJsonKey": {
+        "NoFileChosen": "Файл не выбран.",
+        "PleaseSetThePassword": "Пожалуйста, укажите пароль.",
+        "PleaseEnterAValidPassword": "Пожалуйста, введите правильный пароль .",
+        "PathToJSONKeystoreFile": "Путь к файлу JSON Keystore",
+        "PasswordWillBeUsed": "Пароль (будет использован для расшифровки JSON Keystore)",
+        "MoreInformation": "Узнать больше о приватном ключе Ethereum"
+    },
+    "auth/importHexKey": {
+        "PleaseInputHexRepresentation": "Пожалуйста, введите в шестнадцатеричном виде приватный ключ для кошелька на котором хранятся PRIX",
+        "PrivateKey": "Приватный ключ",
+        "PrivateKeyMustHave": "Приватный ключ должен состоять строго из 64 символов."
+    },
+    "auth/backup": {
+        "generateKey": "новый ключ успешно сгенерирован и зарегистрирован!",
+        "importHexKey": "ключ был успешно импортирован в систему!",
+        "importJsonKey": "JSON Keystore файл был успешно импортирован в систему!",
+        "PleaseBackupYourAccount": "Пожалуйста, сделайте резервную копию кошелька перед началом работы.",
+        "SomeErrorOccured": "Произошла ошибка. Файл не может быть сохранен по указанному пути.",
+        "ToPreventEthereumAddress": "Для предотвращения утери данных Вам необходимо сделать резервную копию приватного ключа",
+        "NoteWeEncryptThisFile": "Внимание: Мы зашифруем этот файл используя Ваш пароль для приложения.",
+        "Browse": "Выбрать"
+    },
+    "auth/steps": {
+        "Language": "Язык",
+        "Password": "Пароль",
+        "Import": "Импорт ключей",
+        "Account": "Аккаунт",
+        "Backup": "Резервное копирование",
+        "currentStep": "текущий этап"
+    },
+    "auth/utils": {
+        "Next": "Далее",
+        "Previous": "Назад"
+    },
+    "offerings": {
+        "CreateAnOffering": "Создать предложение"
+    },
+    "offerings/offerings": {
+        "CreateOffering": "Создать предложение",
+        "Offerings": "Предложения"
+    },
+    "offerings/createOffering": {
+        "Server": "Сервер",
+        "GeneralInfo": "Общая информация",
+        "Name": "Имя",
+        "serviceNameTitle": "Имя сервиса, например VPN",
+        "Description": "Описание",
+        "description": "описание",
+        "Country": "Страна",
+        "Supply": "Количесто слотов",
+        "ie": "например",
+        "MaximumSupplyOfServices": "Максимальное количество слотов согласно предложению.",
+        "ItRepresentsTheMaximum": "Указывает максимальное число клиентов, которые могут одновременно пользоваться услугами сервиса.",
+        "BillingInfo": "Платежная информация",
+        "UnitType": "Единица измерения",
+        "PricePerMB": "Цена за 1 MB",
+        "MaxBillingUnitLag": "Максимальная отсрочка платежа",
+        "MaximumPaymentLagInUnits": "Максимальное число неоплаченных юнитов (в единицах измерения), после которого Агент прекратит предоставлять услуги.",
+        "MinUnits": "Минимальное число юнитов",
+        "UsedToCalculateMinimumDeposit": "Используется для вычисления минимально необходимого депозита.",
+        "MaxUnits": "Максимальное число юнитов",
+        "UsedToSpecifyMaximumUnits": "Используется для указания максимального числа юнитов, которые может предоставить сервис. Не обязательно к заполнению.",
+        "ConnectionInfo": "Информация о соединении",
+        "MaxSuspendTime": "Максимальное время ожидания",
+        "sec": "секунд",
+        "MaximumTimeServiceCan": "Максимальное время в течении которого сервис может быть в приостановленном состоянии в ожидании оплаты.",
+        "AfterThisTimePeriodService": "По истечении этого срока сервис будет отключен, если оплата не будет получена.",
+        "PeriodIsSpecifiedInSeconds": "Период указан в секундах",
+        "MaxInactiveTime": "Максимальное время бездействия",
+        "MaximumTimeWithoutServiceUsage": "Максимальное время, в течении которого пользователь может не пользоваться сервисом",
+        "AgentWillConsider": "По истечении этого срока Агент предполагает, что пользователь отказался от услуги и прекращает предоставление сервиса.",
+        "PeriodIsSpecified": "Период указан в секундах.",
+        "PublicationPrice": "Цена публикации предложения",
+        "Account": "Аккаунт",
+        "Deposit": "Депозит",
+        "ThisDepositWillBeLocked": "Эта сумма будет заблокирована, пока предложение активно.",
+        "ToReturnDeposit": "Для возврата депозита необходимо отменить предложение.",
+        "CreateAndPublish": "Создать и опубликовать",
+        "UnitPriceMustBeANumber": "Цена за юнит должна быть числом.",
+        "UnitPriceMustBeMoreThen0": "Цена за юнит должна быть больше 0.",
+        "DepositIsGreaterThenServiceBalance": "Депозит больше чем баланс на контракте. Выберите другой аккаунт или пополните баланс.",
+        "NotEnoughFunds": "Недостаточно средств для публикации транзакции. выберите пожалуйста другой аккаунт.",
+        "MaximumUnitsMustBeEqual": "Максимальное число юнитов должно быть больше либо равно минимальному числу юнитов.",
+        "Field": "Поле",
+        "Field_plural": "Поля",
+        "MustBeInteger": "должно быть целым.",
+        "MustBeInteger_plural": "должны быть целыми.",
+        "isRequired": "обязательно для заполнения.",
+        "isRequired_plural": "обязательны для заполнения.",
+        "haveZeroValue": "имеет нулевое значение.",
+        "haveZeroValue_plural": "имеют нулевое значение.",
+        "haveNegativeValue": "имеет отрицательное значение.",
+        "haveNegativeValue_plural": "имеют отрицательное значение.",
+        "cantBeEmpty": "не может быть пустым.",
+        "cantBeEmpty_plural": "не могут быть пустыми."
+    },
+    "offerings/offeringTools": {
+        "WarningArea": "Внимание!",
+        "Popup": "Поднять",
+        "Remove": "Удалить",
+        "popupInfo": "Эта операция уведомит Клиентов о том, что Ваше предложение все еще актуально, увеличивая тем самым шансы на сделку.",
+        "removeInfo": "Эта операция удаляет предложение. Вы получите свой депозит обратно. Клиенты не смогут больше принимать это предложение. Предложение может быть удалено, только если оно было неактивно последние {{minutes}} минут.",
+        "YesPopUpIt": "Да, поднять!",
+        "YesRemoveIt": "Да, удалить!",
+        "WouldYouLikeToProceed": "Хотите продолжить?"
+    },
+    "offerings/offeringsList": {
+        "Offering": "Предложение",
+        "ServerInfo": "Информация о сервере",
+        "ServiceName": "Название сервиса",
+        "Server": "Сервер",
+        "Status": "Статус",
+        "AvailableSupply": "Доступно слотов",
+        "Supply": "Слотов"
+    },
+    "products/productsList": {
+        "ServersList": "Список серверов",
+        "Name": "Имя",
+        "OfferingTemplate": "Шаблон предложения",
+        "AccessTemplate": "Шаблон доступа",
+        "OfferingCount": "Число предложений"
+    },
+    "products/productItem": {
+        "ServerInfo": "Информация о сервере"
+    },
+    "products/productView": {
+        "PleaseInsertIPorDNS": "Пожалуйста введите IP, либо DNS!",
+        "Name": "Имя",
+        "Host": "Хост",
+        "Save": "Сохранить",
+        "HostWasSuccessfullyUpdated": "Хост был успешно обновлен!",
+        "SomethingWentWrong": "Что-то пошло не так! Попробуйте снова позже."
+    },
+    "channels/channelsByStatus": {
+        "ActiveServices": "Активные сервисы",
+        "History": "История"
+    },
+    "channels/channelsList": {
+        "AllServices": "Все сервисы"
+    },
+    "channels/channelsListSortTable": {
+        "Server": "Сервер",
+        "Client": "Клиент",
+        "ContractStatus": "Статус контракта",
+        "ServiceStatus": "Статус сервиса",
+        "Usage": "Использовано",
+        "Income": "Доход (PRIX)",
+        "ServiceChangedTime": "Время последнего изменения сервиса"
+    },
+    "sessions/sessionsList": {
+        "TotalStatistics": "Общая статистика",
+        "TotalUsage": "Всего использовано",
+        "TotalIncome": "Общий доход",
+        "SessionsCount": "Количество сессий",
+        "DetailedStatistics": "Детальная статистика",
+        "ExportToAFile": "Экспорт в файл",
+        "SavingSessions": "сохранение сессий",
+        "sessionId": "Id сессии",
+        "channelId": "Id канала",
+        "Started": "Запущен",
+        "Stopped": "Остановлен",
+        "Usage": "Использовано",
+        "LastUsageTime": "Время последней активности",
+        "ClientIP": "IP клиента",
+        "ClientPort": "Порт клиента"
+    },
+    "header": {
+        "Accounts": "Аккаунты",
+        "Help": "Помощь",
+        "SwitchToClient": "В режим Клиент",
+        "SwitchToAgent": "В режим Агент",
+        "Settings": "Настройки",
+        "Logs": "Логи",
+        "user": "пользователь",
+        "SomethingWentWrong": "Что-то пошло не так!",
+        "UserWasSwitchedToAGENT": "Успешно переключено в режим Агент",
+        "UserWasSwitchedToCLIENT": "Успешно переключено в режим Клиент"
+    },
+    "navigation": {
+        "Dashboard": "Главная",
+        "Services": "Сервисы",
+        "Active": "Активные",
+        "History": "История",
+        "Sessions": "Сессии",
+        "Offerings": "Предложения",
+        "Servers": "Серверы",
+        "ClientDashboard": "Главная",
+        "VPNList": "Список VPN"
+    },
+    "topPanel": {
+        "ETHBalance": "Баланс ETH",
+        "ExchangeBalance": "Баланс контракта",
+        "ServiceBalance": "Баланс сервиса",
+        "ActiveServices": "Активно сервисов",
+        "Status": "Статус",
+        "TotalTraffic": "Всего трафика"
+    },
+    "utils/notice": {
+        "Error!": "Ошибка!",
+        "Attention!": "Внимание!",
+        "Congratulations!": "Поздравляем!"
+    },
+    "logs/logsList": {
+        "LogsHeader": "Список логов",
+        "ExportBtn": "Экспорт в файл",
+        "LogsFilterFrom": "От:",
+        "LogsFilterTo": "До:",
+        "LogsFilterTime": "время",
+        "LogsSearchPlaceholder": "поиск",
+        "NowBtn": "Сейчас",
+        "Level": "Уровень",
+        "Date": "Дата",
+        "Message": "Сообщение",
+        "Context": "Контекст",
+        "Stack": "Стек",
+        "ShowBtn": "показать",
+        "StackTrace": "Stack Trace",
+        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!"
+    },
+    "logs/logsContext": {
+        "Key": "Ключ",
+        "Value": "Значение"
+    },
+    "accounts/accountsList": {
+        "Title": "Аккаунты",
+        "CreateBtn": "Создать аккаунт",
+        "Name": "Имя",
+        "EthereumAddress": "Ethereum адрес",
+        "ETH": "ETH",
+        "ExchangeBalance": "Баланс контракта",
+        "ServiceBalance": "Баланс сервиса",
+        "IsDefault": "По умолчанию",
+        "Actions": "Действия",
+        "CheckBalanceBtn": "Проверить баланс",
+        "ModalTitle": "Аккаунт",
+        "RefreshingAccountBalanceMsg": "Обновление баланса счета. Подождите 1-2 минуты."
+    },
+    "accounts/accountView": {
+        "ErrorMoreThanZero": "Сумма должна быть больше нуля.",
+        "ErrorNotEnoughExchangeFunds": " Недостаточно средств на балансе контракта.",
+        "ErrorNotEnoughServiceFunds": " Недостаточно средств на балансе сервиса.",
+        "ErrorNotEnoughPublishFunds": " Недостаточно средств для публикации транзакции.",
+        "SuccessMessage": "Данные были успешно переданы. Как только транзакция будет в блокчейне, вы увидите ее в списке ниже.",
+        "GeneralInfo": "Главная информация",
+        "Name": "Имя:",
+        "Address": "Адрес:",
+        "BalanceInfo": "Информация о балансе",
+        "ExchangeBalance": "Баланс контракта:",
+        "ServiceBalance": "Баланс сервиса:",
+        "Transfer": "Перевод",
+        "TransferBtn": "Перевести",
+        "From": "Из:",
+        "To": "На:",
+        "ExchangeBalanceOption": "Баланс контракта",
+        "ServiceBalanceOption": "Баланс сервиса",
+        "Amount": "Сумма:",
+        "TransactionLog": "Журнал транзакций",
+        "TransferConfirmBtn": "Да, перевести!",
+        "TransferSwalTitle": "Вы уверены?",
+        "ServiceSwalBalanceFrom": "баланса сервиса",
+        "ExchangeSwalBalanceFrom": "баланса контракта",
+        "ServiceSwalBalance": "баланс сервиса",
+        "ExchangeSwalBalance": "баланс контракта",
+        "TransferSwalText1": "Это действие переведет ваши токены из",
+        "TransferSwalText2": "на",
+        "TransferSwalText3": ".",
+        "TransferSwalText4": "Эта операция требует времени и газа.",
+        "TransferSwalText5": "Вы можете контролировать статус транзакции в журнале транзакций."
+    },
+    "utils/gasRange": {
+        "GasPrice": "Цена газа",
+        "AveragePublicationTimeText": "Среднее время публикации:",
+        "AverageAcceptanceTimeText": "Среднее время приема:",
+        "AverageTime": "мин",
+        "MoreInformation": "Больше информации:"
+    },
+    "transactions/transactionsList": {
+        "Date": "Дата",
+        "EthereumLink": "Ссылка Ethereum"
+    },
+    "confirmPopupSwal": {
+        "CancelBtn": "Отменить",
+        "AreYouSure": "Вы уверены?"
+    },
+    "client/dashboard/connecting": {
+        "WaitingTimeIsOver": "Время ожидания истекло. Процедура завершения будет вызвана автоматически.",
+        "FailedToAcceptOffering": "Не удалось принять предложение. Пожалуйста, попробуйте другое.",
+        "AfterTheConnectionIsReady": "После того как соединение будет готовы Вы сможете начать использовать VPN.",
+        "Synchronizing": "Синхронизация",
+        "YouCanStartUsingVPN": "Вы можете начать использовать VPN",
+        "Connect": "Подключение",
+        "YesConnectIt": "Да, подключиться!",
+        "ThisOperationWillPauseVPNUsage": "Эта операция приостановить использование VPN.",
+        "ForThisContractMaxSuspendTimeIs": "Для этого контракта максимальноe время ожидания составляет {{minutes}} минут.",
+        "YesPauseIt": "Да, поставить на паузу!",
+        "Remaining": "Осталось",
+        "AfterMaxInactivityTimeHasBeenReached": "По истечении срока максимальной неактивности процедура завершения будет вызвана автоматически.",
+        "Resume": "Восстановить",
+        "YesResumeIt": "Да, восстановить соединение!"
+    },
+    "client/dashboard/start": {
+        "StartUsingVPN": "Начать использование VPN"
+    },
+    "agent/dashboard": {
+        "TotalIncome": "Доход:",
+        "RefreshAllBtn": "Обновить все",
+        "ActiveServices": "Активные сервисы",
+        "ActiveOfferings": "Активные предложения"
+    },
+    "client/vpnList": {
+        "Block": "Блок",
+        "Hash": "Хеш",
+        "Country": "Страна",
+        "Price": "Цена (PRIX/MB)",
+        "SupplyTotal": "Предложения (всего)",
+        "AvailableSupply": "Доступных предложений",
+        "SuccessUpdateMsg": "Список VPN был успешно обновлен!",
+        "AcceptOffering": "Принять предложение",
+        "ShowAllBtn": "показать все...",
+        "HideBtn": "скрыть",
+        "Search": "поиск",
+        "WaitForDownloading": "Пожалуйста, дождитесь загрузки....",
+        "CurrentlyWeAreDownloading": "В настоящее время мы загружаем список VPN.",
+        "TakesTimeOnFirstRun": "Это занимает время только при первом запуске.",
+        "AverageTimeForDownloading": "Среднее время для загрузки 2-5 мин.",
+        "Refresh": "Обновить",
+        "Agent": "агент",
+        "PriceFilter": "Цена (PRIX/MB):",
+        "From": "от",
+        "To": "до"
+    },
+    "client/acceptOffering": {
+        "Accept": "Принять",
+        "CanHaveOneVPNConnection": "У Вас может быть только одно VPN-соединение. Чтобы принять другое, завершите текущее соединение.",
+        "DepositMustBeMoreThan": " Депозит должен быть больше, чем ",
+        "DepositMustBeLessOrEqualThan": " Депозит должен быть меньше или равен ",
+        "NotEnoughPrixForDeposit": " Недостаточно средств (PRIX) для депозита. Выберите другую учетную запись.",
+        "NotEnoughToPublishTransaction": " Недостаточно средств (ETH) для публикации транзакции. Выберите другую учетную запись.",
+        "OfferingAccepted": "Предложение принято!",
+        "VPNInfo": "Информация",
+        "Country": "Страна: ",
+        "BillingInfo": "Информация о платеже",
+        "PricePerMB": "Цена за 1 MB:",
+        "ConnectionInfo": "Информация о соединении",
+        "MaxInactiveTime": "Максимальное время бездействия:",
+        "sec": "сек",
+        "MaxTimeWithoutServiceSmallText": "Максимальное время без использования сервиса. После его истечения, агент будет считать, что Клиент не использует сервис и завершит соединение. Период указывается в секундах.",
+        "PayInfo": "Информация о платеже:",
+        "Account": "Аккаунт:",
+        "Balance": "Баланс:",
+        "Deposit": "Депозит:",
+        "UnusedPrixWillBeReturnedSmallText": "По окончании использования VPN будут возвращены неиспользованные PRIX.",
+        "AcceptancePrice": "Стоимость:"
+    },
+    "client/history": {
+        "SuccessfullyRefreshed": "Страница успешно обновлена!",
+        "Service": "Сервис",
+        "of": " с ",
+        "Id": "Id",
+        "Agent": "Агент",
+        "ContractStatus": "Статус контракта",
+        "ServiceStatus": "Статус сервиса",
+        "JobStatus": "Job статус",
+        "Usage": "Использовано",
+        "CostPRIX": "Стоимость (PRIX)",
+        "LastUsed": "Время последнего использования",
+        "Refresh": "Обновить",
+        "AwaitForTerminate": "Ожидают прекращения",
+        "History": "История"
+    },
+    "client/serviceView": {
+        "CommonInfo": "Общая информация",
+        "IdTd": "Id:",
+        "Offering": "Предложение:",
+        "ContractStatusTd": "Статус контракта:",
+        "ServiceStatusTd": "Статус сервиса:",
+        "Transferred": "Передано:",
+        "Cost": "Стоимость:",
+        "Deposit": "Депозит:",
+        "LastUsageTime": "Время последнего использования:",
+        "ContractHasBeenTerminated": "Контракт был расторгнут"
+    },
+    "client/clientAccessInfo": {
+        "AccessInfo": "Адреса сервисов",
+        "ServiceAddress": "Адрес сервиса:",
+        "PaymentAddress": "Адрес платежного сервиса:"
+    },
+    "client/terminateContractBlock": {
+        "ToOpenDisputeFinishService": "Чтобы открыть спор, завершите использование сервиса",
+        "TerminateContract": "Расторгнуть договор",
+        "WarningArea": "Предупреждение",
+        "RequestFullDepositReturn": "Запросить полный возврат депозита.",
+        "UseIfAgentDoNotCloseContract": "Используйте только, если агент не закрывает контракт в течение очень длительного времени.",
+        "YouPayMultipleTransactionFees": "Вы платите несколько комиссий за транзакции.",
+        "YesTerminateContract": "Да, расторгнуть!",
+        "AreYouSure": "Вы уверены?"
+    },
+    "client/connections/active": {
+        "Connection": "Соединение",
+        "ActiveConnection": "Активное соединение:",
+        "Id": "Id",
+        "Agent": "Агент",
+        "ContractStatus": "Статус контракта",
+        "ServiceStatus": "Статус сервиса",
+        "JobStatus": "Job статус",
+        "Usage": "Использовано",
+        "CostPRIX": "Стоимость (PRIX)"
+    },
+    "client/connections/usage": {
+        "of": "с"
+    },
+    "client/connections/finishServiceButton": {
+        "PermanentlyStopUsingService": "Завершить использование сервиса.",
+        "CanRequestFullDepositReturn": "Вы можете запросить полный возврат депозита после прекращения обслуживания.",
+        "RemainingDepositWillBeReturned": "Оставшийся депозит будет возвращен после того, как агент закроет контракт. Плата за транзакцию оплачивается агентом.",
+        "Finish": "Завершить",
+        "YesFinishIt": "Да, завершить!",
+        "AreYouSure": "Вы уверены?"
+    },
+    "client/connections/connection": {
+        "Offering": "Предложение",
+        "Id": "Id",
+        "Agent": "Агент",
+        "Server": "Сервер",
+        "Started": "Начато",
+        "Stopped": "Закончено",
+        "Usage": "Использовано",
+        "CostPRIX": "Стоимость (PRIX)",
+        "LastUsageTime": "Время последнего использования",
+        "ClientIP": "IP клиента",
+        "CommonInfo": "Общая информация",
+        "IdT": "Id:",
+        "OfferingT": "Предложение:",
+        "ContractStatusT": "Статус контракта:",
+        "ServiceStatusT": "Статус сервиса:",
+        "TransferredT": "Передано:",
+        "CostT": "Стоимость:",
+        "DepositT": "Депозит:",
+        "LastUsageTimeT": "Время последнего использования:",
+        "Sessions": "Сессии"
+    }
+}

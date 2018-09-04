@@ -1,5 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
+
 import {fetch} from '../utils/fetch';
 import {asyncProviders} from '../redux/actions';
 import {Account} from '../typings/accounts';
@@ -12,8 +14,9 @@ interface Props {
     rate?: number;
     mode: Mode;
     dispatch: any;
+    t: any;
 }
-
+@translate(['topPanel'])
 class TopPanel extends React.Component <Props, any>{
 
     constructor(props: any){
@@ -133,21 +136,24 @@ class TopPanel extends React.Component <Props, any>{
     }
 
     render(){
+
+        const { t } = this.props;
+
         const status = this.state.status ? 'on' : 'off';
         if(this.props.mode === 'agent'){
             return <ul className='list-inline float-right mb-0 topPanel'>
-                <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
-                <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
-                <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
-                <li className='list-inline-item'>Active Services: {this.state.pscCount}</li>
-                <li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>
+                <li className='list-inline-item'>{t('ETHBalance')}: {this.state.ethBalance}</li>
+                <li className='list-inline-item'>{t('ExchangeBalance')}: {this.state.ptcBalance}</li>
+                <li className='list-inline-item'>{t('ServiceBalance')}: {this.state.pscBalance}</li>
+                <li className='list-inline-item'>{t('ActiveServices')}: {this.state.pscCount}</li>
+                <li className='list-inline-item m-r-20 topPanelStatusLi'> {t('Status')}: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>
             </ul>;
         }else{
             return <ul className='list-inline float-right mb-0 topPanel'>
-                <li className='list-inline-item'>ETH Balance: {this.state.ethBalance}</li>
-                <li className='list-inline-item'>Exchange Balance: {this.state.ptcBalance}</li>
-                <li className='list-inline-item'>Service balance: {this.state.pscBalance}</li>
-                <li className='list-inline-item'>Total Traffic: {this.state.totalTraffic}</li>
+                <li className='list-inline-item'>{t('ETHBalance')}: {this.state.ethBalance}</li>
+                <li className='list-inline-item'>{t('ExchangeBalance')}: {this.state.ptcBalance}</li>
+                <li className='list-inline-item'>{t('ServiceBalance')}: {this.state.pscBalance}</li>
+                <li className='list-inline-item'>{t('TotalTraffic')}: {this.state.totalTraffic}</li>
                 {/*<li className='list-inline-item'>Traffic Balance: {this.state.trafficBalance}</li>*/}
                 {/*<li className='list-inline-item m-r-20 topPanelStatusLi'> Status: <span className={`statusWrap statusWrap-${status}`}><i className={`fa fa-toggle-${status}`}></i></span></li>*/}
             </ul>;

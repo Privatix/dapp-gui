@@ -1,5 +1,5 @@
 import * as React from 'react';
-import AccountView from './accountView';
+import AccountView from '../../../components/accounts/accountView';
 
 export default function(props:any){
 

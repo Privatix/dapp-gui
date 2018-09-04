@@ -1,10 +1,13 @@
 import * as React from 'react';
+import { translate } from 'react-i18next';
+
 import ProductView from './productView';
 // import ProductTools from './productTools';
 import CreateOffering from '../offerings/createOffering';
 
 declare const Custombox: any;
 
+@translate(['offerings', 'offerings/offerings'])
 class Product extends React.Component <any, any> {
 
     constructor(props:any) {
@@ -13,11 +16,13 @@ class Product extends React.Component <any, any> {
 
     openModal(evt:any) {
         evt.preventDefault();
-        this.props.render('Create offering', <CreateOffering product={this.props.product.id} />);
+        const { t } = this.props;
+        this.props.render(t('offerings/offerings:CreateOffering'), <CreateOffering product={this.props.product.id} />);
     }
 
     render () {
-        const product = this.props.product;
+
+        const { product, t } = this.props;
 
         return <div className='container-fluid'>
             <div className='card-box'>
@@ -25,7 +30,7 @@ class Product extends React.Component <any, any> {
                     <div className='col-sm-12 m-b-20'>
                         <div className='btn-group'>
                             <button onClick={this.openModal.bind(this)}
-                                  className='btn btn-default btn-custom waves-effect waves-light'>Create an Offering</button>
+                                  className='btn btn-default btn-custom waves-effect waves-light'>{t('offerings:CreateAnOffering')}</button>
                         </div>
                         {/*<h3 className='page-title'>Server info</h3>*/}
                     </div>

@@ -6,6 +6,10 @@ import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
 import { withRouter } from 'react-router-dom';
 import TerminateContractButton from '../connections/terminateContractButton';
+import notice from '../../utils/notice';
+import { translate } from 'react-i18next';
+
+@translate(['client/serviceView', 'utils/notice'])
 
 class ServiceView extends React.Component <any,any> {
 
@@ -76,6 +80,7 @@ class ServiceView extends React.Component <any,any> {
     render() {
 
         const service = this.state.service;
+        const { t } = this.props;
 /*
         const sessionsColumns = [
             {
@@ -134,41 +139,41 @@ class ServiceView extends React.Component <any,any> {
             <div className='row'>
                 <div className={service.channelStatus.channelStatus === 'active' ? 'col-8' : 'col-12'}>
                     <div className='card m-b-20'>
-                        <h5 className='card-header'>Common Info</h5>
+                        <h5 className='card-header'>{t('CommonInfo')}</h5>
                         <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                             <div className='card-body'>
                                 <table className='table table-bordered table-striped'>
                                     <tbody>
                                     <tr>
-                                        <td className='width30'>Id:</td>
+                                        <td className='width30'>{t('IdTd')}</td>
                                         <td>{service.id}</td>
                                     </tr>
                                     <tr>
-                                        <td>Offering:</td>
+                                        <td>{t('Offering')}</td>
                                         <td>{service.offering}</td>
                                     </tr>
                                     <tr>
-                                        <td>Contract status:</td>
+                                        <td>{t('ContractStatusTd')}</td>
                                         <td><ContractStatus contractStatus={service.channelStatus.channelStatus}/></td>
                                     </tr>
                                     <tr>
-                                        <td>Service status:</td>
+                                        <td>{t('ServiceStatusTd')}</td>
                                         <td><ChannelStatus serviceStatus={service.channelStatus.serviceStatus}/></td>
                                     </tr>
                                     <tr>
-                                        <td>Transferred:</td>
+                                        <td>{t('Transferred')}</td>
                                         <td>{service.usage.current} {service.usage.unit}</td>
                                     </tr>
                                     <tr>
-                                        <td>Cost:</td>
+                                        <td>{t('Cost')}</td>
                                         <td>{service.usage.cost / 1e8}</td>
                                     </tr>
                                     <tr>
-                                        <td>Deposit:</td>
+                                        <td>{t('Deposit')}</td>
                                         <td>{service.deposit / 1e8} PRIX</td>
                                     </tr>
                                     <tr>
-                                        <td>Last usage time:</td>
+                                        <td>{t('LastUsageTime')}</td>
                                         <td><PgTime time={service.channelStatus.lastChanged}/></td>
                                     </tr>
                                     </tbody>
@@ -180,11 +185,17 @@ class ServiceView extends React.Component <any,any> {
                     <ClientAccessInfo channel={this.state.service} />
 
                 </div>
-                <div className='col-4'>
+                <div className={service.channelStatus.channelStatus === 'active' ? 'col-4' : 'hidden'}>
                     <TerminateContractButton
                         status={service.channelStatus.serviceStatus !== 'terminated' ? 'disabled' : 'active'}
                         channelId={service.id}
-                        done={() => this.props.history.push('/client-history')}
+                        done={() => {
+                            notice({
+                                level: 'info',
+                                msg: t('ContractHasBeenTerminated')
+                            });
+                            this.props.history.push('/client-dashboard-start');
+                        }}
                     />
                 </div>
             </div>

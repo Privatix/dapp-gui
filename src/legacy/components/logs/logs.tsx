@@ -1,5 +1,5 @@
 import * as React from 'react';
-import LogsList from './logsList';
+import LogsList from '../../../components/logs/logsList';
 
 export default function(props:any){
     return (

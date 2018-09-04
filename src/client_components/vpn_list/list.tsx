@@ -10,10 +10,15 @@ import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import notice from '../../utils/notice';
 import toFixed8 from '../../utils/toFixed8';
+import { translate } from 'react-i18next';
+
+@translate(['client/vpnList', 'utils/notice'])
 
 export default class AsyncList extends React.Component<any,any> {
     constructor(props:any) {
         super(props);
+
+        const { t } = props;
 
         this.state = {
             from: 0,
@@ -30,31 +35,31 @@ export default class AsyncList extends React.Component<any,any> {
             filtered: [],
             columns: [
                 {
-                    header: 'Block',
+                    header: t('Block'),
                     key: 'block',
                     dataStyle: { fontSize: '11px'},
                 },
                 {
-                    header: 'Hash',
+                    header: t('Hash'),
                     key: 'hash',
                     dataStyle: { fontSize: '11px'},
                     descSortFunction: ModalPropTextSorter.desc,
                     ascSortFunction: ModalPropTextSorter.asc
                 },
                 {
-                    header: 'Country',
+                    header: t('Country'),
                     key: 'country'
                 },
                 {
-                    header: 'Price (PRIX/MB)',
+                    header: t('Price'),
                     key: 'price'
                 },
                 {
-                    header: 'Supply (total)',
+                    header: t('SupplyTotal'),
                     key: 'supply'
                 },
                 {
-                    header: 'Available supply',
+                    header: t('AvailableSupply'),
                     key: 'availableSupply'
                 }
             ]
@@ -67,14 +72,16 @@ export default class AsyncList extends React.Component<any,any> {
     }
 
     async refresh(clicked?: boolean) {
+        const { t } = this.props;
         this.getClientOfferings(this.filter.bind(this)).then(() => {
             if (clicked === true) {
-                notice({level: 'info', title: 'Congratulations!', msg: 'VPN list was successfully updated!'});
+                notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('SuccessUpdateMsg')});
             }
         });
     }
 
     async getClientOfferings(done?: Function) {
+        const { t } = this.props;
 
         api.getClientOfferings()
             .then(clientOfferings => {
@@ -93,7 +100,7 @@ export default class AsyncList extends React.Component<any,any> {
 
                     return {
                         block: offering.blockNumberUpdated,
-                        hash: <ModalWindow customClass='' modalTitle='Accept Offering' text={offeringHash} component={<AcceptOffering offering={offering} />} />,
+                        hash: <ModalWindow customClass='' modalTitle={t('AcceptOffering')} text={offeringHash} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
                         price: toFixed8({number: (offering.unitPrice / 1e8)}),
                         supply: offering.supply,
@@ -285,20 +292,21 @@ export default class AsyncList extends React.Component<any,any> {
     }
 
     render() {
+        const { t } = this.props;
         const createSliderWithTooltip = Slider.createSliderWithTooltip;
         const Range = createSliderWithTooltip(Slider.Range);
 
-        let buttonText = 'show all...';
+        let buttonText = t('ShowAllBtn');
         let searchHtml = null;
         if (this.state.showAllCountries) {
-            buttonText = 'hide';
+            buttonText = t('HideBtn');
             searchHtml = <div className='form-group row'>
                 <div className='col-md-12 m-t-10 m-b-10'>
                     <div className='input-group searchInputGroup'>
                         <div className='input-group-prepend'>
                             <span className='input-group-text'><i className='fa fa-search'></i></span>
                         </div>
-                        <input className='form-control' type='search' name='search' placeholder='search'
+                        <input className='form-control' type='search' name='search' placeholder={t('Search')}
                                onChange={this.filterCountries.bind(this)} />
                     </div>
                 </div>
@@ -311,13 +319,13 @@ export default class AsyncList extends React.Component<any,any> {
                         <div className='card'>
                             <div className='col-4 m-b-20'>
                                 <div className='card-body'>
-                                    <p className='font-25'>Please, wait for downloading....</p>
+                                    <p className='font-25'>{t('WaitForDownloading')}</p>
                                     <div className='text-center m-t-15 m-b-15'>
                                         <div className='lds-dual-ring'></div>
                                     </div>
-                                    <p className='m-b-0'>Currently, we are downloading VPN list.</p>
-                                    <p>It takes time only on the first run.</p>
-                                    <p className='m-t-15'>An average time for downloading ap. 2-5 min.</p>
+                                    <p className='m-b-0'>{t('CurrentlyWeAreDownloading')}</p>
+                                    <p>{t('TakesTimeOnFirstRun')}</p>
+                                    <p className='m-t-15'>{t('AverageTimeForDownloading')}</p>
                                 </div>
                             </div>
                         </div>
@@ -329,7 +337,7 @@ export default class AsyncList extends React.Component<any,any> {
 
                 <div className='row m-t-20'>
                     <div className='col-12 m-b-20'>
-                        <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this, true)}>Refresh</button>
+                        <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this, true)}>{t('Refresh')}</button>
                     </div>
                     <div className='col-3'>
 
@@ -341,7 +349,7 @@ export default class AsyncList extends React.Component<any,any> {
                                             <div className='input-group-prepend'>
                                                 <span className='input-group-text'><i className='fa fa-search'></i></span>
                                             </div>
-                                            <input className='form-control' type='search' name='agent' placeholder='agent'
+                                            <input className='form-control' type='search' name='agent' placeholder={t('Agent')}
                                                    onChange={this.filterByAgent.bind(this)} />
                                         </div>
                                     </div>
@@ -351,12 +359,12 @@ export default class AsyncList extends React.Component<any,any> {
 
                         <div className='card m-b-20'>
                             <div className='card-body'>
-                                <h6 className='card-title'>Price (PRIX/MB):</h6>
+                                <h6 className='card-title'>{t('PriceFilter')}</h6>
                                 <div className='form-group row'>
                                     <div className='col-6 priceMinMaxInputBl'>
                                         <div className='input-group'>
                                             <div className='input-group-prepend'>
-                                                <span className='input-group-text' id='priceFromLabel'>from</span>
+                                                <span className='input-group-text' id='priceFromLabel'>{t('From')}</span>
                                             </div>
                                             <input type='number' min={this.state.min} max={this.state.max - this.state.step} step={this.state.step} className='form-control' placeholder={this.state.min}
                                                    id='priceFrom' value={toFixed8({number: this.state.from})} onChange={(e) => this.changeMinPriceInput(e)} />
@@ -365,7 +373,7 @@ export default class AsyncList extends React.Component<any,any> {
                                     <div className='col-6 priceMinMaxInputBl'>
                                         <div className='input-group'>
                                             <div className='input-group-prepend'>
-                                                <span className='input-group-text' id='priceToLabel'>to</span>
+                                                <span className='input-group-text' id='priceToLabel'>{t('To')}</span>
                                             </div>
                                             <input type='number' min={this.state.min + this.state.step} max={this.state.max} step={this.state.step} className='form-control' placeholder={this.state.max}
                                                    id='priceTo' value={toFixed8({number: this.state.to})} onChange={(e) => this.changeMaxPriceInput(e)} />
@@ -382,7 +390,7 @@ export default class AsyncList extends React.Component<any,any> {
                         </div>
 
                         <div className='card m-t-15 m-b-20'>
-                            <h5 className='card-header'>Country</h5>
+                            <h5 className='card-header'>{t('Country')}</h5>
                             <div className='card-body'>
                                 {searchHtml}
 

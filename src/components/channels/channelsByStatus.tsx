@@ -1,6 +1,8 @@
 import * as React from 'react';
+import { translate } from 'react-i18next';
 import ChannelsListByStatus from './channelsListByStatus';
 
+@translate(['channels/channelsByStatus', 'common'])
 export default class ChannelsByStatus extends React.Component <any,any> {
 
     constructor(props: any) {
@@ -27,18 +29,20 @@ export default class ChannelsByStatus extends React.Component <any,any> {
     }
 
     render() {
+
         const status = this.state.status;
+        const { t } = this.props;
 
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-b-15'>
-                    <h3 className='page-title'>{status === 'active' ? 'Active Services' : 'History'}</h3>
+                    <h3 className='page-title'>{status === 'active' ? t('ActiveServices') : t('History')}</h3>
                 </div>
             </div>
             <div className='row'>
                 <div className='col-sm-12 m-b-15'>
                     <div className='m-t-15'>
-                        <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this)}>Refresh</button>
+                        <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this)}>{t('common:Refresh')}</button>
                     </div>
                 </div>
             </div>

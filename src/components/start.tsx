@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 import {asyncReactor} from 'async-reactor';
-import {LocalSettings} from '../typings/settings';
+import SetLanguage from './auth/setLanguage';
 import SetPassword from './auth/setPassword';
 import SetAccount from './auth/setAccount';
 import GenerateKey from './auth/generateKey';
@@ -13,6 +13,9 @@ import Login from './auth/login';
 import App from '../components/asyncApp';
 import * as api from '../utils/api';
 
+import { I18nextProvider} from 'react-i18next';
+import i18n from '../i18next/init';
+
 function Loader() {
 
   return (<h2>Loading settings ...</h2>);
@@ -21,42 +24,50 @@ function Loader() {
 
 async function AsyncStart (props:any){
 
-    const settings = (await api.settings.getLocal()) as LocalSettings;
+    const settings = await api.settings.getLocal();
 
-let MemoryHistory = createMemoryHistory();
-const wizard = <Router history={MemoryHistory as any}>
-    <Switch>
-        <Route exact path='/' component={SetPassword} />
-        <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
-        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
-        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-        <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-        <Route path='/backup/:privateKey/:from' render={(props: any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} from={props.match.params.from}/>} />
-        <Route path='/login' component={Login} />
-        <Route path='/app' component={App} />
-    </Switch>
-</Router>;
+    i18n.changeLanguage(settings.lang);
 
-const setAccount = <Router history={MemoryHistory as any}>
-    <Switch>
-        <Route exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />
-        <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
-        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
-        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-        <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-        <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
-        <Route path='/app' component={App} />
-    </Switch>
-</Router>;
+    const MemoryHistory = createMemoryHistory();
+    const wizard = <Router history={MemoryHistory as any}>
+        <Switch>
+            <Route exact path='/' component={SetLanguage} />
+            <Route exact path='/setPassword' component={SetPassword} />
+            <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
+            <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
+            <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
+            <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+            <Route path='/backup/:privateKey/:from' render={(props: any) => <Backup entryPoint={'/app'}
+                                                                                    privateKey={props.match.params.privateKey}
+                                                                                    from={props.match.params.from}/>}
+                                                                            />
+            <Route path='/login' component={Login} />
+            <Route path='/app' component={App} />
+        </Switch>
+    </Router>;
 
-const login = <Router history={MemoryHistory as any}>
-    <Switch>
-        <Route exact path='/' render={() => <Login entryPoint={'/app'} />} />
-        <Route path='/app' component={App} />
-    </Switch>
-</Router>;
+    const setAccount = <Router history={MemoryHistory as any}>
+        <Switch>
+            <Route exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />
+            <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
+            <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
+            <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
+            <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+            <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
+            <Route path='/app' component={App} />
+        </Switch>
+    </Router>;
 
-     return settings.firstStart ? wizard : settings.accountCreated ? login : setAccount;
+    const login = <Router history={MemoryHistory as any}>
+        <Switch>
+            <Route exact path='/' render={() => <Login entryPoint={'/app'} />} />
+            <Route path='/app' component={App} />
+        </Switch>
+    </Router>;
+
+     return <I18nextProvider i18n={ i18n }>
+                { settings.firstStart ? wizard : settings.accountCreated ? login : setAccount}
+            </I18nextProvider>;
 }
 
 export default asyncReactor(AsyncStart, Loader);

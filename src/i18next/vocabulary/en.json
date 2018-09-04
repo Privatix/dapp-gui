@@ -1,0 +1,481 @@
+{
+    "common": {
+        "RefreshAll": "Refresh all",
+        "Refresh": "Refresh",
+        "Select": "Select"
+    },
+    "auth/setLanguage": {
+        "chooseTheLanguage": "Choose the language",
+        "PleaseSelectLanguage": "Please, select your language:"
+    },
+    "auth/setPassword": {
+        "setThePassword": "Set the password to",
+        "Password": "Password",
+        "Confirmation": "Confirmation",
+        "PasswordAndConfirmationAreNotEqual" : "Password and confirmation are not equal!",
+        "PasswordLengthMustBe" : "Password length must be at least 8 and at most 24 symbols.",
+        "ThePasswordMustBeStrong": "The password must be strong.",
+        "InCaseYouLostYourPassword": "In case you lost your password, you lost all your data. It is NOT possible to access your account without a password and there is no forgot my password option here. Do not forget it.",
+        "WeWillUseThisPassword" : "We will use this password as a key for encrypting your private key.",
+        "WeStoreYourPrivateKeys": "We store your private keys encrypted and <br />in same format as ethereum node"
+    },
+    "auth/setAccount": {
+        "SetTheContractAccount": "Set the contract account of",
+        "ForTokenTransfers" : "For token transfers, you need to add your Private Key for address, that holds PRIX",
+        "WeRecommendYou" : "We recommend you",
+        "createASeparateAccount": "create a separate account",
+        "transferToThem": "transfer to them limited amount of PRIX and ETH",
+        "useThisSeparateAccount" : "use this separate account in this application",
+        "PleaseChooseTheWay": "Please choose the way you want to import Ethereum account",
+        "GenerateNew": "Generate new (recommended)",
+        "ImportKeyInHex": "Import a Private Key in hex format",
+        "ImportFromJSON": "Import from JSON Keystore File"
+    },
+    "auth/generateKey":{
+        "Name": "Name",
+        "WhileNextButton": "While next button will be pressed, we will generate a new account.",
+        "IfYouLoseThePassword": "If you lose the password you use to encrypt your account, you will not be able to access that account",
+        "AccountsNameCantBeEmpty": "Accounts name can't be empty."
+    },
+    "auth/importJsonKey":{
+        "NoFileChosen": "No file chosen.",
+        "PleaseSetThePassword": "Please set the password.",
+        "PleaseEnterAValidPassword": "Please enter a valid password.",
+        "PathToJSONKeystoreFile": "Path to JSON Keystore File",
+        "PasswordWillBeUsed": "Password (will be used to decrypt JSON)",
+        "MoreInformation": "More information about Ethereum Private Key"
+    },
+    "auth/importHexKey": {
+        "PleaseInputHexRepresentation": "Please, input hex representation of your Private Key for address, that holds PRIX",
+        "PrivateKey": "Private key",
+        "PrivateKeyMustHave": "Private key must have exactly 64 hex symbols."
+    },
+    "auth/backup": {
+        "generateKey": "new key has been successfully generated and registered!",
+        "importHexKey": "hex key has been successfully imported and registered!",
+        "importJsonKey": "JSON Keystore File has been successfully imported!",
+        "PleaseBackupYourAccount": "Please backup your account before start working.",
+        "SomeErrorOccured": "Some error occured. Can't save file by specified path.",
+        "ToPreventEthereumAddress": "To prevent Ethereum address data lost you need to backup your Private Key in a safe location as a file.",
+        "NoteWeEncryptThisFile": "Note: We encrypt this file using your application access password. Don't forget it!",
+        "Browse": "Browse"
+    },
+    "auth/steps": {
+        "Language": "Language",
+        "Password": "Password",
+        "Import": "Import",
+        "Account": "Account",
+        "Backup" : "Backup"
+    },
+    "auth/utils": {
+        "Next": "Next",
+        "Previous": "Previous"
+    },
+    "offerings": {
+        "CreateAnOffering": "Create an offering"
+    },
+    "offerings/offerings": {
+        "CreateOffering": "Create offering",
+        "Offerings": "Offerings"
+    },
+    "offerings/createOffering": {
+        "Server": "Server",
+        "GeneralInfo": "General info",
+        "Name": "Name",
+        "serviceNameTitle": "Service name, e.g. VPN",
+        "Description": "Description",
+        "description": "description",
+        "Country": "Country",
+        "Supply": "Supply",
+        "ie": "i.e.",
+        "MaximumSupplyOfServices": "Maximum supply of services according to service offerings.",
+        "ItRepresentsTheMaximum": "It represents the maximum number of clients that can consume this service offering concurrently.",
+        "BillingInfo": "Billing info",
+        "UnitType": "Unit type",
+        "PricePerMB": "Price per MB",
+        "MaxBillingUnitLag": "Max billing unit lag",
+        "MaximumPaymentLagInUnits" : "Maximum payment lag in units after which Agent will suspend service usage.",
+        "MinUnits": "Min units",
+        "UsedToCalculateMinimumDeposit": "Used to calculate minimum deposit required.",
+        "MaxUnits": "Max units",
+        "UsedToSpecifyMaximumUnits": "Used to specify maximum units of service that will be supplied. Can be empty.",
+        "ConnectionInfo": "Connection info",
+        "MaxSuspendTime": "Max suspend time",
+        "sec": "sec",
+        "MaximumTimeServiceCan": "Maximum time service can be in Suspended status due to payment lag.",
+        "AfterThisTimePeriodService": "After this time period service will be terminated, if no sufficient payment was received.",
+        "PeriodIsSpecifiedInSeconds": "Period is specified in seconds.",
+        "MaxInactiveTime": "Max inactive time",
+        "MaximumTimeWithoutServiceUsage": "Maximum time without service usage.",
+        "AgentWillConsider": "Agent will consider that Client will not use service and stop providing it.",
+        "PeriodIsSpecified": "Period is specified in seconds.",
+        "PublicationPrice": "Publication price",
+        "Account": "Account",
+        "Deposit": "Deposit",
+        "ThisDepositWillBeLocked": "This deposit will be locked while offering is active.",
+        "ToReturnDeposit": "To return deposit close your offering.",
+        "CreateAndPublish": "Create and publish",
+        "UnitPriceMustBeANumber": "Unit price must be a number.",
+        "UnitPriceMustBeMoreThen0": "Unit price must be more then 0.",
+        "DepositIsGreaterThenServiceBalance": "Deposit is greater than service balance. Please choose another account or top up the balance.",
+        "NotEnoughFunds": "Not enough funds for publish transaction. Please, select another account.",
+        "MaximumUnitsMustBeEqual": "Maximum units must be equal or greater then minimum units.",
+        "Field": "Field",
+        "Field_plural": "Fields",
+        "MustBeInteger": "must be integer.",
+        "MustBeInteger_plural": "must be integers.",
+        "isRequired": "is required.",
+        "isRequired_plural": "are required.",
+        "haveZeroValue": "have zero value.",
+        "haveZeroValue_plural": "have zero value.",
+        "haveNegativeValue": "have negative value.",
+        "haveNegativeValue_plural": "have negative value.",
+        "cantBeEmpty": "can't be empty.",
+        "cantBeEmpty_plural": "can't be empty."
+    },
+    "offerings/offeringTools":{
+        "WarningArea": "Warning area",
+        "Popup": "Popup",
+        "Remove": "Remove",
+        "popupInfo": "This operation will notify Clients that your offering is actual, improving your chances for a deal.",
+        "removeInfo": "This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for {{minutes}} past minutes.",
+        "YesPopUpIt": "Yes, pop up it!",
+        "YesRemoveIt": "Yes, remove it!",
+        "WouldYouLikeToProceed": "Would you like to proceed?"
+    },
+    "offerings/offeringsList":{
+        "Offering": "Offering",
+        "ServerInfo": "Server info",
+        "ServiceName": "Service name",
+        "Server": "Server",
+        "Status": "Status",
+        "AvailableSupply": "Available supply",
+        "Supply": "Supply"
+    },
+    "products/productsList":{
+        "ServersList": "Servers list",
+        "Name": "Name",
+        "OfferingTemplate": "Offering template",
+        "AccessTemplate": "Access template",
+        "OfferingCount": "Offering count"
+    },
+    "products/productItem": {
+        "ServerInfo": "Server info"
+    },
+    "products/productView": {
+        "PleaseInsertIPorDNS": "Please, insert IP or DNS only!",
+        "Name": "Name",
+        "Host": "Host",
+        "Save": "Save",
+        "HostWasSuccessfullyUpdated": "Host was successfully updated!",
+        "SomethingWentWrong": "Something went wrong. Try again later!"
+    },
+    "channels/channelsByStatus": {
+        "ActiveServices": "Active services",
+        "History": "History"
+    },
+    "channels/channelsList": {
+        "AllServices": "All services"
+    },
+    "channels/channelsListSortTable":{
+        "Server": "Server",
+        "Client": "Client",
+        "ContractStatus": "Contract status",
+        "ServiceStatus": "Service status",
+        "Usage": "Usage",
+        "Income": "Income (PRIX)",
+        "ServiceChangedTime": "Service changed time"
+    },
+    "sessions/sessionsList": {
+        "TotalStatistics": "Total statistics",
+        "TotalUsage": "Total usage",
+        "TotalIncome": "Total income",
+        "SessionsCount": "Sessions count",
+        "DetailedStatistics": "Detailed statistics",
+        "ExportToAFile": "Export to a file",
+        "SavingSessions": "saving sessions",
+        "sessionId": "Session id",
+        "channelId": "Channel id",
+        "Started": "Started",
+        "Stopped": "Stopped",
+        "Usage": "Usage",
+        "LastUsageTime": "Last usage time",
+        "ClientIP": "Client IP",
+        "ClientPort": "Client port"
+    },
+    "header": {
+        "Accounts": "Accounts",
+        "Help": "Help",
+        "SwitchToClient": "Switch to Client",
+        "SwitchToAgent": "Switch to Agent",
+        "Settings": "Settings",
+        "Logs": "Logs",
+        "user": "user",
+        "SomethingWentWrong": "Something went wrong!",
+        "UserWasSwitchedToAGENT": "User mode was successfully switched to AGENT",
+        "UserWasSwitchedToCLIENT": "User mode was successfully switched to CLIENT"
+    },
+    "navigation": {
+        "Dashboard": "Dashboard",
+        "Services": "Services",
+        "Active": "Active",
+        "History": "History",
+        "Sessions": "Sessions",
+        "Offerings": "Offerings",
+        "Servers": "Servers",
+        "ClientDashboard": "Client dashboard",
+        "VPNList": "VPN List"
+    },
+    "topPanel": {
+        "ETHBalance": "ETH balance",
+        "ExchangeBalance": "Exchange balance",
+        "ServiceBalance": "Service balance",
+        "ActiveServices": "Active services",
+        "Status": "Status",
+        "TotalTraffic": "Total traffic"
+    },
+    "utils/notice": {
+        "Error!": "Error!",
+        "Attention!": "Attention!",
+        "Congratulations!": "Congratulations!"
+    },
+    "logs/logsList": {
+        "LogsHeader": "Logs list",
+        "ExportBtn": "Export to a file",
+        "LogsFilterFrom": "From:",
+        "LogsFilterTo": "To:",
+        "LogsFilterTime": "time",
+        "LogsSearchPlaceholder": "search",
+        "NowBtn": "Now",
+        "Level": "Level",
+        "Date": "Date",
+        "Message": "Message",
+        "Context": "Context",
+        "Stack": "Stack",
+        "ShowBtn": "show",
+        "StackTrace": "Stack trace:",
+        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!"
+    },
+    "logs/logsContext": {
+        "Key": "Key",
+        "Value": "Value"
+    },
+    "accounts/accountsList": {
+        "Title": "Accounts",
+        "CreateBtn": "Create an account",
+        "Name": "Name",
+        "EthereumAddress": "Ethereum address",
+        "ETH": "ETH",
+        "ExchangeBalance": "Exchange balance",
+        "ServiceBalance": "Service balance",
+        "IsDefault": "Is Default",
+        "Actions": "Actions",
+        "CheckBalanceBtn": "Check balance",
+        "ModalTitle": "Account",
+        "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes."
+    },
+    "accounts/accountView": {
+        "ErrorMoreThanZero": "Amount must be more than zero.",
+        "ErrorNotEnoughExchangeFunds": " Not enough funds on Exchange balance.",
+        "ErrorNotEnoughServiceFunds": " Not enough funds on Service balance.",
+        "ErrorNotEnoughPublishFunds": " Not enough funds to publish transaction.",
+        "SuccessMessage": "The data was successfully transmitted. Once the transaction will in the blockchain, you will see it in the list below.",
+        "GeneralInfo": "General info",
+        "Name": "Name:",
+        "Address": "Address:",
+        "BalanceInfo": "Balance Info",
+        "ExchangeBalance": "Exchange balance:",
+        "ServiceBalance": "Service balance:",
+        "Transfer": "Transfer",
+        "TransferBtn": "Transfer",
+        "From": "From:",
+        "To": "To:",
+        "ExchangeBalanceOption": "Exchange balance",
+        "ServiceBalanceOption": "Service balance",
+        "Amount": "Amount:",
+        "TransactionLog": "Transaction Log",
+        "TransferConfirmBtn": "Yes, transfer!",
+        "TransferSwalTitle": "Are you sure?",
+        "ServiceSwalBalanceFrom": "Service balance",
+        "ExchangeSwalBalanceFrom": "Exchange balance",
+        "ServiceSwalBalance": "Service balance",
+        "ExchangeSwalBalance": "Exchange balance",
+        "TransferSwalText1": "This action will transfer your tokens from",
+        "TransferSwalText2": "to",
+        "TransferSwalText3": ".",
+        "TransferSwalText4": "This operation takes time and gas.",
+        "TransferSwalText5": "You can monitor transaction status in the Transaction log."
+    },
+    "utils/gasRange": {
+        "GasPrice": "Gas price",
+        "AveragePublicationTimeText": "Average publication time:",
+        "AverageAcceptanceTimeText": "Average acceptance time:",
+        "AverageTime": "min",
+        "MoreInformation": "More information:"
+    },
+    "transactions/transactionsList": {
+        "Date": "Date",
+        "EthereumLink": "Ethereum link"
+    },
+    "confirmPopupSwal": {
+        "CancelBtn": "Cancel",
+        "AreYouSure": "Are you sure?"
+    },
+    "client/dashboard/connecting": {
+        "WaitingTimeIsOver": "Waiting time is over. Finish procedure will be called automatically.",
+        "FailedToAcceptOffering": "Failed to accept offering. Please, try another one.",
+        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the VPN.",
+        "Synchronizing": "Synchronizing",
+        "YouCanStartUsingVPN": "You can start using VPN",
+        "Connect": "Connect",
+        "YesConnectIt": "Yes, connect it!",
+        "ThisOperationWillPauseVPNUsage": "This operation will pause VPN usage.",
+        "ForThisContractMaxSuspendTimeIs": "For this contract, max suspend time is {{minutes}} min.",
+        "YesPauseIt": "Yes, pause it!",
+        "Remaining": "Remaining",
+        "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
+        "Resume": "Resume",
+        "YesResumeIt": "Yes, resume it!"
+    },
+    "client/dashboard/start": {
+        "StartUsingVPN": "Start using VPN"
+    },
+    "agent/dashboard": {
+        "TotalIncome": "Total income:",
+        "RefreshAllBtn": "Refresh all",
+        "ActiveServices": "Active services",
+        "ActiveOfferings": "Active offerings"
+    },
+    "client/vpnList": {
+        "Block": "Block",
+        "Hash": "Hash",
+        "Country": "Country",
+        "Price": "Price (PRIX/MB)",
+        "SupplyTotal": "Supply (total)",
+        "AvailableSupply": "Available supply",
+        "SuccessUpdateMsg": "VPN list was successfully updated!",
+        "AcceptOffering": "Accept offering",
+        "ShowAllBtn": "show all...",
+        "HideBtn": "hide",
+        "Search": "search",
+        "WaitForDownloading": "Please, wait for downloading....",
+        "CurrentlyWeAreDownloading": "Currently, we are downloading VPN list.",
+        "TakesTimeOnFirstRun": "It takes time only on the first run.",
+        "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
+        "Refresh": "Refresh",
+        "Agent": "agent",
+        "PriceFilter": "Price (PRIX/MB):",
+        "From": "from",
+        "To": "to"
+    },
+    "client/acceptOffering": {
+        "Accept": "Accept",
+        "CanHaveOneVPNConnection": "Note. You can have only one VPN connection. To accept another, terminate the current connection.",
+        "DepositMustBeMoreThan": " The deposit must be more than ",
+        "DepositMustBeLessOrEqualThan": " The deposit must be less or equal than ",
+        "NotEnoughPrixForDeposit": " Not enough PRIXes for deposit. Please, select another account.",
+        "NotEnoughToPublishTransaction": " Not enough funds for publish transaction. Please, select another account.",
+        "OfferingAccepted": "Offering accepted!",
+        "VPNInfo": "VPN info",
+        "Country": "Country: ",
+        "BillingInfo": "Billing info",
+        "PricePerMB": "Price per MB:",
+        "ConnectionInfo": "Connection info",
+        "MaxInactiveTime": "Max inactive time:",
+        "sec": "sec",
+        "MaxTimeWithoutServiceSmallText": "Maximum time without service usage. Agent will consider that Client will not use service and stop providing it. Period is specified in seconds.",
+        "PayInfo": "Pay info:",
+        "Account": "Account:",
+        "Balance": "Balance:",
+        "Deposit": "Deposit:",
+        "UnusedPrixWillBeReturnedSmallText": "After the end of using, the unused PRIX will be returned.",
+        "AcceptancePrice": "Acceptance Price:"
+    },
+    "client/history": {
+        "SuccessfullyRefreshed": "Page was successfully refreshed!",
+        "Service": "Service",
+        "of": " of ",
+        "Id": "Id",
+        "Agent": "Agent",
+        "ContractStatus": "Contract status",
+        "ServiceStatus": "Service status",
+        "JobStatus": "Job status",
+        "Usage": "Usage",
+        "CostPRIX": "Cost (PRIX)",
+        "LastUsed": "Last used",
+        "Refresh": "Refresh",
+        "AwaitForTerminate": "Await for terminate",
+        "History": "History"
+    },
+    "client/serviceView": {
+        "CommonInfo": "Common Info",
+        "IdTd": "Id:",
+        "Offering": "Offering:",
+        "ContractStatusTd": "Contract status:",
+        "ServiceStatusTd": "Service status:",
+        "Transferred": "Transferred:",
+        "Cost": "Cost:",
+        "Deposit": "Deposit:",
+        "LastUsageTime": "Last usage time:",
+        "ContractHasBeenTerminated": "The contract has been terminated"
+    },
+    "client/clientAccessInfo": {
+        "AccessInfo": "Access info",
+        "ServiceAddress": "Service address:",
+        "PaymentAddress": "Payment address:"
+    },
+    "client/terminateContractBlock": {
+        "ToOpenDisputeFinishService": "To open dispute, finish using the service",
+        "TerminateContract": "Terminate contract",
+        "WarningArea": "Warning Area",
+        "RequestFullDepositReturn": "Request full deposit return.",
+        "UseIfAgentDoNotCloseContract": "Use only, if Agent doesn’t closes contract for very long time.",
+        "YouPayMultipleTransactionFees": "You pay multiple transaction fees.",
+        "YesTerminateContract": "Yes, terminate contract!",
+        "AreYouSure": "Are you sure?"
+    },
+    "client/connections/active": {
+        "Connection": "Connection",
+        "ActiveConnection": "Active Connection:",
+        "Id": "Id",
+        "Agent": "Agent",
+        "ContractStatus": "Contract status",
+        "ServiceStatus": "Service status",
+        "JobStatus": "Job status",
+        "Usage": "Usage",
+        "CostPRIX": "Cost (PRIX)"
+    },
+    "client/connections/usage": {
+        "of": "of"
+    },
+    "client/connections/finishServiceButton": {
+        "PermanentlyStopUsingService": "Permanently stop using this service.",
+        "CanRequestFullDepositReturn": "You can request full deposit return, after service is terminated.",
+        "RemainingDepositWillBeReturned": "Remaining deposit will be returned, after Agent closes the contract. Transaction fee is paid by Agent.",
+        "Finish": "Finish",
+        "YesFinishIt": "Yes, finish it!",
+        "AreYouSure": "Are you sure?"
+    },
+    "client/connections/connection": {
+        "Offering": "Offering",
+        "Id": "Id",
+        "Agent": "Agent",
+        "Server": "Server",
+        "Started": "Started",
+        "Stopped": "Stopped",
+        "Usage": "Usage",
+        "CostPRIX": "Cost (PRIX)",
+        "LastUsageTime": "Last Usage time",
+        "ClientIP": "Client IP",
+        "CommonInfo": "Common Info",
+        "IdT": "Id:",
+        "OfferingT": "Offering:",
+        "ContractStatusT": "Contract status:",
+        "ServiceStatusT": "Service status:",
+        "TransferredT": "Transferred:",
+        "CostT": "Cost:",
+        "DepositT": "Deposit:",
+        "LastUsageTimeT": "Last usage time:",
+        "Sessions": "Sessions"
+    }
+}

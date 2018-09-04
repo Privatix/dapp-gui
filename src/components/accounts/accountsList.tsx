@@ -9,11 +9,15 @@ import notice from '../../utils/notice';
 import {State} from '../../typings/state';
 import {Account as AccountType} from '../../typings/accounts';
 import {fetch} from '../../utils/fetch';
+import { translate } from 'react-i18next';
 
 interface Props {
     accounts: AccountType[];
     dispatch: any;
+    t: any;
 }
+
+@translate(['accounts/accountsList', 'utils/notice'])
 
 class Accounts extends React.Component<Props, any> {
 
@@ -28,73 +32,77 @@ class Accounts extends React.Component<Props, any> {
 
     async onRefresh(accountId:any, evt: any){
         evt.preventDefault();
+        const {t} = this.props;
         fetch('/accounts/'+accountId+'/balances-update',{method: 'POST'});
-        notice({level: 'info', title: 'Congratulations!', msg: 'Refreshing account balance. Please wait 1-2 minutes.'});
+        notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
     }
 
     render(){
+        const { t } = this.props;
 
         const accountsDataArr = this.props.accounts.map((account: any) => {
             let isDefault = account.isDefault === true ? 'on' : 'off';
             const ethereumAddress = `0x${account.ethAddr}`;
             return {
-                name: <ModalWindow key={ethereumAddress} visible={false} customClass='' modalTitle='Account' text={account.name} component={<Account account={account} done={this.done.bind(this)} />} />,
+                name: <ModalWindow key={ethereumAddress} visible={false} customClass='' modalTitle={t('ModalTitle')} text={account.name} component={<Account account={account} done={this.done.bind(this)} />} />,
                 ethereumAddress,
                 eth: (account.ethBalance/1e18).toFixed(3),
                 exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
                 serviceBalance: (account.psc_balance/1e8).toFixed(3),
                 isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault}><i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i></span>,
-                actions: <Link to={'#'} onClick={this.onRefresh.bind(this, account.id)} className='btn btn-default btn-custom waves-effect waves-light'>Check balance</Link>
+                actions: <Link to={'#'} onClick={this.onRefresh.bind(this, account.id)} className='btn btn-default btn-custom waves-effect waves-light'>{t('CheckBalanceBtn')}</Link>
             };
 
         });
 
         const columns = [
             {
-                header: 'Name',
+                header: t('Name'),
                 key: 'name'
             },
             {
-                header: 'Ethereum address',
+                header: t('EthereumAddress'),
                 key: 'ethereumAddress'
             },
             {
-                header: 'ETH',
+                header: t('ETH'),
                 key: 'eth'
             },
             {
-                header: 'Exchange Balance',
+                header: t('ExchangeBalance'),
                 key: 'exchangeBalance',
                 headerStyle: {textAlign: 'center'},
                 dataProps: {className: 'text-center'},
             },
             {
-                header: 'Service balance',
+                header: t('ServiceBalance'),
                 key: 'serviceBalance',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
             }
             ,
             {
-                header: 'Is Default',
+                header: t('IsDefault'),
                 key: 'isDefault',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
+                sortable: false
             },
             {
-                header: 'Actions',
+                header: t('Actions'),
                 key: 'actions',
                 headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'}
+                dataProps: { className: 'text-center'},
+                sortable: false
             }
         ];
 
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-b-15'>
-                    <h3 className='page-title'>Accounts</h3>
+                    <h3 className='page-title'>{t('Title')}</h3>
                     <div className='m-t-15'>
-                        <Link to={'/setAccount'} className='btn btn-default btn-custom waves-effect waves-light m-r-15'>Create an account</Link>
+                        <Link to={'/setAccount'} className='btn btn-default btn-custom waves-effect waves-light m-r-15'>{t('CreateBtn')}</Link>
                     </div>
                 </div>
             </div>

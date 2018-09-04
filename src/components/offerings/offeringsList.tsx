@@ -1,4 +1,6 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 import {fetch} from '../../utils/fetch';
 
 import OfferingStatus from './offeringStatus';
@@ -7,11 +9,11 @@ import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
 import Product from '../products/product';
-import { connect } from 'react-redux';
 import { State } from '../../typings/state';
 import {asyncProviders} from '../../redux/actions';
 import base64ToHex from '../utils/base64ToHex';
 
+@translate(['offerings/offeringsList'])
 class Offerings extends React.Component<any, any> {
 
     constructor(props:any) {
@@ -55,13 +57,17 @@ class Offerings extends React.Component<any, any> {
     }
 
     render() {
+
+        const { t } = this.props;
+
         const offeringsDataArr = [];
+
         this.state.offerings.map((offering: any) => {
             let product = this.state.products.filter((product: any) => product.id === offering.product)[0];
             let row = {
-                id: <ModalWindow customClass='' modalTitle='Offering' text={base64ToHex(offering.hash)} component={<Offering offering={offering} />} />,
+                id: <ModalWindow customClass='' modalTitle={t('Offering')} text={base64ToHex(offering.hash)} component={<Offering offering={offering} />} />,
                 serviceName: offering.serviceName,
-                server: <ModalWindow customClass='' modalTitle='Server info' text={offering.productName} component={<Product product={product} />} />,
+                server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={offering.productName} component={<Product product={product} />} />,
                 status: offering.status,
                 availableSupply: offering.currentSupply,
                 supply: offering.supply
@@ -78,29 +84,29 @@ class Offerings extends React.Component<any, any> {
                 ascSortFunction: ModalPropTextSorter.asc
             },
             {
-                header: 'Service name',
+                header: t('ServiceName'),
                 key: 'serviceName'
             },
             {
-                header: 'Server',
+                header: t('Server'),
                 key: 'server',
                 sortable: false
             },
             {
-                header: 'Status',
+                header: t('Status'),
                 key: 'status',
                 headerStyle: {textAlign: 'center'},
                 dataProps: {className: 'text-center'},
                 render: (status) => { return <OfferingStatus status={status} />; }
             },
             {
-                header: 'Available supply',
+                header: t('AvailableSupply'),
                 key: 'availableSupply',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'}
             },
             {
-                header: 'Supply',
+                header: t('Supply'),
                 key: 'supply',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'}

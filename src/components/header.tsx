@@ -1,23 +1,19 @@
 import * as React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
+
 import { NavLink } from 'react-router-dom';
 import TopPanel from './topPanel';
-import {asyncProviders} from '../redux/actions';
-import {Mode} from '../typings/mode';
 import {State} from '../typings/state';
 
 declare var window: any;
 
+@translate(['header', 'utils/notice'])
 class Header extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-    }
-
-    onSwitchMode(){
-        const history = this.props.history;
-        this.props.dispatch(asyncProviders.setMode(this.props.mode === Mode.CLIENT ? Mode.AGENT : Mode.CLIENT, history));
     }
 
     launchFullscreen(element: any) {
@@ -69,6 +65,8 @@ class Header extends React.Component<any, any>{
 
     render(){
 
+        const { t } = this.props;
+
         return <div className='topbar'>
 
             <div className='topbar-left'>
@@ -89,23 +87,20 @@ class Header extends React.Component<any, any>{
                         <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
                            href='#' role='button'
                            aria-haspopup='false' aria-expanded='false'>
-                            <img src='images/PrivatixIcon.jpg' alt='user' className='rounded-circle' />
+                            <img src='images/PrivatixIcon.jpg' alt={t('user')} className='rounded-circle' />
                         </a>
                             <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
                                 <NavLink to='/accounts' className='dropdown-item notify-item'>
-                                    <i className='md  md-account-child'></i> <span>Accounts</span>
+                                    <i className='md  md-account-child'></i> <span>{t('Accounts')}</span>
                                 </NavLink>
                                 <NavLink to='#' className='dropdown-item notify-item'>
-                                    <i className='md md-help'></i> <span>Help</span>
-                                </NavLink>
-                                <NavLink to='#' onClick={this.onSwitchMode.bind(this)} className='dropdown-item notify-item'>
-                                    <i className='ion-arrow-swap'></i> <span>Switch to {this.props.mode === Mode.AGENT ? 'Client' : 'Agent'}</span>
+                                    <i className='md md-help'></i> <span>{t('Help')}</span>
                                 </NavLink>
                                 <NavLink to='/settings' className='dropdown-item notify-item'>
-                                    <i className='md md-settings'></i> <span>Settings</span>
+                                    <i className='md md-settings'></i> <span>{t('Settings')}</span>
                                 </NavLink>
                                 <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
-                                    <i className='dripicons-blog'></i><span>Logs</span>
+                                    <i className='dripicons-blog'></i><span>{t('Logs')}</span>
                                 </NavLink>
                             </div>
                     </li>
