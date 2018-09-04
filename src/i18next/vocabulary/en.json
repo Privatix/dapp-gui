@@ -133,7 +133,7 @@
         "cantBeEmpty": "can't be empty.",
         "cantBeEmpty_plural": "can't be empty."
     },
-    "offeringTools":{
+    "offerings/offeringTools":{
         "WarningArea": "Warning area",
         "Popup": "Popup",
         "Remove": "Remove",
