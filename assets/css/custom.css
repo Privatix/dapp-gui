@@ -96,7 +96,7 @@ ul.default li {
     cursor: pointer;
     font-size: 17px !important;
     font-weight: 500;
-    margin: 0 5px;
+    margin: 0 5px 15px;
     padding: 10px 32px;
 }
 .sweet-alert .swal2-styled:hover,

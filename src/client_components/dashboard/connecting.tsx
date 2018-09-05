@@ -143,7 +143,7 @@ class Connecting extends React.Component<any, any>{
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'pause'}}}
-                            title={'Pause'}
+                            title={t('Pause')}
                             text={<span>{t('ThisOperationWillPauseVPNUsage')}<br />
                             {t('ForThisContractMaxSuspendTimeIs')}</span>}
                             class={'btn btn-primary btn-custom btn-block'}
@@ -176,7 +176,7 @@ class Connecting extends React.Component<any, any>{
                                            renderer={countdownRender}
                                            onComplete={completeRemaining}
                                 />
-                            </strong> min
+                            </strong> {t('min')}
                         </p>
                         <p className='card-text m-t-5 m-b-20 text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
                         <ConfirmPopupSwal

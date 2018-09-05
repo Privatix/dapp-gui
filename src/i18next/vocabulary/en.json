@@ -329,13 +329,15 @@
         "YouCanStartUsingVPN": "You can start using VPN",
         "Connect": "Connect",
         "YesConnectIt": "Yes, connect it!",
+        "Pause": "Pause",
         "ThisOperationWillPauseVPNUsage": "This operation will pause VPN usage.",
         "ForThisContractMaxSuspendTimeIs": "For this contract, max suspend time is {{minutes}} min.",
         "YesPauseIt": "Yes, pause it!",
         "Remaining": "Remaining",
         "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
         "Resume": "Resume",
-        "YesResumeIt": "Yes, resume it!"
+        "YesResumeIt": "Yes, resume it!",
+        "min": "min"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
