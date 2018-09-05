@@ -20,6 +20,13 @@ export default class LogsContext extends React.Component <any, any> {
         this.setState({contextTableData});
     }
 
+    getTr(i:any, value: string, paddingClass: string) {
+        return <tr key={i}>
+            <td className={paddingClass}>{i}</td>
+            <td>{value}</td>
+        </tr>;
+    }
+
     renderContextTableRows(context:object, counter:number = 0) {
         const paddingClass = 'paddingLeft' + counter * 50;
         counter++;
@@ -27,11 +34,11 @@ export default class LogsContext extends React.Component <any, any> {
         return Object.keys(context).map((i) => {
             if (context[i] !== null && typeof context[i] === 'object') {
                 return ([
-                    <tr key={i}><td className={paddingClass}>{i}</td><td></td></tr>,
+                    this.getTr(i, '', paddingClass),
                     this.renderContextTableRows(context[i], counter)
                 ]);
             } else {
-                return <tr key={i}><td className={paddingClass}>{i}</td><td>{context[i]}</td></tr>;
+                return this.getTr(i, context[i], paddingClass);
             }
         });
     }
