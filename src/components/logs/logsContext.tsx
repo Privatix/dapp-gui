@@ -21,16 +21,17 @@ export default class LogsContext extends React.Component <any, any> {
     }
 
     renderContextTableRows(context:object, counter:number = 0) {
+        const paddingClass = 'paddingLeft' + counter * 50;
         counter++;
 
         return Object.keys(context).map((i) => {
             if (context[i] !== null && typeof context[i] === 'object') {
                 return ([
-                    <tr key={i}><td className={'paddingLeft' + (counter - 1) * 50}>{i}</td><td></td></tr>,
+                    <tr key={i}><td className={paddingClass}>{i}</td><td></td></tr>,
                     this.renderContextTableRows(context[i], counter)
                 ]);
             } else {
-                return <tr key={i}><td className={'paddingLeft' + (counter - 1) * 50}>{i}</td><td>{context[i]}</td></tr>;
+                return <tr key={i}><td className={paddingClass}>{i}</td><td>{context[i]}</td></tr>;
             }
         });
     }
