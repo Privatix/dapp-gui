@@ -641,6 +641,22 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     margin: 15px auto;
 }
 
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft50{
+    padding-left: 50px !important;
+}
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft100{
+    padding-left: 100px !important;
+}
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft150{
+    padding-left: 150px !important;
+}
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft200{
+    padding-left: 200px !important;
+}
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft250{
+    padding-left: 250px !important;
+}
+
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
         max-width: 100%;
