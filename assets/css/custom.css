@@ -657,6 +657,15 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     padding-left: 250px !important;
 }
 
+.btnCustomDisabled{
+    border: 1px solid #b3b3b3;
+    color: #232323;
+}
+.btnCustomDisabled:focus {
+    outline: none !important;
+    box-shadow: none  !important;
+}
+
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
         max-width: 100%;
