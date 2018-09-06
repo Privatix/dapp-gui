@@ -52,6 +52,15 @@ ul.default li {
     border-bottom-left-radius: 4px;
     padding-left: 40px;
 }
+.searchInputGroupVPNList .input-group-prepend .input-group-text{
+    border: none;
+    background: #fff;
+    padding: 8px 10px 9px;
+}
+.searchInputGroupVPNList .form-control:not(:first-child){
+    padding: 8px 5px 8px 36px;
+    font-size: 12px;
+}
 
 .warningAreaCard{
     border: 1px solid #e83546;

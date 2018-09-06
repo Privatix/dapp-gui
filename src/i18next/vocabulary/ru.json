@@ -366,7 +366,7 @@
         "TakesTimeOnFirstRun": "Это занимает время только при первом запуске.",
         "AverageTimeForDownloading": "Среднее время для загрузки 2-5 мин.",
         "Refresh": "Обновить",
-        "Agent": "агент",
+        "AgentAddress": "Адрес агента",
         "PriceFilter": "Цена (PRIX/MB):",
         "From": "от",
         "To": "до"

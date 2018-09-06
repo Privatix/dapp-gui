@@ -365,7 +365,7 @@
         "TakesTimeOnFirstRun": "It takes time only on the first run.",
         "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
         "Refresh": "Refresh",
-        "Agent": "agent",
+        "AgentAddress": "Agent address",
         "PriceFilter": "Price (PRIX/MB):",
         "From": "from",
         "To": "to"
