@@ -141,7 +141,10 @@
         "removeInfo": "This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for {{minutes}} past minutes.",
         "YesPopUpIt": "Yes, pop up it!",
         "YesRemoveIt": "Yes, remove it!",
-        "WouldYouLikeToProceed": "Would you like to proceed?"
+        "WouldYouLikeToProceed": "Would you like to proceed?",
+        "DeleteOfferingRequestProcessing": "Your delete offering request is processing. Please wait.",
+        "DeleteOfferingRequestScheduled1": "Your delete offering request was scheduled. After",
+        "DeleteOfferingRequestScheduled2": "minutes the offering will be removed."
     },
     "offerings/offeringsList":{
         "Offering": "Offering",
