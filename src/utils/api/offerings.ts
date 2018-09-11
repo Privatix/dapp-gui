@@ -24,3 +24,8 @@ export const changeClientOfferingsStatus = async function(id: string, action: st
 		body: {action, account, gasPrice, deposit}
 	}) as Promise<SaveAnswer>;
 };
+
+export const getClientOfferingById = function(offeringId: string): Promise<Offering>{
+    return (fetch(`/client/offerings/?id=${offeringId}`) as Promise<Offering[]>)
+        .then(offerings => offerings.length ? offerings[0] : null);
+};
