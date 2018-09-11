@@ -8,6 +8,7 @@ export interface LocalSettings {
     firstStart: boolean;
     accountCreated: boolean;
     apiEndpoint: string;
+    wsEndpoint: string;
     gas: GasConsumption;
     network: string;
     bugsnagKey: string;

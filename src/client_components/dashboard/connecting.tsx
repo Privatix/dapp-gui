@@ -20,22 +20,30 @@ const completeRemaining = translate('client/dashboard/connecting')(({t}) => {
 @translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal'])
 class Connecting extends React.Component<any, any>{
 
-    constructor(props:any){
+    subscription: String;
+
+    constructor(props:any) {
         super(props);
-        this.state = {status: 'pending', handler: 0, channels: [], pendingTimeCounter: 0};
+        this.state = {status: 'pending', channels: [], pendingTimeCounter: 0};
     }
 
-    componentDidMount(){
+    componentDidMount() {
         this.refresh();
     }
 
-    componentWillUnmount(){
-        if(this.state.handler !== 0){
-            clearTimeout(this.state.handler);
+    componentWillUnmount() {
+
+        if(this.subscription){
+            (window as any).ws.unsubscribe(this.subscription);
         }
     }
 
-    async refresh(){
+    ws = (event: any) => {
+        // console.log('WS event catched!!!!', event);
+        this.refresh();
+    }
+
+    async refresh() {
 
         const { t } = this.props;
 
@@ -48,6 +56,12 @@ class Connecting extends React.Component<any, any>{
             activeChannelsReq,
             suspendedChannelsReq
         ]);
+
+
+        if(!this.subscription){
+            const ids = [...pendingChannels, ...activeChannels, ...suspendedChannels].map(channel => channel.id);
+            this.subscription = (window as any).ws.subscribe('channel', ids, this.ws);
+        }
 
         if((activeChannels as any).length > 0){
             this.setState({status: 'active', channels: activeChannels});
@@ -65,7 +79,6 @@ class Connecting extends React.Component<any, any>{
             let pendingTimeCounter = this.state.pendingTimeCounter + 1;
 
             if (pendingTimeCounter >= 20) {
-                clearTimeout(this.state.handler);
                 notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
                 this.props.history.push('/client-dashboard-start');
                 return;
@@ -74,7 +87,6 @@ class Connecting extends React.Component<any, any>{
             this.setState({status: 'pending', channels: pendingChannels, pendingTimeCounter});
         }
 
-        this.setState({handler: setTimeout(this.refresh.bind(this), 3000)});
     }
 
     pending(){

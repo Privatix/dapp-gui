@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-// import keythereum = require('keythereum');
+import * as api from '../../utils/api';
+import WS from '../../utils/ws';
 import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 
-// import * as ReactTooltip from 'react-tooltip';
 const pwdIsCorrect = function(pwd: string){
     return pwd.trim() !== '';
 };
@@ -27,6 +27,14 @@ export default function(props: any){
                 const body = {pwd};
                 const res = await fetch('/login', {method: 'post', body});
                 if(res){
+
+                    api.settings.getLocal()
+                       .then(settings => {
+                            const ws = new WS(settings.wsEndpoint);
+                            ws.setPassword(pwd);
+                            (window as any).ws = ws;
+                       });
+
                     history.push(props.entryPoint);
                 }else{
                     notice({level: 'error', header: 'Attention!', msg: 'access denied, possibly wrong password'});
