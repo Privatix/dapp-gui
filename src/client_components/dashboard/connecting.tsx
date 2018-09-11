@@ -22,7 +22,7 @@ class Connecting extends React.Component<any, any>{
 
     constructor(props:any){
         super(props);
-        this.state = {status: 'pending', handler: 0, channels: [], pendingTimeCounter: 0};
+        this.state = {status: 'pending', handler: 0, channels: [], pendingTimeCounter: 0, offering: null};
     }
 
     componentDidMount(){
@@ -50,7 +50,10 @@ class Connecting extends React.Component<any, any>{
         ]);
 
         if((activeChannels as any).length > 0){
-            this.setState({status: 'active', channels: activeChannels});
+            const offeringsReq = api.offerings.getClientOfferingById(activeChannels[0].offering);
+            const offerings = await Promise.all([offeringsReq]);
+
+            this.setState({status: 'active', channels: activeChannels, offering: offerings[0]});
         }else if((suspendedChannels as any).length > 0){
             const channel = suspendedChannels[0];
 
@@ -139,7 +142,7 @@ class Connecting extends React.Component<any, any>{
                     <div className='card m-b-20 card-body'>
                         <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
                         { /* TODO insert real max suspend time */ }
-                        <p className='card-text m-t-5 m-b-20'>{t('ForThisContractMaxSuspendTimeIs', {minutes: 12})}</p>
+                        <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: Math.ceil(this.state.offering.maxSuspendTime / 60)})}</p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'pause'}}}
@@ -152,6 +155,8 @@ class Connecting extends React.Component<any, any>{
                             swalTitle={t('confirmPopupSwal:AreYouSure')} />
                     </div>
                 </div>
+
+                <div className='col-2'></div>
 
                 <div className='col-5'>
                     <FinishServiceButton channel={this.state.channels[0]} />
@@ -170,7 +175,7 @@ class Connecting extends React.Component<any, any>{
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text remainingText'>{t('Remaining')}:
+                        <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
                             <strong>
                                 <Countdown date={Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000}
                                            renderer={countdownRender}
@@ -178,7 +183,7 @@ class Connecting extends React.Component<any, any>{
                                 />
                             </strong> {t('min')}
                         </p>
-                        <p className='card-text m-t-5 m-b-20 text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
+                        <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'resume'}}}
