@@ -26,7 +26,16 @@ export default class PgTime extends React.Component<any, any> {
             moment.locale(this.state.lang);
 
             const date = new Date(Date.parse(this.props.time));
-            const formattedDate = moment(date).format('MMM D YYYY HH:mm:ss');
+            let formattedDate = moment(date).format('MMM D YYYY HH:mm:ss');
+            if (this.state.lang === 'ru') {
+                moment.updateLocale('ru', {
+                    monthsShort : {
+                        format: 'Янв_Фев_Мар_Апр_Мая_Июня_Июля_Авг_Сен_Окт_Ноя_Дек'.split('_'),
+                        standalone: 'Янв_Фев_Март_Апр_Май_Июнь_Июль_Авг_Сен_Окт_Ноя_Дек'.split('_')
+                    }
+                });
+                formattedDate = moment(date).format('D MMM YYYY HH:mm:ss');
+            }
 
             return <span>{formattedDate}</span>;
         } else {
