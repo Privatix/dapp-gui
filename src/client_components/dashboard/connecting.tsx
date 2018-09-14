@@ -39,7 +39,7 @@ class Connecting extends React.Component<any, any>{
     }
 
     ws = (event: any) => {
-        // console.log('WS event catched!!!!', event);
+        console.log('WS event catched!!!!', event);
         this.refresh();
     }
 
