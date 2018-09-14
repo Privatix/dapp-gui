@@ -16,6 +16,8 @@ import * as api from '../utils/api';
 import { I18nextProvider} from 'react-i18next';
 import i18n from '../i18next/init';
 
+import initElectronMenu from './electronMenu';
+
 function Loader() {
 
   return (<h2>Loading settings ...</h2>);
@@ -27,6 +29,9 @@ async function AsyncStart (props:any){
     const settings = await api.settings.getLocal();
 
     i18n.changeLanguage(settings.lang);
+
+    // From custom electron menu
+    initElectronMenu();
 
     const MemoryHistory = createMemoryHistory();
     const wizard = <Router history={MemoryHistory as any}>
