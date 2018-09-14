@@ -511,5 +511,8 @@
         "Documentation": "Documentation",
         "SearchIssues": "Search issues",
         "CommunityDiscussion": "Community discussion"
+    },
+    "channels/channelUsage": {
+        "of": "of"
     }
 }
