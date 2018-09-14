@@ -119,7 +119,7 @@ class Connecting extends React.Component<any, any>{
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text m-t-5 m-b-20'><strong>{t('YouCanStartUsingVPN')}</strong></p>
+                        <p className='card-text m-t-5 m-b-37'><strong>{t('YouCanStartUsingVPN')}</strong></p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'resume'}}}

@@ -670,6 +670,10 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     cursor: pointer;
 }
 
+.m-b-37{
+    margin-bottom: 37px !important;
+}
+
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
         max-width: 100%;
