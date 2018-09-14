@@ -335,7 +335,7 @@
         "YesConnectIt": "Да, подключиться!",
         "Pause": "Приостановить",
         "ThisOperationWillPauseVPNUsage": "Эта операция приостановить использование VPN.",
-        "ForThisContractMaxSuspendTimeIs": "Для этого контракта максимальноe время ожидания составляет {{minutes}} минут.",
+        "ForThisContractMaxSuspendTimeIs": "Для этого контракта максимальноe время ожидания составляет {{minutes}} мин.",
         "YesPauseIt": "Да, поставить на паузу!",
         "Remaining": "Осталось",
         "AfterMaxInactivityTimeHasBeenReached": "По истечении срока максимальной неактивности процедура завершения будет вызвана автоматически.",
