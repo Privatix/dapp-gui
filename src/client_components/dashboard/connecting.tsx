@@ -24,7 +24,7 @@ class Connecting extends React.Component<any, any>{
 
     constructor(props:any) {
         super(props);
-        this.state = {status: 'pending', channels: [], pendingTimeCounter: 0, offering: null};
+        this.state = {status: 'pending', handler: 0, channels: [], pendingTimeCounter: 0, offering: null};
     }
 
     componentDidMount() {
@@ -32,6 +32,10 @@ class Connecting extends React.Component<any, any>{
     }
 
     componentWillUnmount() {
+
+        if(this.state.handler !== 0){
+            clearTimeout(this.state.handler);
+        }
 
         if(this.subscription){
             (window as any).ws.unsubscribe(this.subscription);
@@ -60,7 +64,9 @@ class Connecting extends React.Component<any, any>{
 
         if(!this.subscription){
             const ids = [...pendingChannels, ...activeChannels, ...suspendedChannels].map(channel => channel.id);
-            this.subscription = (window as any).ws.subscribe('channel', ids, this.ws);
+            if(ids.length){
+                this.subscription = (window as any).ws.subscribe('channel', ids, this.ws);
+            }
         }
 
         if((activeChannels as any).length > 0){
@@ -82,12 +88,17 @@ class Connecting extends React.Component<any, any>{
             let pendingTimeCounter = this.state.pendingTimeCounter + 1;
 
             if (pendingTimeCounter >= 20) {
+                clearTimeout(this.state.handler);
                 notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
                 this.props.history.push('/client-dashboard-start');
                 return;
             }
 
             this.setState({status: 'pending', channels: pendingChannels, pendingTimeCounter});
+        }
+
+        if(!this.subscription){
+            this.setState({handler: setTimeout(this.refresh.bind(this), 3000)});
         }
 
     }
