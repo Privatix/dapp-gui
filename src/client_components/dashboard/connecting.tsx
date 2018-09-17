@@ -116,8 +116,8 @@ class Connecting extends React.Component<any, any>{
         const { t } = this.props;
 
         return <div className='container-fluid'>
-            <div className='row m-t-20'>
-                <div className='col-5'>
+            <div className='row m-t-20 clientConnectionBl'>
+                <div className='col-6 col-xl-5'>
                     <div className='card m-b-20 card-body'>
                         <p className='card-text m-t-5 m-b-37'><strong>{t('YouCanStartUsingVPN')}</strong></p>
                         <ConfirmPopupSwal
@@ -132,9 +132,9 @@ class Connecting extends React.Component<any, any>{
                     </div>
                 </div>
 
-                <div className='col-2'></div>
+                <div className='col-0 col-xl-2'></div>
 
-                <div className='col-5'>
+                <div className='col-6 col-xl-5'>
                     <FinishServiceButton channel={this.state.channels[0]} />
                 </div>
 
@@ -149,8 +149,8 @@ class Connecting extends React.Component<any, any>{
         const { t } = this.props;
 
         return <div className='container-fluid'>
-            <div className='row m-t-20'>
-                <div className='col-5'>
+            <div className='row m-t-20 clientConnectionBl'>
+                <div className='col-6 col-xl-5'>
                     <div className='card m-b-20 card-body'>
                         <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
                         { /* TODO insert real max suspend time */ }
@@ -168,9 +168,9 @@ class Connecting extends React.Component<any, any>{
                     </div>
                 </div>
 
-                <div className='col-2'></div>
+                <div className='col-0 col-xl-2'></div>
 
-                <div className='col-5'>
+                <div className='col-6 col-xl-5'>
                     <FinishServiceButton channel={this.state.channels[0]} />
                 </div>
             </div>
@@ -184,8 +184,8 @@ class Connecting extends React.Component<any, any>{
         const { t } = this.props;
 
         return <div className='container-fluid'>
-            <div className='row m-t-20'>
-                <div className='col-5'>
+            <div className='row m-t-20 clientConnectionBl'>
+                <div className='col-6 col-xl-5'>
                     <div className='card m-b-20 card-body'>
                         <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
                             <strong>
@@ -208,9 +208,9 @@ class Connecting extends React.Component<any, any>{
                     </div>
                 </div>
 
-                <div className='col-2'></div>
+                <div className='col-0 col-xl-2'></div>
 
-                <div className='col-5'>
+                <div className='col-6 col-xl-5'>
                     <FinishServiceButton channel={this.state.channels[0]} />
                 </div>
             </div>
