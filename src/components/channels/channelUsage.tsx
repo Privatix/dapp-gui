@@ -1,5 +1,8 @@
 import * as React from 'react';
 import * as api from '../../utils/api';
+import { translate } from 'react-i18next';
+
+@translate(['channels/channelUsage'])
 
 export default class ChannelUsage extends React.Component <any,any> {
 
@@ -35,8 +38,10 @@ export default class ChannelUsage extends React.Component <any,any> {
     render () {
         this.getUsage();
 
+        const { t } = this.props;
+
         if (this.state.trafficLimit){
-            return <span>{this.state.usage}&nbsp;of&nbsp;{this.state.trafficLimit}&nbsp;MB</span>;
+            return <span>{this.state.usage}&nbsp;{t('of')}&nbsp;{this.state.trafficLimit}&nbsp;MB</span>;
         }else {
             return <span>{this.state.usage} MB</span>;
         }

@@ -512,5 +512,8 @@
         "Documentation": "Документация",
         "SearchIssues": "Поиск известных проблем",
         "CommunityDiscussion": "Обсуждение сообщества"
+    },
+    "channels/channelUsage": {
+        "of": "с"
     }
 }
