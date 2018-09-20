@@ -4,6 +4,7 @@ import * as api from '../../utils/api';
 import WS from '../../utils/ws';
 import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
+import i18n from '../../i18next/init';
 
 const pwdIsCorrect = function(pwd: string){
     return pwd.trim() !== '';
@@ -37,7 +38,7 @@ export default function(props: any){
 
                     history.push(props.entryPoint);
                 }else{
-                    notice({level: 'error', header: 'Attention!', msg: 'access denied, possibly wrong password'});
+                    notice({level: 'error', header: i18n.t('utils/notice:Attention!'), msg: i18n.t('login:AccessDenied')});
                 }
             }else{
                 // TODO incorrect password
@@ -45,19 +46,19 @@ export default function(props: any){
           }
         }
       >
-        Login
+        {i18n.t('login:Login')}
       </button>
     );
 
     return <div className='card-box'>
         <div className='panel-heading'>
-            <h4 className='text-center'> Login to <strong className='text-custom'>Privatix</strong></h4>
+            <h4 className='text-center'> {i18n.t('login:LoginTo')} <strong className='text-custom'>Privatix</strong></h4>
         </div>
         <div className='p-20'>
             <form className='form-horizontal m-t-20' onSubmit={submit}>
                 <div className='form-group'>
                     <div className='col-12'>
-                        <input className='form-control' type='password' id='pwd' required={true} placeholder='Password' />
+                        <input className='form-control' type='password' id='pwd' required={true} placeholder={i18n.t('login:Password')} />
                     </div>
                 </div>
 

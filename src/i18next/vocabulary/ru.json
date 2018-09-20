@@ -541,5 +541,11 @@
     },
     "channels/channelUsage": {
         "of": "с"
+    },
+    "login": {
+        "Login": "Войти",
+        "LoginTo": "Войти в",
+        "Password": "Пароль",
+        "AccessDenied": "доступ запрещен, возможно, неправильный пароль"
     }
 }

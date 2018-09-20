@@ -540,5 +540,11 @@
     },
     "channels/channelUsage": {
         "of": "of"
+    },
+    "login": {
+        "Login": "Login",
+        "LoginTo": "Login to",
+        "Password": "Password",
+        "AccessDenied": "access denied, possibly wrong password"
     }
 }
