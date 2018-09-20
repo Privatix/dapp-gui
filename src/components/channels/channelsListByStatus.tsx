@@ -10,6 +10,7 @@ import {State} from '../../typings/state';
 import {Channel as ChannelType, ServiceStatus} from '../../typings/channels';
 import {Product as ProductType} from '../../typings/products';
 import {asyncProviders} from '../../redux/actions';
+import { translate } from 'react-i18next';
 
 interface IProps{
     status: ServiceStatus;
@@ -20,7 +21,10 @@ interface Props {
     registerRefresh?: Function;
     products: ProductType[];
     dispatch: any;
+    t?: any;
 }
+
+@translate(['channels/channelsList'])
 
 class Channels extends React.Component<Props, any> {
 
@@ -77,14 +81,16 @@ class Channels extends React.Component<Props, any> {
     render (){
         this.refreshIfStatusChanged();
 
+        const { t } = this.props;
+
         const channelsDataArr = this.state.productsByChannels
             .map((productId) => this.props.products.find(product => productId === product.id))
             .map((product, index) => {
             const channel = this.state.channels[index];
             const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
             return {
-                id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
-                server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
+                id: <ModalWindow customClass='' modalTitle={t('Service')} text={channel.id} component={<Channel channel={channel} />} />,
+                server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={product.name} component={<Product product={product} />} />,
                 client: '0x'+channel.client,
                 contractStatus: channel.channelStatus,
                 serviceStatus: channel.serviceStatus,
