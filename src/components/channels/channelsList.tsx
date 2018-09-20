@@ -57,8 +57,8 @@ class AsyncChannels extends React.Component<any, any> {
                     const channel = this.state.channels[index];
                     const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
                     return {
-                        id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
-                        server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
+                        id: <ModalWindow customClass='' modalTitle={t('Service')} text={channel.id} component={<Channel channel={channel} />} />,
+                        server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={product.name} component={<Product product={product} />} />,
                         client: '0x'+channel.client,
                         contractStatus: channel.channelStatus,
                         serviceStatus: channel.serviceStatus,

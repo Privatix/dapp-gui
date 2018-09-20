@@ -179,7 +179,33 @@
         "History": "История"
     },
     "channels/channelsList": {
-        "AllServices": "Все сервисы"
+        "AllServices": "Все сервисы",
+        "Service": "Сервис",
+        "ServerInfo": "Информация о сервере"
+    },
+    "channels/channelView": {
+        "GeneralInfo": "Главная информация",
+        "Offering": "Предложение",
+        "Id": "Id:",
+        "Server": "Сервер:",
+        "OfferingTd": "Предложение:",
+        "ContractStatus": "Статус контракта:",
+        "ServiceStatus": "Статус сервиса:",
+        "Usage": "Использовано:",
+        "Income": "Доход (PRIX):",
+        "Deposit": "Депозит:",
+        "AccessInfo": "Информация о доступе",
+        "Country": "Страна:",
+        "Hostname": "Имя хоста:",
+        "Sessions": "Сессии",
+        "YouCanNotUndoThis": "Вы не сможете отменить это.",
+        "TerminateServiceText": "Эта операция прекратит обслуживание и не позволит клиентам использовать эту услугу.",
+        "TerminateServiceAndCloseContract": "Эта операция приведет к прекращению обслуживания и закрытию контракта. Заработок будет переведен на ваш счет.",
+        "WarningArea": "Предупреждение",
+        "YesTerminateIt": "Да, завершить!",
+        "AreYouSure": "Вы уверены?",
+        "TerminateService": "Завершить сервис",
+        "TerminateContract": "Расторгнуть контракт"
     },
     "channels/channelsListSortTable": {
         "Server": "Сервер",
@@ -515,5 +541,11 @@
     },
     "channels/channelUsage": {
         "of": "с"
+    },
+    "login": {
+        "Login": "Войти",
+        "LoginTo": "Войти в",
+        "Password": "Пароль",
+        "AccessDenied": "доступ запрещен, возможно, неправильный пароль"
     }
 }
