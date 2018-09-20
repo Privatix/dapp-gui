@@ -233,8 +233,10 @@ class CreateOffering extends React.Component<any, any>{
                 msg += t('NotEnoughFunds') + ' ';
             }
             if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
-                if(payload.maxUnit < payload.minUnit){
-                    msg += t('MaximumUnitsMustBeEqual') + ' ';
+                if (payload.maxUnit !== '') {
+                    if (payload.maxUnit < payload.minUnits) {
+                        msg += t('MaximumUnitsMustBeEqual') + ' ';
+                    }
                 }
             }
             this.setState({errMsg: msg});
