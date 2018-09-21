@@ -16,11 +16,31 @@ export default class LogsContext extends React.Component <any, any> {
     componentDidMount() {
         const context = JSON.parse(atob(this.props.context));
 
-        let contextTableData = Object.keys(context).map((i) => {
-            return <tr key={i}><td>{i}</td><td>{context[i]}</td></tr>;
-        });
-
+        const contextTableData = this.renderContextTableRows(context);
         this.setState({contextTableData});
+    }
+
+    getTr(i:any, value: string, paddingClass: string) {
+        return <tr key={i}>
+            <td className={paddingClass}>{i}</td>
+            <td>{value}</td>
+        </tr>;
+    }
+
+    renderContextTableRows(context:object, counter:number = 0) {
+        const paddingClass = 'paddingLeft' + counter * 50;
+        counter++;
+
+        return Object.keys(context).map((i) => {
+            if (context[i] !== null && typeof context[i] === 'object') {
+                return ([
+                    this.getTr(i, '', paddingClass),
+                    this.renderContextTableRows(context[i], counter)
+                ]);
+            } else {
+                return this.getTr(i, context[i], paddingClass);
+            }
+        });
     }
 
     render() {

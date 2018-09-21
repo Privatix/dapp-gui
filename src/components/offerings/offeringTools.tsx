@@ -13,6 +13,7 @@ import {Offering} from '../../typings/offerings';
 // import OfferingToolDeactivate from './offeringToolDeactivate';
 
 import ConfirmPopupSwal from '../confirmPopupSwal';
+import notice from '../../utils/notice';
 
 /*
         <OfferingToolPublish offeringId={props.offering.id} /> |
@@ -27,7 +28,7 @@ interface Props {
     t: any;
 }
 
-@translate(['offerings/offeringTools', 'confirmPopupSwal'])
+@translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice'])
 class OfferingTools extends React.Component<Props, any>{
 
     constructor(props:any){
@@ -45,7 +46,8 @@ class OfferingTools extends React.Component<Props, any>{
     render(){
         const { t } = this.props;
         const popupInfo = t('popupInfo');
-        const removeInfo = t('removeInfo', {minutes: Math.floor(this.props.challengePeriod/4)});
+        const challengePeriodMinutes = Math.floor(this.props.challengePeriod / 4);
+        const removeInfo = t('removeInfo', {minutes: challengePeriodMinutes});
         // `This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for ${Math.floor(this.props.challengePeriod/4)} past minutes.`;
 
         return <div className='col-lg-3 col-md-4'>
@@ -66,14 +68,25 @@ class OfferingTools extends React.Component<Props, any>{
                 <p className='card-text'>{removeInfo}</p>
                 <ConfirmPopupSwal
                     endpoint={`/offerings/${this.props.offering.id}/status`}
-                    options={{method: 'put', body: {action: 'remove'}}}
+                    options={{method: 'put', body: {action: 'deactivate'}}}
                     title={t('Remove')}
                     text={<span>{removeInfo}<br />
                         {t('WouldYouLikeToProceed')}</span>}
                     class={'btn btn-danger btn-custom btn-block'}
                     swalType='danger'
                     swalConfirmBtnText={t('YesRemoveIt')}
-                    swalTitle={t('confirmPopupSwal:AreYouSure')} />
+                    swalTitle={t('confirmPopupSwal:AreYouSure')}
+                    done={(res) => {
+                        if (res.code === 0) {
+                            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('DeleteOfferingRequestProcessing')});
+                        } else {
+                            notice({
+                                level: 'info',
+                                header: t('utils/notice:Congratulations!'),
+                                msg: t('DeleteOfferingRequestScheduled1') + ' ' + challengePeriodMinutes + ' ' + t('DeleteOfferingRequestScheduled2')
+                            });
+                        }
+                    }} />
             </div>
         </div>;
     }

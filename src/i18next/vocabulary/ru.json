@@ -142,7 +142,10 @@
         "removeInfo": "Эта операция удаляет предложение. Вы получите свой депозит обратно. Клиенты не смогут больше принимать это предложение. Предложение может быть удалено, только если оно было неактивно последние {{minutes}} минут.",
         "YesPopUpIt": "Да, поднять!",
         "YesRemoveIt": "Да, удалить!",
-        "WouldYouLikeToProceed": "Хотите продолжить?"
+        "WouldYouLikeToProceed": "Хотите продолжить?",
+        "DeleteOfferingRequestProcessing": "Запрос на удаление предложения обрабатывается. Пожалуйста, подождите.",
+        "DeleteOfferingRequestScheduled1": "Ваш запрос на удаление предложения был запланирован. После",
+        "DeleteOfferingRequestScheduled2": "минут предложение будет удалено."
     },
     "offerings/offeringsList": {
         "Offering": "Предложение",
@@ -330,13 +333,15 @@
         "YouCanStartUsingVPN": "Вы можете начать использовать VPN",
         "Connect": "Подключение",
         "YesConnectIt": "Да, подключиться!",
+        "Pause": "Приостановить",
         "ThisOperationWillPauseVPNUsage": "Эта операция приостановить использование VPN.",
-        "ForThisContractMaxSuspendTimeIs": "Для этого контракта максимальноe время ожидания составляет {{minutes}} минут.",
+        "ForThisContractMaxSuspendTimeIs": "Для этого контракта максимальноe время ожидания составляет {{minutes}} мин.",
         "YesPauseIt": "Да, поставить на паузу!",
         "Remaining": "Осталось",
         "AfterMaxInactivityTimeHasBeenReached": "По истечении срока максимальной неактивности процедура завершения будет вызвана автоматически.",
         "Resume": "Восстановить",
-        "YesResumeIt": "Да, восстановить соединение!"
+        "YesResumeIt": "Да, восстановить соединение!",
+        "min": "мин"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Начать использование VPN"
@@ -364,7 +369,7 @@
         "TakesTimeOnFirstRun": "Это занимает время только при первом запуске.",
         "AverageTimeForDownloading": "Среднее время для загрузки 2-5 мин.",
         "Refresh": "Обновить",
-        "Agent": "агент",
+        "AgentAddress": "Адрес агента",
         "PriceFilter": "Цена (PRIX/MB):",
         "From": "от",
         "To": "до"
@@ -372,13 +377,13 @@
     "client/acceptOffering": {
         "Accept": "Принять",
         "CanHaveOneVPNConnection": "У Вас может быть только одно VPN-соединение. Чтобы принять другое, завершите текущее соединение.",
-        "DepositMustBeMoreThan": " Депозит должен быть больше, чем ",
-        "DepositMustBeLessOrEqualThan": " Депозит должен быть меньше или равен ",
-        "NotEnoughPrixForDeposit": " Недостаточно средств (PRIX) для депозита. Выберите другую учетную запись.",
-        "NotEnoughToPublishTransaction": " Недостаточно средств (ETH) для публикации транзакции. Выберите другую учетную запись.",
+        "DepositMustBeMoreThan": "Депозит должен быть больше, чем",
+        "DepositMustBeLessOrEqualThan": "Депозит должен быть меньше или равен",
+        "NotEnoughPrixForDeposit": "Недостаточно средств (PRIX) для депозита. Выберите другую учетную запись.",
+        "NotEnoughToPublishTransaction": "Недостаточно средств (ETH) для публикации транзакции. Выберите другую учетную запись.",
         "OfferingAccepted": "Предложение принято!",
         "VPNInfo": "Информация",
-        "Country": "Страна: ",
+        "Country": "Страна:",
         "BillingInfo": "Информация о платеже",
         "PricePerMB": "Цена за 1 MB:",
         "ConnectionInfo": "Информация о соединении",
@@ -395,7 +400,7 @@
     "client/history": {
         "SuccessfullyRefreshed": "Страница успешно обновлена!",
         "Service": "Сервис",
-        "of": " с ",
+        "of": "с",
         "Id": "Id",
         "Agent": "Агент",
         "ContractStatus": "Статус контракта",
@@ -478,5 +483,37 @@
         "DepositT": "Депозит:",
         "LastUsageTimeT": "Время последнего использования:",
         "Sessions": "Сессии"
+    },
+    "electronMenu": {
+        "File": "Файл",
+        "Quit": "Выход",
+        "Edit": "Редактировать",
+        "Undo": "Отменить",
+        "Redo": "Вернуть",
+        "Cut": "Вырезать",
+        "Copy": "Копировать",
+        "Paste": "Вставить",
+        "PasteAndMatchStyle": "Вставить с текущим стилем",
+        "Delete": "Удалить",
+        "SelectAll": "Выбрать все",
+        "View": "Вид",
+        "Reload": "Перезагрузить",
+        "ForceReload": "Принудительно перезагрузить",
+        "ToggleDeveloperTools": "Переключить инструменты разработчика",
+        "ActualSize": "Фактический размер",
+        "ZoomIn": "Увеличить",
+        "ZoomOut": "Уменьшить",
+        "ToggleFullScreen": "Развернуть на полный экран",
+        "Window": "Окно",
+        "Minimize": "Минимизировать",
+        "Close": "Закрыть",
+        "Help": "Помощь",
+        "AboutProject": "О проекте",
+        "Documentation": "Документация",
+        "SearchIssues": "Поиск известных проблем",
+        "CommunityDiscussion": "Обсуждение сообщества"
+    },
+    "channels/channelUsage": {
+        "of": "с"
     }
 }

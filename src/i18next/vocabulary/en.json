@@ -141,7 +141,10 @@
         "removeInfo": "This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for {{minutes}} past minutes.",
         "YesPopUpIt": "Yes, pop up it!",
         "YesRemoveIt": "Yes, remove it!",
-        "WouldYouLikeToProceed": "Would you like to proceed?"
+        "WouldYouLikeToProceed": "Would you like to proceed?",
+        "DeleteOfferingRequestProcessing": "Your delete offering request is processing. Please wait.",
+        "DeleteOfferingRequestScheduled1": "Your delete offering request was scheduled. After",
+        "DeleteOfferingRequestScheduled2": "minutes the offering will be removed."
     },
     "offerings/offeringsList":{
         "Offering": "Offering",
@@ -329,13 +332,15 @@
         "YouCanStartUsingVPN": "You can start using VPN",
         "Connect": "Connect",
         "YesConnectIt": "Yes, connect it!",
+        "Pause": "Pause",
         "ThisOperationWillPauseVPNUsage": "This operation will pause VPN usage.",
         "ForThisContractMaxSuspendTimeIs": "For this contract, max suspend time is {{minutes}} min.",
         "YesPauseIt": "Yes, pause it!",
         "Remaining": "Remaining",
         "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
         "Resume": "Resume",
-        "YesResumeIt": "Yes, resume it!"
+        "YesResumeIt": "Yes, resume it!",
+        "min": "min"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
@@ -363,7 +368,7 @@
         "TakesTimeOnFirstRun": "It takes time only on the first run.",
         "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
         "Refresh": "Refresh",
-        "Agent": "agent",
+        "AgentAddress": "Agent address",
         "PriceFilter": "Price (PRIX/MB):",
         "From": "from",
         "To": "to"
@@ -371,13 +376,13 @@
     "client/acceptOffering": {
         "Accept": "Accept",
         "CanHaveOneVPNConnection": "Note. You can have only one VPN connection. To accept another, terminate the current connection.",
-        "DepositMustBeMoreThan": " The deposit must be more than ",
-        "DepositMustBeLessOrEqualThan": " The deposit must be less or equal than ",
-        "NotEnoughPrixForDeposit": " Not enough PRIXes for deposit. Please, select another account.",
-        "NotEnoughToPublishTransaction": " Not enough funds for publish transaction. Please, select another account.",
+        "DepositMustBeMoreThan": "The deposit must be more than",
+        "DepositMustBeLessOrEqualThan": "The deposit must be less or equal than",
+        "NotEnoughPrixForDeposit": "Not enough PRIXes for deposit. Please, select another account.",
+        "NotEnoughToPublishTransaction": "Not enough funds for publish transaction. Please, select another account.",
         "OfferingAccepted": "Offering accepted!",
         "VPNInfo": "VPN info",
-        "Country": "Country: ",
+        "Country": "Country:",
         "BillingInfo": "Billing info",
         "PricePerMB": "Price per MB:",
         "ConnectionInfo": "Connection info",
@@ -394,7 +399,7 @@
     "client/history": {
         "SuccessfullyRefreshed": "Page was successfully refreshed!",
         "Service": "Service",
-        "of": " of ",
+        "of": "of",
         "Id": "Id",
         "Agent": "Agent",
         "ContractStatus": "Contract status",
@@ -477,5 +482,37 @@
         "DepositT": "Deposit:",
         "LastUsageTimeT": "Last usage time:",
         "Sessions": "Sessions"
+    },
+    "electronMenu": {
+        "File": "File",
+        "Quit": "Quit",
+        "Edit": "Edit",
+        "Undo": "Undo",
+        "Redo": "Redo",
+        "Cut": "Cut",
+        "Copy": "Copy",
+        "Paste": "Paste",
+        "PasteAndMatchStyle": "Paste and Match Style",
+        "Delete": "Delete",
+        "SelectAll": "Select All",
+        "View": "View",
+        "Reload": "Reload",
+        "ForceReload": "Force Reload",
+        "ToggleDeveloperTools": "Toggle Developer Tools",
+        "ActualSize": "Actual Size",
+        "ZoomIn": "Zoom In",
+        "ZoomOut": "Zoom Out",
+        "ToggleFullScreen": "Toggle Full Screen",
+        "Window": "Window",
+        "Minimize": "Minimize",
+        "Close": "Close",
+        "Help": "Help",
+        "AboutProject": "About project",
+        "Documentation": "Documentation",
+        "SearchIssues": "Search issues",
+        "CommunityDiscussion": "Community discussion"
+    },
+    "channels/channelUsage": {
+        "of": "of"
     }
 }

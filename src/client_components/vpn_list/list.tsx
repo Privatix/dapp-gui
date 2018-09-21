@@ -245,8 +245,10 @@ export default class AsyncList extends React.Component<any,any> {
     filterByAgent(e: any){
         const searchText = e.target.value.toLowerCase().trim();
         const agent = searchText.replace(/^0x/, '');
+        
         if(agent === ''){
             this.filter();
+            return;
         }
 
         const filtered = this.state.data.filter(item => agent === item.agent.trim().toLowerCase().replace(/^0x/, ''));
@@ -344,12 +346,15 @@ export default class AsyncList extends React.Component<any,any> {
                         <div className='card m-b-20'>
                             <div className='card-body'>
                                 <div className='form-group row'>
+                                    <div className='col-12'>
+                                        <label className='control-label'>{t('AgentAddress')}</label>
+                                    </div>
                                     <div className='col-md-12 m-t-10 m-b-10'>
-                                        <div className='input-group searchInputGroup'>
+                                        <div className='input-group searchInputGroup searchInputGroupVPNList'>
                                             <div className='input-group-prepend'>
                                                 <span className='input-group-text'><i className='fa fa-search'></i></span>
                                             </div>
-                                            <input className='form-control' type='search' name='agent' placeholder={t('Agent')}
+                                            <input className='form-control' type='search' name='agent' placeholder='0x354B10B5c4A96b81b5e4F12F90cd0b7Ae5e05eE6'
                                                    onChange={this.filterByAgent.bind(this)} />
                                         </div>
                                     </div>

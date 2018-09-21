@@ -242,7 +242,7 @@ class CreateOffering extends React.Component<any, any>{
         }else{
             payload.billingInterval = 1;
             payload.billingType = 'postpaid';
-            payload.additionalParams = Buffer.from('{}').toString('base64');
+            payload.additionalParams = {};
 
             if (payload.maxUnit === '') {
                 delete payload.maxUnit;
@@ -322,7 +322,7 @@ class CreateOffering extends React.Component<any, any>{
                             <h5 className='card-header'>{t('GeneralInfo')}</h5>
                             <div className='card-body'>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('Name')}: </label>
+                                    <label className='col-2 col-form-label'>{t('Name')}:<span className='text-danger'>*</span> </label>
                                     <div className='col-6'>
                                         <input type='text'
                                                className='form-control'
@@ -346,13 +346,13 @@ class CreateOffering extends React.Component<any, any>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('Country')}: </label>
+                                    <label className='col-2 col-form-label'>{t('Country')}:<span className='text-danger'>*</span> </label>
                                     <div className='col-6'>
                                         {selectCountry}
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('Supply')}: </label>
+                                    <label className='col-2 col-form-label'>{t('Supply')}:<span className='text-danger'>*</span> </label>
                                     <div className='col-6'>
                                         <input type='text'
                                                className='form-control autonumber'
@@ -385,7 +385,7 @@ class CreateOffering extends React.Component<any, any>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('PricePerMB')}:</label>
+                                    <label className='col-2 col-form-label'>{t('PricePerMB')}:<span className='text-danger'>*</span></label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
@@ -400,7 +400,7 @@ class CreateOffering extends React.Component<any, any>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('MaxBillingUnitLag')}:</label>
+                                    <label className='col-2 col-form-label'>{t('MaxBillingUnitLag')}:<span className='text-danger'>*</span></label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
@@ -418,7 +418,7 @@ class CreateOffering extends React.Component<any, any>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('MinUnits')}:</label>
+                                    <label className='col-2 col-form-label'>{t('MinUnits')}:<span className='text-danger'>*</span></label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
@@ -458,7 +458,7 @@ class CreateOffering extends React.Component<any, any>{
                             <h5 className='card-header'>{t('ConnectionInfo')}</h5>
                             <div className='card-body'>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('MaxSuspendTime')}:</label>
+                                    <label className='col-2 col-form-label'>{t('MaxSuspendTime')}:<span className='text-danger'>*</span></label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
@@ -480,7 +480,7 @@ class CreateOffering extends React.Component<any, any>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('MaxInactiveTime')}:</label>
+                                    <label className='col-2 col-form-label'>{t('MaxInactiveTime')}:<span className='text-danger'>*</span></label>
                                     <div className='col-6'>
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'

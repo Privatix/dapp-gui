@@ -12,7 +12,7 @@ export default class TerminateContractButton extends React.Component<any, any>{
         return this.props.status === 'disabled'
             ? <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <span>{t('ToOpenDisputeFinishService')}</span><br />
-                <button className='btn btn-danger btn-custom btn-block disabled' >{t('TerminateContract')}</button>
+                <button className='btn btnCustomDisabled btn-block disabled' >{t('TerminateContract')}</button>
               </div>
             : <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <form>

@@ -52,6 +52,15 @@ ul.default li {
     border-bottom-left-radius: 4px;
     padding-left: 40px;
 }
+.searchInputGroupVPNList .input-group-prepend .input-group-text{
+    border: none;
+    background: #fff;
+    padding: 8px 10px 9px;
+}
+.searchInputGroupVPNList .form-control:not(:first-child){
+    padding: 8px 5px 8px 36px;
+    font-size: 12px;
+}
 
 .warningAreaCard{
     border: 1px solid #e83546;
@@ -96,7 +105,7 @@ ul.default li {
     cursor: pointer;
     font-size: 17px !important;
     font-weight: 500;
-    margin: 0 5px;
+    margin: 0 5px 15px;
     padding: 10px 32px;
 }
 .sweet-alert .swal2-styled:hover,
@@ -632,6 +641,39 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     margin: 15px auto;
 }
 
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft50{
+    padding-left: 50px !important;
+}
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft100{
+    padding-left: 100px !important;
+}
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft150{
+    padding-left: 150px !important;
+}
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft200{
+    padding-left: 200px !important;
+}
+.bootstrap-table-sortable .table > tbody > tr > td.paddingLeft250{
+    padding-left: 250px !important;
+}
+
+.btnCustomDisabled{
+    border: 1px solid #b3b3b3;
+    color: #232323;
+}
+.btnCustomDisabled:focus {
+    outline: none !important;
+    box-shadow: none  !important;
+}
+
+.cursorPoiner{
+    cursor: pointer;
+}
+
+.m-b-37{
+    margin-bottom: 37px !important;
+}
+
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
         max-width: 100%;
@@ -644,5 +686,11 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     .logsTimeFilterToBl{
         max-width: 64%;
         flex: 0 0 64%;
+    }
+}
+
+@media only screen and (max-width: 1200px) {
+    .col-0 {
+        display: none;
     }
 }

@@ -63,6 +63,11 @@ class Header extends React.Component<any, any>{
         $('body').trigger('resize');
     }
 
+    openHelpLink(evt:any) {
+        evt.preventDefault();
+        require('electron').shell.openExternal('https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause');
+    }
+
     render(){
 
         const { t } = this.props;
@@ -93,9 +98,9 @@ class Header extends React.Component<any, any>{
                                 <NavLink to='/accounts' className='dropdown-item notify-item'>
                                     <i className='md  md-account-child'></i> <span>{t('Accounts')}</span>
                                 </NavLink>
-                                <NavLink to='#' className='dropdown-item notify-item'>
+                                <a onClick={this.openHelpLink.bind(this)} className='dropdown-item notify-item cursorPoiner'>
                                     <i className='md md-help'></i> <span>{t('Help')}</span>
-                                </NavLink>
+                                </a>
                                 <NavLink to='/settings' className='dropdown-item notify-item'>
                                     <i className='md md-settings'></i> <span>{t('Settings')}</span>
                                 </NavLink>

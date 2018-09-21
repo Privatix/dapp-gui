@@ -60,11 +60,6 @@ export const getClientOfferings = function(): Promise<ClientOffering[]>{
     return fetch('/client/offerings', {}) as Promise<ClientOffering[]>;
 };
 
-export const getClientOfferingById = function(offeringId: string): Promise<Offering>{
-    return (fetch(`/client/offerings/?id=${offeringId}`) as Promise<Offering[]>)
-        .then(offerings => offerings.length ? offerings[0] : null);
-};
-
 export const getSessions = function(channelId?: string): Promise<Session[]>{
         return fetch('/sessions'+ (channelId ? `?channelId=${channelId}` : ''), {}) as Promise<Session[]>;
 };
