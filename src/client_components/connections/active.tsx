@@ -7,7 +7,7 @@ import JobStatus from './jobStatus';
 import JobName from './jobName';
 import Usage from './usage';
 import { withRouter } from 'react-router-dom';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
 
 @translate('client/connections/active')
@@ -47,7 +47,7 @@ class ActiveConnection extends React.Component<any, any>{
                         <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
                         <td><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</td>
                         <td><Usage channel={channel} /></td>
-                        <td>{toFixed8({number: (channel.usage.cost / 1e8)})}</td>
+                        <td>{toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})}</td>
                     </tr>;
         });
 

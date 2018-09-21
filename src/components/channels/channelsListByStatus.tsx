@@ -5,7 +5,7 @@ import ChannelsListSortTable from './channelsListSortTable';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import {State} from '../../typings/state';
 import {Channel as ChannelType, ServiceStatus} from '../../typings/channels';
 import {Product as ProductType} from '../../typings/products';
@@ -95,7 +95,7 @@ class Channels extends React.Component<Props, any> {
                 contractStatus: channel.channelStatus,
                 serviceStatus: channel.serviceStatus,
                 usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
-                incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
+                incomePRIX: toFixedN({number: (channel.receiptBalance/1e8), fixed: 8}),
                 serviceChangedTime: channel.serviceChangedTime
             };
         });

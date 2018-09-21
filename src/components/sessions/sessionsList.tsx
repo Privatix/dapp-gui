@@ -5,7 +5,7 @@ import { translate } from 'react-i18next';
 
 import {fetch} from '../../utils/fetch';
 import SessionItem from './sessionItem';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import * as api from '../../utils/api';
 
 @translate(['sessions/sessionsList'])
@@ -96,7 +96,7 @@ export default class Sessions extends React.Component <any,any> {
                                     </tr>
                                     <tr>
                                         <td>{t('TotalIncome')}:</td>
-                                        <td>{toFixed8({number: this.state.income / 1e8})} PRIX</td>
+                                        <td>{toFixedN({number: this.state.income / 1e8, fixed: 8})} PRIX</td>
                                     </tr>
                                     <tr>
                                         <td>{t('SessionsCount')}:</td>
