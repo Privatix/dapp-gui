@@ -6,7 +6,7 @@ import notice from '../../utils/notice';
 import { withRouter } from 'react-router-dom';
 import GasRange from '../../components/utils/gasRange';
 import {LocalSettings} from '../../typings/settings';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
 
 @translate(['client/acceptOffering', 'utils/gasRange', 'utils/notice'])
@@ -91,14 +91,14 @@ class AcceptOffering extends React.Component<any, any>{
 
         if(this.state.customDeposit < this.state.deposit) {
             err=true;
-            msg += ' ' + t('DepositMustBeMoreThan') + ' ' + toFixed8({number: (this.state.deposit / 1e8)}) + ' PRIX.';
+            msg += ' ' + t('DepositMustBeMoreThan') + ' ' + toFixedN({number: (this.state.deposit / 1e8), fixed: 8}) + ' PRIX.';
         }
 
         if(this.props.offering.maxUnit && parseFloat(this.props.offering.maxUnit) > 0) {
             const topDepositLimit = this.props.offering.maxUnit * this.props.offering.unitPrice;
             if (this.state.customDeposit > topDepositLimit) {
                 err = true;
-                msg += ' ' + t('DepositMustBeLessOrEqualThan') + ' ' + toFixed8({number: (topDepositLimit / 1e8)}) + ' PRIX.';
+                msg += ' ' + t('DepositMustBeLessOrEqualThan') + ' ' + toFixedN({number: (topDepositLimit / 1e8), fixed: 8}) + ' PRIX.';
             }
         }
 
@@ -158,7 +158,7 @@ class AcceptOffering extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>{t('PricePerMB')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={toFixed8({number: (offering.unitPrice / 1e8)})} readOnly/>
+                                <input type='text' className='form-control' value={toFixedN({number: (offering.unitPrice / 1e8), fixed: 8})} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -206,7 +206,7 @@ class AcceptOffering extends React.Component<any, any>{
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    {t('Balance')} <span>{this.state.account ? toFixed8({number: (this.state.account.psc_balance / 1e8)}) : 0} PRIX / {this.state.account ? toFixed8({number: (this.state.account.ethBalance / 1e18)}) : 0} ETH</span>
+                                    {t('Balance')} <span>{this.state.account ? toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8}) : 0} PRIX / {this.state.account ? toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8}) : 0} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>
@@ -214,7 +214,7 @@ class AcceptOffering extends React.Component<any, any>{
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
                                         <input id='offeringDeposit' type='number' className='form-control' min='0' step='0.01'
-                                               value={toFixed8({number: (this.state.customDeposit / 1e8)})}
+                                               value={toFixedN({number: (this.state.customDeposit / 1e8), fixed: 8})}
                                                onChange={this.changeDepositHandler.bind(this)}/>
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
@@ -228,7 +228,7 @@ class AcceptOffering extends React.Component<any, any>{
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>{t('AcceptancePrice')}</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{toFixed8({number: (this.state.customDeposit / 1e8)})} PRIX</strong>
+                                    <strong>{toFixedN({number: (this.state.customDeposit / 1e8), fixed: 8})} PRIX</strong>
                                 </div>
                             </div>
                         </div>

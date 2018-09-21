@@ -9,7 +9,7 @@ import AcceptOffering from './acceptOffering';
 import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import notice from '../../utils/notice';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
 
 @translate(['client/vpnList', 'utils/notice'])
@@ -102,7 +102,7 @@ export default class AsyncList extends React.Component<any,any> {
                         block: offering.blockNumberUpdated,
                         hash: <ModalWindow customClass='' modalTitle={t('AcceptOffering')} text={offeringHash} component={<AcceptOffering offering={offering} />} />,
                         country: offering.country,
-                        price: toFixed8({number: (offering.unitPrice / 1e8)}),
+                        price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
                         supply: offering.supply,
                         availableSupply: offering.currentSupply,
                         agent: '0x' + new Buffer(offering.agent, 'base64').toString('hex')
@@ -372,7 +372,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                 <span className='input-group-text' id='priceFromLabel'>{t('From')}</span>
                                             </div>
                                             <input type='number' min={this.state.min} max={this.state.max - this.state.step} step={this.state.step} className='form-control' placeholder={this.state.min}
-                                                   id='priceFrom' value={toFixed8({number: this.state.from})} onChange={(e) => this.changeMinPriceInput(e)} />
+                                                   id='priceFrom' value={toFixedN({number: this.state.from, fixed: 8})} onChange={(e) => this.changeMinPriceInput(e)} />
                                         </div>
                                     </div>
                                     <div className='col-6 priceMinMaxInputBl'>
@@ -381,7 +381,7 @@ export default class AsyncList extends React.Component<any,any> {
                                                 <span className='input-group-text' id='priceToLabel'>{t('To')}</span>
                                             </div>
                                             <input type='number' min={this.state.min + this.state.step} max={this.state.max} step={this.state.step} className='form-control' placeholder={this.state.max}
-                                                   id='priceTo' value={toFixed8({number: this.state.to})} onChange={(e) => this.changeMaxPriceInput(e)} />
+                                                   id='priceTo' value={toFixedN({number: this.state.to, fixed: 8})} onChange={(e) => this.changeMaxPriceInput(e)} />
                                         </div>
                                     </div>
                                 </div>
