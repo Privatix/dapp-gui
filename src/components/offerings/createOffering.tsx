@@ -244,7 +244,7 @@ class CreateOffering extends React.Component<any, any>{
         }else{
             payload.billingInterval = 1;
             payload.billingType = 'postpaid';
-            payload.additionalParams = Buffer.from('{}').toString('base64');
+            payload.additionalParams = {};
 
             if (payload.maxUnit === '') {
                 delete payload.maxUnit;

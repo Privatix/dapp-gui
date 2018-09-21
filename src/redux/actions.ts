@@ -10,7 +10,8 @@ export const enum actions {
     SET_MODE,
     UPDATE_PRODUCTS,
     UPDATE_SETTINGS,
-    UPDATE_OFFERINGS
+    UPDATE_OFFERINGS,
+    SET_CHANNEL
 }
 
 
@@ -23,7 +24,8 @@ const handlers: ReduxHandlers = {
     updateProducts             : function(products: Product[]){ return { type: actions.UPDATE_PRODUCTS, value: products };},
     updateSettings             : function(settings: Setting[]){ return { type: actions.UPDATE_SETTINGS, value: settings };},
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
-    setMode                    : function(mode: Mode){ return { type: actions.SET_MODE, value: mode };}
+    setMode                    : function(mode: Mode){ return { type: actions.SET_MODE, value: mode };},
+    setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };}
 };
 
 interface AsyncProviders {
