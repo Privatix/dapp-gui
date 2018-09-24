@@ -26,6 +26,34 @@ export default class OfferingStatus extends React.Component<any, any>{
                 label: 'success',
                 alias: 'Published'
             },
+            empty: {
+                label: 'info',
+                alias: 'Empty'
+            },
+            registering: {
+                label: 'primary',
+                alias: 'Registering'
+            },
+            registered: {
+                label: 'success',
+                alias: 'Registered'
+            },
+            removing: {
+                label: 'pink',
+                alias: 'Removing'
+            },
+            removed: {
+                label: 'inverse',
+                alias: 'Removed'
+            },
+            popping_up: {
+                label: 'primary',
+                alias: 'Popping up'
+            },
+            popped_up: {
+                label: 'success',
+                alias: 'Popped up'
+            },
         };
     }
 
