@@ -159,6 +159,7 @@ class Connection extends React.Component<any, any>{
                     <FinishServiceButton channel={this.state.channel} />
                     <TerminateContractButton
                         status='disabled'
+                        payment={this.state.channel.usage.cost}
                         channelId={this.state.channel.id}
                         done={() => this.props.history.push('/client-history')}
                     />
