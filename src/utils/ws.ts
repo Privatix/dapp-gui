@@ -85,4 +85,16 @@ export default class WS {
             delete WS.byUUID[id];
         }
     }
+
+    topUp(channelId: string, gasPrice: number){
+        const uuid = uuidv4();
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_topUpChannel',
+            params: [this.pwd, channelId, gasPrice]
+        };
+
+        this.socket.send(JSON.stringify(req));
+    }
 }

@@ -372,6 +372,10 @@
     "client/dashboard/start": {
         "StartUsingVPN": "Начать использование VPN"
     },
+    "client/increaseDepositButton":{
+        "ThisOperationWillIncrease": "Эта операция увеличит Ваш VPN баланc путем увеличения размера депозита",
+        "IncreaseDeposit": "Увеличить депозит"
+    },
     "agent/dashboard": {
         "TotalIncome": "Доход:",
         "RefreshAllBtn": "Обновить все",

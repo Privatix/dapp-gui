@@ -9,6 +9,7 @@ import * as api from '../../utils/api';
 import Offering from '../vpn_list/acceptOffering';
 import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
+import IncreaseDepositButton from './increaseDepositButton';
 import PgTime from '../../components/utils/pgTime';
 import { translate } from 'react-i18next';
 
@@ -156,6 +157,7 @@ class Connection extends React.Component<any, any>{
 
 
                 <div className='col-4'>
+                    {this.state.channel.channelStatus.serviceStatus === 'active' ? <IncreaseDepositButton channel={this.state.channel} /> : '' }
                     <FinishServiceButton channel={this.state.channel} />
                     <TerminateContractButton
                         status='disabled'

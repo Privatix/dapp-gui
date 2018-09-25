@@ -368,6 +368,10 @@
         "YesResumeIt": "Yes, resume it!",
         "min": "min"
     },
+    "client/increaseDepositButton":{
+        "ThisOperationWillIncrease": "This operation will increase your VPN balance by increasing the deposit",
+        "IncreaseDeposit": "Increase deposit"
+    },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
     },
