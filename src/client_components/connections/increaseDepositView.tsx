@@ -11,14 +11,14 @@ import {State} from '../../typings/state';
 import toFixed8 from '../../utils/toFixed8';
 
 
-@translate(['accounts/accountView', 'utils/notice'])
+@translate(['client/connections/increaseDepositView', 'utils/notice'])
 class IncreaseDepositView extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
         console.log(props);
         this.state = {gasPrice: 6*1e9
-                     ,account: props.accounts.find(account => account.isDefault)
+                     ,account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase())
         };
     }
 
@@ -27,6 +27,7 @@ class IncreaseDepositView extends React.Component<any, any> {
     }
 
     async checkUserInput(){
+
         const { t } = this.props;
 
         let err = false;
@@ -46,20 +47,17 @@ class IncreaseDepositView extends React.Component<any, any> {
         }
     }
 
-    onTransferComplete(){
-        const {t} = this.props;
-        notice({level: 'info', header: t('utils/notice:Attention'), msg: t('SuccessMessage')});
-    }
-
-    onAccountChanged(selectedAccount: any) {
-
-        const account = this.props.accounts.find((account: any) => account.id === selectedAccount.value);
-        this.setState({account});
-
-    }
-
     onConfirm = () => {
-        (window as any).ws.topUp(this.props.channel.id, this.state.gasPrice);
+        (window as any).ws.topUp(this.props.channel.id, this.state.gasPrice, (res: any) =>{
+
+            const { t, closeModal } = this.props;
+            if('error' in res){
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
+            }else{
+                notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
+                closeModal();
+            }
+        } );
     }
 
     render(){
@@ -70,18 +68,19 @@ class IncreaseDepositView extends React.Component<any, any> {
             value={this.state.account.id}
             searchable={false}
             clearable={false}
+            disabled={true}
             options={this.props.accounts.map((account:any) => ({value: account.id, label: account.name}))}
-            onChange={this.onAccountChanged.bind(this)} />;
+        />;
 
         const ethBalance = this.state.account ? (toFixed8({number: (this.state.account.ethBalance / 1e18)})) : 0;
         const pscBalance = this.state.account ? (toFixed8({number: (this.state.account.psc_balance / 1e8)})) : 0;
 
         return <div className='col-lg-9 col-md-9'>
             <div className='card m-b-20'>
-                <h5 className='card-header'>{'Deposit Info'}</h5>
+                <h5 className='card-header'>{t('DepositInfo')}</h5>
                 <div className='card-body'>
                     <div className='form-group row'>
-                        <label className='col-2 col-form-label'>{'Deposit'}:</label>
+                        <label className='col-2 col-form-label'>{t('Deposit')}:</label>
                         <div className='col-6'>
                             <div className='input-group bootstrap-touchspin'>
                                 <input type='text' className='form-control' value={ toFixed8({number: (this.props.channel.deposit/1e8)}) } readOnly/>
@@ -92,10 +91,10 @@ class IncreaseDepositView extends React.Component<any, any> {
                 </div>
             </div>
             <div className='card m-b-20'>
-                <h5 className='card-header'>{'Increase deposit'}</h5>
+                <h5 className='card-header'>{t('IncreaseDeposit')}</h5>
                 <div className='card-body'>
                     <div className='form-group row'>
-                        <label className='col-2 col-form-label'>{'Account'}:</label>
+                        <label className='col-2 col-form-label'>{t('Account')}:</label>
                         <div className='col-6'>
                             {selectAccount}
                         </div>
@@ -111,19 +110,18 @@ class IncreaseDepositView extends React.Component<any, any> {
                             </div>
                         </div>
                     </div>
-                    <GasRange onChange={this.onGasPriceChanged.bind(this)} value={this.state.gasPrice/1e9} />
+                    <GasRange onChange={this.onGasPriceChanged.bind(this)} value={this.state.gasPrice/1e9} averageTimeText={t('AverageTimeToAddTheDeposit')} />
                     <div className='form-group row'>
                         <div className='col-12'>
                             <ConfirmPopupSwal
                                 beforeAsking={this.checkUserInput.bind(this)}
                                 confirmHandler={this.onConfirm}
-                                done={this.onTransferComplete.bind(this)}
-                                title={t('TransferBtn')}
-                                text={<span>increase deposit</span>}
+                                title={t('IncreaseBtn')}
+                                text={<div>{t('client/increaseDepositButton:ThisOperationWillIncrease')}<br />{t('WouldYouLikeToProceed')}</div>}
                                 class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
                                 swalType='warning'
-                                swalConfirmBtnText={t('TransferConfirmBtn')}
-                                swalTitle={t('TransferSwalTitle')} />
+                                swalConfirmBtnText={t('IncreaseConfirmBtn')}
+                                swalTitle={t('IncreaseSwalTitle')} />
                         </div>
                     </div>
                 </div>

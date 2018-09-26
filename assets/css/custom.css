@@ -230,6 +230,17 @@ ul.default li {
     font-size: 24px;
 }
 
+.clientConnectionBl {
+    display: flex; justify-content: space-between;
+    width: 100%;
+}
+.buttonBlock {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 100%;
+}
+
 .remainingText{
     font-size: 24px;
     font-weight: 500;

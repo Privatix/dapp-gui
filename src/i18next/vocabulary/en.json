@@ -368,10 +368,6 @@
         "YesResumeIt": "Yes, resume it!",
         "min": "min"
     },
-    "client/increaseDepositButton":{
-        "ThisOperationWillIncrease": "This operation will increase your VPN balance by increasing the deposit",
-        "IncreaseDeposit": "Increase deposit"
-    },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
     },
@@ -512,6 +508,25 @@
         "DepositT": "Deposit:",
         "LastUsageTimeT": "Last usage time:",
         "Sessions": "Sessions"
+    },
+    "client/increaseDepositButton":{
+        "ThisOperationWillIncrease": "This operation will increase your VPN balance by increasing the deposit.",
+        "IncreaseDeposit": "Increase deposit"
+    },
+    "client/connections/increaseDepositView":{
+        "DepositInfo": "Deposit Info",
+        "Deposit": "Deposit",
+        "IncreaseDeposit": "Increase deposit",
+        "WouldYouLikeToProceed": "Would you like to proceed?",
+        "IncreaseConfirmBtn": "Yes, increase the deposit!",
+        "IncreaseSwalTitle": "Increase deposit",
+        "Account": "Account",
+        "Amount": "Amount:",
+        "AverageTimeToAddTheDeposit": "Average time to add the deposit:",
+        "IncreaseBtn": "Add",
+        "SuccessMessage": "Adding deposit successfully initialized!",
+        "SomethingWentWrong": "Something went wrong. Try again later!",
+        "ErrorNotEnoughPublishFunds": " Not enough funds to publish transaction."
     },
     "electronMenu": {
         "File": "File",
