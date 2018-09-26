@@ -5,6 +5,7 @@ import notice from '../../utils/notice';
 import * as ReactTooltip from 'react-tooltip';
 import {NextButton, PreviousButton, back} from './utils';
 import * as api from '../../utils/api';
+import WS from '../../utils/ws';
 import { translate } from 'react-i18next';
 
 @translate(['auth/setPassword', 'utils/notice'])
@@ -67,6 +68,12 @@ class SetPassword extends React.Component<any, any>{
         console.log(res);
 
         await api.settings.updateLocal({firstStart:false});
+        api.settings.getLocal()
+           .then(settings => {
+                const ws = new WS(settings.wsEndpoint);
+                ws.setPassword(pwd);
+                (window as any).ws = ws;
+           });
         this.props.history.push('/setAccount');
     }
 

@@ -2,7 +2,7 @@ import * as React from 'react';
 // import {fetch} from '../../utils/fetch';
 import ChannelsListByStatus from '../channels/channelsListByStatus';
 import OfferingsList from '../offerings/offeringsList';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import * as api from '../../utils/api';
 import { translate } from 'react-i18next';
 
@@ -49,7 +49,7 @@ export default class Main extends React.Component <any,any> {
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-b-20'>
-                    <h3 className='page-title'>{t('TotalIncome')} {toFixed8({number: (this.state.income / 1e8)})} PRIX</h3>
+                    <h3 className='page-title'>{t('TotalIncome')} {toFixedN({number: (this.state.income / 1e8), fixed: 8})} PRIX</h3>
                 </div>
             </div>
             <div className='row'>

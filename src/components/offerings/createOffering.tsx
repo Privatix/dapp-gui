@@ -7,7 +7,7 @@ import {fetch} from '../../utils/fetch';
 import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import notice from '../../utils/notice';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import parseFloatPrix from '../../utils/parseFloatPrix';
 import {LocalSettings} from '../../typings/settings';
 import countries from '../../utils/countries';
@@ -244,7 +244,7 @@ class CreateOffering extends React.Component<any, any>{
         }else{
             payload.billingInterval = 1;
             payload.billingType = 'postpaid';
-            payload.additionalParams = Buffer.from('{}').toString('base64');
+            payload.additionalParams = {};
 
             if (payload.maxUnit === '') {
                 delete payload.maxUnit;
@@ -304,8 +304,8 @@ class CreateOffering extends React.Component<any, any>{
         />;
 
         // const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
-        const ethBalance = this.state.account ? (toFixed8({number: (this.state.account.ethBalance / 1e18)})) : 0;
-        const pscBalance = this.state.account ? (toFixed8({number: (this.state.account.psc_balance / 1e8)})) : 0;
+        const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
+        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8})) : 0;
 
         const onUserInput = this.onUserInput.bind(this);
 
@@ -523,7 +523,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   value={toFixed8({number: (this.state.payload.deposit / 1e8)})}
+                                                   value={toFixedN({number: (this.state.payload.deposit / 1e8), fixed: 8})}
                                                    placeholder='PRIX'
                                                    readOnly
                                             />

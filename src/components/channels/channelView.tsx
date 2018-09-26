@@ -6,7 +6,7 @@ import ProductNameByOffering from '../products/productNameByOffering';
 
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import * as api from '../../utils/api';
 import Offering from '../offerings/offeringView';
 import { translate } from 'react-i18next';
@@ -74,8 +74,8 @@ export default class ChannelView extends React.Component<any, any> {
                                     <tr><td>{t('ContractStatus')}</td><td><ContractStatus contractStatus={this.props.channel.channelStatus} /></td></tr>
                                     <tr><td>{t('ServiceStatus')}</td><td><ChannelStatusStyle serviceStatus={this.props.channel.serviceStatus} /></td></tr>
                                     <tr><td>{t('Usage')}</td><td><ChannelUsage channelId={this.props.channel.id} /></td></tr>
-                                    <tr><td>{t('Income')}</td><td>{toFixed8({number: this.props.channel.receiptBalance/1e8})} PRIX</td></tr>
-                                    <tr><td>{t('Deposit')}</td><td>{toFixed8({number: this.props.channel.totalDeposit/1e8})} PRIX</td></tr>
+                                    <tr><td>{t('Income')}</td><td>{toFixedN({number: this.props.channel.receiptBalance/1e8, fixed: 8})} PRIX</td></tr>
+                                    <tr><td>{t('Deposit')}</td><td>{toFixedN({number: this.props.channel.totalDeposit/1e8, fixed: 8})} PRIX</td></tr>
                                 </tbody>
                             </table>
                         </div>
