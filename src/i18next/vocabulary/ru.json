@@ -510,6 +510,25 @@
         "LastUsageTimeT": "Время последнего использования:",
         "Sessions": "Сессии"
     },
+    "client/increaseDepositButton":{
+        "ThisOperationWillIncrease": "Эта операция увеличит Ваш VPN баланc путем увеличения размера депозита",
+        "IncreaseDeposit": "Увеличить депозит"
+    },
+    "client/connections/increaseDepositView":{
+        "DepositInfo": "Информация о депозите",
+        "Deposit": "Депозит",
+        "IncreaseDeposit": "Увеличение депозита",
+        "WouldYouLikeToProceed": "Желаете продолжить?",
+        "IncreaseConfirmBtn": "Да, увеличить депозит!",
+        "IncreaseSwalTitle": "Увеличение депозита",
+        "Account": "Аккаунт",
+        "Amount": "Значение:",
+        "AverageTimeToAddTheDeposit": "Среднее время добавления депозита:",
+        "IncreaseBtn": "Добавить",
+        "SuccessMessage": "Добавление депозита успешно инициировано!",
+        "SomethingWentWrong": "Что то пошло не так! Попробуйте позже!",
+        "ErrorNotEnoughPublishFunds": " Недостаточно средств для публикации транзакции."
+    },
     "electronMenu": {
         "File": "Файл",
         "Quit": "Выход",

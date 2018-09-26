@@ -6,7 +6,8 @@
    "gas": {
         "acceptOffering": 100000,
         "createOffering": 100000,
-        "transfer": 100000
+        "transfer": 100000,
+        "increaseDeposit": 100000
    },
    "network": "rinkeby",
    "bugsnagKey": "f8f572a4fff86dd59cc2a36f6e9fe8d0",

@@ -3,11 +3,13 @@ import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import Countdown from 'react-countdown-now';
 
-import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import ActiveConnection from '../connections/active';
+import FinishServiceButton from '../connections/finishServiceButton';
+import IncreaseDepositButton from '../connections/increaseDepositButton';
+
+import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
-import FinishServiceButton from '../connections/finishServiceButton';
 
 const countdownRender = ({ minutes, seconds }) => {
     return <span>{minutes}:{seconds}</span>;
@@ -129,7 +131,7 @@ class Connecting extends React.Component<any, any>{
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
                 <div className='col-6 col-xl-5'>
-                    <div className='card m-b-20 card-body'>
+                    <div className='card m-b-20 card-body buttonBlock'>
                         <p className='card-text m-t-5 m-b-37'><strong>{t('YouCanStartUsingVPN')}</strong></p>
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
@@ -161,8 +163,11 @@ class Connecting extends React.Component<any, any>{
 
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
-                <div className='col-6 col-xl-5'>
-                    <div className='card m-b-20 card-body'>
+                <div className='col-4 col-xl-4 buttonBlock'>
+                    <IncreaseDepositButton channel={this.state.channels[0]} />
+                </div>
+                <div className='col-4 col-xl-4 buttonBlock'>
+                    <div className='card m-b-20 card-body buttonBlock'>
                         <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
                         { /* TODO insert real max suspend time */ }
                         <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: Math.ceil(this.state.offering.maxSuspendTime / 60)})}</p>
@@ -179,9 +184,7 @@ class Connecting extends React.Component<any, any>{
                     </div>
                 </div>
 
-                <div className='col-0 col-xl-2'></div>
-
-                <div className='col-6 col-xl-5'>
+                <div className='col-4 col-xl-4 buttonBlock'>
                     <FinishServiceButton channel={this.state.channels[0]} />
                 </div>
             </div>
