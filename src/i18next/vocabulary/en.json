@@ -151,6 +151,7 @@
         "ServerInfo": "Server info",
         "ServiceName": "Service name",
         "Server": "Server",
+        "MessageStatus": "Message status",
         "Status": "Status",
         "AvailableSupply": "Available supply",
         "Supply": "Supply"
