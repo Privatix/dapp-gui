@@ -6,7 +6,7 @@ import IncreaseDepositView from './increaseDepositView';
 
 @translate('client/increaseDepositButton')
 
-export default class TerminateContractButton extends React.Component<any, any>{
+export default class IncreaseDepositButton extends React.Component<any, any>{
 
     render(){
 
