@@ -233,12 +233,13 @@ ul.default li {
 .clientConnectionBl {
     display: flex; justify-content: space-between;
     width: 100%;
+    align-items: stretch;
 }
 .buttonBlock {
     display: flex;
     justify-content: space-between;
     flex-direction: column;
-    height: 100%;
+    align-self: stretch;
 }
 
 .remainingText{
