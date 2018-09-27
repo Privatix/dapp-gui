@@ -22,10 +22,6 @@ class OfferingTools extends React.Component<Props, any>{
 
     constructor(props:any){
         super(props);
-
-        this.state = {
-            offeringStatus: props.offering.offerStatus
-        };
     }
 
     componentDidMount() {
@@ -38,11 +34,29 @@ class OfferingTools extends React.Component<Props, any>{
 
     render(){
         const { t } = this.props;
-        const popupInfo = t('popupInfo');
-        const offeringStatus = this.state.offeringStatus;
+        const offeringStatus = this.props.offering.offerStatus;
         const challengePeriodMinutes = Math.floor(this.props.challengePeriod / 4);
         const removeInfo = t('removeInfo', {minutes: challengePeriodMinutes});
         const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
+
+        const disabledPopUp = !(['registered', 'popped_up'].includes(offeringStatus));
+        const popupInfo = disabledPopUp ? t('popupInfoDisabled', {min: challengePeriodMinutes}) : t('popupInfo');
+        const popUpBtn = disabledPopUp ?
+            <div>
+                <p>
+                    <button className='btn btn-block btnCustomDisabled disabled'>{t('Popup')}</button>
+                </p>
+            </div>
+            :
+            <ConfirmPopupSwal
+                endpoint={`/offerings/${this.props.offering.id}/status`}
+                options={{method: 'put', body: {action: 'popup'}}}
+                title={t('Popup')}
+                text={<span>{popupInfo}</span>}
+                class={'btn btn-block btn-primary btn-custom'}
+                swalType='warning'
+                swalConfirmBtnText={t('YesPopUpIt')}
+                swalTitle={t('confirmPopupSwal:AreYouSure')} />;
 
         const deleteOfferingBl = disallowDeleting ? '' :
             <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
@@ -76,15 +90,7 @@ class OfferingTools extends React.Component<Props, any>{
         return <div className='col-lg-3 col-md-4'>
             <div className='card m-b-20 card-body text-xs-center'>
                 <p className='card-text'>{popupInfo}</p>
-                <ConfirmPopupSwal
-                    endpoint={`/offerings/${this.props.offering.id}/status`}
-                    options={{method: 'put', body: {action: 'popup'}}}
-                    title={t('Popup')}
-                    text={<span>{popupInfo}</span>}
-                    class={'btn btn-primary btn-custom btn-block'}
-                    swalType='warning'
-                    swalConfirmBtnText={t('YesPopUpIt')}
-                    swalTitle={t('confirmPopupSwal:AreYouSure')} />
+                {popUpBtn}
             </div>
 
             {deleteOfferingBl}
