@@ -8,7 +8,7 @@ import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import GasRange from '../../components/utils/gasRange';
 import { translate } from 'react-i18next';
 import {State} from '../../typings/state';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 
 
 @translate(['client/connections/increaseDepositView', 'utils/notice'])
@@ -72,8 +72,8 @@ class IncreaseDepositView extends React.Component<any, any> {
             options={this.props.accounts.map((account:any) => ({value: account.id, label: account.name}))}
         />;
 
-        const ethBalance = this.state.account ? (toFixed8({number: (this.state.account.ethBalance / 1e18)})) : 0;
-        const pscBalance = this.state.account ? (toFixed8({number: (this.state.account.psc_balance / 1e8)})) : 0;
+        const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18)})) : 0;
+        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8)})) : 0;
 
         return <div className='col-lg-9 col-md-9'>
             <div className='card m-b-20'>
@@ -83,7 +83,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                         <label className='col-2 col-form-label'>{t('Deposit')}:</label>
                         <div className='col-6'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={ toFixed8({number: (this.props.channel.deposit/1e8)}) } readOnly/>
+                                <input type='text' className='form-control' value={ toFixedN({number: (this.props.channel.deposit/1e8)}) } readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -105,7 +105,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                         <label className='col-2 col-form-label'>{t('Amount')}</label>
                         <div className='col-6'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={ toFixed8({number: (this.props.channel.deposit/1e8)}) } readOnly/>
+                                <input type='text' className='form-control' value={ toFixedN({number: (this.props.channel.deposit/1e8)}) } readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
