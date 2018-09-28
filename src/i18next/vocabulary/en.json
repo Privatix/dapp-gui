@@ -86,6 +86,7 @@
         "Description": "Description",
         "description": "description",
         "Country": "Country",
+        "ChangeCountryHelpText": "For changing country you must go to the Servers page",
         "Supply": "Supply",
         "ie": "i.e.",
         "MaximumSupplyOfServices": "Maximum supply of services according to service offerings.",
@@ -177,6 +178,7 @@
         "PleaseInsertIPorDNS": "Please, insert IP or DNS only!",
         "Name": "Name",
         "Host": "Host",
+        "Country": "Country",
         "Save": "Save",
         "HostWasSuccessfullyUpdated": "Host was successfully updated!",
         "SomethingWentWrong": "Something went wrong. Try again later!"

@@ -13,4 +13,5 @@ export interface Product {
     serviceEndpointAddress: string;
     ptcBalance: number;
     usageRepType: UsageRepType;
+    country: string;
 }
