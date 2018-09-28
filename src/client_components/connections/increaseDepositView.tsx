@@ -20,6 +20,10 @@ class IncreaseDepositView extends React.Component<any, any> {
         this.state = {gasPrice: 6*1e9
                      ,account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase())
         };
+        api.offerings.getClientOfferingById(props.channel.offering)
+           .then(offering => {
+               this.setState({offering});
+           });
     }
 
     onGasPriceChanged(evt: any){
@@ -63,6 +67,8 @@ class IncreaseDepositView extends React.Component<any, any> {
     render(){
 
         const { t } = this.props;
+        const value = this.state.offering ? `${this.state.offering.minUnits} ${this.state.offering.unitName}` : '';
+        const deposit = `${toFixedN({number: (this.props.channel.deposit/1e8), fixed: 8})} / ${value}`;
 
         const selectAccount =  <Select className='form-control'
             value={this.state.account.id}
@@ -72,8 +78,8 @@ class IncreaseDepositView extends React.Component<any, any> {
             options={this.props.accounts.map((account:any) => ({value: account.id, label: account.name}))}
         />;
 
-        const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18)})) : 0;
-        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8)})) : 0;
+        const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
+        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8})) : 0;
 
         return <div className='col-lg-9 col-md-9'>
             <div className='card m-b-20'>
@@ -83,7 +89,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                         <label className='col-2 col-form-label'>{t('Deposit')}:</label>
                         <div className='col-6'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={ toFixedN({number: (this.props.channel.deposit/1e8)}) } readOnly/>
+                                <input type='text' className='form-control' value={ deposit } readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -101,11 +107,12 @@ class IncreaseDepositView extends React.Component<any, any> {
                         <div className='col-4 col-form-label'>
                             Balance: <span>{ pscBalance } PRIX / { ethBalance } ETH</span>
                         </div>
-
-                        <label className='col-2 col-form-label'>{t('Amount')}</label>
+                    </div>
+                    <div className='form-group row'>
+                        <label className='col-2 col-form-label'>{t('AddToDeposit')}</label>
                         <div className='col-6'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={ toFixedN({number: (this.props.channel.deposit/1e8)}) } readOnly/>
+                                <input type='text' className='form-control' value={ deposit } readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>

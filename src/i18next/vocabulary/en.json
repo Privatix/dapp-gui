@@ -521,7 +521,7 @@
         "IncreaseConfirmBtn": "Yes, increase the deposit!",
         "IncreaseSwalTitle": "Increase deposit",
         "Account": "Account",
-        "Amount": "Amount:",
+        "AddToDeposit": "AddToDeposit:",
         "AverageTimeToAddTheDeposit": "Average time to add the deposit:",
         "IncreaseBtn": "Add",
         "SuccessMessage": "Adding deposit successfully initialized!",
