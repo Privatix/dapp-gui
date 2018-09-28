@@ -10,22 +10,6 @@ export default class OfferingStatus extends React.Component<any, any>{
 
     get classes() {
         return {
-            unpublished: {
-                label: 'warning',
-                alias: 'Unpublished'
-            },
-            bchain_publishing: {
-                label: 'primary',
-                alias: 'Publishing on blockchain'
-            },
-            bchain_published: {
-                label: 'primary',
-                alias: 'Published on blockchain'
-            },
-            msg_channel_published: {
-                label: 'success',
-                alias: 'Published'
-            },
             empty: {
                 label: 'info',
                 alias: 'Empty'

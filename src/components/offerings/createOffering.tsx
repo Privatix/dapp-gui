@@ -52,7 +52,6 @@ class CreateOffering extends React.Component<any, any>{
     constructor(props: any){
         super(props);
         this.state = this.getDefaultState();
-        console.log(props);
     }
 
     async refresh(){

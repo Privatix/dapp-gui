@@ -138,6 +138,7 @@
         "Popup": "Popup",
         "Remove": "Remove",
         "popupInfo": "This operation will notify Clients that your offering is actual, improving your chances for a deal.",
+        "popupInfoDisabled": "Until the challenge period has not passed, you won't be able to pop up the offering. The duration of the challenge period is approximately {{min}} min.",
         "removeInfo": "This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for {{minutes}} past minutes.",
         "YesPopUpIt": "Yes, pop up it!",
         "YesRemoveIt": "Yes, remove it!",
@@ -151,6 +152,7 @@
         "ServerInfo": "Server info",
         "ServiceName": "Service name",
         "Server": "Server",
+        "MessageStatus": "Message status",
         "Status": "Status",
         "AvailableSupply": "Available supply",
         "Supply": "Supply"
