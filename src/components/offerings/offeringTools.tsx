@@ -6,26 +6,15 @@ import {asyncProviders} from '../../redux/actions';
 import {State} from '../../typings/state';
 import {Offering} from '../../typings/offerings';
 
-// import OfferingToolPublish from './offeringToolPublish';
-// import OfferingToolPopUp from './offeringToolPopUp';
-// import OfferingToolRemove from './offeringToolRemove';
-// import OfferingToolDublicate from './offeringToolDublicate';
-// import OfferingToolDeactivate from './offeringToolDeactivate';
-
 import ConfirmPopupSwal from '../confirmPopupSwal';
 import notice from '../../utils/notice';
-
-/*
-        <OfferingToolPublish offeringId={props.offering.id} /> |
-        <OfferingToolDeactivate offeringId={props.offering.id} /> |
-        <OfferingToolDublicate offering={props.offering}/> |
-*/
 
 interface Props {
     offering: Offering;
     challengePeriod: number;
     dispatch: any;
     t: any;
+    closeModal?: Function;
 }
 
 @translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice'])
@@ -45,24 +34,31 @@ class OfferingTools extends React.Component<Props, any>{
 
     render(){
         const { t } = this.props;
-        const popupInfo = t('popupInfo');
+        const offeringStatus = this.props.offering.offerStatus;
         const challengePeriodMinutes = Math.floor(this.props.challengePeriod / 4);
         const removeInfo = t('removeInfo', {minutes: challengePeriodMinutes});
-        // `This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for ${Math.floor(this.props.challengePeriod/4)} past minutes.`;
+        const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
 
-        return <div className='col-lg-3 col-md-4'>
-            <div className='card m-b-20 card-body text-xs-center'>
-                <p className='card-text'>{popupInfo}</p>
-                <ConfirmPopupSwal
-                    endpoint={`/offerings/${this.props.offering.id}/status`}
-                    options={{method: 'put', body: {action: 'popup'}}}
-                    title={t('Popup')}
-                    text={<span>{popupInfo}</span>}
-                    class={'btn btn-primary btn-custom btn-block'}
-                    swalType='warning'
-                    swalConfirmBtnText={t('YesPopUpIt')}
-                    swalTitle={t('confirmPopupSwal:AreYouSure')} />
+        const disabledPopUp = !(['registered', 'popped_up'].includes(offeringStatus));
+        const popupInfo = disabledPopUp ? t('popupInfoDisabled', {min: challengePeriodMinutes}) : t('popupInfo');
+        const popUpBtn = disabledPopUp ?
+            <div>
+                <p>
+                    <button className='btn btn-block btnCustomDisabled disabled'>{t('Popup')}</button>
+                </p>
             </div>
+            :
+            <ConfirmPopupSwal
+                endpoint={`/offerings/${this.props.offering.id}/status`}
+                options={{method: 'put', body: {action: 'popup'}}}
+                title={t('Popup')}
+                text={<span>{popupInfo}</span>}
+                class={'btn btn-block btn-primary btn-custom'}
+                swalType='warning'
+                swalConfirmBtnText={t('YesPopUpIt')}
+                swalTitle={t('confirmPopupSwal:AreYouSure')} />;
+
+        const deleteOfferingBl = disallowDeleting ? '' :
             <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <h5 className='card-title'>{t('WarningArea')}</h5>
                 <p className='card-text'>{removeInfo}</p>
@@ -85,9 +81,19 @@ class OfferingTools extends React.Component<Props, any>{
                                 header: t('utils/notice:Congratulations!'),
                                 msg: t('DeleteOfferingRequestScheduled1') + ' ' + challengePeriodMinutes + ' ' + t('DeleteOfferingRequestScheduled2')
                             });
+
+                            this.props.closeModal();
                         }
                     }} />
+            </div>;
+
+        return <div className='col-lg-3 col-md-4'>
+            <div className='card m-b-20 card-body text-xs-center'>
+                <p className='card-text'>{popupInfo}</p>
+                {popUpBtn}
             </div>
+
+            {deleteOfferingBl}
         </div>;
     }
 }
