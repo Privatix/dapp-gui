@@ -37,6 +37,8 @@ class CreateOffering extends React.Component<any, any>{
            ,template: ''
            ,deposit: 0
            ,product: ''
+           ,minDownloadMbits: ''
+           ,minUploadMbits: ''
         },
         products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9
     };
@@ -101,7 +103,7 @@ class CreateOffering extends React.Component<any, any>{
 
     onUserInput(evt: any){
 
-        const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value});
+        const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value, additionalParams: {}});
         payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0) * (payload.minUnits ? payload.minUnits : 0);
         this.setState({payload});
     }
@@ -124,6 +126,8 @@ class CreateOffering extends React.Component<any, any>{
            ,maxUnit: t('MaxUnits')
            ,maxSuspendTime: t('MaxSuspendTime')
            ,maxInactiveTimeSec: t('MaxInactiveTime')
+           ,minDownloadMbits: t('MinDownloadMbits')
+           ,minUploadMbits: t('MinUploadMbits')
         };
         const required = ['serviceName', 'country', 'supply', 'unitPrice', 'maxBillingUnitLag', 'minUnits', 'maxSuspendTime', 'maxInactiveTimeSec'];
         const optional = ['description', 'maxUnit'];
@@ -132,6 +136,7 @@ class CreateOffering extends React.Component<any, any>{
         const cantBeZero = ['supply', 'maxBillingUnitLag', 'minUnits', 'maxSuspendTime', 'maxInactiveTimeSec'];
         const mustBePositive = [];
         const mustBeInteger = [];
+        const mustBeNumber = [];
         const isZero = [];
 
         // const settings = (await fetch('/localSettings', {})) as LocalSettings;
@@ -172,6 +177,32 @@ class CreateOffering extends React.Component<any, any>{
             err = true;
         }
 
+        if('minDownloadMbits' in payload && payload.minDownloadMbits !== ''){
+            const value = parseFloat(payload.minDownloadMbits);
+            if(isNaN(value)){
+                err = true;
+                mustBeNumber.push('minDownloadMbits');
+            }else{
+                if(value <= 0){
+                    err = true;
+                    mustBePositive.push('minDownloadMbits');
+                }
+            }
+        }
+
+        if('minUploadMbits' in payload  && payload.minUploadMbits !== ''){
+            const value = parseFloat(payload.minUploadMbits);
+            if(isNaN(value)){
+                err = true;
+                mustBeNumber.push('minUploadMbits');
+            }else{
+                if(value <= 0){
+                    err = true;
+                    mustBePositive.push('minUploadMbits');
+                }
+            }
+        }
+
         const wrongKeys = [...mustBeInteger, ...mustBeFilled, ...mustBePositive, ...isZero];
         if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
             if (payload.maxUnit !== '') {
@@ -188,6 +219,8 @@ class CreateOffering extends React.Component<any, any>{
             err=true;
         }
 
+
+
         if(err){
             let msg = '';
             if(mustBeFilled.length){
@@ -200,6 +233,12 @@ class CreateOffering extends React.Component<any, any>{
                 const Field = t('Field', {context: mustBeInteger.length > 1 ? 'plural' : ''});
                 const Fields = mustBeInteger.map(key => aliases[key]).join(', ');
                 const mustBe = t('MustBeInteger', {context: mustBeInteger.length > 1 ? 'plural' : ''});
+                msg += (`${Field} ${Fields} ${mustBe} ` as any).capitalize();
+            }
+            if(mustBeNumber.length){
+                const Field = t('Field', {context: mustBeNumber.length > 1 ? 'plural' : ''});
+                const Fields = mustBeNumber.map(key => aliases[key]).join(', ');
+                const mustBe = t('MustBeNumber', {context: mustBeNumber.length > 1 ? 'plural' : ''});
                 msg += (`${Field} ${Fields} ${mustBe} ` as any).capitalize();
             }
             if(isZero.length){
@@ -239,6 +278,10 @@ class CreateOffering extends React.Component<any, any>{
                     }
                 }
             }
+
+            if(wrongKeys.includes('unitPrice') && payload.unitPrice !== payload.unitPrice){
+                msg += t('UnitPriceMustBeANumber') + ' ';
+            }
             this.setState({errMsg: msg});
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }else{
@@ -250,6 +293,23 @@ class CreateOffering extends React.Component<any, any>{
                 delete payload.maxUnit;
             }else{
                 payload.maxUnit = parseInt(payload.maxUnit, 10);
+            }
+
+            // additional parameters
+            if('minDownloadMbits' in payload){
+                if(payload.minDownloadMbits !== ''){
+                    const value = parseFloat(payload.minDownloadMbits);
+                    payload.additionalParams.minDownloadMbits = value;
+                }
+                delete payload.minDownloadMbits;
+            }
+
+            if('minUploadMbits' in payload){
+                if(payload.minUploadMbits !== ''){
+                    const value = parseFloat(payload.minUploadMbits);
+                    payload.additionalParams.minUploadMbits = value;
+                }
+                delete payload.minUploadMbits;
             }
 
             api.offerings.addOffering(payload).then(res => {
@@ -265,6 +325,7 @@ class CreateOffering extends React.Component<any, any>{
 
                 });
             });
+
         }
 
         return;
@@ -505,6 +566,51 @@ class CreateOffering extends React.Component<any, any>{
                                 </div>
                             </div>
                         </div>
+
+                        <div className='card m-b-20'>
+                            <h5 className='card-header'>{t('AdditionalParameters')}</h5>
+                            <div className='card-body'>
+                                <div className='form-group row'>
+                                    <label className='col-2 col-form-label'>{t('MinDownloadMbits')}:</label>
+                                    <div className='col-6'>
+                                        <div className='input-group bootstrap-touchspin'>
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder={t('ie') + ' 100'}
+                                                   onChange={onUserInput}
+                                                   data-payload-value='minDownloadMbits'
+                                                   value={this.state.payload.minDownloadMbits}
+                                            />
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>{t('Mbits')}</span>
+                                        </div>
+                                        <span className='help-block'>
+                                            <small>
+                                            </small>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className='form-group row'>
+                                    <label className='col-2 col-form-label'>{t('MinUploadMbits')}:</label>
+                                    <div className='col-6'>
+                                        <div className='input-group bootstrap-touchspin'>
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder={t('ie') + ' 80'}
+                                                   onChange={onUserInput}
+                                                   data-payload-value='minUploadMbits'
+                                                   value={this.state.payload.minUploadMbits}
+                                            />
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>{t('Mbits')}</span>
+                                        </div>
+                                        <span className='help-block'>
+                                            <small>
+                                            </small>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className='card m-b-20'>
                             <h5 className='card-header'>{t('PublicationPrice')}:</h5>
                             <div className='card-body'>
