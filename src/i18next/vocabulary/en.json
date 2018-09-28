@@ -374,7 +374,9 @@
         "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
         "Resume": "Resume",
         "YesResumeIt": "Yes, resume it!",
-        "min": "min"
+        "min": "min",
+        "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. IP address {{ip}}",
+        "CountryAlertUnknown": "The application won't be able to detect the offering's country. IP address {{ip}}"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
