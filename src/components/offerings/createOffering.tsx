@@ -57,12 +57,11 @@ class CreateOffering extends React.Component<any, any>{
     }
 
     async refresh(){
-
         const accounts = await api.accounts.getAccounts();
         const products = await api.products.getProducts();
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
-        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
+        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id, country: products[0].country.toUpperCase()});
         this.setState({products, accounts, account, payload});
         fetch(`/templates?id=${products[0].offerTplID}`)
             .then((templates: any) => {
@@ -90,13 +89,6 @@ class CreateOffering extends React.Component<any, any>{
         const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
         const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
         this.setState({account, payload});
-
-    }
-
-    onCountryChanged(selectedCountry: any) {
-
-        const payload = Object.assign({}, this.state.payload, {country: selectedCountry.value});
-        this.setState({payload});
 
     }
 
@@ -336,7 +328,6 @@ class CreateOffering extends React.Component<any, any>{
     }
 
     render(){
-
         const { t } = this.props;
 
         const selectProduct = <Select className='form-control'
@@ -354,20 +345,18 @@ class CreateOffering extends React.Component<any, any>{
             onChange={this.onAccountChanged.bind(this)} />;
             // {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
 
-        const selectCountry = <Select className='form-control'
-            value={this.state.payload.country}
-            searchable={false}
-            clearable={false}
-            options={countries.map((country:any) => ({value: country.id, label: country.name}))}
-            onChange={this.onCountryChanged.bind(this)}
-            placeholder={t('common:Select')}
-        />;
-
         // const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
         const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
         const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8})) : 0;
 
         const onUserInput = this.onUserInput.bind(this);
+
+        const country = countries.filter((country:any) => country.id === this.state.payload.country.toUpperCase());
+        const countryName = country[0] ? country[0].name : '';
+        const countryImg = !this.state.payload.country ? '' :
+            <span className='input-group-addon bootstrap-touchspin-prefix'>
+                <img src={`images/country/${this.state.payload.country.toLowerCase()}.png`} width='25px'/>
+            </span>;
 
         return <div className='container-fluid'>
             <div className='row'>
@@ -408,9 +397,17 @@ class CreateOffering extends React.Component<any, any>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('Country')}:<span className='text-danger'>*</span> </label>
+                                    <label className='col-2 col-form-label'>{t('Country')}:</label>
                                     <div className='col-6'>
-                                        {selectCountry}
+                                        <div className='input-group bootstrap-touchspin'>
+                                            {countryImg}
+                                            <input type='text' className='form-control' readOnly value={countryName} />
+                                        </div>
+                                        <span className='help-block'>
+                                            <small>
+                                                {t('ChangeCountryHelpText')}
+                                            </small>
+                                        </span>
                                     </div>
                                 </div>
                                 <div className='form-group row'>

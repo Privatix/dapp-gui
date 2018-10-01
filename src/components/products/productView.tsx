@@ -2,8 +2,9 @@ import * as React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
+import countries from '../../utils/countries';
+import Select from 'react-select';
 
-// import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 import {asyncProviders} from '../../redux/actions';
 import { Product } from '../../typings/products';
@@ -16,7 +17,7 @@ interface Props {
     t?: any;
 }
 
-@translate(['products/productView', 'utils/notice'])
+@translate(['products/productView', 'utils/notice', 'common'])
 class ProductView extends React.Component <Props,any> {
 
     constructor(props:Props) {
@@ -24,7 +25,8 @@ class ProductView extends React.Component <Props,any> {
 
         this.state = {
             product: props.product,
-            host: props.product.serviceEndpointAddress
+            host: props.product.serviceEndpointAddress,
+            country: props.product.country
         };
     }
 
@@ -41,7 +43,7 @@ class ProductView extends React.Component <Props,any> {
         if ( (/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(this.state.host)) // IP
             || (/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(this.state.host)) ) /* DNS */ {
 
-            const product = Object.assign({}, this.state.product, {serviceEndpointAddress: this.state.host});
+            const product = Object.assign({}, this.state.product, {serviceEndpointAddress: this.state.host, country: this.state.country});
 
             api.products.saveProduct(product).then((result:any) => {
                 if (result.id === this.state.product.id) {
@@ -56,10 +58,22 @@ class ProductView extends React.Component <Props,any> {
         }
     }
 
+    handleCountryChange(selectedCountry: any) {
+        this.setState({country: selectedCountry.value});
+    }
+
     render() {
 
         const { t } = this.props;
         const product = this.state.product;
+
+        const selectCountry = <Select className='zIndex100'
+            value={this.state.country}
+            searchable={false}
+            clearable={false}
+            options={countries.map((country:any) => ({value: country.id, label: country.name}))}
+            onChange={this.handleCountryChange.bind(this)}
+            placeholder={t('common:Select')} />;
 
         return <div>
             <form onSubmit={this.saveHost.bind(this)}>
@@ -73,6 +87,12 @@ class ProductView extends React.Component <Props,any> {
                         <td>{t('Host')}:</td>
                         <td><input type='text' className='form-control'
                                value={this.state.host} onChange={this.handleHostChange.bind(this)} /></td>
+                    </tr>
+                    <tr>
+                        <td>{t('Country')}:</td>
+                        <td>
+                            {selectCountry}
+                        </td>
                     </tr>
                     </tbody>
                 </table>

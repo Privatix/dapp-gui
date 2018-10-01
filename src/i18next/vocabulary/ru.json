@@ -87,6 +87,7 @@
         "Description": "Описание",
         "description": "описание",
         "Country": "Страна",
+        "ChangeCountryHelpText": "Для изменения страны вы должны перейти на страницу Серверы",
         "Supply": "Количесто слотов",
         "ie": "например",
         "MaximumSupplyOfServices": "Максимальное количество слотов согласно предложению.",
@@ -178,6 +179,7 @@
         "PleaseInsertIPorDNS": "Пожалуйста введите IP, либо DNS!",
         "Name": "Имя",
         "Host": "Хост",
+        "Country": "Страна",
         "Save": "Сохранить",
         "HostWasSuccessfullyUpdated": "Хост был успешно обновлен!",
         "SomethingWentWrong": "Что-то пошло не так! Попробуйте снова позже."

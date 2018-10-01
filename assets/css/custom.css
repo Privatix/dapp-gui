@@ -686,9 +686,12 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     margin-bottom: 37px !important;
 }
 
-.clientCountryAlert{
+.clientCountryAlert {
     padding: 10px 15px !important;
     font-size: 12px !important;
+}
+.zIndex100{
+    z-index: 100;
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
