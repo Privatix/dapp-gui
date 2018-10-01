@@ -7,7 +7,6 @@ import * as fs from 'fs';
 import fetch from 'electron-fetch';
 import mocks from './mocks';
 import * as  btoa from 'btoa';
-import * as keythereum from 'keythereum';
 
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
 let password = '';
@@ -44,10 +43,7 @@ let password = '';
                 }
             });
     }else if(req.endpoint === '/backup'){
-
-        const pk = JSON.parse(req.options.body.pk);
-        const keyObject = keythereum.dump(password, Buffer.from(pk.privateKey.data), Buffer.from(pk.salt.data), Buffer.from(pk.iv.data));
-        fs.writeFile(req.options.body.fileName, JSON.stringify(keyObject), {encoding: 'utf8'}, (err:any) => {
+        fs.writeFile(req.options.body.fileName, req.options.body.pk, {encoding: 'utf8'}, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
     }else if(req.endpoint === '/readFile'){

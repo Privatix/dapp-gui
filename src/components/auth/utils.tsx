@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as keythereum from 'keythereum';
 import { translate } from 'react-i18next';
 
 export const NextButton = translate('auth/utils')(({onSubmit, t}) => <button
@@ -24,10 +23,4 @@ export const back = function(address: string){
         evt.preventDefault();
         this.props.history.push(address);
     };
-};
-
-export const createPrivateKey = function(){
-    const params = { keyBytes: 32, ivBytes: 16 };
-    const dk = keythereum.create(params);
-    return dk;
 };

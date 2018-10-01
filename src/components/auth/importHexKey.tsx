@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 
 import Steps from './steps';
-import {PreviousButton, NextButton, back, createPrivateKey} from './utils';
+import { PreviousButton, NextButton, back } from './utils';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
 
@@ -48,17 +48,22 @@ class ImportHexKey extends React.Component<any, any>{
             return;
         }
 
-        const pk = new Buffer(privateKey, 'hex');
-        const key = pk.toString('base64').split('+').join('-').split('/').join('_');
+        const payload = {
+             isDefault: this.props.default === 'true'
+            ,inUse: true
+            ,name
+            ,privateKeyHex: privateKey
+        };
 
-        const res = await api.accounts.createNewAccount(key, this.props.default === 'true', true, name, 'generate_new');
-        console.log(res);
-        await api.settings.updateLocal({accountCreated:true});
-
-        const dk = createPrivateKey();
-        console.log(res, dk);
-        const newKeyObject = Object.assign({}, dk, {privateKey: pk});
-        this.props.history.push(`/backup/${JSON.stringify(newKeyObject)}/importHexKey`);
+        (window as any).ws.importAccountFromHex(payload, (res: any)=>{
+            if('error' in res){
+                msg = t('SomethingWentWrong');
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            }else{
+                api.settings.updateLocal({accountCreated:true});
+                this.props.history.push(`/backup/${res.result}/importHexKey`);
+            }
+        });
     }
 
     render(){

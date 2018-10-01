@@ -35,12 +35,13 @@
         "Name": "Имя",
         "WhileNextButton": "После того, как Вы нажмете кнопку ДАЛЕЕ, мы создадим новый кошелек.",
         "IfYouLoseThePassword": "Если вы потеряете пароль, которым защищен кошелек, Вы не сможете получить доступ к этому кошельку.",
-        "AccountsNameCantBeEmpty": "Имя кошелька не может быть пустым."
+        "AccountsNameCantBeEmpty": "Имя кошелька не может быть пустым.",
+        "SomethingWentWrong": "Что-то пошло не так! Попробуйте снова позже."
     },
     "auth/importJsonKey": {
         "NoFileChosen": "Файл не выбран.",
         "PleaseSetThePassword": "Пожалуйста, укажите пароль.",
-        "PleaseEnterAValidPassword": "Пожалуйста, введите правильный пароль .",
+        "SomethingWentWrong": "Что то пошло не так. Пожалуйста, проверьте файл или введите правильный пароль.",
         "PathToJSONKeystoreFile": "Путь к файлу JSON Keystore",
         "PasswordWillBeUsed": "Пароль (будет использован для расшифровки JSON Keystore)",
         "MoreInformation": "Узнать больше о приватном ключе Ethereum"
@@ -48,7 +49,8 @@
     "auth/importHexKey": {
         "PleaseInputHexRepresentation": "Пожалуйста, введите в шестнадцатеричном виде приватный ключ для кошелька на котором хранятся PRIX",
         "PrivateKey": "Приватный ключ",
-        "PrivateKeyMustHave": "Приватный ключ должен состоять строго из 64 символов."
+        "PrivateKeyMustHave": "Приватный ключ должен состоять строго из 64 символов.",
+        "SomethingWentWrong": "Что то пошло не так. Пожалуйста проверьте приватный ключ."
     },
     "auth/backup": {
         "generateKey": "новый ключ успешно сгенерирован и зарегистрирован!",

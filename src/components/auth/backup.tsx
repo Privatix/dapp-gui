@@ -39,14 +39,17 @@ class Backup extends React.Component<any, any>{
             return;
         }
 
-        fetch('/backup', {body: {pk: this.props.privateKey, fileName: this.state.fileName}})
-            .then((res:any) => {
-                if(res.err){
-                    notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
-                }else{
-                    this.props.history.push(this.props.entryPoint);
-                }
-            });
+        (window as any).ws.exportAccount(this.props.accountId, (res: any) => {
+            // TODO check if error
+            fetch('/backup', {body: {pk: atob(res.result), fileName: this.state.fileName}})
+                .then((res:any) => {
+                    if(res.err){
+                        notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
+                    }else{
+                        this.props.history.push(this.props.entryPoint);
+                    }
+                });
+        });
     }
 
     render(){
