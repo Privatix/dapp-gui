@@ -52,7 +52,7 @@ export default class ConfirmPopupSwal extends React.Component<any, any>{
 
         return (
             <div>
-                <p><button onClick={this.showPopUpSwal.bind(this)} className={this.props.class}>{this.props.title}</button></p>
+                <button onClick={this.showPopUpSwal.bind(this)} className={this.props.class}>{this.props.title}</button>
                 <ReactSweetAlert
                     show={this.state.show}
                     type={this.props.swalType}
