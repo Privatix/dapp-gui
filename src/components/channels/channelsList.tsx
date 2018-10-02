@@ -9,7 +9,7 @@ import ChannelsListSortTable from './channelsListSortTable';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import { State } from '../../typings/state';
 import {asyncProviders} from '../../redux/actions';
 import * as api from '../../utils/api';
@@ -57,13 +57,13 @@ class AsyncChannels extends React.Component<any, any> {
                     const channel = this.state.channels[index];
                     const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
                     return {
-                        id: <ModalWindow customClass='' modalTitle='Service' text={channel.id} component={<Channel channel={channel} />} />,
-                        server: <ModalWindow customClass='' modalTitle='Server info' text={product.name} component={<Product product={product} />} />,
+                        id: <ModalWindow customClass='' modalTitle={t('Service')} text={channel.id} component={<Channel channel={channel} />} />,
+                        server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={product.name} component={<Product product={product} />} />,
                         client: '0x'+channel.client,
                         contractStatus: channel.channelStatus,
                         serviceStatus: channel.serviceStatus,
                         usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
-                        incomePRIX: toFixed8({number: (channel.receiptBalance/1e8)}),
+                        incomePRIX: toFixedN({number: (channel.receiptBalance/1e8), fixed: 8}),
                         serviceChangedTime: channel.serviceChangedTime
                     };
                 }

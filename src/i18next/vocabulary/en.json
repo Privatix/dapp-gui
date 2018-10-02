@@ -86,6 +86,7 @@
         "Description": "Description",
         "description": "description",
         "Country": "Country",
+        "ChangeCountryHelpText": "For changing country you must go to the Servers page",
         "Supply": "Supply",
         "ie": "i.e.",
         "MaximumSupplyOfServices": "Maximum supply of services according to service offerings.",
@@ -109,6 +110,10 @@
         "MaximumTimeWithoutServiceUsage": "Maximum time without service usage.",
         "AgentWillConsider": "Agent will consider that Client will not use service and stop providing it.",
         "PeriodIsSpecified": "Period is specified in seconds.",
+        "AdditionalParameters": "Additional parameters",
+        "MinDownloadMbits": "Min download speed",
+        "MinUploadMbits": "Min upload speed",
+        "Mbits": "Mbits",
         "PublicationPrice": "Publication price",
         "Account": "Account",
         "Deposit": "Deposit",
@@ -124,6 +129,8 @@
         "Field_plural": "Fields",
         "MustBeInteger": "must be integer.",
         "MustBeInteger_plural": "must be integers.",
+        "MustBeNumber": "must be number.",
+        "MustBeNumber_plural": "must be mumbers.",
         "isRequired": "is required.",
         "isRequired_plural": "are required.",
         "haveZeroValue": "have zero value.",
@@ -138,6 +145,7 @@
         "Popup": "Popup",
         "Remove": "Remove",
         "popupInfo": "This operation will notify Clients that your offering is actual, improving your chances for a deal.",
+        "popupInfoDisabled": "Until the challenge period has not passed, you won't be able to pop up the offering. The duration of the challenge period is approximately {{min}} min.",
         "removeInfo": "This operation will permanently remove offering. You will receive your deposit back. Clients will not be able to accept it anymore. Offering can be removed only, if it is inactive for {{minutes}} past minutes.",
         "YesPopUpIt": "Yes, pop up it!",
         "YesRemoveIt": "Yes, remove it!",
@@ -151,6 +159,7 @@
         "ServerInfo": "Server info",
         "ServiceName": "Service name",
         "Server": "Server",
+        "MessageStatus": "Message status",
         "Status": "Status",
         "AvailableSupply": "Available supply",
         "Supply": "Supply"
@@ -169,6 +178,7 @@
         "PleaseInsertIPorDNS": "Please, insert IP or DNS only!",
         "Name": "Name",
         "Host": "Host",
+        "Country": "Country",
         "Save": "Save",
         "HostWasSuccessfullyUpdated": "Host was successfully updated!",
         "SomethingWentWrong": "Something went wrong. Try again later!"
@@ -178,7 +188,33 @@
         "History": "History"
     },
     "channels/channelsList": {
-        "AllServices": "All services"
+        "AllServices": "All services",
+        "Service": "Service",
+        "ServerInfo": "Server info"
+    },
+    "channels/channelView": {
+        "GeneralInfo": "General info",
+        "Offering": "Offering",
+        "Id": "Id:",
+        "Server": "Server:",
+        "OfferingTd": "Offering:",
+        "ContractStatus": "Contract Status:",
+        "ServiceStatus": "Service Status:",
+        "Usage": "Usage:",
+        "Income": "Income:",
+        "Deposit": "Deposit:",
+        "AccessInfo": "Access info",
+        "Country": "Country:",
+        "Hostname": "Hostname:",
+        "Sessions": "Sessions",
+        "YouCanNotUndoThis": "You can’t undo this.",
+        "TerminateServiceText": "This operation will terminate service and prevent Clients from using this service.",
+        "TerminateServiceAndCloseContract": "This operation will terminate service and close contract. Earnings will be transferred to your account.",
+        "WarningArea": "Warning Area",
+        "YesTerminateIt": "Yes, terminate it!",
+        "AreYouSure": "Are you sure?",
+        "TerminateService": "Terminate service",
+        "TerminateContract": "Terminate contract"
     },
     "channels/channelsListSortTable":{
         "Server": "Server",
@@ -340,7 +376,9 @@
         "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
         "Resume": "Resume",
         "YesResumeIt": "Yes, resume it!",
-        "min": "min"
+        "min": "min",
+        "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. IP address {{ip}}",
+        "CountryAlertUnknown": "The application won't be able to detect the offering's country. IP address {{ip}}"
     },
     "client/dashboard/start": {
         "StartUsingVPN": "Start using VPN"
@@ -483,6 +521,25 @@
         "LastUsageTimeT": "Last usage time:",
         "Sessions": "Sessions"
     },
+    "client/increaseDepositButton":{
+        "ThisOperationWillIncrease": "This operation will increase your VPN balance by increasing the deposit.",
+        "IncreaseDeposit": "Increase deposit"
+    },
+    "client/connections/increaseDepositView":{
+        "DepositInfo": "Deposit Info",
+        "Deposit": "Deposit",
+        "IncreaseDeposit": "Increase deposit",
+        "WouldYouLikeToProceed": "Would you like to proceed?",
+        "IncreaseConfirmBtn": "Yes, increase the deposit!",
+        "IncreaseSwalTitle": "Increase deposit",
+        "Account": "Account",
+        "AddToDeposit": "AddToDeposit:",
+        "AverageTimeToAddTheDeposit": "Average time to add the deposit:",
+        "IncreaseBtn": "Add",
+        "SuccessMessage": "Adding deposit successfully initialized!",
+        "SomethingWentWrong": "Something went wrong. Try again later!",
+        "ErrorNotEnoughPublishFunds": " Not enough funds to publish transaction."
+    },
     "electronMenu": {
         "File": "File",
         "Quit": "Quit",
@@ -514,5 +571,11 @@
     },
     "channels/channelUsage": {
         "of": "of"
+    },
+    "login": {
+        "Login": "Login",
+        "LoginTo": "Login to",
+        "Password": "Password",
+        "AccessDenied": "access denied, possibly wrong password"
     }
 }

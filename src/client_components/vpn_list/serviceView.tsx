@@ -188,6 +188,7 @@ class ServiceView extends React.Component <any,any> {
                 <div className={service.channelStatus.channelStatus === 'active' ? 'col-4' : 'hidden'}>
                     <TerminateContractButton
                         status={service.channelStatus.serviceStatus !== 'terminated' ? 'disabled' : 'active'}
+                        payment={service.usage.cost}
                         channelId={service.id}
                         done={() => {
                             notice({

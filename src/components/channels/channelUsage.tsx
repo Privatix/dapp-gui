@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as api from '../../utils/api';
 import { translate } from 'react-i18next';
+import toFixedN from '../../utils/toFixedN';
 
 @translate(['channels/channelUsage'])
 
@@ -41,9 +42,9 @@ export default class ChannelUsage extends React.Component <any,any> {
         const { t } = this.props;
 
         if (this.state.trafficLimit){
-            return <span>{this.state.usage}&nbsp;{t('of')}&nbsp;{this.state.trafficLimit}&nbsp;MB</span>;
+            return <span>{toFixedN({number: this.state.usage, fixed: 2})}&nbsp;{t('of')}&nbsp;{toFixedN({number: this.state.trafficLimit, fixed: 2})}&nbsp;MB</span>;
         }else {
-            return <span>{this.state.usage} MB</span>;
+            return <span>{toFixedN({number: this.state.usage, fixed: 2})} MB</span>;
         }
     }
 }

@@ -4,6 +4,8 @@ export default class WS {
 
     
     static listeners = {}; // uuid -> listener
+    static handlers = {}; // uuid -> handler
+
     static byUUID = {}; // uuid -> subscribeID
     static bySubscription = {}; // subscribeId -> uuid
 
@@ -30,9 +32,14 @@ export default class WS {
         socket.onmessage = function(event: any) {
             const msg = JSON.parse(event.data);
             if('id' in msg && 'string' === typeof msg.id){
-                if('result' in msg && 'string' === typeof msg.result){
-                    WS.byUUID[msg.id] = msg.result;
-                    WS.bySubscription[msg.result] = msg.id;
+                if(msg.id in WS.handlers){
+                    WS.handlers[msg.id](msg);
+                    delete WS.handlers[msg.id];
+                }else {
+                    if('result' in msg && 'string' === typeof msg.result){
+                        WS.byUUID[msg.id] = msg.result;
+                        WS.bySubscription[msg.result] = msg.id;
+                    }
                 }
             }else if('method' in msg && msg.method === 'ui_subscription'){
                 if(msg.params.subscription in WS.bySubscription){
@@ -84,5 +91,19 @@ export default class WS {
             delete WS.bySubscription[WS.byUUID[id]];
             delete WS.byUUID[id];
         }
+    }
+
+    topUp(channelId: string, gasPrice: number, handler: Function){
+        const uuid = uuidv4();
+        WS.handlers[uuid] = handler;
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_topUpChannel',
+            params: [this.pwd, channelId, gasPrice]
+        };
+
+        this.socket.send(JSON.stringify(req));
     }
 }

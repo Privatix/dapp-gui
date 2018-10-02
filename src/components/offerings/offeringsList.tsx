@@ -4,6 +4,7 @@ import { translate } from 'react-i18next';
 import {fetch} from '../../utils/fetch';
 
 import OfferingStatus from './offeringStatus';
+import MessageStatus from './messageStatus';
 import SortableTable from 'react-sortable-table-vilan';
 import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
@@ -69,6 +70,7 @@ class Offerings extends React.Component<any, any> {
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={offering.productName} component={<Product product={product} />} />,
                 status: offering.status,
+                offerStatus: offering.offerStatus,
                 availableSupply: offering.currentSupply,
                 supply: offering.supply
             };
@@ -93,11 +95,18 @@ class Offerings extends React.Component<any, any> {
                 sortable: false
             },
             {
-                header: t('Status'),
+                header: t('MessageStatus'),
                 key: 'status',
                 headerStyle: {textAlign: 'center'},
                 dataProps: {className: 'text-center'},
-                render: (status) => { return <OfferingStatus status={status} />; }
+                render: (status) => { return <MessageStatus status={status} />; }
+            },
+            {
+                header: t('Status'),
+                key: 'offerStatus',
+                headerStyle: {textAlign: 'center'},
+                dataProps: {className: 'text-center'},
+                render: (offerStatus) => { return <OfferingStatus status={offerStatus} />; }
             },
             {
                 header: t('AvailableSupply'),

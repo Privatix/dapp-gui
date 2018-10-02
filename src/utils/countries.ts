@@ -994,6 +994,10 @@ export default [
 	{
 		'id': 'ZW',
 		'name': 'Zimbabwe'
+	},
+	{
+		'id': 'ZZ',
+		'name': 'Unknown or Invalid Territory'
 	}
 ];
 

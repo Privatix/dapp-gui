@@ -9,7 +9,7 @@ export default function(props:any){
     return <div className='container-fluid'>
         <div className='row'>
             <OfferingView offering={offering} />
-            <OfferingTools offering={offering} />
+            <OfferingTools offering={offering} closeModal={props.closeModal} />
         </div>
     </div>;
 }

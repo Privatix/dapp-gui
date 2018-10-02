@@ -18,15 +18,25 @@ export default class TerminateContractButton extends React.Component<any, any>{
                 <form>
                     <h5 className='card-title'>{t('WarningArea')}</h5>
                     <p className='card-text'>{t('RequestFullDepositReturn')}</p>
-                    <p className='card-text'>{t('UseIfAgentDoNotCloseContract')}<br />
-                        {t('YouPayMultipleTransactionFees')}</p>
+                    {this.props.payment
+                        ? <p className='card-text'>
+                            {t('UseIfAgentDoNotCloseContract')}<br />
+                            {t('YouPayMultipleTransactionFees')}
+                          </p>
+                        : ''
+                    }
                     <ConfirmPopupSwal
                         endpoint={`/client/channels/${this.props.channelId}/status`}
                         options={{method: 'put', body: {action: 'close'}}}
                         title={t('TerminateContract')}
                         text={<span>{t('RequestFullDepositReturn')}<br />
-                            {t('UseIfAgentDoNotCloseContract')}<br />
-                            {t('YouPayMultipleTransactionFees')}
+                            {this.props.payment
+                                ? <span>
+                                    {t('UseIfAgentDoNotCloseContract')}<br />
+                                    {t('YouPayMultipleTransactionFees')}
+                                </span>
+                                : ''
+                            }
                         </span>}
                         class={'btn btn-danger btn-custom btn-block'}
                         swalType='danger'

@@ -7,7 +7,7 @@ import {fetch} from '../../utils/fetch';
 import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import notice from '../../utils/notice';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import parseFloatPrix from '../../utils/parseFloatPrix';
 import {LocalSettings} from '../../typings/settings';
 import countries from '../../utils/countries';
@@ -37,6 +37,8 @@ class CreateOffering extends React.Component<any, any>{
            ,template: ''
            ,deposit: 0
            ,product: ''
+           ,minDownloadMbits: ''
+           ,minUploadMbits: ''
         },
         products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9
     };
@@ -52,16 +54,14 @@ class CreateOffering extends React.Component<any, any>{
     constructor(props: any){
         super(props);
         this.state = this.getDefaultState();
-        console.log(props);
     }
 
     async refresh(){
-
         const accounts = await api.accounts.getAccounts();
         const products = await api.products.getProducts();
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
-        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id});
+        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id, country: products[0].country.toUpperCase()});
         this.setState({products, accounts, account, payload});
         fetch(`/templates?id=${products[0].offerTplID}`)
             .then((templates: any) => {
@@ -92,16 +92,9 @@ class CreateOffering extends React.Component<any, any>{
 
     }
 
-    onCountryChanged(selectedCountry: any) {
-
-        const payload = Object.assign({}, this.state.payload, {country: selectedCountry.value});
-        this.setState({payload});
-
-    }
-
     onUserInput(evt: any){
 
-        const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value});
+        const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value, additionalParams: {}});
         payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0) * (payload.minUnits ? payload.minUnits : 0);
         this.setState({payload});
     }
@@ -124,6 +117,8 @@ class CreateOffering extends React.Component<any, any>{
            ,maxUnit: t('MaxUnits')
            ,maxSuspendTime: t('MaxSuspendTime')
            ,maxInactiveTimeSec: t('MaxInactiveTime')
+           ,minDownloadMbits: t('MinDownloadMbits')
+           ,minUploadMbits: t('MinUploadMbits')
         };
         const required = ['serviceName', 'country', 'supply', 'unitPrice', 'maxBillingUnitLag', 'minUnits', 'maxSuspendTime', 'maxInactiveTimeSec'];
         const optional = ['description', 'maxUnit'];
@@ -132,6 +127,7 @@ class CreateOffering extends React.Component<any, any>{
         const cantBeZero = ['supply', 'maxBillingUnitLag', 'minUnits', 'maxSuspendTime', 'maxInactiveTimeSec'];
         const mustBePositive = [];
         const mustBeInteger = [];
+        const mustBeNumber = [];
         const isZero = [];
 
         // const settings = (await fetch('/localSettings', {})) as LocalSettings;
@@ -172,6 +168,32 @@ class CreateOffering extends React.Component<any, any>{
             err = true;
         }
 
+        if('minDownloadMbits' in payload && payload.minDownloadMbits !== ''){
+            const value = parseFloat(payload.minDownloadMbits);
+            if(isNaN(value)){
+                err = true;
+                mustBeNumber.push('minDownloadMbits');
+            }else{
+                if(value <= 0){
+                    err = true;
+                    mustBePositive.push('minDownloadMbits');
+                }
+            }
+        }
+
+        if('minUploadMbits' in payload  && payload.minUploadMbits !== ''){
+            const value = parseFloat(payload.minUploadMbits);
+            if(isNaN(value)){
+                err = true;
+                mustBeNumber.push('minUploadMbits');
+            }else{
+                if(value <= 0){
+                    err = true;
+                    mustBePositive.push('minUploadMbits');
+                }
+            }
+        }
+
         const wrongKeys = [...mustBeInteger, ...mustBeFilled, ...mustBePositive, ...isZero];
         if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
             if (payload.maxUnit !== '') {
@@ -188,6 +210,8 @@ class CreateOffering extends React.Component<any, any>{
             err=true;
         }
 
+
+
         if(err){
             let msg = '';
             if(mustBeFilled.length){
@@ -200,6 +224,12 @@ class CreateOffering extends React.Component<any, any>{
                 const Field = t('Field', {context: mustBeInteger.length > 1 ? 'plural' : ''});
                 const Fields = mustBeInteger.map(key => aliases[key]).join(', ');
                 const mustBe = t('MustBeInteger', {context: mustBeInteger.length > 1 ? 'plural' : ''});
+                msg += (`${Field} ${Fields} ${mustBe} ` as any).capitalize();
+            }
+            if(mustBeNumber.length){
+                const Field = t('Field', {context: mustBeNumber.length > 1 ? 'plural' : ''});
+                const Fields = mustBeNumber.map(key => aliases[key]).join(', ');
+                const mustBe = t('MustBeNumber', {context: mustBeNumber.length > 1 ? 'plural' : ''});
                 msg += (`${Field} ${Fields} ${mustBe} ` as any).capitalize();
             }
             if(isZero.length){
@@ -233,9 +263,15 @@ class CreateOffering extends React.Component<any, any>{
                 msg += t('NotEnoughFunds') + ' ';
             }
             if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
-                if(payload.maxUnit < payload.minUnit){
-                    msg += t('MaximumUnitsMustBeEqual') + ' ';
+                if (payload.maxUnit !== '') {
+                    if (payload.maxUnit < payload.minUnits) {
+                        msg += t('MaximumUnitsMustBeEqual') + ' ';
+                    }
                 }
+            }
+
+            if(wrongKeys.includes('unitPrice') && payload.unitPrice !== payload.unitPrice){
+                msg += t('UnitPriceMustBeANumber') + ' ';
             }
             this.setState({errMsg: msg});
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
@@ -248,6 +284,23 @@ class CreateOffering extends React.Component<any, any>{
                 delete payload.maxUnit;
             }else{
                 payload.maxUnit = parseInt(payload.maxUnit, 10);
+            }
+
+            // additional parameters
+            if('minDownloadMbits' in payload){
+                if(payload.minDownloadMbits !== ''){
+                    const value = parseFloat(payload.minDownloadMbits);
+                    payload.additionalParams.minDownloadMbits = value;
+                }
+                delete payload.minDownloadMbits;
+            }
+
+            if('minUploadMbits' in payload){
+                if(payload.minUploadMbits !== ''){
+                    const value = parseFloat(payload.minUploadMbits);
+                    payload.additionalParams.minUploadMbits = value;
+                }
+                delete payload.minUploadMbits;
             }
 
             api.offerings.addOffering(payload).then(res => {
@@ -263,6 +316,7 @@ class CreateOffering extends React.Component<any, any>{
 
                 });
             });
+
         }
 
         return;
@@ -274,7 +328,6 @@ class CreateOffering extends React.Component<any, any>{
     }
 
     render(){
-
         const { t } = this.props;
 
         const selectProduct = <Select className='form-control'
@@ -292,20 +345,18 @@ class CreateOffering extends React.Component<any, any>{
             onChange={this.onAccountChanged.bind(this)} />;
             // {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
 
-        const selectCountry = <Select className='form-control'
-            value={this.state.payload.country}
-            searchable={false}
-            clearable={false}
-            options={countries.map((country:any) => ({value: country.id, label: country.name}))}
-            onChange={this.onCountryChanged.bind(this)}
-            placeholder={t('common:Select')}
-        />;
-
         // const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
-        const ethBalance = this.state.account ? (toFixed8({number: (this.state.account.ethBalance / 1e18)})) : 0;
-        const pscBalance = this.state.account ? (toFixed8({number: (this.state.account.psc_balance / 1e8)})) : 0;
+        const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
+        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8})) : 0;
 
         const onUserInput = this.onUserInput.bind(this);
+
+        const country = countries.filter((country:any) => country.id === this.state.payload.country.toUpperCase());
+        const countryName = country[0] ? country[0].name : '';
+        const countryImg = !this.state.payload.country ? '' :
+            <span className='input-group-addon bootstrap-touchspin-prefix'>
+                <img src={`images/country/${this.state.payload.country.toLowerCase()}.png`} width='25px'/>
+            </span>;
 
         return <div className='container-fluid'>
             <div className='row'>
@@ -346,9 +397,17 @@ class CreateOffering extends React.Component<any, any>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('Country')}:<span className='text-danger'>*</span> </label>
+                                    <label className='col-2 col-form-label'>{t('Country')}:</label>
                                     <div className='col-6'>
-                                        {selectCountry}
+                                        <div className='input-group bootstrap-touchspin'>
+                                            {countryImg}
+                                            <input type='text' className='form-control' readOnly value={countryName} />
+                                        </div>
+                                        <span className='help-block'>
+                                            <small>
+                                                {t('ChangeCountryHelpText')}
+                                            </small>
+                                        </span>
                                     </div>
                                 </div>
                                 <div className='form-group row'>
@@ -503,6 +562,51 @@ class CreateOffering extends React.Component<any, any>{
                                 </div>
                             </div>
                         </div>
+
+                        <div className='card m-b-20'>
+                            <h5 className='card-header'>{t('AdditionalParameters')}</h5>
+                            <div className='card-body'>
+                                <div className='form-group row'>
+                                    <label className='col-2 col-form-label'>{t('MinDownloadMbits')}:</label>
+                                    <div className='col-6'>
+                                        <div className='input-group bootstrap-touchspin'>
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder={t('ie') + ' 100'}
+                                                   onChange={onUserInput}
+                                                   data-payload-value='minDownloadMbits'
+                                                   value={this.state.payload.minDownloadMbits}
+                                            />
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>{t('Mbits')}</span>
+                                        </div>
+                                        <span className='help-block'>
+                                            <small>
+                                            </small>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className='form-group row'>
+                                    <label className='col-2 col-form-label'>{t('MinUploadMbits')}:</label>
+                                    <div className='col-6'>
+                                        <div className='input-group bootstrap-touchspin'>
+                                            <input type='text'
+                                                   className='form-control'
+                                                   placeholder={t('ie') + ' 80'}
+                                                   onChange={onUserInput}
+                                                   data-payload-value='minUploadMbits'
+                                                   value={this.state.payload.minUploadMbits}
+                                            />
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>{t('Mbits')}</span>
+                                        </div>
+                                        <span className='help-block'>
+                                            <small>
+                                            </small>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <div className='card m-b-20'>
                             <h5 className='card-header'>{t('PublicationPrice')}:</h5>
                             <div className='card-body'>
@@ -521,7 +625,7 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   value={toFixed8({number: (this.state.payload.deposit / 1e8)})}
+                                                   value={toFixedN({number: (this.state.payload.deposit / 1e8), fixed: 8})}
                                                    placeholder='PRIX'
                                                    readOnly
                                             />

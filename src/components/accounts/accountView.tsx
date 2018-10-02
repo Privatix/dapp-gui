@@ -73,7 +73,7 @@ class AccountView extends React.Component<any, any> {
 
     onTransferComplete(){
         const {t} = this.props;
-        notice({level: 'info', header: t('utils/notice:Attention'), msg: t('SuccessMessage')});
+        notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
     }
 
     async refreshTransactions(){

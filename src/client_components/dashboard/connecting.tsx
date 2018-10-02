@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
+import {fetch} from '../../utils/fetch';
 import { translate } from 'react-i18next';
 import Countdown from 'react-countdown-now';
 
-import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import ActiveConnection from '../connections/active';
+import FinishServiceButton from '../connections/finishServiceButton';
+import IncreaseDepositButton from '../connections/increaseDepositButton';
+
+import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
-import FinishServiceButton from '../connections/finishServiceButton';
 
 const countdownRender = ({ minutes, seconds }) => {
     return <span>{minutes}:{seconds}</span>;
@@ -24,7 +27,14 @@ class Connecting extends React.Component<any, any>{
 
     constructor(props:any) {
         super(props);
-        this.state = {status: 'pending', handler: 0, channels: [], pendingTimeCounter: 0, offering: null};
+        this.state = {
+            status: 'pending',
+            handler: 0,
+            channels: [],
+            pendingTimeCounter: 0,
+            offering: null,
+            countryAlert: ''
+        };
     }
 
     componentDidMount() {
@@ -77,10 +87,22 @@ class Connecting extends React.Component<any, any>{
         }else if((suspendedChannels as any).length > 0){
             const channel = suspendedChannels[0];
 
+            let countryAlert = '';
+            const endpoint = await fetch(`/endpoints?ch_id=${channel.id}`);
+            if (endpoint[0]) {
+                const ip = endpoint[0].serviceEndpointAddress;
+                const countryStatus = endpoint[0].countryStatus;
+                if (countryStatus === 'invalid') {
+                    countryAlert = t('CountryAlertInvalid', {ip: ip});
+                } else if (countryStatus === 'unknown') {
+                    countryAlert = t('CountryAlertUnknown', {ip: ip});
+                }
+            }
+
             if(channel.usage.current > 0){
                 this.setState({status: 'paused', channels: suspendedChannels});
             }else{
-                this.setState({status: 'suspended', channels: suspendedChannels});
+                this.setState({status: 'suspended', channels: suspendedChannels, countryAlert});
             }
         }else if((pendingChannels as any).length > 0){
             this.setState({status: 'pending', channels: pendingChannels});
@@ -123,14 +145,17 @@ class Connecting extends React.Component<any, any>{
     }
 
     suspended(){
-
         const { t } = this.props;
 
+        const countryAlert = this.state.countryAlert === '' ? '' :
+            <div className='alert alert-warning clientCountryAlert'>{this.state.countryAlert}</div>;
+
         return <div className='container-fluid'>
-            <div className='row m-t-20 clientConnectionBl'>
-                <div className='col-6 col-xl-5'>
-                    <div className='card m-b-20 card-body'>
-                        <p className='card-text m-t-5 m-b-37'><strong>{t('YouCanStartUsingVPN')}</strong></p>
+            <div className='row m-t-20'>
+                <div className='col-6 col-xl-5 clientConnectionBl'>
+                    <div className='card m-b-20 card-body buttonBlock'>
+                        <p className='card-text m-t-5'><strong>{t('YouCanStartUsingVPN')}</strong></p>
+                        {countryAlert}
                         <ConfirmPopupSwal
                             endpoint={`/client/channels/${this.state.channels[0].id}/status`}
                             options={{method: 'put', body: {action: 'resume'}}}
@@ -145,7 +170,7 @@ class Connecting extends React.Component<any, any>{
 
                 <div className='col-0 col-xl-2'></div>
 
-                <div className='col-6 col-xl-5'>
+                <div className='col-6 col-xl-5 clientConnectionBl'>
                     <FinishServiceButton channel={this.state.channels[0]} />
                 </div>
 
@@ -161,8 +186,11 @@ class Connecting extends React.Component<any, any>{
 
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
-                <div className='col-6 col-xl-5'>
-                    <div className='card m-b-20 card-body'>
+                <div className='col-4 col-xl-4 buttonBlock'>
+                    <IncreaseDepositButton channel={this.state.channels[0]} />
+                </div>
+                <div className='col-4 col-xl-4 buttonBlock'>
+                    <div className='card m-b-20 card-body buttonBlock'>
                         <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
                         { /* TODO insert real max suspend time */ }
                         <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: Math.ceil(this.state.offering.maxSuspendTime / 60)})}</p>
@@ -179,9 +207,7 @@ class Connecting extends React.Component<any, any>{
                     </div>
                 </div>
 
-                <div className='col-0 col-xl-2'></div>
-
-                <div className='col-6 col-xl-5'>
+                <div className='col-4 col-xl-4 buttonBlock'>
                     <FinishServiceButton channel={this.state.channels[0]} />
                 </div>
             </div>

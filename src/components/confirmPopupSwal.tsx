@@ -23,13 +23,21 @@ export default class ConfirmPopupSwal extends React.Component<any, any>{
     }
 
     confirmHandler() {
-        const options = this.props.options;
-        fetch(this.props.endpoint, options).then((res: any) => {
+
+        const cancel = (res?:any) => {
             if('done' in this.props && typeof this.props.done === 'function'){
                 this.props.done(res);
             }
             this.cancelHandler();
-        });
+        };
+
+        if('function' === typeof this.props.confirmHandler){
+            this.props.confirmHandler();
+            cancel();
+        }else{
+            const options = this.props.options;
+            fetch(this.props.endpoint, options).then(cancel);
+        }
     }
 
     cancelHandler(event?: any) {
@@ -44,7 +52,7 @@ export default class ConfirmPopupSwal extends React.Component<any, any>{
 
         return (
             <div>
-                <p><button onClick={this.showPopUpSwal.bind(this)} className={this.props.class}>{this.props.title}</button></p>
+                <button onClick={this.showPopUpSwal.bind(this)} className={this.props.class}>{this.props.title}</button>
                 <ReactSweetAlert
                     show={this.state.show}
                     type={this.props.swalType}

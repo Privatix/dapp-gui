@@ -4,11 +4,12 @@ import SortableTable from 'react-sortable-table-vilan';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
-import toFixed8 from '../../utils/toFixed8';
+import toFixedN from '../../utils/toFixedN';
 import * as api from '../../utils/api';
 import Offering from '../vpn_list/acceptOffering';
 import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
+import IncreaseDepositButton from './increaseDepositButton';
 import PgTime from '../../components/utils/pgTime';
 import { translate } from 'react-i18next';
 
@@ -135,11 +136,11 @@ class Connection extends React.Component<any, any>{
                                         </tr>
                                         <tr>
                                             <td>{t('CostT')}</td>
-                                            <td>{toFixed8({number: (this.state.channel.usage.cost / 1e8)})} PRIX</td>
+                                            <td>{toFixedN({number: (this.state.channel.usage.cost / 1e8), fixed: 8})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>{t('DepositT')}</td>
-                                            <td>{toFixed8({number: (this.state.channel.deposit / 1e8)})} PRIX</td>
+                                            <td>{toFixedN({number: (this.state.channel.deposit / 1e8), fixed: 8})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>{t('LastUsageTimeT')}</td>
@@ -156,9 +157,11 @@ class Connection extends React.Component<any, any>{
 
 
                 <div className='col-4'>
+                    {this.state.channel.channelStatus.serviceStatus === 'active' ? <IncreaseDepositButton channel={this.state.channel} /> : '' }
                     <FinishServiceButton channel={this.state.channel} />
                     <TerminateContractButton
                         status='disabled'
+                        payment={this.state.channel.usage.cost}
                         channelId={this.state.channel.id}
                         done={() => this.props.history.push('/client-history')}
                     />

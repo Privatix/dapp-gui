@@ -2,6 +2,7 @@ export interface GasConsumption {
     acceptOffering: number;
     createOffering: number;
     transfer: number;
+    increaseDeposit: number;
 }
 
 export interface LocalSettings {

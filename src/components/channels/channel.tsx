@@ -2,6 +2,7 @@ import * as React from 'react';
 import ChannelView from './channelView';
 import ChannelTools from './channelTools';
 import SessionList from '../sessions/sessionsList';
+import i18n from '../../i18next/init';
 
 export default function(props:any){
 
@@ -15,7 +16,7 @@ export default function(props:any){
             </div>
             <div className='row'>
                 <div className='col-sm-12 m-b-15'>
-                    <h3 className='page-title'>Sessions</h3>
+                    <h3 className='page-title'>{i18n.t('channels/channelView:Sessions')}</h3>
                 </div>
             </div>
         </div>

@@ -3,6 +3,9 @@ import {fetch} from '../../utils/fetch';
 import { connect } from 'react-redux';
 import {asyncProviders} from '../../redux/actions';
 import {State} from '../../typings/state';
+import { translate } from 'react-i18next';
+
+@translate('channels/channelView')
 
 class AgentAccessInfo extends React.Component <any, any> {
 
@@ -32,6 +35,8 @@ class AgentAccessInfo extends React.Component <any, any> {
     }
 
     render() {
+        const { t } = this.props;
+
         if (!this.state.offering || !this.state.product) {
             return <div></div>;
         }
@@ -40,11 +45,11 @@ class AgentAccessInfo extends React.Component <any, any> {
             <table className='table table-striped'>
                 <tbody>
                 <tr>
-                    <td>Country:</td>
+                    <td>{t('Country')}</td>
                     <td><img src={`images/country/${this.state.offering.country.toLowerCase()}.png`} width='30px'/></td>
                 </tr>
                 <tr>
-                    <td>Hostname:</td>
+                    <td>{t('Hostname')}</td>
                     <td>{this.state.product.serviceEndpointAddress ? this.state.product.serviceEndpointAddress : ''}</td>
                 </tr>
                 </tbody>
