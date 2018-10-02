@@ -42,8 +42,8 @@ async function AsyncStart (props:any){
             <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
             <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
             <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-            <Route path='/backup/:privateKey/:from' render={(props: any) => <Backup entryPoint={'/app'}
-                                                                                    privateKey={props.match.params.privateKey}
+            <Route path='/backup/:accountId/:from' render={(props: any) => <Backup entryPoint={'/app'}
+                                                                                    accountId={props.match.params.accountId}
                                                                                     from={props.match.params.from}/>}
                                                                             />
             <Route path='/login' component={Login} />
@@ -58,7 +58,10 @@ async function AsyncStart (props:any){
             <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
             <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
             <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-            <Route path='/backup/:privateKey/:from' render={ (props:any) => <Backup entryPoint={'/app'} privateKey={props.match.params.privateKey} from={props.match.params.from}/> } />
+            <Route path='/backup/:accountId/:from' render={(props: any) => <Backup entryPoint={'/app'}
+                                                                                   accountId={props.match.params.accountId}
+                                                                                   from={props.match.params.from}/>}
+                                                                            />
             <Route path='/app' component={App} />
         </Switch>
     </Router>;

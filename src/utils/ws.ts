@@ -106,4 +106,60 @@ export default class WS {
 
         this.socket.send(JSON.stringify(req));
     }
+
+    generateAccount(payload: any, handler: Function){
+        const uuid = uuidv4();
+        WS.handlers[uuid] = handler;
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_generateAccount',
+            params: [this.pwd, payload]
+        };
+
+        this.socket.send(JSON.stringify(req));
+    }
+
+    importAccountFromHex(payload: any, handler: Function){
+        const uuid = uuidv4();
+        WS.handlers[uuid] = handler;
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_importAccountFromHex',
+            params: [this.pwd, payload]
+        };
+
+        this.socket.send(JSON.stringify(req));
+    }
+
+    importAccountFromJSON(payload: any, key: Object, pwd: string, handler: Function){
+        const uuid = uuidv4();
+        WS.handlers[uuid] = handler;
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_importAccountFromJSON',
+            params: [this.pwd, payload, key, pwd]
+        };
+
+        this.socket.send(JSON.stringify(req));
+    }
+
+    exportAccount(accountId: string, handler: Function){
+        const uuid = uuidv4();
+        WS.handlers[uuid] = handler;
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_exportPrivateKey',
+            params: [this.pwd, accountId]
+        };
+
+        this.socket.send(JSON.stringify(req));
+    }
 }
