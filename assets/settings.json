@@ -10,7 +10,7 @@
         "increaseDeposit": 100000
    },
    "network": "rinkeby",
-   "bugsnagKey": "f8f572a4fff86dd59cc2a36f6e9fe8d0",
+   "bugsnagKey": "9191410d7c7c4231907b20b5c72ce55a",
    "bugsnagEnable": true,
    "release": "0.7.0",
    "logsCountPerPage": 10,

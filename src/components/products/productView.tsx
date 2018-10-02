@@ -68,7 +68,7 @@ class ProductView extends React.Component <Props,any> {
         const product = this.state.product;
 
         const selectCountry = <Select className='zIndex100'
-            value={this.state.country}
+            value={this.state.country.toUpperCase()}
             searchable={false}
             clearable={false}
             options={countries.map((country:any) => ({value: country.id, label: country.name}))}

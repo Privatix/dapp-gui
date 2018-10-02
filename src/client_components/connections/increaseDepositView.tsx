@@ -67,7 +67,11 @@ class IncreaseDepositView extends React.Component<any, any> {
     render(){
 
         const { t } = this.props;
-        const value = this.state.offering ? `${this.state.offering.minUnits} ${this.state.offering.unitName}` : '';
+        let value = '';
+        if(this.state.offering){
+            const trafic = toFixedN({number: this.props.channel.deposit/this.state.offering.unitPrice, fixed: 2});
+            value = `${trafic} ${this.state.offering.unitName}`;
+        }
         const deposit = `${toFixedN({number: (this.props.channel.deposit/1e8), fixed: 8})} / ${value}`;
 
         const selectAccount =  <Select className='form-control'
