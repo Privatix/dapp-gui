@@ -327,6 +327,14 @@ class CreateOffering extends React.Component<any, any>{
         this.refresh();
     }
 
+    redirectToServers() {
+        if (this.props.location.pathname === '/products') {
+            this.props.closeModal();
+        } else {
+            this.props.history.push('/products');
+        }
+    }
+
     render(){
         const { t } = this.props;
 
@@ -405,7 +413,9 @@ class CreateOffering extends React.Component<any, any>{
                                         </div>
                                         <span className='help-block'>
                                             <small>
-                                                {t('ChangeCountryHelpText')}
+                                                {t('ChangeCountryHelpTextPart1')}&nbsp;
+                                                <button className='btn btn-link btnLinkSmallCustom' onClick={this.redirectToServers.bind(this)}>{t('ChangeCountryHelpTextServers')}</button>&nbsp;
+                                                {t('ChangeCountryHelpTextPart2')}
                                             </small>
                                         </span>
                                     </div>
