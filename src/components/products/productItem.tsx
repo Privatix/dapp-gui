@@ -29,8 +29,7 @@ class ProductItem extends React.Component<any, any>{
                                 accessTemplate = template;
                             }
                         });
-                        offerTemplate.raw = JSON.parse(atob(offerTemplate.raw));
-                        accessTemplate.raw = JSON.parse(atob(accessTemplate.raw));
+
                         this.setState({offerTemplate, accessTemplate});
                     }
             });
