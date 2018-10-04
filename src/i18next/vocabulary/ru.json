@@ -121,6 +121,7 @@
         "Mbits": "Mbits",
         "PublicationPrice": "Цена публикации предложения",
         "Account": "Аккаунт",
+        "ServiceBalance": "Баланс сервиса",
         "Deposit": "Депозит",
         "ThisDepositWillBeLocked": "Эта сумма будет заблокирована, пока предложение активно.",
         "ToReturnDeposit": "Для возврата депозита необходимо отменить предложение.",

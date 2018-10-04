@@ -120,6 +120,7 @@
         "Mbits": "Mbits",
         "PublicationPrice": "Publication price",
         "Account": "Account",
+        "ServiceBalance": "Service Balance",
         "Deposit": "Deposit",
         "ThisDepositWillBeLocked": "This deposit will be locked while offering is active.",
         "ToReturnDeposit": "To return deposit close your offering.",
