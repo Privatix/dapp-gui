@@ -13,7 +13,7 @@ export default class Transactions extends React.Component<any, any>{
         const {t} = this.props;
 
         const transactionsDataArr = (this.props.transactions as any).map((transaction: any) => {
-            const tx = `0x${Buffer.from(transaction.hash, 'base64').toString('hex')}`;
+            const tx = `0x${transaction.hash}`;
             const row = {
                 date: <PgTime time={transaction.issued} />,
                 ethereumLink: <ExternalLink href={`https://${this.props.network === '' ? '' : this.props.network + '.'}etherscan.io/tx/${tx}`} text={tx} />
