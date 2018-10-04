@@ -626,7 +626,7 @@ class CreateOffering extends React.Component<any, any>{
                                         {selectAccount}
                                     </div>
                                     <div className='col-4 col-form-label'>
-                                        Service Balance: <span id='accountBalance'>{ pscBalance } PRIX / { ethBalance } ETH</span>
+                                        {t('ServiceBalance')}: <span id='accountBalance'>{ pscBalance } PRIX / { ethBalance } ETH</span>
                                     </div>
                                 </div>
                                 <div className='form-group row'>
