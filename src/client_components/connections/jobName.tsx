@@ -40,10 +40,12 @@ export default class JobStatus extends React.Component<any, any>{
            ,'clientAfterOfferingDelete' : 'remove offering' // 'offering delete'
            ,'clientPreServiceUnsuspend' : 'unsuspend service'
            ,'clientPreServiceSuspend' : 'suspend service'
+           ,'clientPreChannelTopUp' : 'increase deposit'
+           ,'clientAfterChannelTopUp' : 'update deposit'
 
            ,'preAccountAddBalanceApprove' : 'aproving token transfer to service account' // 'preparing account add balance approve'
            ,'preAccountAddBalance' : 'add balance to service account' // 'preparing account add balance'
-           ,'aterAccountAddBalance' : 'update balance on service account' // 'account add balance'
+           ,'afterAccountAddBalance' : 'update balance on service account' // 'account add balance'
            ,'preAccountReturnBalance' : 'request token transfer to ERC20 account' // 'preparing account return balance'
            ,'afterAccountReturnBalance' : 'update balance on ERC20 account' // 'account return balance'
            ,'AccountUpdateBalances' : 'check and update account balance info' // 'account update balances'
