@@ -86,11 +86,12 @@ export default class AsyncList extends React.Component<any,any> {
         api.getClientOfferings()
             .then(clientOfferings => {
                 // Show loader when downloading VPN list
+                setTimeout(() => {
+                    this.refresh();
+                }, 5000);
+
                 if (Object.keys(clientOfferings).length === 0) {
                     this.setState({spinner: true});
-                    setTimeout(() => {
-                        this.refresh();
-                    }, 5000);
                     return;
                 }
 
