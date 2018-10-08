@@ -31,6 +31,7 @@ export default class AsyncList extends React.Component<any,any> {
             data: [],
             countries: [],
             filteredCountries: [],
+            checkedCountries: [],
             showAllCountries: false,
             filtered: [],
             columns: [
@@ -256,7 +257,18 @@ export default class AsyncList extends React.Component<any,any> {
         this.setState({filtered});
     }
 
-    filterByCountryHandler() {
+    filterByCountryHandler(e:any) {
+        let checkedCountries = this.state.checkedCountries;
+        const country = e.target.value;
+
+        if (e.target.checked && checkedCountries.indexOf(country) === -1) {
+            checkedCountries.push(country);
+        } else if (!e.target.checked && checkedCountries.indexOf(country) !== -1) {
+            checkedCountries.splice(checkedCountries.indexOf(country), 1);
+        }
+
+        this.setState({checkedCountries});
+
         this.filter();
     }
 
@@ -273,15 +285,11 @@ export default class AsyncList extends React.Component<any,any> {
         });
 
         // filter by countries
-        const checkedCountries = document.querySelectorAll('input[name=checkboxCountry]:checked');
-        let checkedCountriesArr = [];
-        for (let i = 0; i < checkedCountries.length; i++) {
-            checkedCountriesArr.push((checkedCountries[i] as HTMLInputElement).value);
-        }
+        const checkedCountries = this.state.checkedCountries;
 
-        if (checkedCountriesArr.length > 0) {
+        if (checkedCountries.length > 0) {
             filtered = filtered.filter((item) => {
-                if (checkedCountriesArr.includes(item.country)) {
+                if (checkedCountries.includes(item.country)) {
                     return true;
                 }
                 return false;
@@ -401,7 +409,11 @@ export default class AsyncList extends React.Component<any,any> {
 
                                 {this.state.filteredCountries.map((country) => {
                                     let countryCheckboxHtml = <div className='checkbox checkbox-custom'>
-                                        <input id={country.name} type='checkbox' name='checkboxCountry' value={country.name}
+                                        <input id={country.name}
+                                               type='checkbox'
+                                               name='checkboxCountry'
+                                               value={country.name}
+                                               checked={this.state.checkedCountries.indexOf(country.name) !== -1}
                                                onChange={this.filterByCountryHandler.bind(this)} />
                                         <label htmlFor={country.name}>{country.name}</label>
                                     </div>;
