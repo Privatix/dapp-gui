@@ -57,7 +57,7 @@ class TopPanel extends React.Component <Props, any>{
             return account.ptcBalance + balance;
         }, 0)/1e8).toFixed(3);
         const pscBalance = (nextProps.accounts.reduce((balance, account) => {
-            return account.psc_balance + balance;
+            return account.pscBalance + balance;
         }, 0)/1e8).toFixed(3);
 
         return {

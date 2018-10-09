@@ -202,7 +202,7 @@ class CreateOffering extends React.Component<any, any>{
                 }
             }
         }
-        if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.psc_balance){
+        if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.pscBalance){
             err = true;
         }
 
@@ -256,7 +256,7 @@ class CreateOffering extends React.Component<any, any>{
             if(payload.unitPrice <= 0){
                 msg += t('UnitPriceMustBeMoreThen0') + ' ';
             }
-            if(payload.deposit === payload.deposit && payload.deposit > this.state.account.psc_balance){
+            if(payload.deposit === payload.deposit && payload.deposit > this.state.account.pscBalance){
                 msg += t('DepositIsGreaterThenServiceBalance') + ' ';
             }
             if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
@@ -355,7 +355,7 @@ class CreateOffering extends React.Component<any, any>{
 
         // const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
         const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
-        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8})) : 0;
+        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8})) : 0;
 
         const onUserInput = this.onUserInput.bind(this);
 

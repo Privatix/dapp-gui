@@ -48,7 +48,7 @@ class Accounts extends React.Component<Props, any> {
                 ethereumAddress,
                 eth: (account.ethBalance/1e18).toFixed(3),
                 exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
-                serviceBalance: (account.psc_balance/1e8).toFixed(3),
+                serviceBalance: (account.pscBalance/1e8).toFixed(3),
                 isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault}><i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i></span>,
                 actions: <Link to={'#'} onClick={this.onRefresh.bind(this, account.id)} className='btn btn-default btn-custom waves-effect waves-light'>{t('CheckBalanceBtn')}</Link>
             };
