@@ -175,7 +175,7 @@ export class WS {
         return new Promise((resolve: Function, reject: Function) => {
             const handler = function(res: any){
                 if('error' in res){
-                    reject(res.err);
+                    reject(res.error);
                 }else{
                     resolve(res.result);
                 }
@@ -198,7 +198,30 @@ export class WS {
         return new Promise((resolve: Function, reject: Function) => {
             const handler = function(res: any){
                 if('error' in res){
-                    reject(res.err);
+                    reject(res.error);
+                }else{
+                    resolve(res.result);
+                }
+            };
+            WS.handlers[uuid] = handler;
+            this.socket.send(JSON.stringify(req));
+        });
+    }
+
+    getAgentOfferings(productId: string='', status: string = ''){
+        const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getAgentOfferings',
+            params: [this.pwd, productId, status]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const handler = function(res: any){
+                if('error' in res){
+                    reject(res.error);
                 }else{
                     resolve(res.result);
                 }
@@ -221,7 +244,7 @@ export class WS {
         return new Promise((resolve: Function, reject: Function) => {
             const handler = function(res: any){
                 if('error' in res){
-                    reject(res.err);
+                    reject(res.error);
                 }else{
                     resolve(res.result);
                 }
@@ -248,7 +271,7 @@ export class WS {
         return new Promise((resolve: Function, reject: Function) => {
             const handler = function(res: any){
                 if('error' in res){
-                    reject(res.err);
+                    reject(res.error);
                 }else{
                     resolve(res.result);
                 }
@@ -271,7 +294,7 @@ export class WS {
         return new Promise((resolve: Function, reject: Function) => {
             const handler = function(res: any){
                 if('error' in res){
-                    reject(res.err);
+                    reject(res.error);
                 }else{
                     resolve(res.result);
                 }

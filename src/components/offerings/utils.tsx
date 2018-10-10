@@ -1,14 +1,8 @@
-import {fetch} from '../../utils/fetch';
-import * as api from '../../utils/api';
-
 export const fetchOfferings = async function(product: string){
+    const ws = (window as any).ws;
 
-    const endpoint = `/offerings/?product=${product === 'all' ? '' : product}`;
-
-    const offeringsRequest = fetch(endpoint, {});
-    const products = await api.products.getProducts();
-    let offerings;
-    [offerings] = await Promise.all([offeringsRequest]);
+    const products = await ws.getProducts();
+    let offerings = await ws.getAgentOfferings(product === 'all' ? '' : product);
     const resolveTable = (products as any).reduce((table, product) => {
         table[product.id] = product.name;
         return table;

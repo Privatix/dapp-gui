@@ -62,7 +62,12 @@ class CreateOffering extends React.Component<any, any>{
         const products = await ws.getProducts();
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
-        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id, country: products[0].country.toUpperCase()});
+        const payload = Object.assign({}, this.state.payload, {product: this.props.product
+                                                                      ? this.props.product
+                                                                      : products[0].id,
+                                                               agent: account.id,
+                                                               country: products[0].country.toUpperCase()
+                                                              });
         this.setState({products, accounts, account, payload});
         const templates = await ws.getTemplate(products[0].offerTplID);
         const state = {
@@ -207,7 +212,6 @@ class CreateOffering extends React.Component<any, any>{
         if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
             err=true;
         }
-
 
 
         if(err){
