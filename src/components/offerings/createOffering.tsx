@@ -3,7 +3,6 @@ import Select from 'react-select';
 import { withRouter } from 'react-router';
 import { translate } from 'react-i18next';
 
-import {fetch} from '../../utils/fetch';
 import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import notice from '../../utils/notice';
@@ -57,20 +56,20 @@ class CreateOffering extends React.Component<any, any>{
     }
 
     async refresh(){
-        const accounts = await api.accounts.getAccounts();
-        const products = await api.products.getProducts();
+
+        const ws = (window as any).ws;
+        const accounts = await ws.getAccounts();
+        const products = await ws.getProducts();
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
         const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id, country: products[0].country.toUpperCase()});
         this.setState({products, accounts, account, payload});
-        fetch(`/templates?id=${products[0].offerTplID}`)
-            .then((templates: any) => {
-                const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
-
-                const template = templates[0];
-                // template.raw = JSON.parse(atob(template.raw));
-                this.setState({payload, template});
-            });
+        const templates = await ws.getTemplate(products[0].offerTplID);
+        const state = {
+            payload: Object.assign({}, this.state.payload, {template: products[0].offerTplID}),
+            template: templates[0]
+        };
+        this.setState(state);
     }
 
     onGasPriceChanged(evt:any){
@@ -130,7 +129,6 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeNumber = [];
         const isZero = [];
 
-        // const settings = (await fetch('/localSettings', {})) as LocalSettings;
         const settings = (await api.settings.getLocal()) as LocalSettings;
 
         let err = false;
@@ -302,21 +300,17 @@ class CreateOffering extends React.Component<any, any>{
                 }
                 delete payload.minUploadMbits;
             }
+            const ws = (window as any).ws;
+            const offeringId = await ws.createOffering(payload);
+            await ws.changeOfferingStatus(offeringId, 'publish', this.state.gasPrice);
+            this.setState(this.getDefaultState());
 
-            api.offerings.addOffering(payload).then(res => {
-                api.offerings.changeOfferingStatus((res as any).id, 'publish', this.state.gasPrice).then(res => {
-                    this.setState(this.getDefaultState());
-
-                    if(typeof this.props.closeModal === 'function'){
-                        this.props.closeModal();
-                    }
-                    if(typeof this.props.done === 'function'){
-                       this.props.done();
-                    }
-
-                });
-            });
-
+            if(typeof this.props.closeModal === 'function'){
+                this.props.closeModal();
+            }
+            if(typeof this.props.done === 'function'){
+               this.props.done();
+            }
         }
 
         return;

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import * as api from '../../utils/api';
-import WS from '../../utils/ws';
+import { WS } from '../../utils/ws';
 import {fetch} from '../../utils/fetch';
 import notice from '../../utils/notice';
 import i18n from '../../i18next/init';

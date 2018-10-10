@@ -5,7 +5,7 @@ import notice from '../../utils/notice';
 import * as ReactTooltip from 'react-tooltip';
 import {NextButton, PreviousButton, back} from './utils';
 import * as api from '../../utils/api';
-import WS from '../../utils/ws';
+import { WS } from '../../utils/ws';
 import { translate } from 'react-i18next';
 
 @translate(['auth/setPassword', 'utils/notice'])
