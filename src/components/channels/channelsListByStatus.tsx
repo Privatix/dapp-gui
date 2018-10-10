@@ -40,23 +40,17 @@ class Channels extends React.Component<Props, any> {
         };
 
         if ('function' === typeof props.registerRefresh) {
-            props.registerRefresh(this.refresh.bind(this));
-        }
-    }
-
-    refreshIfStatusChanged() {
-        if (this.state.lastUpdatedStatus === this.state.status) {
-            return;
+            props.registerRefresh(this.refresh);
         }
 
-        this.refresh();
     }
 
     componentDidMount(){
         this.props.dispatch(asyncProviders.updateProducts());
+        this.refresh();
     }
 
-    async refresh() {
+    refresh = async () => {
 
         const status = this.state.status;
 
@@ -72,6 +66,8 @@ class Channels extends React.Component<Props, any> {
             channels,
             offerings
         });
+
+        setTimeout(this.refresh, 5000);
     }
 
     static getDerivedStateFromProps(props: any, state: any){
@@ -79,7 +75,6 @@ class Channels extends React.Component<Props, any> {
     }
 
     render (){
-        this.refreshIfStatusChanged();
 
         const { t } = this.props;
 
