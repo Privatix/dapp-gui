@@ -3,7 +3,7 @@ export enum BillType {
 }
 
 export enum OfferStatus {
-    empty = 'empty', register = 'register', remove = 'remove'
+    undef='', empty = 'empty', register = 'register', remove = 'remove'
 }
 
 export enum MsgStatus {
@@ -21,7 +21,7 @@ export interface Offering {
     additionalParams: string;
     agent: string;
     billingInterval: number;
-    billingType: BillType
+    billingType: BillType;
     blockNumberUpdated: number;
     country: string;
     description: string;
@@ -39,7 +39,7 @@ export interface Offering {
     rawMsg: string;
     serviceName: string;
     setupPrice: number;
-    status: MsgStatus
+    status: MsgStatus;
     supply: number;
     template: string;
     unitName: string;

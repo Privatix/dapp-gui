@@ -1,4 +1,5 @@
 import * as uuidv4 from 'uuid/v4';
+import {OfferStatus, Offering} from '../typings/offerings';
 
 export class WS {
     
@@ -208,7 +209,7 @@ export class WS {
         });
     }
 
-    getAgentOfferings(productId: string='', status: string = ''){
+    getAgentOfferings(productId: string='', status: OfferStatus = OfferStatus.undef): Promise<Offering[]>{
         const uuid = uuidv4();
 
         const req = {
@@ -228,7 +229,7 @@ export class WS {
             };
             WS.handlers[uuid] = handler;
             this.socket.send(JSON.stringify(req));
-        });
+        }) as Promise<Offering[]>;
     }
 
     getObject(type: string, id: string){
@@ -256,6 +257,10 @@ export class WS {
 
     getTemplate(id: string){
         return this.getObject('template', id);
+    }
+
+    getOffering(id: string): Promise<Offering>{
+        return this.getObject('offering', id) as Promise<Offering>;
     }
 
     createOffering(payload: any){

@@ -7,7 +7,6 @@ import ProductNameByOffering from '../products/productNameByOffering';
 import ChannelStatusStyle from './channelStatusStyle';
 import ContractStatus from './contractStatus';
 import toFixedN from '../../utils/toFixedN';
-import * as api from '../../utils/api';
 import Offering from '../offerings/offeringView';
 import { translate } from 'react-i18next';
 
@@ -23,7 +22,7 @@ export default class ChannelView extends React.Component<any, any> {
 
     updateOffering(offeringId: string){
 
-        api.getOfferingById(offeringId)
+        (window as any).ws.getOffering(offeringId)
            .then(offering => {
                if(offering){
                    this.setState({offering});

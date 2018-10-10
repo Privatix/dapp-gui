@@ -1,9 +1,8 @@
 import {fetch} from './fetch';
 import {LocalSettings} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
-import {ClientOffering} from '../typings/clientOfferings.d.ts';
-import {Offering} from '../typings/offerings.d.ts';
-import {Session} from '../typings/session.d.ts';
+import {ClientOffering} from '../typings/clientOfferings';
+import {Session} from '../typings/session';
 
 import * as Auth from './api/auth';
 export const auth = Auth;
@@ -47,11 +46,6 @@ export const getUserRole = async function(): Promise<string> {
     const userRole = await userrole.get();
 
     return userRole;
-};
-
-export const getOfferingById = function(offeringId: string): Promise<Offering>{
-    return (fetch(`/offerings/?id=${offeringId}`) as Promise<Offering[]>)
-               .then(offerings => offerings.length ? offerings[0] : null);
 };
 
 export const getClientOfferings = function(): Promise<ClientOffering[]>{

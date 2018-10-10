@@ -33,7 +33,7 @@ class ProductItem extends React.Component<any, any>{
                         this.setState({offerTemplate, accessTemplate});
                     }
             });
-        api.offerings.getOfferings(null,props.product.id)
+        (window as any).ws.getAgentOfferings(props.product.id)
             .then((offerings: any) => {
                 this.setState({offerings});
             });

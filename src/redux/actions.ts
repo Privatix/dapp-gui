@@ -43,7 +43,7 @@ export const asyncProviders: AsyncProviders = {
     },
     updateProducts: function(){
         return function(dispatch: any){
-            api.products.getProducts()
+            (window as any).ws.getProducts()
                .then(products => {
                    dispatch(handlers.updateProducts(products));
                });
@@ -59,7 +59,7 @@ export const asyncProviders: AsyncProviders = {
     },
     updateOfferings: function(){
         return function(dispatch: any){
-            api.offerings.getOfferings()
+            (window as any).ws.getAgentOfferings()
                 .then(offerings => {
                     dispatch(handlers.updateOfferings(offerings));
                 });
