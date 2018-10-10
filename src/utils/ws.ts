@@ -1,4 +1,5 @@
 import * as uuidv4 from 'uuid/v4';
+import {TemplateType} from '../typings/templates';
 
 export default class WS {
 
@@ -161,5 +162,54 @@ export default class WS {
         };
 
         this.socket.send(JSON.stringify(req));
+    }
+
+    getTemplates(templateType?: TemplateType){
+        const uuid = uuidv4();
+
+        const type = templateType ? templateType : '';
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getTemplates',
+            params: [this.pwd, type]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            WS.handlers[uuid] = function(res: any){
+                if ('err' in res) {
+                    reject(res.err);
+                } else {
+                    resolve(res.result);
+                }
+            };
+
+            this.socket.send(JSON.stringify(req));
+        });
+    }
+
+    getTemplateById(id: string) {
+        const uuid = uuidv4();
+        const objectType = 'template';
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getObject',
+            params: [this.pwd, objectType, id]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            WS.handlers[uuid] = function(res: any){
+                if ('err' in res) {
+                    reject(res.err);
+                } else {
+                    resolve(res.result);
+                }
+            };
+
+            this.socket.send(JSON.stringify(req));
+        });
     }
 }
