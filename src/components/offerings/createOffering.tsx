@@ -3,7 +3,6 @@ import Select from 'react-select';
 import { withRouter } from 'react-router';
 import { translate } from 'react-i18next';
 
-import {fetch} from '../../utils/fetch';
 import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import notice from '../../utils/notice';
@@ -61,16 +60,13 @@ class CreateOffering extends React.Component<any, any>{
         const products = await api.products.getProducts();
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
-        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id, country: products[0].country.toUpperCase()});
+        let payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id, country: products[0].country.toUpperCase()});
         this.setState({products, accounts, account, payload});
-        fetch(`/templates?id=${products[0].offerTplID}`)
-            .then((templates: any) => {
-                const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
-                const template = templates[0];
-                // template.raw = JSON.parse(atob(template.raw));
-                this.setState({payload, template});
-            });
+        const template = await (window as any).ws.getTemplateById(products[0].offerTplID);
+        payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
+
+        this.setState({payload, template});
     }
 
     onGasPriceChanged(evt:any){
@@ -202,7 +198,7 @@ class CreateOffering extends React.Component<any, any>{
                 }
             }
         }
-        if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.psc_balance){
+        if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.pscBalance){
             err = true;
         }
 
@@ -256,7 +252,7 @@ class CreateOffering extends React.Component<any, any>{
             if(payload.unitPrice <= 0){
                 msg += t('UnitPriceMustBeMoreThen0') + ' ';
             }
-            if(payload.deposit === payload.deposit && payload.deposit > this.state.account.psc_balance){
+            if(payload.deposit === payload.deposit && payload.deposit > this.state.account.pscBalance){
                 msg += t('DepositIsGreaterThenServiceBalance') + ' ';
             }
             if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
@@ -355,7 +351,7 @@ class CreateOffering extends React.Component<any, any>{
 
         // const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
         const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
-        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8})) : 0;
+        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8})) : 0;
 
         const onUserInput = this.onUserInput.bind(this);
 

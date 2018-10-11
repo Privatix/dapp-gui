@@ -13,35 +13,47 @@ class ProductItem extends React.Component<any, any>{
     constructor(props:any){
         super(props);
 
-        this.state = {visible: false, offerings: []};
+        this.state = {
+            visible: false,
+            offerings: [],
+            offerTemplate: '',
+            accessTemplate: ''
+        };
 
-        api.templates.getTemlates()
-            .then((templates: any) => {
-                let offerTemplate, accessTemplate;
-                    if((templates as any).length){
-                        (templates as any).forEach(template => {
-                            if(template.kind === 'offer'){
-                                offerTemplate = template;
-                            }
-                        });
-                        (templates as any).forEach(template => {
-                            if(template.kind === 'access'){
-                                accessTemplate = template;
-                            }
-                        });
-
-                        this.setState({offerTemplate, accessTemplate});
-                    }
-            });
-        api.offerings.getOfferings(null,props.product.id)
-            .then((offerings: any) => {
-                this.setState({offerings});
-            });
+        this.getTemplates();
+        this.getOfferings();
     }
 
 
     onOfferingCreated(){
         this.props.history.push('/offerings/all');
+    }
+
+    async getTemplates() {
+        const templates = await (window as any).ws.getTemplates();
+
+        let offerTemplate = '', accessTemplate = '';
+        if((templates as any).length){
+            (templates as any).forEach(template => {
+                if(template.kind === 'offer'){
+                    offerTemplate = template;
+                }
+            });
+            (templates as any).forEach(template => {
+                if(template.kind === 'access'){
+                    accessTemplate = template;
+                }
+            });
+
+            this.setState({offerTemplate, accessTemplate});
+        }
+    }
+
+    getOfferings() {
+        api.offerings.getOfferings(null, this.props.product.id)
+            .then((offerings: any) => {
+                this.setState({offerings});
+            });
     }
 
     render(){

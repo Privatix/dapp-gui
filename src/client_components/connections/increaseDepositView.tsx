@@ -83,7 +83,7 @@ class IncreaseDepositView extends React.Component<any, any> {
         />;
 
         const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
-        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8})) : 0;
+        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8})) : 0;
 
         return <div className='col-lg-9 col-md-9'>
             <div className='card m-b-20'>
