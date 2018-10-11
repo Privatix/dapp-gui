@@ -1,16 +1,13 @@
-import {fetch} from '../../utils/fetch';
-
 export default async function AsyncProductName (offeringId:string){
-    const endpoint = `/offerings/?id=${offeringId}`;
-    const offerings = await fetch(endpoint, {method: 'GET'});
-    let products = await fetch(`/products`, {method: 'GET'});
+    const ws = (window as any).ws;
+
+    const offering = await ws.getOffering(offeringId);
+    let products = await ws.getProducts();
     products = Array.isArray(products) ? products : [];
-    return (products as any).filter(product => product.id === offerings[0].product)[0];
+    return (products as any).filter(product => product.id === offering.product)[0];
 }
 
 export async function GetProductIdByOfferingId (offeringId:string){
-    const endpoint = `/offerings/?id=${offeringId}`;
-    const offerings = await fetch(endpoint, {method: 'GET'});
-
-    return offerings[0].product;
+    const offering = await (window as any).ws.getOffering(offeringId);
+    return offering.product;
 }

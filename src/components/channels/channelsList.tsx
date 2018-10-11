@@ -12,7 +12,6 @@ import Product from '../products/product';
 import toFixedN from '../../utils/toFixedN';
 import { State } from '../../typings/state';
 import {asyncProviders} from '../../redux/actions';
-import * as api from '../../utils/api';
 
 @translate(['channels/channelsList', 'common'])
 class AsyncChannels extends React.Component<any, any> {
@@ -30,12 +29,15 @@ class AsyncChannels extends React.Component<any, any> {
     }
 
     async refresh() {
+
+        const ws = (window as any).ws;
+
         const endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
 
         const channels = await fetch(endpoint, {method: 'GET'});
         const channelsProductsIds = (channels as any).map((channel: any) => GetProductIdByOfferingId(channel.offering));
         const products = await Promise.all(channelsProductsIds);
-        const offerings = await api.offerings.getOfferings();
+        const offerings = await ws.getAgentOfferings();
         this.props.dispatch(asyncProviders.updateProducts());
         this.props.dispatch(asyncProviders.updateOfferings());
         this.setState({channels, products, offerings});

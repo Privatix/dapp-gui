@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
 import { connect } from 'react-redux';
 import {asyncProviders} from '../../redux/actions';
 import {State} from '../../typings/state';
@@ -16,11 +15,11 @@ class ProductName extends React.Component <any, any> {
     }
 
     async componentDidMount() {
-        const endpoint = `/offerings?id=${this.props.offeringId}`;
-        const offerings = await fetch(endpoint, {method: 'GET'});
+
+        const offering = await (window as any).ws.getOffering(this.props.offeringId);
 
         this.props.dispatch(asyncProviders.updateProducts());
-        const product = (this.props.products as any).filter(product => product.id === offerings[0].product)[0];
+        const product = (this.props.products as any).filter(product => product.id === offering.product)[0];
 
         this.setState({product});
     }

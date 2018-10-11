@@ -5,7 +5,6 @@ import { translate } from 'react-i18next';
 import ModalWindow from '../modalWindow';
 import CreateOffering from '../offerings/createOffering';
 import Product from './product';
-import * as api from '../../utils/api';
 
 @translate(['products/productItem', 'offerings', 'offerings/offerings'])
 class ProductItem extends React.Component<any, any>{
@@ -22,6 +21,7 @@ class ProductItem extends React.Component<any, any>{
 
         this.getTemplates();
         this.getOfferings();
+
     }
 
 
@@ -50,7 +50,7 @@ class ProductItem extends React.Component<any, any>{
     }
 
     getOfferings() {
-        api.offerings.getOfferings(null, this.props.product.id)
+        (window as any).ws.getOfferings(this.props.product.id)
             .then((offerings: any) => {
                 this.setState({offerings});
             });
