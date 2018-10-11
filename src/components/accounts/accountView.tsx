@@ -76,8 +76,8 @@ class AccountView extends React.Component<any, any> {
         notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
     }
 
-    async refreshTransactions(){
-        const transactions = await api.getTransactionsByAccount(this.state.account.id);
+    async refreshTransactions() {
+        const transactions = await (window as any).ws.getTransactions('account', this.state.account.id);
         this.setState({transactions});
     }
 
