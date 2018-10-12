@@ -99,6 +99,6 @@ class OfferingTools extends React.Component<Props, any>{
 }
 
 export default connect( (state: State) => {
-    const challengePeriod = state.settings.find(setting => setting.key === 'eth.challenge.period');
-    return {challengePeriod: challengePeriod ? parseInt(challengePeriod.value, 10) : 0};
+    const settings = state.settings;
+    return {challengePeriod: settings['eth.challenge.period'] ? parseInt(settings['eth.challenge.period'].value, 10) : 0};
 } )(OfferingTools);
