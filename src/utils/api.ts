@@ -16,9 +16,6 @@ export const settings = Settings;
 import * as Channels from './api/channels';
 export const channels = Channels;
 
-import * as Products from './api/products';
-export const products = Products;
-
 import * as Offerings from './api/offerings';
 export const offerings = Offerings;
 
