@@ -212,4 +212,27 @@ export default class WS {
             this.socket.send(JSON.stringify(req));
         });
     }
+
+    getSettings() {
+        const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getSettings',
+            params: [this.pwd]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            WS.handlers[uuid] = function(res: any){
+                if ('err' in res) {
+                    reject(res.err);
+                } else {
+                    resolve(res.result);
+                }
+            };
+
+            this.socket.send(JSON.stringify(req));
+        });
+    }
 }

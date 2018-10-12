@@ -51,10 +51,10 @@ export const asyncProviders: AsyncProviders = {
     },
     updateSettings: function(){
         return function(dispatch: any){
-            api.settings.get()
-               .then(settings => {
-                   dispatch(handlers.updateSettings(settings));
-               });
+            (window as any).ws.getSettings()
+                .then(settings => {
+                    dispatch(handlers.updateSettings(settings));
+                });
         };
     },
     updateOfferings: function(){
