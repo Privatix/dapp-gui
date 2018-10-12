@@ -40,7 +40,7 @@ class AcceptOffering extends React.Component<any, any>{
 
     async componentDidMount(){
 
-        const accounts = await api.accounts.getAccounts();
+        const accounts = await (window as any).ws.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
         this.getNotTerminatedConnections();
         this.setState({accounts, account});
