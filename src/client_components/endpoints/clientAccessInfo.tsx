@@ -1,5 +1,4 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
 import { translate } from 'react-i18next';
 
 @translate('client/clientAccessInfo')
@@ -17,7 +16,7 @@ class ClientAccessInfo extends React.Component <any, any> {
     }
 
     async getData() {
-        const endpoint = await fetch(`/endpoints?ch_id=${this.props.channel.id}`);
+        const endpoint = await (window as any).ws.getEndpoints(this.props.channel.id);
 
         this.setState({endpoint});
     }

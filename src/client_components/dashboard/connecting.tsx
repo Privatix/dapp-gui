@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import {fetch} from '../../utils/fetch';
 import { translate } from 'react-i18next';
 import Countdown from 'react-countdown-now';
 
@@ -88,7 +87,7 @@ class Connecting extends React.Component<any, any>{
             const channel = suspendedChannels[0];
 
             let countryAlert = '';
-            const endpoint = await fetch(`/endpoints?ch_id=${channel.id}`);
+            const endpoint = await (window as any).ws.getEndpoints(channel.id);
             if (endpoint[0]) {
                 const ip = endpoint[0].serviceEndpointAddress;
                 const countryStatus = endpoint[0].countryStatus;

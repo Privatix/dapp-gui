@@ -219,6 +219,32 @@ export class WS {
         return this.getObject('template', id);
     }
 
+
+// endpoints
+
+    getEndpoints(channelId: string, templateId: string = ''){
+        const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getEndpoints',
+            params: [this.pwd, channelId, templateId]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const handler = function(res: any){
+                if('error' in res){
+                    reject(res.error);
+                }else{
+                    resolve(res.result);
+                }
+            };
+            WS.handlers[uuid] = handler;
+            this.socket.send(JSON.stringify(req));
+        });
+    }
+
 // products
 
     getProducts(){
