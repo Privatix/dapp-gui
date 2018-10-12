@@ -9,55 +9,60 @@ class SettingsTable extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         this.state = {
-          data: this.props.options,
-          filtered: [],
-          filterAll: '',
+          data: this.props.options
+          // filtered: [],
+          // filterAll: '',
         };
-        this.filterAll = this.filterAll.bind(this);
+        // this.filterAll = this.filterAll.bind(this);
     }
 
-    filterAll(e:any) {
-        console.log(e);
-        const { value } = e.target;
-        const filterAll = value;
-        const filtered = [{ id: 'all', value: filterAll }];
-        // NOTE: this completely clears any COLUMN filters
-        this.setState({ filterAll, filtered });
+    static getDerivedStateFromProps(props:any, state:any) {
+        return {data: props.options};
     }
 
-    onFilteredChange(filtered: Array<any>) {
-        // console.log('filtered:',filtered);
-        // const { sortedData } = this.reactTable.getResolvedState();
-        // console.log('sortedData:', sortedData);
+    // filterAll(e:any) {
+    //     console.log(e);
+    //     const { value } = e.target;
+    //     const filterAll = value;
+    //     const filtered = [{ id: 'all', value: filterAll }];
+    //     // NOTE: this completely clears any COLUMN filters
+    //     this.setState({ filterAll, filtered });
+    // }
 
-        // extra check for the "filterAll"
-        if (filtered.length > 1 && this.state.filterAll.length) {
-          // NOTE: this removes any FILTER ALL filter
-          const filterAll = '';
-          this.setState({ filtered: filtered.filter((item) => item.id !== 'all'), filterAll });
-        } else{
-          this.setState({ filtered });
-        }
-    }
-
-    saveOptions(evt:any){
-        evt.preventDefault();
-        const inputs = document.getElementById('optionsForm').querySelectorAll('input');
-        const payload = [].slice.call(inputs, 0).map(option => ({
-            key: option.id
-           ,value: option.value
-           ,description: option.dataset.desc
-           ,name: option.dataset.name
-        }));
-        fetch('/settings', {method: 'put', body: payload}).then(res => {
-            // TODO notice?
-            this.props.history.push('/app');
-        });
-    }
+    // onFilteredChange(filtered: Array<any>) {
+    //     // console.log('filtered:',filtered);
+    //     // const { sortedData } = this.reactTable.getResolvedState();
+    //     // console.log('sortedData:', sortedData);
+    //
+    //     // extra check for the "filterAll"
+    //     if (filtered.length > 1 && this.state.filterAll.length) {
+    //       // NOTE: this removes any FILTER ALL filter
+    //       const filterAll = '';
+    //       this.setState({ filtered: filtered.filter((item) => item.id !== 'all'), filterAll });
+    //     } else{
+    //       this.setState({ filtered });
+    //     }
+    // }
+    //
+    // saveOptions(evt:any){
+    //     evt.preventDefault();
+    //     const inputs = document.getElementById('optionsForm').querySelectorAll('input');
+    //     const payload = [].slice.call(inputs, 0).map(option => ({
+    //         key: option.id
+    //        ,value: option.value
+    //        ,description: option.dataset.desc
+    //        ,name: option.dataset.name
+    //     }));
+    //     fetch('/settings', {method: 'put', body: payload}).then(res => {
+    //         // TODO notice?
+    //         this.props.history.push('/app');
+    //     });
+    // }
 
     render() {
         const { t } = this.props;
         const settings = this.state.data;
+
         const optionsDOM = Object.keys(settings).map((key) => {
             const name = key.split('.').join('_') + '_Name';
             const description = key.split('.').join('_') + '_Description';
