@@ -343,4 +343,28 @@ export class WS {
             this.socket.send(JSON.stringify(req));
         });
     }
+
+    getTransactions(type: string, id: string) {
+        const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getEthTransactions',
+            params: [this.pwd, type, id]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            WS.handlers[uuid] = function(res: any){
+                if ('err' in res) {
+                    reject(res.err);
+                } else {
+                    resolve(res.result);
+                }
+            };
+
+            this.socket.send(JSON.stringify(req));
+        });
+    }
+
 }
