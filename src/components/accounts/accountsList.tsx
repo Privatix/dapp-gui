@@ -8,7 +8,6 @@ import Account from './accountView';
 import notice from '../../utils/notice';
 import {State} from '../../typings/state';
 import {Account as AccountType} from '../../typings/accounts';
-import {fetch} from '../../utils/fetch';
 import { translate } from 'react-i18next';
 
 interface Props {
@@ -33,7 +32,7 @@ class Accounts extends React.Component<Props, any> {
     async onRefresh(accountId:any, evt: any){
         evt.preventDefault();
         const {t} = this.props;
-        fetch('/accounts/'+accountId+'/balances-update',{method: 'POST'});
+        await (window as any).ws.updateBalance(accountId);
         notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
     }
 

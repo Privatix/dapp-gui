@@ -1,5 +1,4 @@
 import bugsnag from 'bugsnag-js';
-import * as api from './api';
 
 const bugsnag_handler = (window, apiKey, release, commit) => {
     // if we have release tag, this is Production environment, else Development
@@ -19,7 +18,7 @@ const bugsnag_handler = (window, apiKey, release, commit) => {
 
     if (window.onerror) {
         window.addEventListener('error', async function(ErrorEvent:any) {
-            const accounts = await api.accounts.getAccounts();
+            const accounts = await (window as any).ws.getAccounts();
             bugsnagClient.metaData = {
                 accounts: accounts
             };

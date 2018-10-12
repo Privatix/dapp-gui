@@ -7,9 +7,6 @@ import {Session} from '../typings/session';
 import * as Auth from './api/auth';
 export const auth = Auth;
 
-import * as Accounts from './api/accounts';
-export const accounts = Accounts;
-
 import * as Settings from './api/settings';
 export const settings = Settings;
 

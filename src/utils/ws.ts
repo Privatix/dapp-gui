@@ -1,6 +1,7 @@
 import * as uuidv4 from 'uuid/v4';
 import {TemplateType} from '../typings/templates';
 import {OfferStatus, Offering} from '../typings/offerings';
+import {Account} from '../typings/accounts';
 
 export class WS {
     
@@ -110,7 +111,7 @@ export class WS {
 
 // accounts
 
-    getAccounts(){
+    getAccounts(): Promise<Account[]> {
         const uuid = uuidv4();
 
         const req = {
@@ -130,7 +131,7 @@ export class WS {
             };
             WS.handlers[uuid] = handler;
             this.socket.send(JSON.stringify(req));
-        });
+        }) as Promise<Account[]>;
     }
 
     generateAccount(payload: any, handler: Function){
@@ -189,6 +190,27 @@ export class WS {
         this.socket.send(JSON.stringify(req));
     }
 
+    updateBalance(accountId: string){
+        const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_updateBalance',
+            params: [this.pwd, accountId]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            WS.handlers[uuid] = function(res: any){
+                if ('err' in res) {
+                    reject(res.err);
+                } else {
+                    resolve(res.result);
+                }
+            };
+            this.socket.send(JSON.stringify(req));
+        });
+    }
 // templates
 
     getTemplates(templateType?: TemplateType){
