@@ -50,7 +50,7 @@ class ProductItem extends React.Component<any, any>{
     }
 
     getOfferings() {
-        (window as any).ws.getOfferings(this.props.product.id)
+        (window as any).ws.getAgentOfferings(this.props.product.id)
             .then((offerings: any) => {
                 this.setState({offerings});
             });

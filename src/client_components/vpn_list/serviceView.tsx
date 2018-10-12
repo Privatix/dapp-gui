@@ -1,13 +1,16 @@
 import * as React from 'react';
+import { withRouter } from 'react-router-dom';
+import { translate } from 'react-i18next';
 import {fetch} from '../../utils/fetch';
+
 import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
-import { withRouter } from 'react-router-dom';
 import TerminateContractButton from '../connections/terminateContractButton';
 import notice from '../../utils/notice';
-import { translate } from 'react-i18next';
+
+import {Product} from '../../typings/products';
 
 @translate(['client/serviceView', 'utils/notice'])
 
@@ -47,9 +50,9 @@ class ServiceView extends React.Component <any,any> {
 
             const offering = (offerings as any)[0];
 
-            const products = await fetch(`/products`, {});
+            const products = await (window as any).ws.getProducts();
 
-            const product = (products as any).filter((product: any) => product.id === offering.product)[0];
+            const product = products.filter((product: Product) => product.id === offering.product)[0];
 
             const sessions = (sessionsRaw as any).map((session) => {
                 return {

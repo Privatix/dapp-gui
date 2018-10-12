@@ -9,7 +9,6 @@ import notice from '../../utils/notice';
 import {asyncProviders} from '../../redux/actions';
 import { Product } from '../../typings/products';
 import { State } from '../../typings/state';
-import * as api from '../../utils/api';
 
 interface Props {
     product: Product;
@@ -45,14 +44,13 @@ class ProductView extends React.Component <Props,any> {
 
             const product = Object.assign({}, this.state.product, {serviceEndpointAddress: this.state.host, country: this.state.country});
 
-            api.products.saveProduct(product).then((result:any) => {
-                if (result.id === this.state.product.id) {
-                    notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('HostWasSuccessfullyUpdated')});
-                    this.props.dispatch(asyncProviders.updateProducts());
-                } else {
-                    notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
-                }
-            });
+            try {
+                await (window as any).ws.updateProduct(product);
+                notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('HostWasSuccessfullyUpdated')});
+                this.props.dispatch(asyncProviders.updateProducts());
+            } catch (err) {
+                notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
+            }
         } else {
             notice({level: 'error', title: t('utils.notice/Attention!'), msg: t('PleaseInsertIPorDNS')});
         }

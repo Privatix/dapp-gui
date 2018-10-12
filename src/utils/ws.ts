@@ -2,6 +2,7 @@ import * as uuidv4 from 'uuid/v4';
 import {TemplateType} from '../typings/templates';
 import {OfferStatus, Offering} from '../typings/offerings';
 import {Account} from '../typings/accounts';
+import {Product} from '../typings/products';
 
 export class WS {
     
@@ -269,7 +270,7 @@ export class WS {
 
 // products
 
-    getProducts(){
+    getProducts(): Promise<Product[]> {
         const uuid = uuidv4();
 
         const req = {
@@ -277,6 +278,29 @@ export class WS {
             id: uuid,
             method: 'ui_getProducts',
             params: [this.pwd]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const handler = function(res: any){
+                if('error' in res){
+                    reject(res.error);
+                }else{
+                    resolve(res.result);
+                }
+            };
+            WS.handlers[uuid] = handler;
+            this.socket.send(JSON.stringify(req));
+        }) as Promise<Product[]>;
+    }
+
+    updateProduct(product: any){
+        const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_updateProduct',
+            params: [this.pwd, product]
         };
 
         return new Promise((resolve: Function, reject: Function) => {
