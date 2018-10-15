@@ -4,9 +4,6 @@ import {Transaction} from '../typings/transactions';
 import {ClientOffering} from '../typings/clientOfferings';
 import {Session} from '../typings/session';
 
-import * as Auth from './api/auth';
-export const auth = Auth;
-
 import * as Settings from './api/settings';
 export const settings = Settings;
 
