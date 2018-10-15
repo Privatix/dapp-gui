@@ -2,7 +2,7 @@ import {fetch} from './fetch';
 import {LocalSettings} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
 import {ClientOffering} from '../typings/clientOfferings';
-import {Session} from '../typings/session';
+// import {Session} from '../typings/session';
 
 import * as Auth from './api/auth';
 export const auth = Auth;
@@ -47,7 +47,8 @@ export const getClientOfferings = function(): Promise<ClientOffering[]>{
     // or change call in client_components/connections/connection.tsx
     return fetch('/client/offerings', {}) as Promise<ClientOffering[]>;
 };
-
+/*
 export const getSessions = function(channelId?: string): Promise<Session[]>{
         return fetch('/sessions'+ (channelId ? `?channelId=${channelId}` : ''), {}) as Promise<Session[]>;
 };
+*/

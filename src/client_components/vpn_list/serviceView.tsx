@@ -39,38 +39,38 @@ class ServiceView extends React.Component <any,any> {
         };
     }
 
-    getSessions() {
+    async getSessions() {
         const service = this.state.service;
-        fetch(`/sessions?channelId=${service.id}`, {}).then(async (sessionsRaw) => {
-            const offerings = await fetch(`/offerings?id=${service.offering}`, {});
+        const sessionsRaw = await (window as any).ws.getSessions(service.id);
+        // TODO there is no `get GLIENT offering by id` method in JSON-RPC
+        const offerings = await fetch(`/offerings?id=${service.offering}`, {});
 
-            if (Object.keys(offerings).length === 0) {
-                return false;
-            }
+        if (Object.keys(offerings).length === 0) {
+            return false;
+        }
 
-            const offering = (offerings as any)[0];
+        const offering = (offerings as any)[0];
 
-            const products = await (window as any).ws.getProducts();
+        const products = await (window as any).ws.getProducts();
 
-            const product = products.filter((product: Product) => product.id === offering.product)[0];
+        const product = products.filter((product: Product) => product.id === offering.product)[0];
 
-            const sessions = (sessionsRaw as any).map((session) => {
-                return {
-                    id: session.channel,
-                    agent: this.state.service.agent,
-                    server: product.name,
-                    offering: this.state.service.offering,
-                    started: session.started,
-                    stopped: session.stopped,
-                    usage: session.unitsUsed,
-                    cost: this.state.service.usage.cost / 1e8,
-                    lastUsageTime: session.lastUsageTime,
-                    clientIP: session.clientIP
-                };
-            });
-
-            this.setState({sessions});
+        const sessions = (sessionsRaw as any).map((session) => {
+            return {
+                id: session.channel,
+                agent: this.state.service.agent,
+                server: product.name,
+                offering: this.state.service.offering,
+                started: session.started,
+                stopped: session.stopped,
+                usage: session.unitsUsed,
+                cost: this.state.service.usage.cost / 1e8,
+                lastUsageTime: session.lastUsageTime,
+                clientIP: session.clientIP
+            };
         });
+
+        this.setState({sessions});
     }
 
     async componentDidMount(){
