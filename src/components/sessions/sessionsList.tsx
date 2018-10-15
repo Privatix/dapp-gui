@@ -11,6 +11,8 @@ import * as api from '../../utils/api';
 @translate(['sessions/sessionsList'])
 export default class Sessions extends React.Component <any,any> {
 
+    subscription: String;
+
     constructor(props:any) {
         super(props);
 
@@ -22,10 +24,26 @@ export default class Sessions extends React.Component <any,any> {
         };
     }
 
-    async componentDidMount() {
+    componentDidMount() {
+        this.refresh();
+    }
 
-        const endpoint = '/sessions' + (this.props.channel === 'all' ? '' : `?channelId=${this.props.channel}`);
-        const sessions = await fetch(endpoint, {method: 'GET'});
+    ws = (event: any) => {
+        console.log('WS event catched!!!!', event);
+        this.refresh();
+    }
+
+    async refresh() {
+
+        const channelId = this.props.channel;
+        if(!this.subscription) {
+            if (channelId) {
+                this.subscription = (window as any).ws.subscribe('channel', channelId, this.ws);
+            }
+        }
+
+        const sessions = await (window as any).ws.getChannelSessions(channelId);
+        console.log('Sessions', sessions);
 
         const usage = (sessions as any).reduce((usage, session) => {
             return usage + session.unitsUsed;
@@ -50,6 +68,12 @@ export default class Sessions extends React.Component <any,any> {
         const sessionsDOM = (sessions as any).map((session: any) => <SessionItem session={session}/>);
 
         this.setState({sessions, usage, income, sessionsDOM});
+    }
+
+    componentWillUnmount() {
+        if(this.subscription){
+            (window as any).ws.unsubscribe(this.subscription);
+        }
     }
 
     exportToFile() {
