@@ -79,10 +79,10 @@ class Connecting extends React.Component<any, any>{
         }
 
         if((activeChannels as any).length > 0){
-            const offeringsReq = api.offerings.getClientOfferingById(activeChannels[0].offering);
-            const offerings = await Promise.all([offeringsReq]);
 
-            this.setState({status: 'active', channels: activeChannels, offering: offerings[0]});
+            const offering = await (window as any).ws.getOffering(activeChannels[0].offering);
+            this.setState({status: 'active', channels: activeChannels, offering});
+
         }else if((suspendedChannels as any).length > 0){
             const channel = suspendedChannels[0];
 

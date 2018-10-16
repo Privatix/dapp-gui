@@ -20,7 +20,7 @@ class IncreaseDepositView extends React.Component<any, any> {
         this.state = {gasPrice: 6*1e9
                      ,account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase())
         };
-        api.offerings.getClientOfferingById(props.channel.offering)
+        (window as any).ws.getOffering(props.channel.offering)
            .then(offering => {
                this.setState({offering});
            });
