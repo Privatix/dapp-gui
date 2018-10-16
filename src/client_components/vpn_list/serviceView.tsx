@@ -1,13 +1,16 @@
 import * as React from 'react';
+import { withRouter } from 'react-router-dom';
+import { translate } from 'react-i18next';
 import {fetch} from '../../utils/fetch';
+
 import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
-import { withRouter } from 'react-router-dom';
 import TerminateContractButton from '../connections/terminateContractButton';
 import notice from '../../utils/notice';
-import { translate } from 'react-i18next';
+
+import {Product} from '../../typings/products';
 
 @translate(['client/serviceView', 'utils/notice'])
 
@@ -36,38 +39,38 @@ class ServiceView extends React.Component <any,any> {
         };
     }
 
-    getSessions() {
+    async getSessions() {
         const service = this.state.service;
-        fetch(`/sessions?channelId=${service.id}`, {}).then(async (sessionsRaw) => {
-            const offerings = await fetch(`/offerings?id=${service.offering}`, {});
+        const sessionsRaw = await (window as any).ws.getSessions(service.id);
+        // TODO there is no `get GLIENT offering by id` method in JSON-RPC
+        const offerings = await fetch(`/offerings?id=${service.offering}`, {});
 
-            if (Object.keys(offerings).length === 0) {
-                return false;
-            }
+        if (Object.keys(offerings).length === 0) {
+            return false;
+        }
 
-            const offering = (offerings as any)[0];
+        const offering = (offerings as any)[0];
 
-            const products = await fetch(`/products`, {});
+        const products = await (window as any).ws.getProducts();
 
-            const product = (products as any).filter((product: any) => product.id === offering.product)[0];
+        const product = products.filter((product: Product) => product.id === offering.product)[0];
 
-            const sessions = (sessionsRaw as any).map((session) => {
-                return {
-                    id: session.channel,
-                    agent: this.state.service.agent,
-                    server: product.name,
-                    offering: this.state.service.offering,
-                    started: session.started,
-                    stopped: session.stopped,
-                    usage: session.unitsUsed,
-                    cost: this.state.service.usage.cost / 1e8,
-                    lastUsageTime: session.lastUsageTime,
-                    clientIP: session.clientIP
-                };
-            });
-
-            this.setState({sessions});
+        const sessions = (sessionsRaw as any).map((session) => {
+            return {
+                id: session.channel,
+                agent: this.state.service.agent,
+                server: product.name,
+                offering: this.state.service.offering,
+                started: session.started,
+                stopped: session.stopped,
+                usage: session.unitsUsed,
+                cost: this.state.service.usage.cost / 1e8,
+                lastUsageTime: session.lastUsageTime,
+                clientIP: session.clientIP
+            };
         });
+
+        this.setState({sessions});
     }
 
     async componentDidMount(){

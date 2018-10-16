@@ -42,15 +42,13 @@ export default class Sessions extends React.Component <any,any> {
             }
         }
 
-        const sessions = await (window as any).ws.getChannelSessions(channelId);
-        console.log('Sessions', sessions);
+        const sessions = await (window as any).ws.getSessions(this.props.channel === 'all' ? '' : this.props.channel);
 
-        const usage = (sessions as any).reduce((usage, session) => {
+        const usage = sessions.reduce((usage, session) => {
             return usage + session.unitsUsed;
         }, 0);
 
-        const offeringsArr = (sessions as any).map((session) => {
-            // return (fetch(`/channels?id=${session.channel}`)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
+        const offeringsArr = sessions.map(session => {
             return (api.channels.getById(session.channel)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
         });
         const offerings = await Promise.all(offeringsArr);
@@ -114,15 +112,15 @@ export default class Sessions extends React.Component <any,any> {
                             <div className='card-body'>
                                 <table className='table table-striped'>
                                     <tbody>
-                                    <tr>
+                                    <tr key='usage'>
                                         <td>{t('TotalUsage')}:</td>
                                         <td>{(this.state.usage / 1024).toFixed(3)} GB</td>
                                     </tr>
-                                    <tr>
+                                    <tr key='income'>
                                         <td>{t('TotalIncome')}:</td>
                                         <td>{toFixedN({number: this.state.income / 1e8, fixed: 8})} PRIX</td>
                                     </tr>
-                                    <tr>
+                                    <tr key='sessionsCount'>
                                         <td>{t('SessionsCount')}:</td>
                                         <td>{(this.state.sessions as any).length}</td>
                                     </tr>
@@ -154,9 +152,7 @@ export default class Sessions extends React.Component <any,any> {
                                         <th>{t('ClientIP')}</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
                                     {this.state.sessionsDOM}
-                                    </tbody>
                                 </table>
                             </div>
                         </div>

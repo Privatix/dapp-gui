@@ -35,7 +35,7 @@ interface AsyncProviders {
 export const asyncProviders: AsyncProviders = {
     updateAccounts: function(){
         return function(dispatch: any){
-            api.accounts.getAccounts()
+            (window as any).ws.getAccounts()
                .then(accounts => {
                     dispatch(handlers.updateAccounts(accounts));
                });
