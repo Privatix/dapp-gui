@@ -3,7 +3,7 @@ import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
-import * as _ from 'lodash';
+import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
 import AcceptOffering from './acceptOffering';
 import ModalWindow from '../../components/modalWindow';
@@ -166,7 +166,7 @@ export default class AsyncList extends React.Component<any,any> {
             || (this.state.changePriceInput !== nextState.changePriceInput)
             || (this.state.showAllCountries !== nextState.showAllCountries)
             || (this.state.filteredCountries !== nextState.filteredCountries)
-            || !(_.isEqual(nextState.filtered, this.state.filtered));
+            || !(isEqual(nextState.filtered, this.state.filtered));
     }
 
     changeMinPriceInput(evt:any) {
