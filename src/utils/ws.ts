@@ -408,6 +408,29 @@ export class WS {
         }) as Promise<Offering[]>;
     }
 
+    getClientOfferings(agent: string = '', minUnitPrice: number = 0, maxUnitPrice: number = 0, countries: string[] = []): Promise<Offering[]>{
+        const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getClientOfferings',
+            params: [this.pwd, agent, minUnitPrice, maxUnitPrice, countries]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const handler = function(res: any){
+                if('error' in res){
+                    reject(res.error);
+                }else{
+                    resolve(res.result);
+                }
+            };
+            WS.handlers[uuid] = handler;
+            this.socket.send(JSON.stringify(req));
+        }) as Promise<Offering[]>;
+    }
+
     getOffering(id: string): Promise<Offering>{
         return this.getObject('offering', id) as Promise<Offering>;
     }

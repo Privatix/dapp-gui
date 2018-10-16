@@ -1,5 +1,4 @@
 import * as React from 'react';
-import * as api from '../../utils/api';
 import { translate } from 'react-i18next';
 
 @translate('client/connections/usage')
@@ -11,15 +10,12 @@ export default class JobStatus extends React.Component<any, any>{
         this.state = {};
     }
 
-    refresh(){
+    async refresh(){
         if(!('offering' in this.state) || this.state.offering.id !== this.props.channel.offering){
-            api.getClientOfferings()
-               .then(offerings => {
-                   const offering = offerings.find(offering => offering.id === this.props.channel.offering);
-                   if(offering){
-                       this.setState({offering});
-                   }
-               });
+            const offering = await (window as any).ws.getOffering(this.props.channel.offering);
+            if(offering){
+                this.setState({offering});
+            }
         }
     }
 
