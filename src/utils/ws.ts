@@ -3,6 +3,7 @@ import {TemplateType} from '../typings/templates';
 import {OfferStatus, Offering} from '../typings/offerings';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
+import {Session} from '../typings/session';
 
 export class WS {
     
@@ -391,6 +392,30 @@ export class WS {
         });
     }
 
+// sessions
+
+    getSessions(channelId: string = ''): Promise<Session[]>{
+         const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getSessions',
+            params: [this.pwd, channelId]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const handler = function(res: any){
+                if('error' in res){
+                    reject(res.error);
+                }else{
+                    resolve(res.result);
+                }
+            };
+            WS.handlers[uuid] = handler;
+            this.socket.send(JSON.stringify(req));
+        }) as Promise<Session[]>;
+    }
 // common
 
     getObject(type: string, id: string){

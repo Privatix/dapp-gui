@@ -24,15 +24,13 @@ export default class Sessions extends React.Component <any,any> {
 
     async componentDidMount() {
 
-        const endpoint = '/sessions' + (this.props.channel === 'all' ? '' : `?channelId=${this.props.channel}`);
-        const sessions = await fetch(endpoint, {method: 'GET'});
+        const sessions = await (window as any).ws.getSessions(this.props.channel === 'all' ? '' : this.props.channel);
 
-        const usage = (sessions as any).reduce((usage, session) => {
+        const usage = sessions.reduce((usage, session) => {
             return usage + session.unitsUsed;
         }, 0);
 
-        const offeringsArr = (sessions as any).map((session) => {
-            // return (fetch(`/channels?id=${session.channel}`)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
+        const offeringsArr = sessions.map(session => {
             return (api.channels.getById(session.channel)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
         });
         const offerings = await Promise.all(offeringsArr);
