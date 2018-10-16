@@ -12,8 +12,6 @@ import SessionsTable from './sessionsTable';
 
 export default class Sessions extends React.Component <any,any> {
 
-    subscription: String;
-
     constructor(props:any) {
         super(props);
 
@@ -37,15 +35,15 @@ export default class Sessions extends React.Component <any,any> {
         });
         const offerings = await Promise.all(offeringsArr);
 
-        (sessions as any).forEach((session, i, sessions) => {
+        sessions.forEach((session, i, sessions) => {
             sessions[i] = Object.assign({}, {'unitPrice': (offerings[i][0] as any).unitPrice}, session);
         });
 
-        const income = (sessions as any).reduce((income, session) => {
+        const income = sessions.reduce((income, session) => {
             return income + session.unitsUsed * session.unitPrice;
         }, 0);
 
-        const sessionsData = (sessions as any).map((session: any) => {
+        const sessionsData = sessions.map((session: any) => {
             return {
                 id: session.id,
                 started: session.started,

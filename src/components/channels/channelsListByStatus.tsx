@@ -28,6 +28,8 @@ interface Props {
 
 class Channels extends React.Component<Props, any> {
 
+    subscription: String;
+
     constructor(props: Props) {
         super(props);
 
@@ -53,9 +55,20 @@ class Channels extends React.Component<Props, any> {
         this.refresh(true);
     }
 
+    ws = (event: any) => {
+        console.log('WS event catched!!!!', event);
+        this.refresh();
+    }
+
     componentDidMount(){
         this.props.dispatch(asyncProviders.updateProducts());
         this.refresh();
+    }
+
+    componentWillUnmount() {
+        if (this.subscription) {
+            (window as any).ws.unsubscribe(this.subscription);
+        }
     }
 
     refresh = async (once?: boolean) => {
@@ -63,6 +76,13 @@ class Channels extends React.Component<Props, any> {
         const status = this.state.status;
 
         const channels = await api.channels.getList(status);
+
+        if (!this.subscription) {
+            const channelsIds = (channels as any).map((channel: any) => channel.id);
+            if(channelsIds.length){
+                this.subscription = (window as any).ws.subscribe('channel', channelsIds, this.ws);
+            }
+        }
 
         const channelsOfferings = channels.map((channel: ChannelType) => (window as any).ws.getOffering(channel.offering));
         const offerings = await Promise.all(channelsOfferings);
