@@ -25,20 +25,24 @@ export default function(props: any){
             evt.preventDefault();
             const pwd = (document.getElementById('pwd') as any).value.trim();
             if(pwdIsCorrect(pwd)){
-                const body = {pwd};
-                const res = await fetch('/login', {method: 'post', body});
-                if(res){
 
-                    api.settings.getLocal()
-                       .then(settings => {
-                            const ws = new WS(settings.wsEndpoint);
-                            ws.setPassword(pwd);
-                            (window as any).ws = ws;
-                       });
-
-                    history.push(props.entryPoint);
+                const settings = await api.settings.getLocal();
+                const ws = new WS(settings.wsEndpoint);
+                const ready = await ws.whenReady();
+                if(ready){
+                    try {
+                        // TODO remove when /accounts/${props.account.id}/status will be implemented on ws
+                        const body = {pwd};
+                        await fetch('/login', {method: 'post', body});
+                        await ws.setPassword(pwd);
+                        // TODO notice if server returns error (not implemented on dappctrl yet)
+                        (window as any).ws = ws;
+                        history.push(props.entryPoint);
+                    }catch(e){
+                        notice({level: 'error', header: i18n.t('utils/notice:Attention!'), msg: i18n.t('login:AccessDenied')});
+                    }
                 }else{
-                    notice({level: 'error', header: i18n.t('utils/notice:Attention!'), msg: i18n.t('login:AccessDenied')});
+                    // TODO
                 }
             }else{
                 // TODO incorrect password

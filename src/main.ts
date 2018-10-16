@@ -28,28 +28,12 @@ let password = '';
     if(mocks.has(req)){
         const res = mocks.get(req);
         event.sender.send('api-reply', JSON.stringify({req: msg, res}));
-    }else if(req.endpoint === '/auth' && req.options.method === 'post' ){
-        // password = req.options.body.password;
-        const pwd = req.options.body.password;
-        req.options.body = JSON.stringify(req.options.body);
-        fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
-            .then(res => {
-                // console.log('auth!!!', res, res.status);
-                if(res.status === 201){
-                    password = pwd;
-                    event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
-                }else {
-                    // TODO error handling
-                }
-            });
     }else if(req.endpoint === '/backup'){
         fs.writeFile(req.options.body.fileName, req.options.body.pk, {encoding: 'utf8'}, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
     }else if(req.endpoint === '/readFile'){
         const file = fs.readFileSync(req.options.body.fileName, {encoding: 'utf8'});
-        // const privateKey = keythereum.recover(req.options.body.pwd, keyObject);
-        // console.log(privateKey);
         event.sender.send('api-reply', JSON.stringify({req: msg, res: {file}}));
     }else if(req.endpoint === '/saveAs'){
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
@@ -64,14 +48,9 @@ let password = '';
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
         }
     }else if(req.endpoint === '/login'){
+        // TODO remove when /accounts/${props.account.id}/status will be implemented on ws
         password = req.options.body.pwd;
-        const options = {method: 'get'} as any;
-        options.headers = {};
-        options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
-        fetch(`${settings.apiEndpoint}/products`, options)
-            .then(res => {
-                event.sender.send('api-reply', JSON.stringify({req: msg, res: res.status === 200}));
-            });
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
     }else if(req.endpoint === '/switchMode'){
         settings.mode = settings.mode === 'agent' ? 'client' : 'agent';
         fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
