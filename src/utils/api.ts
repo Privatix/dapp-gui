@@ -12,9 +12,6 @@ export const channels = Channels;
 import * as Offerings from './api/offerings';
 export const offerings = Offerings;
 
-import * as Templates from './api/templates';
-export const templates = Templates;
-
 import * as Logs from './api/logs';
 export const logs = Logs;
 
