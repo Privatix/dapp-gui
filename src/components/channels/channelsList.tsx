@@ -16,6 +16,8 @@ import {asyncProviders} from '../../redux/actions';
 @translate(['channels/channelsList', 'common'])
 class AsyncChannels extends React.Component<any, any> {
 
+    subscription: String;
+
     constructor(props: any) {
         super(props);
         this.state = {
@@ -28,18 +30,30 @@ class AsyncChannels extends React.Component<any, any> {
         this.props.dispatch(asyncProviders.updateProducts());
     }
 
-    async refresh() {
+    ws = (event: any) => {
+        console.log('WS event catched!!!!', event);
+        this.refresh();
+    }
 
+    async refresh() {
         const ws = (window as any).ws;
 
         const endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
-
         const channels = await fetch(endpoint, {method: 'GET'});
+
+        if (!this.subscription) {
+            const channelsIds = (channels as any).map((channel: any) => channel.id);
+            if(channelsIds.length){
+                this.subscription = ws.subscribe('channel', channelsIds, this.ws);
+            }
+        }
+
         const channelsProductsIds = (channels as any).map((channel: any) => GetProductIdByOfferingId(channel.offering));
         const products = await Promise.all(channelsProductsIds);
         const offerings = await ws.getAgentOfferings();
         this.props.dispatch(asyncProviders.updateProducts());
         this.props.dispatch(asyncProviders.updateOfferings());
+
         this.setState({channels, products, offerings});
 
     }
@@ -47,6 +61,12 @@ class AsyncChannels extends React.Component<any, any> {
     componentDidMount() {
         this.refresh();
         this.setState({isLoading: false});
+    }
+
+    componentWillUnmount() {
+        if (this.subscription) {
+            (window as any).ws.unsubscribe(this.subscription);
+        }
     }
 
     render() {

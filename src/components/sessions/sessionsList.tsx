@@ -4,11 +4,12 @@ const {dialog} = remote;
 import { translate } from 'react-i18next';
 
 import {fetch} from '../../utils/fetch';
-import SessionItem from './sessionItem';
 import toFixedN from '../../utils/toFixedN';
 import * as api from '../../utils/api';
+import SessionsTable from './sessionsTable';
 
 @translate(['sessions/sessionsList'])
+
 export default class Sessions extends React.Component <any,any> {
 
     constructor(props:any) {
@@ -18,12 +19,11 @@ export default class Sessions extends React.Component <any,any> {
             sessions: [],
             usage: 0,
             income: 0,
-            sessionsDOM: ''
+            sessionsData: []
         };
     }
 
     async componentDidMount() {
-
         const sessions = await (window as any).ws.getSessions(this.props.channel === 'all' ? '' : this.props.channel);
 
         const usage = sessions.reduce((usage, session) => {
@@ -35,19 +35,26 @@ export default class Sessions extends React.Component <any,any> {
         });
         const offerings = await Promise.all(offeringsArr);
 
-        (sessions as any).forEach((session, i, sessions) => {
+        sessions.forEach((session, i, sessions) => {
             sessions[i] = Object.assign({}, {'unitPrice': (offerings[i][0] as any).unitPrice}, session);
         });
 
-        const income = (sessions as any).reduce((income, session) => {
+        const income = sessions.reduce((income, session) => {
             return income + session.unitsUsed * session.unitPrice;
-            // const sessionIncome = await fetch(`/income?channel=${session.channel}`);
-            // return income + sessionIncome;
         }, 0);
 
-        const sessionsDOM = (sessions as any).map((session: any) => <SessionItem session={session}/>);
+        const sessionsData = sessions.map((session: any) => {
+            return {
+                id: session.id,
+                started: session.started,
+                stopped: session.stopped,
+                usage: session.unitsUsed + ' MB',
+                lastUsageTime: session.lastUsageTime,
+                clientIP: session.clientIP
+            };
+        });
 
-        this.setState({sessions, usage, income, sessionsDOM});
+        this.setState({sessions, usage, income, sessionsData});
     }
 
     exportToFile() {
@@ -88,15 +95,15 @@ export default class Sessions extends React.Component <any,any> {
                             <div className='card-body'>
                                 <table className='table table-striped'>
                                     <tbody>
-                                    <tr>
+                                    <tr key='usage'>
                                         <td>{t('TotalUsage')}:</td>
                                         <td>{(this.state.usage / 1024).toFixed(3)} GB</td>
                                     </tr>
-                                    <tr>
+                                    <tr key='income'>
                                         <td>{t('TotalIncome')}:</td>
                                         <td>{toFixedN({number: this.state.income / 1e8, fixed: 8})} PRIX</td>
                                     </tr>
-                                    <tr>
+                                    <tr key='sessionsCount'>
                                         <td>{t('SessionsCount')}:</td>
                                         <td>{(this.state.sessions as any).length}</td>
                                     </tr>
@@ -117,21 +124,8 @@ export default class Sessions extends React.Component <any,any> {
                                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-20'
                                         onClick={this.exportToFile.bind(this)}>{t('ExportToAFile')}
                                 </button>
-                                <table className='table table-bordered table-striped'>
-                                    <thead>
-                                    <tr>
-                                        <th>Id</th>
-                                        <th>{t('Started')}</th>
-                                        <th>{t('Stopped')}</th>
-                                        <th>{t('Usage')}</th>
-                                        <th>{t('LastUsageTime')}</th>
-                                        <th>{t('ClientIP')}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    {this.state.sessionsDOM}
-                                    </tbody>
-                                </table>
+
+                                <SessionsTable data={this.state.sessionsData} />
                             </div>
                         </div>
                     </div>
