@@ -1,24 +1,17 @@
 import {fetch} from './fetch';
 import {LocalSettings} from '../typings/settings';
 import {Transaction} from '../typings/transactions';
-import {ClientOffering} from '../typings/clientOfferings.d.ts';
-import {Offering} from '../typings/offerings.d.ts';
-import {Session} from '../typings/session.d.ts';
+import {ClientOffering} from '../typings/clientOfferings';
+import {Session} from '../typings/session';
 
 import * as Auth from './api/auth';
 export const auth = Auth;
-
-import * as Accounts from './api/accounts';
-export const accounts = Accounts;
 
 import * as Settings from './api/settings';
 export const settings = Settings;
 
 import * as Channels from './api/channels';
 export const channels = Channels;
-
-import * as Products from './api/products';
-export const products = Products;
 
 import * as Offerings from './api/offerings';
 export const offerings = Offerings;
@@ -47,11 +40,6 @@ export const getUserRole = async function(): Promise<string> {
     const userRole = await userrole.get();
 
     return userRole;
-};
-
-export const getOfferingById = function(offeringId: string): Promise<Offering>{
-    return (fetch(`/offerings/?id=${offeringId}`) as Promise<Offering[]>)
-               .then(offerings => offerings.length ? offerings[0] : null);
 };
 
 export const getClientOfferings = function(): Promise<ClientOffering[]>{

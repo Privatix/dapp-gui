@@ -1,88 +1,87 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
+import { translate } from 'react-i18next';
 
-// export default withRouter(function AsyncSettings(props:any){
-// class SettingsCell extends React.Component<any, any> {
-//     constructor(props: any) {
-//         super(props);
-//         this.state = {key: props.key, value: props.value, description: props.description, name: props.name};
-//     }
-//
-//     static getDerivedStateFromProps(props: any, prevState: any){
-//         return {key: props.key, value: props.value, description: props.description, name: props.name};
-//     }
-//
-//     render(){
-//         return <div className='form-control text-right'>
-//                     <input id={this.state.key} type='text' defaultValue={this.state.value} data-desc={this.state.description} data-name={this.state.name}/>
-//                     <label htmlFor={this.state.key} className='m-b-15'></label>
-//                 </div>;
-//     }
-// }
+@translate('settings')
+
 class SettingsTable extends React.Component<any, any> {
 
     constructor(props: any) {
         super(props);
         this.state = {
-          data: this.props.options,
-          filtered: [],
-          filterAll: '',
+          data: this.props.options
+          // filtered: [],
+          // filterAll: '',
         };
-        this.filterAll = this.filterAll.bind(this);
+        // this.filterAll = this.filterAll.bind(this);
     }
 
-    filterAll(e:any) {
-        console.log(e);
-        const { value } = e.target;
-        const filterAll = value;
-        const filtered = [{ id: 'all', value: filterAll }];
-        // NOTE: this completely clears any COLUMN filters
-        this.setState({ filterAll, filtered });
+    static getDerivedStateFromProps(props:any, state:any) {
+        return {data: props.options};
     }
 
-    onFilteredChange(filtered: Array<any>) {
-        // console.log('filtered:',filtered);
-        // const { sortedData } = this.reactTable.getResolvedState();
-        // console.log('sortedData:', sortedData);
+    // filterAll(e:any) {
+    //     console.log(e);
+    //     const { value } = e.target;
+    //     const filterAll = value;
+    //     const filtered = [{ id: 'all', value: filterAll }];
+    //     // NOTE: this completely clears any COLUMN filters
+    //     this.setState({ filterAll, filtered });
+    // }
 
-        // extra check for the "filterAll"
-        if (filtered.length > 1 && this.state.filterAll.length) {
-          // NOTE: this removes any FILTER ALL filter
-          const filterAll = '';
-          this.setState({ filtered: filtered.filter((item) => item.id !== 'all'), filterAll });
-        } else{
-          this.setState({ filtered });
-        }
-    }
+    // onFilteredChange(filtered: Array<any>) {
+    //     // console.log('filtered:',filtered);
+    //     // const { sortedData } = this.reactTable.getResolvedState();
+    //     // console.log('sortedData:', sortedData);
+    //
+    //     // extra check for the "filterAll"
+    //     if (filtered.length > 1 && this.state.filterAll.length) {
+    //       // NOTE: this removes any FILTER ALL filter
+    //       const filterAll = '';
+    //       this.setState({ filtered: filtered.filter((item) => item.id !== 'all'), filterAll });
+    //     } else{
+    //       this.setState({ filtered });
+    //     }
+    // }
+    //
+    // saveOptions(evt:any){
+    //     evt.preventDefault();
+    //     const inputs = document.getElementById('optionsForm').querySelectorAll('input');
+    //     const payload = [].slice.call(inputs, 0).map(option => ({
+    //         key: option.id
+    //        ,value: option.value
+    //        ,description: option.dataset.desc
+    //        ,name: option.dataset.name
+    //     }));
+    //     fetch('/settings', {method: 'put', body: payload}).then(res => {
+    //         // TODO notice?
+    //         this.props.history.push('/app');
+    //     });
+    // }
 
-    saveOptions(evt:any){
-        evt.preventDefault();
-        const inputs = document.getElementById('optionsForm').querySelectorAll('input');
-        const payload = [].slice.call(inputs, 0).map(option => ({
-            key: option.id
-           ,value: option.value
-           ,description: option.dataset.desc
-           ,name: option.dataset.name
-        }));
-        fetch('/settings', {method: 'put', body: payload}).then(res => {
-            // TODO notice?
-            this.props.history.push('/app');
+    render() {
+        const { t } = this.props;
+        const settings = this.state.data;
+
+        const optionsDOM = Object.keys(settings).map((key) => {
+            const name = key.split('.').join('_') + '_Name';
+            const description = key.split('.').join('_') + '_Description';
+
+            return <tr key={key}>
+                <td>{t(name)}:</td>
+                <td className='minWidth200'>
+                    <input className='form-control'
+                           disabled
+                           id={key}
+                           type='text'
+                           defaultValue={settings[key]}
+                           data-desc={t(description)}
+                           data-name={t(name)}
+                    />
+                </td>
+                <td>{t(description)}</td>
+            </tr>;
         });
-    }
-
-    render(){
-        console.log('RENEDER', this.state);
-        // const { data } = this.state;
-        const optionsDOM = (this.state.data as any).map(option => <tr>
-                                        <td>{option.name}:</td>
-                                        <td>
-                                            <div className='form-control text-right'>
-                                                <input disabled id={option.key} type='text' defaultValue={option.value} data-desc={option.description} data-name={option.name}/>
-                                                <label htmlFor={option.key} className='m-b-15'></label>
-                                            </div>
-                                        </td>
-                                        <td>{option.description}</td>
-                                    </tr>);
 
   // const columns = [{
   //   Header: 'Name',
@@ -142,7 +141,7 @@ class SettingsTable extends React.Component<any, any> {
             <div className='container-fluid'>
                 <div className='row'>
                     <div className='col-sm-12 m-b-15'>
-                        <h3 className='page-title'>Settings</h3>
+                        <h3 className='page-title'>{t('Settings')}</h3>
                     </div>
                 </div>
                 <div className='row'>
@@ -176,9 +175,9 @@ class SettingsTable extends React.Component<any, any> {
                                 <table className='table table-bordered table-striped'>
                                     <thead>
                                     <tr>
-                                        <th>Name</th>
-                                        <th>Value</th>
-                                        <th>Description</th>
+                                        <th>{t('Name')}</th>
+                                        <th>{t('Value')}</th>
+                                        <th>{t('Description')}</th>
                                     </tr>
                                     </thead>
                                     <tbody>

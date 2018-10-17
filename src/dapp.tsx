@@ -12,7 +12,7 @@ import { registerBugsnag } from './utils/bugsnag';
 (async () => {
     const settings = (await api.settings.getLocal()) as LocalSettings;
     if (settings.bugsnagEnable) {
-        registerBugsnag(window, settings.bugsnagKey, settings.release);
+        registerBugsnag(window, settings.bugsnagKey, settings.release, settings.commit);
     }
 })();
 

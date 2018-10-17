@@ -76,9 +76,9 @@ class App extends React.Component<Props, any> {
                                 <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                                 <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
                                 <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-                                <Route path='/backup/:privateKey/:from'
+                                <Route path='/backup/:accountId/:from'
                                         render={ (props:any) => <Backup entryPoint={'/accounts'}
-                                                                        privateKey={props.match.params.privateKey}
+                                                                        accountId={props.match.params.accountId}
                                                                         from={props.match.params.from}
                                                                 />
                                                }

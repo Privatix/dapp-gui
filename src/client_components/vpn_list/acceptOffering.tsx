@@ -40,7 +40,7 @@ class AcceptOffering extends React.Component<any, any>{
 
     async componentDidMount(){
 
-        const accounts = await api.accounts.getAccounts();
+        const accounts = await (window as any).ws.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
         this.getNotTerminatedConnections();
         this.setState({accounts, account});
@@ -103,7 +103,7 @@ class AcceptOffering extends React.Component<any, any>{
         }
 
 
-        if(this.state.account.psc_balance < this.state.deposit){
+        if(this.state.account.pscBalance < this.state.deposit){
             err=true;
             msg += ' ' + t('NotEnoughPrixForDeposit');
         }
@@ -206,7 +206,7 @@ class AcceptOffering extends React.Component<any, any>{
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    {t('Balance')} <span>{this.state.account ? toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8}) : 0} PRIX / {this.state.account ? toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8}) : 0} ETH</span>
+                                    {t('Balance')} <span>{this.state.account ? toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8}) : 0} PRIX / {this.state.account ? toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8}) : 0} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>

@@ -1,21 +1,24 @@
 import * as React from 'react';
-import {asyncReactor} from 'async-reactor';
 import { withRouter } from 'react-router-dom';
 import SettingsTable from './settingsTable';
-import * as api from '../utils/api';
+import {connect} from 'react-redux';
+import {State} from '../typings/state';
+import {asyncProviders} from '../redux/actions';
 
-function Loader() {
+class Settings extends React.Component <any, any>{
+    constructor(props:any) {
+        super(props);
+    }
 
-  return (<h2>Loading settings ...</h2>);
+    componentDidMount() {
+        this.props.dispatch(asyncProviders.updateSettings());
+    }
 
+    render() {
+        return <SettingsTable options={this.props.settings} />;
+    }
 }
 
-async function AsyncSettings(props:any){
-
-    const settings = await api.settings.get();
-
-    return <SettingsTable options={settings} />;
-
-}
-
-export default withRouter(asyncReactor(AsyncSettings, Loader));
+export default connect( (state: State) => {
+    return {settings: state.settings};
+})(withRouter(Settings));

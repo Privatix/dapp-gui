@@ -2,7 +2,7 @@ import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import Steps from './steps';
-import {PreviousButton, NextButton, back, createPrivateKey} from './utils';
+import {PreviousButton, NextButton, back} from './utils';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
 
@@ -40,13 +40,21 @@ class GenerateKey extends React.Component<any, any>{
             return;
         }
 
-        const dk = createPrivateKey();
-        const key = dk.privateKey.toString('base64').split('+').join('-').split('/').join('_');
+        const payload = {
+             isDefault: this.props.default === 'true'
+            ,inUse: true
+            ,name
+        };
 
-        const res = await api.accounts.createNewAccount(key, this.props.default === 'true', true, name, 'generate_new');
-        console.log(res);
-        await api.settings.updateLocal({accountCreated:true});
-        this.props.history.push(`/backup/${JSON.stringify(dk)}/generateKey`);
+        (window as any).ws.generateAccount(payload, (res: any)=>{
+            if('error' in res){
+                msg = t('SomethingWentWrong');
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            }else{
+                api.settings.updateLocal({accountCreated:true});
+                this.props.history.push(`/backup/${res.result}/generateKey`);
+            }
+        });
     }
 
     render(){

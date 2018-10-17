@@ -1,11 +1,10 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
-import * as keythereum from 'keythereum';
 
 import Steps from './steps';
-import {PreviousButton, NextButton, back, createPrivateKey} from './utils';
-import {fetch} from '../../utils/fetch';
+import { PreviousButton, NextButton, back } from './utils';
+import { fetch } from '../../utils/fetch';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
 
@@ -57,25 +56,22 @@ class ImportJsonKey extends React.Component<any, any>{
 
         const res = await fetch('/readFile', {method: 'post', body: {fileName}});
         const keyObject = JSON.parse((res as any).file);
-        console.log(pwd, fileName, res, keyObject);
-        let pk;
-        try {
-            pk = keythereum.recover(pwd, keyObject);
-        } catch (err) {
-            msg = t('PleaseEnterAValidPassword');
-            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
-            return;
-        }
-        const key = pk.toString('base64').split('+').join('-').split('/').join('_');
-        console.log(pk, key);
 
-        const saveRes = await api.accounts.createNewAccount(key, this.props.default === 'true', true, name, 'generate_new');
-        console.log(saveRes);
-        await api.settings.updateLocal({accountCreated:true});
+        const payload = {
+             isDefault: this.props.default === 'true'
+            ,inUse: true
+            ,name
+        };
 
-        const dk = createPrivateKey();
-        const newKeyObject = Object.assign({}, dk, {privateKey: pk});
-        this.props.history.push(`/backup/${JSON.stringify(newKeyObject)}/importJsonKey`);
+        (window as any).ws.importAccountFromJSON(payload, keyObject, pwd, (res: any)=>{
+            if('error' in res){
+                msg = t('SomethingWentWrong');
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            }else{
+                api.settings.updateLocal({accountCreated:true});
+                this.props.history.push(`/backup/${res.result}/importJsonKey`);
+            }
+        });
     }
 
     render(){

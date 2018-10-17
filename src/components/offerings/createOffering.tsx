@@ -3,7 +3,6 @@ import Select from 'react-select';
 import { withRouter } from 'react-router';
 import { translate } from 'react-i18next';
 
-import {fetch} from '../../utils/fetch';
 import * as api from '../../utils/api';
 import GasRange from '../utils/gasRange';
 import notice from '../../utils/notice';
@@ -57,20 +56,26 @@ class CreateOffering extends React.Component<any, any>{
     }
 
     async refresh(){
-        const accounts = await api.accounts.getAccounts();
-        const products = await api.products.getProducts();
+
+        const ws = (window as any).ws;
+        const accounts = await ws.getAccounts();
+        const products = await ws.getProducts();
         // TODO check products length
         const account = accounts.find((account: any) => account.isDefault);
-        const payload = Object.assign({}, this.state.payload, {product: this.props.product ? this.props.product : products[0].id, agent: account.id, country: products[0].country.toUpperCase()});
-        this.setState({products, accounts, account, payload});
-        fetch(`/templates?id=${products[0].offerTplID}`)
-            .then((templates: any) => {
-                const payload = Object.assign({}, this.state.payload, {template: products[0].offerTplID});
 
-                const template = templates[0];
-                // template.raw = JSON.parse(atob(template.raw));
-                this.setState({payload, template});
-            });
+        const payload = Object.assign({}, this.state.payload, {product: this.props.product
+                                                                      ? this.props.product
+                                                                      : products[0].id,
+                                                               agent: account.id,
+                                                               country: products[0].country.toUpperCase()
+                                                              });
+        this.setState({products, accounts, account, payload});
+        const templates = await ws.getTemplate(products[0].offerTplID);
+        const state = {
+            payload: Object.assign({}, this.state.payload, {template: products[0].offerTplID}),
+            template: templates[0]
+        };
+        this.setState(state);
     }
 
     onGasPriceChanged(evt:any){
@@ -130,7 +135,6 @@ class CreateOffering extends React.Component<any, any>{
         const mustBeNumber = [];
         const isZero = [];
 
-        // const settings = (await fetch('/localSettings', {})) as LocalSettings;
         const settings = (await api.settings.getLocal()) as LocalSettings;
 
         let err = false;
@@ -202,14 +206,13 @@ class CreateOffering extends React.Component<any, any>{
                 }
             }
         }
-        if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.psc_balance){
+        if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.pscBalance){
             err = true;
         }
 
         if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
             err=true;
         }
-
 
 
         if(err){
@@ -256,7 +259,7 @@ class CreateOffering extends React.Component<any, any>{
             if(payload.unitPrice <= 0){
                 msg += t('UnitPriceMustBeMoreThen0') + ' ';
             }
-            if(payload.deposit === payload.deposit && payload.deposit > this.state.account.psc_balance){
+            if(payload.deposit === payload.deposit && payload.deposit > this.state.account.pscBalance){
                 msg += t('DepositIsGreaterThenServiceBalance') + ' ';
             }
             if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
@@ -302,21 +305,17 @@ class CreateOffering extends React.Component<any, any>{
                 }
                 delete payload.minUploadMbits;
             }
+            const ws = (window as any).ws;
+            const offeringId = await ws.createOffering(payload);
+            await ws.changeOfferingStatus(offeringId, 'publish', this.state.gasPrice);
+            this.setState(this.getDefaultState());
 
-            api.offerings.addOffering(payload).then(res => {
-                api.offerings.changeOfferingStatus((res as any).id, 'publish', this.state.gasPrice).then(res => {
-                    this.setState(this.getDefaultState());
-
-                    if(typeof this.props.closeModal === 'function'){
-                        this.props.closeModal();
-                    }
-                    if(typeof this.props.done === 'function'){
-                       this.props.done();
-                    }
-
-                });
-            });
-
+            if(typeof this.props.closeModal === 'function'){
+                this.props.closeModal();
+            }
+            if(typeof this.props.done === 'function'){
+               this.props.done();
+            }
         }
 
         return;
@@ -325,6 +324,14 @@ class CreateOffering extends React.Component<any, any>{
 
     componentDidMount(){
         this.refresh();
+    }
+
+    redirectToServers() {
+        if (this.props.location.pathname === '/products') {
+            this.props.closeModal();
+        } else {
+            this.props.history.push('/products');
+        }
     }
 
     render(){
@@ -347,7 +354,7 @@ class CreateOffering extends React.Component<any, any>{
 
         // const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
         const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
-        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.psc_balance / 1e8), fixed: 8})) : 0;
+        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8})) : 0;
 
         const onUserInput = this.onUserInput.bind(this);
 
@@ -405,7 +412,9 @@ class CreateOffering extends React.Component<any, any>{
                                         </div>
                                         <span className='help-block'>
                                             <small>
-                                                {t('ChangeCountryHelpText')}
+                                                {t('ChangeCountryHelpTextPart1')}&nbsp;
+                                                <button className='btn btn-link btnLinkSmallCustom' onClick={this.redirectToServers.bind(this)}>{t('ChangeCountryHelpTextServers')}</button>&nbsp;
+                                                {t('ChangeCountryHelpTextPart2')}
                                             </small>
                                         </span>
                                     </div>
@@ -616,7 +625,7 @@ class CreateOffering extends React.Component<any, any>{
                                         {selectAccount}
                                     </div>
                                     <div className='col-4 col-form-label'>
-                                        Service Balance: <span id='accountBalance'>{ pscBalance } PRIX / { ethBalance } ETH</span>
+                                        {t('ServiceBalance')}: <span id='accountBalance'>{ pscBalance } PRIX / { ethBalance } ETH</span>
                                     </div>
                                 </div>
                                 <div className='form-group row'>

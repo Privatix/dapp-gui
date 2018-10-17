@@ -694,6 +694,19 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     z-index: 100;
 }
 
+.btnLinkSmallCustom{
+    font-size: 11px;
+    padding: 0;
+    border: none;
+    margin: 0;
+    line-height: 12px;
+    vertical-align: baseline;
+}
+
+.minWidth200{
+    min-width: 200px;
+}
+
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
         max-width: 100%;

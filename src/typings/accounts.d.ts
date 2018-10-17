@@ -5,6 +5,6 @@ export interface Account {
     ethBalance: number;
     isDefault: boolean;
     inUse: boolean;
-    psc_balance: number;
+    pscBalance: number;
     ptcBalance: number;
 }

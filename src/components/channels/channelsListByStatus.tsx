@@ -40,8 +40,9 @@ class Channels extends React.Component<Props, any> {
         };
 
         if ('function' === typeof props.registerRefresh) {
-            props.registerRefresh(this.refresh.bind(this));
+            props.registerRefresh(this.refresh);
         }
+
     }
 
     refreshIfStatusChanged() {
@@ -49,20 +50,21 @@ class Channels extends React.Component<Props, any> {
             return;
         }
 
-        this.refresh();
+        this.refresh(true);
     }
 
     componentDidMount(){
         this.props.dispatch(asyncProviders.updateProducts());
+        this.refresh();
     }
 
-    async refresh() {
+    refresh = async (once?: boolean) => {
 
         const status = this.state.status;
 
         const channels = await api.channels.getList(status);
 
-        const channelsOfferings = channels.map((channel: ChannelType) => api.getOfferingById(channel.offering));
+        const channelsOfferings = channels.map((channel: ChannelType) => (window as any).ws.getOffering(channel.offering));
         const offerings = await Promise.all(channelsOfferings);
         const productsByChannels = offerings.map(offering => offering.product);
 
@@ -72,6 +74,10 @@ class Channels extends React.Component<Props, any> {
             channels,
             offerings
         });
+
+        if(!once){
+            setTimeout(this.refresh, 5000);
+        }
     }
 
     static getDerivedStateFromProps(props: any, state: any){
@@ -79,6 +85,7 @@ class Channels extends React.Component<Props, any> {
     }
 
     render (){
+
         this.refreshIfStatusChanged();
 
         const { t } = this.props;

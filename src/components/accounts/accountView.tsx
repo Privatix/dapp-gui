@@ -53,7 +53,7 @@ class AccountView extends React.Component<any, any> {
             msg += t('ErrorNotEnoughExchangeFunds');
         }
 
-        if(this.state.destination === 'ptc' && this.state.account.psc_balance < this.state.amount){
+        if(this.state.destination === 'ptc' && this.state.account.pscBalance < this.state.amount){
             err = true;
             msg += t('ErrorNotEnoughServiceFunds');
         }
@@ -76,8 +76,8 @@ class AccountView extends React.Component<any, any> {
         notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
     }
 
-    async refreshTransactions(){
-        const transactions = await api.getTransactionsByAccount(this.state.account.id);
+    async refreshTransactions() {
+        const transactions = await (window as any).ws.getTransactions('account', this.state.account.id);
         this.setState({transactions});
     }
 
@@ -146,7 +146,7 @@ class AccountView extends React.Component<any, any> {
                         <label className='col-3 col-form-label'>{t('ServiceBalance')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={this.state.account.psc_balance/1e8} readOnly/>
+                                <input type='text' className='form-control' value={this.state.account.pscBalance/1e8} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -169,7 +169,7 @@ class AccountView extends React.Component<any, any> {
                                     </select>
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    <span>{(this.state.destination === 'psc' ? this.state.account.ptcBalance : this.state.account.psc_balance)/1e8}</span> PRIX
+                                    <span>{(this.state.destination === 'psc' ? this.state.account.ptcBalance : this.state.account.pscBalance)/1e8}</span> PRIX
                                 </div>
                             </div>
                         </div>

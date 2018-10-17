@@ -35,7 +35,7 @@ interface AsyncProviders {
 export const asyncProviders: AsyncProviders = {
     updateAccounts: function(){
         return function(dispatch: any){
-            api.accounts.getAccounts()
+            (window as any).ws.getAccounts()
                .then(accounts => {
                     dispatch(handlers.updateAccounts(accounts));
                });
@@ -43,7 +43,7 @@ export const asyncProviders: AsyncProviders = {
     },
     updateProducts: function(){
         return function(dispatch: any){
-            api.products.getProducts()
+            (window as any).ws.getProducts()
                .then(products => {
                    dispatch(handlers.updateProducts(products));
                });
@@ -51,15 +51,15 @@ export const asyncProviders: AsyncProviders = {
     },
     updateSettings: function(){
         return function(dispatch: any){
-            api.settings.get()
-               .then(settings => {
-                   dispatch(handlers.updateSettings(settings));
-               });
+            (window as any).ws.getSettings()
+                .then(settings => {
+                    dispatch(handlers.updateSettings(settings));
+                });
         };
     },
     updateOfferings: function(){
         return function(dispatch: any){
-            api.offerings.getOfferings()
+            (window as any).ws.getAgentOfferings()
                 .then(offerings => {
                     dispatch(handlers.updateOfferings(offerings));
                 });

@@ -35,12 +35,13 @@
         "Name": "Name",
         "WhileNextButton": "While next button will be pressed, we will generate a new account.",
         "IfYouLoseThePassword": "If you lose the password you use to encrypt your account, you will not be able to access that account",
-        "AccountsNameCantBeEmpty": "Accounts name can't be empty."
+        "AccountsNameCantBeEmpty": "Accounts name can't be empty.",
+        "SomethingWentWrong": "Something went wrong. Try again later!"
     },
     "auth/importJsonKey":{
         "NoFileChosen": "No file chosen.",
         "PleaseSetThePassword": "Please set the password.",
-        "PleaseEnterAValidPassword": "Please enter a valid password.",
+        "SomethingWentWrong": "Something went wrong. Please, check the file or enter a valid password.",
         "PathToJSONKeystoreFile": "Path to JSON Keystore File",
         "PasswordWillBeUsed": "Password (will be used to decrypt JSON)",
         "MoreInformation": "More information about Ethereum Private Key"
@@ -48,7 +49,8 @@
     "auth/importHexKey": {
         "PleaseInputHexRepresentation": "Please, input hex representation of your Private Key for address, that holds PRIX",
         "PrivateKey": "Private key",
-        "PrivateKeyMustHave": "Private key must have exactly 64 hex symbols."
+        "PrivateKeyMustHave": "Private key must have exactly 64 hex symbols.",
+        "SomethingWentWrong": "Something went wrong. Please, check the key."
     },
     "auth/backup": {
         "generateKey": "new key has been successfully generated and registered!",
@@ -86,7 +88,9 @@
         "Description": "Description",
         "description": "description",
         "Country": "Country",
-        "ChangeCountryHelpText": "For changing country you must go to the Servers page",
+        "ChangeCountryHelpTextPart1": "For changing country you must go to the",
+        "ChangeCountryHelpTextPart2": "page",
+        "ChangeCountryHelpTextServers": "Servers",
         "Supply": "Supply",
         "ie": "i.e.",
         "MaximumSupplyOfServices": "Maximum supply of services according to service offerings.",
@@ -116,6 +120,7 @@
         "Mbits": "Mbits",
         "PublicationPrice": "Publication price",
         "Account": "Account",
+        "ServiceBalance": "Service Balance",
         "Deposit": "Deposit",
         "ThisDepositWillBeLocked": "This deposit will be locked while offering is active.",
         "ToReturnDeposit": "To return deposit close your offering.",
@@ -577,5 +582,37 @@
         "LoginTo": "Login to",
         "Password": "Password",
         "AccessDenied": "access denied, possibly wrong password"
+    },
+    "settings": {
+        "Settings": "Settings",
+        "Name": "Name",
+        "Value": "Value",
+        "Description": "Description",
+        "error_sendremote_Name": "error reporting",
+        "eth_challenge_period_Name": "challenge period",
+        "eth_default_gasprice_Name": "default gas price",
+        "eth_event_blocklimit_Name": "maximum events blocks",
+        "eth_event_freshblocks_Name": "last events blocks",
+        "eth_event_maxretry_Name": "event processing max retry",
+        "eth_max_deposit_Name": "maximum deposit",
+        "eth_min_confirmations_Name": "ethereum confirmation blocks",
+        "system_version_db_Name": "db version",
+        "user_isagent_Name": "user role is agent",
+        "eth_event_lastProcessedBlock_Name": "last processed block",
+        "offering_autopopup_Name": "offering autopopup",
+        "system_version_app_Name": "application version",
+        "error_sendremote_Description": "Allow error reporting to send logs to Privatix.",
+        "eth_challenge_period_Description": "Number of blocks to wait from an uncooperativeClose initiated by the Client in order to give the Agent a chance to respond with a balance proof in case the Client cheats. After the challenge period, the Client can settle and delete the channel. Number of blocks Agent will wait from registerServiceOffering or from createChannel before he can delete service offering and recieve Agent's deposit back_",
+        "eth_default_gasprice_Description": "Default GAS price for transactions.",
+        "eth_event_blocklimit_Description": "maximum number of ethereum blocks that is used to scan for new events. It is used as pagination mechanism while querying ethereum JSON RPC. If eth.event.blocklimit is null or zero then no pagination is used, which is not recommended.",
+        "eth_event_freshblocks_Description": "defines number of latest ethereum blocks to retrieve. If eth.event.freshblocks is null or zero then all events will be downloaded.",
+        "eth_event_maxretry_Description": "have value (stored as string) that is null or integer and represents how many times event should try to create job, until it is ignored. null or zero considered unlimited.",
+        "eth_max_deposit_Description": "We temporarily limit total token deposits in a channel to 300 PRIX. This is just for the bug bounty release, as a safety measure.",
+        "eth_min_confirmations_Description": "have value (stored as string) that is null or integer and represents how many ethereum blocks should be mined after block where transaction of interest exists. As there is non zero probability of attack where some last blocks can be generated by attacker and will be than ignored by ethereum network (uncle blocks) after attack detection. dappctrl give ability to user to specify how many latest blocks are considered non reliable. These last blocks will not be used to fetch events or transactions.",
+        "system_version_db_Description": "Version of database.",
+        "user_isagent_Description": "Specifies user role. \"true\" - agent. \"false\" - client.",
+        "eth_event_lastProcessedBlock_Description": "Last block number in blockchain stores last proccessed block.",
+        "offering_autopopup_Description": "Allow offerings to pop up automatically.",
+        "system_version_app_Description": "Application version"
     }
 }
