@@ -5,7 +5,6 @@ import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
 import toFixedN from '../../utils/toFixedN';
-import * as api from '../../utils/api';
 import Offering from '../vpn_list/acceptOffering';
 import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
@@ -32,7 +31,7 @@ class Connection extends React.Component<any, any>{
     }
 
     updateOffering(offeringId: string){
-        api.offerings.getClientOfferingById(offeringId)
+        (window as any).ws.getOffering(offeringId)
            .then(offering => {
                if(offering){
                    this.setState({offering});

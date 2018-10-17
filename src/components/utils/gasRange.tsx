@@ -1,6 +1,6 @@
 import * as React from 'react';
 import ExternalLink from './externalLink';
-import * as _ from 'lodash';
+import isString = require('lodash.isstring'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 import { translate } from 'react-i18next';
 
 @translate('utils/gasRange')
@@ -11,8 +11,8 @@ export default class GasRange extends React.Component<any, any> {
         super(props);
 
         const {t} = props;
-        const extLinkText = (_.isString(props.extLinkText)) ? props.extLinkText : 'https://ethgasstation.info/';
-        const averageTimeText = (_.isString(props.averageTimeText)) ? props.averageTimeText : t('AveragePublicationTimeText');
+        const extLinkText = (isString(props.extLinkText)) ? props.extLinkText : 'https://ethgasstation.info/';
+        const averageTimeText = (isString(props.averageTimeText)) ? props.averageTimeText : t('AveragePublicationTimeText');
 
         this.state = {
             value: props.value,

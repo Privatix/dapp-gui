@@ -72,6 +72,7 @@ export class WS {
     whenReady(){
         return this.ready;
     }
+
     subscribe(entityType:string, ids: string[], handler: Function) {
         const uuid = uuidv4();
         const req = {
@@ -101,6 +102,30 @@ export class WS {
             delete WS.bySubscription[WS.byUUID[id]];
             delete WS.byUUID[id];
         }
+    }
+
+    send(method: string, params: any[] = []){
+        const uuid = uuidv4();
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method,
+            params: params.length ? [this.pwd, ...params] : [this.pwd]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const handler = function(res: any){
+                if('error' in res){
+                    reject(res.error);
+                }else{
+                    resolve(res.result);
+                }
+            };
+
+            WS.handlers[uuid] = handler;
+            this.socket.send(JSON.stringify(req));
+        });
     }
 
     topUp(channelId: string, gasPrice: number, handler: Function){
@@ -155,51 +180,13 @@ export class WS {
     }
 
     updatePassword(pwd: string){
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_setPassword',
-            params: [this.pwd, pwd]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_setPassword', [pwd]);
     }
 
 // accounts
 
     getAccounts(): Promise<Account[]> {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getAccounts',
-            params: [this.pwd]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        }) as Promise<Account[]>;
+        return this.send('ui_getAccounts') as Promise<Account[]>;
     }
 
     generateAccount(payload: any, handler: Function){
@@ -259,50 +246,13 @@ export class WS {
     }
 
     updateBalance(accountId: string){
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_updateBalance',
-            params: [this.pwd, accountId]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function(res: any){
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_updateBalance', [accountId]);
     }
 // templates
 
     getTemplates(templateType?: TemplateType){
-        const uuid = uuidv4();
-
         const type = templateType ? templateType : '';
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getTemplates',
-            params: [this.pwd, type]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function(res: any){
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_getTemplates', [type]);
     }
 
     getTemplate(id: string){
@@ -313,99 +263,27 @@ export class WS {
 // endpoints
 
     getEndpoints(channelId: string, templateId: string = ''){
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getEndpoints',
-            params: [this.pwd, channelId, templateId]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_getEndpoints', [channelId, templateId]);
     }
 
 // products
 
     getProducts(): Promise<Product[]> {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getProducts',
-            params: [this.pwd]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        }) as Promise<Product[]>;
+        return this.send('ui_getProducts')  as Promise<Product[]>;
     }
 
     updateProduct(product: any){
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_updateProduct',
-            params: [this.pwd, product]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_updateProduct', [product]);
     }
 
 // offerings
 
     getAgentOfferings(productId: string='', status: OfferStatus = OfferStatus.undef): Promise<Offering[]>{
-        const uuid = uuidv4();
+        return this.send('ui_getAgentOfferings', [productId, status]) as Promise<Offering[]>;
+    }
 
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getAgentOfferings',
-            params: [this.pwd, productId, status]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        }) as Promise<Offering[]>;
+    getClientOfferings(agent: string = '', minUnitPrice: number = 0, maxUnitPrice: number = 0, countries: string[] = []): Promise<Offering[]>{
+        return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries]) as Promise<Offering[]>;
     }
 
     getOffering(id: string): Promise<Offering>{
@@ -413,144 +291,30 @@ export class WS {
     }
 
     createOffering(payload: any){
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_createOffering',
-            params: [this.pwd, payload]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_createOffering', [payload]);
     }
 
     changeOfferingStatus(offeringId: string, action: string, gasPrice: number){
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_changeOfferingStatus',
-            params: [this.pwd, offeringId, action, gasPrice]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_changeOfferingStatus', [offeringId, action, gasPrice]);
     }
 
 // sessions
 
     getSessions(channelId: string = ''): Promise<Session[]>{
-         const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getSessions',
-            params: [this.pwd, channelId]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        }) as Promise<Session[]>;
+        return this.send('ui_getSessions', [channelId]) as Promise<Session[]>;
     }
 // common
 
     getObject(type: string, id: string){
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getObject',
-            params: [this.pwd, type, id]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_getObject', [type, id]);
     }
 
     getTransactions(type: string, id: string) {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getEthTransactions',
-            params: [this.pwd, type, id]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function(res: any){
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_getEthTransactions', [type, id]);
     }
 
     getSettings() {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getSettings',
-            params: [this.pwd]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function(res: any){
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-
-            this.socket.send(JSON.stringify(req));
-        });
+        return this.send('ui_getSettings');
     }
     
 }

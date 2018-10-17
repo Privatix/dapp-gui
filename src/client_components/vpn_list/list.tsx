@@ -1,16 +1,15 @@
 import * as React from 'react';
-// import {asyncReactor} from 'async-reactor';
+import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
-import 'rc-slider/assets/index.css';
 import Slider from 'rc-slider';
-import * as _ from 'lodash';
-import * as api from '../../utils/api';
+import 'rc-slider/assets/index.css';
+import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
+
 import AcceptOffering from './acceptOffering';
 import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import notice from '../../utils/notice';
 import toFixedN from '../../utils/toFixedN';
-import { translate } from 'react-i18next';
 
 @translate(['client/vpnList', 'utils/notice'])
 
@@ -82,84 +81,83 @@ export default class AsyncList extends React.Component<any,any> {
     }
 
     async getClientOfferings(done?: Function) {
+
         const { t } = this.props;
 
-        api.getClientOfferings()
-            .then(clientOfferings => {
-                // Show loader when downloading VPN list
-                setTimeout(() => {
-                    this.refresh();
-                }, 5000);
+        const clientOfferings = await (window as any).ws.getClientOfferings();
+        // Show loader when downloading VPN list
+        setTimeout(() => {
+            this.refresh();
+        }, 5000);
 
-                if (Object.keys(clientOfferings).length === 0) {
-                    this.setState({spinner: true});
-                    return;
-                }
+        if (Object.keys(clientOfferings).length === 0) {
+            this.setState({spinner: true});
+            return;
+        }
 
-                let offerings = clientOfferings.map(offering => {
+        let offerings = clientOfferings.map(offering => {
 
-                    const offeringHash = '0x' + new Buffer(offering.hash, 'base64').toString('hex');
+            const offeringHash = '0x' + new Buffer(offering.hash, 'base64').toString('hex');
 
-                    return {
-                        block: offering.blockNumberUpdated,
-                        hash: <ModalWindow customClass='' modalTitle={t('AcceptOffering')} text={offeringHash} component={<AcceptOffering offering={offering} />} />,
-                        country: offering.country,
-                        price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
-                        supply: offering.supply,
-                        availableSupply: offering.currentSupply,
-                        agent: '0x' + new Buffer(offering.agent, 'base64').toString('hex')
-                    };
-                });
+            return {
+                block: offering.blockNumberUpdated,
+                hash: <ModalWindow customClass='' modalTitle={t('AcceptOffering')} text={offeringHash} component={<AcceptOffering offering={offering} />} />,
+                country: offering.country,
+                price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
+                supply: offering.supply,
+                availableSupply: offering.currentSupply,
+                agent: '0x' + new Buffer(offering.agent, 'base64').toString('hex')
+            };
+        });
 
-                // get countries list for filter by countries
-                let countriesArr = [];
-                let countriesAsocArr = [];
-                clientOfferings.forEach((offering) => {
-                    if (countriesAsocArr[offering.country] !== undefined) {
-                        countriesAsocArr[offering.country].count++;
-                    } else {
-                        countriesAsocArr[offering.country] = {
-                            name: offering.country,
-                            defShow: 0,
-                            count: 1
-                        };
-                    }
-                });
+        // get countries list for filter by countries
+        let countriesArr = [];
+        let countriesAsocArr = [];
+        clientOfferings.forEach((offering) => {
+            if (countriesAsocArr[offering.country] !== undefined) {
+                countriesAsocArr[offering.country].count++;
+            } else {
+                countriesAsocArr[offering.country] = {
+                    name: offering.country,
+                    defShow: 0,
+                    count: 1
+                };
+            }
+        });
 
-                (Object.keys(countriesAsocArr as any)).forEach((country) => {
-                    countriesArr.push(countriesAsocArr[country]);
-                });
+        (Object.keys(countriesAsocArr as any)).forEach((country) => {
+            countriesArr.push(countriesAsocArr[country]);
+        });
 
-                countriesArr.sort((country1, country2) => {
-                    return country2.count - country1.count;
-                });
+        countriesArr.sort((country1, country2) => {
+            return country2.count - country1.count;
+        });
 
-                let countriesArrCount = 0;
-                let countries = (countriesArr as any).map((country) => {
-                    countriesArrCount++;
-                    return {
-                        name: country.name,
-                        defShow: countriesArrCount > 5 ? 0 : 1
-                    };
-                });
-                const max = clientOfferings.reduce((max, offering) => offering.unitPrice > max ? offering.unitPrice : max, 0);
-                const min = clientOfferings.reduce((min, offering) => offering.unitPrice < min ? offering.unitPrice : min, max);
-                this.setState({
-                    spinner: false,
-                    data: offerings,
-                    filtered: offerings,
-                    countries,
-                    filteredCountries: countries,
-                    max: max/1e8,
-                    to: max/1e8,
-                    min: min/1e8,
-                    from: min/1e8
-                });
+        let countriesArrCount = 0;
+        let countries = (countriesArr as any).map((country) => {
+            countriesArrCount++;
+            return {
+                name: country.name,
+                defShow: countriesArrCount > 5 ? 0 : 1
+            };
+        });
+        const max = clientOfferings.reduce((max, offering) => offering.unitPrice > max ? offering.unitPrice : max, 0);
+        const min = clientOfferings.reduce((min, offering) => offering.unitPrice < min ? offering.unitPrice : min, max);
+        this.setState({
+            spinner: false,
+            data: offerings,
+            filtered: offerings,
+            countries,
+            filteredCountries: countries,
+            max: max/1e8,
+            to: max/1e8,
+            min: min/1e8,
+            from: min/1e8
+        });
 
-                if ('function' === typeof done) {
-                    done();
-                }
-            });
+        if ('function' === typeof done) {
+            done();
+        }
     }
 
     shouldComponentUpdate(nextProps:any, nextState:any) {
@@ -168,7 +166,7 @@ export default class AsyncList extends React.Component<any,any> {
             || (this.state.changePriceInput !== nextState.changePriceInput)
             || (this.state.showAllCountries !== nextState.showAllCountries)
             || (this.state.filteredCountries !== nextState.filteredCountries)
-            || !(_.isEqual(nextState.filtered, this.state.filtered));
+            || !(isEqual(nextState.filtered, this.state.filtered));
     }
 
     changeMinPriceInput(evt:any) {
