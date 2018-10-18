@@ -108,7 +108,7 @@ class Accounts extends React.Component<Props, any> {
             <div className='row'>
                 <div className='col-12'>
                     <div className='card-box'>
-                        <div className='bootstrap-table bootstrap-table-sortable'>
+                        <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                             <SortableTable
                                 data={accountsDataArr}
                                 columns={columns} />

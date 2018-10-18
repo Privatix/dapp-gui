@@ -53,6 +53,7 @@
         "rc-slider": "^8.6.3",
         "react": "^16.5.2",
         "react-awesome-modal-perfected": "^1.1.1",
+        "react-copy-to-clipboard": "^5.0.1",
         "react-countdown-now": "^1.3.0",
         "react-datepicker": "^1.6.0",
         "react-dom": "^16.5.2",

@@ -614,5 +614,9 @@
         "eth_event_lastProcessedBlock_Description": "Last block number in blockchain stores last proccessed block.",
         "offering_autopopup_Description": "Allow offerings to pop up automatically.",
         "system_version_app_Description": "Application version"
+    },
+    "copyToClipboard": {
+        "Copied": "Copied!",
+        "Copy": "Copy"
     }
 }

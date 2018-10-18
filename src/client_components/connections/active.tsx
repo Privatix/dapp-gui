@@ -9,6 +9,7 @@ import Usage from './usage';
 import { withRouter } from 'react-router-dom';
 import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
+import CopyToClipboard from '../../components/copyToClipboard';
 
 @translate('client/connections/active')
 
@@ -36,19 +37,29 @@ class ActiveConnection extends React.Component<any, any>{
             const jobStatus = <JobStatus status={channel.job.status} />;
 
             return <tr key={channel.id} >
-                        <td>
-                            <ModalWindow visible={this.state.popup}
-                                         customClass='btn btn-link waves-effect'
-                                         modalTitle={t('Connection')} text={channel.id} component={<Connection connection={channel} />}
-                            />
-                        </td>
-                        <td>{channel.agent}</td>
-                        <td><ContractStatus contractStatus={channel.channelStatus.channelStatus}/></td>
-                        <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
-                        <td><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</td>
-                        <td><Usage channel={channel} /></td>
-                        <td>{toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})}</td>
-                    </tr>;
+                <td className='shortTableTextTd'>
+                    <ModalWindow
+                        visible={this.state.popup}
+                        customClass='shortTableText'
+                        modalTitle={t('Connection')}
+                        text={channel.id}
+                        copyToClipboard={true}
+                        component={<Connection connection={channel}
+                        />}
+                    />
+                </td>
+                <td className='shortTableTextTd'>
+                    <div>
+                        <span className='shortTableText' title={channel.agent}>{channel.agent}</span>
+                        <CopyToClipboard text={channel.agent} />
+                    </div>
+                </td>
+                <td><ContractStatus contractStatus={channel.channelStatus.channelStatus}/></td>
+                <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
+                <td><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</td>
+                <td><Usage channel={channel} /></td>
+                <td>{toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})}</td>
+            </tr>;
         });
 
         return <div className='row'>
@@ -57,7 +68,7 @@ class ActiveConnection extends React.Component<any, any>{
                     <h5 className='card-header'>{t('ActiveConnection')}</h5>
                     <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                         <div className='card-body'>
-                            <table className='table table-bordered table-striped'>
+                            <table className='table table-bordered table-striped table-responsive'>
                                 <thead>
                                 <tr>
                                     <th>{t('Id')}</th>

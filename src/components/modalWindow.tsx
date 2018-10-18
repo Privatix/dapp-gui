@@ -1,5 +1,6 @@
 import * as React from 'react';
 import Modal from 'react-awesome-modal-perfected';
+import CopyToClipboard from './copyToClipboard';
 
 export default class ModalWindow extends React.Component<any, any> {
 
@@ -50,7 +51,7 @@ export default class ModalWindow extends React.Component<any, any> {
         this.setState({visible: true});
     }
 
-    render(){
+    render() {
 
         if (this.state.visible === true) {
             document.body.classList.add('modal-open');
@@ -81,9 +82,13 @@ export default class ModalWindow extends React.Component<any, any> {
               </div>
             : <div></div>;
 
+        const copyToClipboard = !this.state.props.copyToClipboard ? '' :
+            <CopyToClipboard text={this.state.props.text} />;
+
         return (
             <div>
-                <a href='#' onClick={this.showModal.bind(this)} className={this.state.props.customClass}>{this.state.props.text}</a>
+                <a href='#' onClick={this.showModal.bind(this)} className={this.state.props.customClass} title={this.state.props.text}>{this.state.props.text}</a>
+                {copyToClipboard}
                 {content}
             </div>
         );
