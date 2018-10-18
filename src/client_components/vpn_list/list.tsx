@@ -36,13 +36,12 @@ export default class AsyncList extends React.Component<any,any> {
             columns: [
                 {
                     header: t('Block'),
-                    key: 'block',
-                    dataStyle: { fontSize: '11px'},
+                    key: 'block'
                 },
                 {
                     header: t('Hash'),
                     key: 'hash',
-                    dataStyle: { fontSize: '11px'},
+                    dataProps: { className: 'shortTableTextTd' },
                     descSortFunction: ModalPropTextSorter.desc,
                     ascSortFunction: ModalPropTextSorter.asc
                 },
@@ -101,7 +100,13 @@ export default class AsyncList extends React.Component<any,any> {
 
             return {
                 block: offering.blockNumberUpdated,
-                hash: <ModalWindow customClass='' modalTitle={t('AcceptOffering')} text={offeringHash} component={<AcceptOffering offering={offering} />} />,
+                hash: <ModalWindow
+                    customClass='shortTableText'
+                    modalTitle={t('AcceptOffering')}
+                    text={offeringHash}
+                    copyToClipboard={true}
+                    component={<AcceptOffering offering={offering} />}
+                />,
                 country: offering.country,
                 price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
                 supply: offering.supply,
@@ -434,7 +439,7 @@ export default class AsyncList extends React.Component<any,any> {
                     </div>
                     <div className='col-9'>
                         <div className='card-box'>
-                            <div className='bootstrap-table bootstrap-table-sortable'>
+                            <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                                 <SortableTable
                                     data={this.state.filtered}
                                     columns={this.state.columns}/>

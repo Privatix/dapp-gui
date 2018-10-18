@@ -173,7 +173,7 @@ class Connection extends React.Component<any, any>{
                         <h5 className='card-header'>{t('Sessions')}</h5>
                         <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                             <div className='card-body'>
-                                <div className='bootstrap-table bootstrap-table-sortable'>
+                                <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                                     <SortableTable
                                         data={sessionsData}
                                         columns={sessionsColumns}/>

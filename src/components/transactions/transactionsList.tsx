@@ -39,7 +39,7 @@ export default class Transactions extends React.Component<any, any>{
 
         return <div className='row'>
             <div className='col-12'>
-                <div className='bootstrap-table bootstrap-table-sortable'>
+                <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                     <SortableTable
                         data={transactionsDataArr}
                         columns={columns} />

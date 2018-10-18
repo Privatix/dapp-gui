@@ -613,5 +613,9 @@
         "user_isagent_Description": "Указывает роль пользователя. \"true\" - агент. \"false\" - клиент.",
         "eth_event_lastProcessedBlock_Description": "Последний номер блока в блок-цепочке хранит последний обработанный блок.",
         "offering_autopopup_Description": "Разрешить поднять предложение автоматически."
+    },
+    "copyToClipboard": {
+        "Copied": "Скопировано!",
+        "Copy": "Копировать"
     }
 }
