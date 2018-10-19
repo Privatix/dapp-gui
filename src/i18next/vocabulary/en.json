@@ -107,13 +107,14 @@
         "ConnectionInfo": "Connection info",
         "MaxSuspendTime": "Max suspend time",
         "sec": "sec",
+        "min": "min",
         "MaximumTimeServiceCan": "Maximum time service can be in Suspended status due to payment lag.",
         "AfterThisTimePeriodService": "After this time period service will be terminated, if no sufficient payment was received.",
-        "PeriodIsSpecifiedInSeconds": "Period is specified in seconds.",
+        "PeriodIsSpecifiedInMinutes": "Period is specified in minutes. Minimal period - 10 minutes.",
         "MaxInactiveTime": "Max inactive time",
         "MaximumTimeWithoutServiceUsage": "Maximum time without service usage.",
         "AgentWillConsider": "Agent will consider that Client will not use service and stop providing it.",
-        "PeriodIsSpecified": "Period is specified in seconds.",
+        "PeriodIsSpecified": "Period is specified in minutes. Minimal period - 10 minutes.",
         "AdditionalParameters": "Additional parameters",
         "MinDownloadMbits": "Min download speed",
         "MinUploadMbits": "Min upload speed",
@@ -143,7 +144,9 @@
         "haveNegativeValue": "have negative value.",
         "haveNegativeValue_plural": "have negative value.",
         "cantBeEmpty": "can't be empty.",
-        "cantBeEmpty_plural": "can't be empty."
+        "cantBeEmpty_plural": "can't be empty.",
+        "MaxSuspendTimeMustBeMoreOrEquals10Min": "Maximum suspend time must be equals or more than 10 min.",
+        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Maximum inactive time must be equals or more than 10 min."
     },
     "offerings/offeringTools":{
         "WarningArea": "Warning area",

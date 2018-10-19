@@ -126,14 +126,14 @@ export default class OfferingView extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>{t('MaxSuspendTime')}:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={props.offering.maxSuspendTime} readOnly/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>{t('sec')}</span>
+                                <input type='text' className='form-control' value={Math.ceil(parseFloat(props.offering.maxSuspendTime) / 60)} readOnly/>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>{t('min')}</span>
                             </div>
                             <span className='help-block'>
                                 <small>
                                     {t('MaximumTimeServiceCan')}
                                     {t('AfterThisTimePeriodService')}
-                                    {t('PeriodIsSpecifiedInSeconds')}
+                                    {t('PeriodIsSpecifiedInMinutes')}
                                 </small>
                             </span>
                         </div>
@@ -142,8 +142,8 @@ export default class OfferingView extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>{t('MaxInactiveTime')}:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={props.offering.maxInactiveTimeSec} readOnly/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>sec</span>
+                                <input type='text' className='form-control' value={Math.ceil(parseFloat(props.offering.maxInactiveTimeSec) / 60)} readOnly/>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>min</span>
                             </div>
                             <span className='help-block'>
                                 <small>

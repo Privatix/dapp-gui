@@ -214,6 +214,10 @@ class CreateOffering extends React.Component<any, any>{
             err=true;
         }
 
+        if (parseFloat(payload.maxSuspendTime) < 10 || parseFloat(payload.maxInactiveTimeSec) < 10){
+            err=true;
+        }
+
 
         if(err){
             let msg = '';
@@ -276,6 +280,15 @@ class CreateOffering extends React.Component<any, any>{
             if(wrongKeys.includes('unitPrice') && payload.unitPrice !== payload.unitPrice){
                 msg += t('UnitPriceMustBeANumber') + ' ';
             }
+
+            if (parseFloat(payload.maxSuspendTime) < 10) {
+                msg += t('MaxSuspendTimeMustBeMoreOrEquals10Min') + ' ';
+            }
+
+            if (parseFloat(payload.maxInactiveTimeSec) < 10) {
+                msg += t('MaxInactiveTimeSecMustBeMoreOrEquals10Min') + ' ';
+            }
+
             this.setState({errMsg: msg});
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }else{
@@ -288,6 +301,10 @@ class CreateOffering extends React.Component<any, any>{
             }else{
                 payload.maxUnit = parseInt(payload.maxUnit, 10);
             }
+
+            // MaxSuspendTime and MaxInactiveTime to seconds
+            payload.maxSuspendTime = Math.floor(parseFloat(payload.maxSuspendTime)) * 60;
+            payload.maxInactiveTimeSec = Math.floor(parseFloat(payload.maxInactiveTimeSec)) * 60;
 
             // additional parameters
             if('minDownloadMbits' in payload){
@@ -531,18 +548,18 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder={t('ie') + ' 1800'}
+                                                   placeholder={t('ie') + ' 10'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxSuspendTime'
                                                    value={this.state.payload.maxSuspendTime}
                                             />
-                                            <span className='input-group-addon bootstrap-touchspin-postfix'>{t('sec')}</span>
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>{t('min')}</span>
                                         </div>
                                         <span className='help-block'>
                                             <small>
                                                 {t('MaximumTimeServiceCan') + ' '}
                                                 {t('AfterThisTimePeriodService') + ' '}
-                                                {t('PeriodIsSpecifiedInSeconds') + ' '}
+                                                {t('PeriodIsSpecifiedInMinutes') + ' '}
                                             </small>
                                         </span>
                                     </div>
@@ -553,12 +570,12 @@ class CreateOffering extends React.Component<any, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder={t('ie') + ' 1800'}
+                                                   placeholder={t('ie') + ' 10'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxInactiveTimeSec'
                                                    value={this.state.payload.maxInactiveTimeSec}
                                             />
-                                            <span className='input-group-addon bootstrap-touchspin-postfix'>{t('sec')}</span>
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>{t('min')}</span>
                                         </div>
                                         <span className='help-block'>
                                             <small>
