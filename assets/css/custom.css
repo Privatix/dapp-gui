@@ -192,6 +192,9 @@ ul.default li {
     color: #81c868;
 }
 
+.productModal{
+    height: 50vh;
+}
 .modal-content .modal-header h4.modal-title{
     margin: 0;
 }
