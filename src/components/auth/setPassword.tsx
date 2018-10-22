@@ -1,13 +1,17 @@
 import * as React from 'react';
-import Steps from './steps';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import notice from '../../utils/notice';
+import { translate } from 'react-i18next';
 import * as ReactTooltip from 'react-tooltip';
+
 import {NextButton, PreviousButton, back} from './utils';
+import Steps from './steps';
+
+import notice from '../../utils/notice';
 import * as api from '../../utils/api';
+import handlers from '../../redux/actions';
 import {fetch} from '../../utils/fetch';
 import { WS } from '../../utils/ws';
-import { translate } from 'react-i18next';
 
 @translate(['auth/setPassword', 'utils/notice'])
 class SetPassword extends React.Component<any, any>{
@@ -75,6 +79,9 @@ class SetPassword extends React.Component<any, any>{
                 await fetch('/login', {method: 'post', body});
                 await ws.setPassword(pwd);
                 (window as any).ws = ws;
+                this.props.dispatch(handlers.setWS(ws));
+                const mode = await api.getUserRole();
+                this.props.dispatch(handlers.setMode(mode));
                 this.props.history.push('/setAccount');
             }catch(e){
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
@@ -148,4 +155,4 @@ class SetPassword extends React.Component<any, any>{
     }
 }
 
-export default withRouter(SetPassword);
+export default connect(state => state)(withRouter(SetPassword));

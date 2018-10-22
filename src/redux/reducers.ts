@@ -19,7 +19,8 @@ export default function reducer(state: State = StateDefault, action: Action = {t
         [actions.UPDATE_PRODUCTS]        : (state: State, action: Action) => _.assign({}, state, {products: action.value}),
         [actions.UPDATE_SETTINGS]        : (state: State, action: Action) => _.assign({}, state, {settings: action.value}),
         [actions.SET_MODE]               : (state: State, action: Action) => _.assign({}, state, {mode: action.value}),
-        [actions.SET_CHANNEL]            : (state: State, action: Action) => _.assign({}, state, {channel: action.value})
+        [actions.SET_CHANNEL]            : (state: State, action: Action) => _.assign({}, state, {channel: action.value}),
+        [actions.SET_WS]                 : (state: State, action: Action) => _.assign({}, state, {ws: action.value})
     };
 
     return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;
