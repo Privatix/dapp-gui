@@ -51,8 +51,10 @@ class ProductItem extends React.Component<any, any>{
 
     getOfferings() {
         (window as any).ws.getAgentOfferings(this.props.product.id)
-            .then((offerings: any) => {
-                this.setState({offerings});
+            .then(offerings => {
+                if(offerings){
+                    this.setState({offerings});
+                }
             });
     }
 
@@ -70,7 +72,7 @@ class ProductItem extends React.Component<any, any>{
              </td>
              <td>{this.state.offerTemplate? this.state.offerTemplate.raw.schema.title : ''}</td>
              <td>{this.state.accessTemplate ? this.state.accessTemplate.raw.title : ''}</td>
-             <td>{(this.state.offerings as any).length}</td>
+             <td>{this.state.offerings.length}</td>
              <td>
                  {<ModalWindow visible={this.state.visible}
                                customClass='btn btn-default btn-custom waves-effect waves-light'
