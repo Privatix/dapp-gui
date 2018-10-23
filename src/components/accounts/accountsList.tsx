@@ -9,6 +9,7 @@ import notice from '../../utils/notice';
 import {State} from '../../typings/state';
 import {Account as AccountType} from '../../typings/accounts';
 import { translate } from 'react-i18next';
+import CopyToClipboard from '../copyToClipboard';
 
 interface Props {
     accounts: AccountType[];
@@ -61,7 +62,14 @@ class Accounts extends React.Component<Props, any> {
             },
             {
                 header: t('EthereumAddress'),
-                key: 'ethereumAddress'
+                key: 'ethereumAddress',
+                dataProps: { className: 'shortTableTextTd' },
+                render: (ethereumAddress) => {
+                    return <div>
+                        <span className='shortTableText' title={ethereumAddress}>{ethereumAddress}</span>
+                        <CopyToClipboard text={ethereumAddress} />
+                    </div>;
+                }
             },
             {
                 header: t('ETH'),

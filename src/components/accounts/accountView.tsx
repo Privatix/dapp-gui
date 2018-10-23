@@ -77,7 +77,7 @@ class AccountView extends React.Component<any, any> {
     }
 
     async refreshTransactions() {
-        const transactions = await (window as any).ws.getTransactions('account', this.state.account.id);
+        const transactions = await (window as any).ws.getTransactions('accountAggregated', this.state.account.id);
         this.setState({transactions});
     }
 

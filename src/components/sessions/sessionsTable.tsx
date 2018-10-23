@@ -2,6 +2,7 @@ import * as React from 'react';
 import SortableTable from 'react-sortable-table-vilan';
 import PgTime from '../utils/pgTime';
 import { translate } from 'react-i18next';
+import CopyToClipboard from '../copyToClipboard';
 
 @translate(['sessions/sessionsList'])
 
@@ -28,7 +29,14 @@ export default class SessionsTable extends React.Component <any,any> {
             {
                 header: 'ID',
                 key: 'id',
-                sortable: false
+                sortable: false,
+                dataProps: { className: 'shortTableTextTd' },
+                render: (id) => {
+                    return <div>
+                        <span className='shortTableText' title={id}>{id}</span>
+                        <CopyToClipboard text={id} />
+                    </div>;
+                }
             },
             {
                 header: t('Started'),
