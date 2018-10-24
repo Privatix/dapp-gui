@@ -10,11 +10,13 @@ import {State} from '../../typings/state';
 import {Account as AccountType} from '../../typings/accounts';
 import { translate } from 'react-i18next';
 import CopyToClipboard from '../copyToClipboard';
+import { WS } from '../../utils/ws';
 
 interface Props {
     accounts: AccountType[];
     dispatch: any;
     t: any;
+    ws: WS;
 }
 
 @translate(['accounts/accountsList', 'utils/notice'])
@@ -32,12 +34,13 @@ class Accounts extends React.Component<Props, any> {
 
     async onRefresh(accountId:any, evt: any){
         evt.preventDefault();
-        const {t} = this.props;
-        await (window as any).ws.updateBalance(accountId);
+        const { t, ws } = this.props;
+        await ws.updateBalance(accountId);
         notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
     }
 
     render(){
+
         const { t } = this.props;
 
         const accountsDataArr = this.props.accounts.map((account: any) => {
@@ -128,4 +131,4 @@ class Accounts extends React.Component<Props, any> {
     }
 }
 
-export default connect( (state: State) => ({accounts: state.accounts}) )(Accounts);
+export default connect( (state: State) => ({accounts: state.accounts, ws: state.ws}) )(Accounts);

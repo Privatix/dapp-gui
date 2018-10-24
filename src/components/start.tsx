@@ -10,7 +10,7 @@ import ImportHexKey from './auth/importHexKey';
 import ImportJsonKey from './auth/importJsonKey';
 import Backup from './auth/backup';
 import Login from './auth/login';
-import App from '../components/asyncApp';
+import App from '../components/app';
 import * as api from '../utils/api';
 
 import { I18nextProvider} from 'react-i18next';
@@ -25,7 +25,6 @@ function Loader() {
 }
 
 async function AsyncStart (props:any){
-
     const settings = await api.settings.getLocal();
 
     i18n.changeLanguage(settings.lang);
