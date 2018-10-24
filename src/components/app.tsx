@@ -2,13 +2,10 @@
 import * as React from 'react';
 // tslint:disable-next-line
 
+import { connect } from 'react-redux';
 import { Route, Router, Switch} from 'react-router';
 import { withRouter } from 'react-router-dom';
 import { createMemoryHistory } from 'history';
-import { Provider } from 'react-redux';
-import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk';
-import reducers from '../redux/reducers';
 
 import Main from './main/main';
 import Navigation from './navigation';
@@ -33,38 +30,36 @@ import VPNList from '../client_components/vpn_list/list';
 import AcceptOffering from '../client_components/vpn_list/acceptOffering';
 import ClientHistory from '../client_components/vpn_list/history';
 
-import handlers from '../redux/actions';
 
 import Logs from './logs/logsList';
 
 import {Mode} from '../typings/mode';
 
 const MemoryHistory = createMemoryHistory();
-const store = createStore(reducers, applyMiddleware(
-    thunkMiddleware, // lets us dispatch() functions
-  ));
 
 interface Props {
     mode: Mode;
+    dispatch: any;
 }
 
 class App extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
-        store.dispatch(handlers.setMode(props.mode));
     }
 
     render(){
-        return <Provider store={store}>
-            <Router history={MemoryHistory as any}>
+
+        const { mode } = this.props;
+
+        return <Router history={MemoryHistory as any}>
                 <div id='wrapper'>
                     <Header />
                     <Navigation />
                     <div className='content-page'>
                         <div className='content'>
                             <Switch>
-                                <Route exact path='/' render={(props: any) => store.getState().mode === Mode.CLIENT ? <ClientDashboardStart /> : <Main /> } />
+                                <Route exact path='/' render={(props: any) => mode === Mode.CLIENT ? <ClientDashboardStart /> : <Main /> } />
                                 <Route path='/settings' component={Settings} />
                                 <Route path='/products' render={() => <Products />} />
                                 <Route path='/accounts' component={AccountsList} />
@@ -94,9 +89,8 @@ class App extends React.Component<Props, any> {
                         </div>
                     </div>
                 </div>
-            </Router>
-        </Provider>;
+            </Router>;
     }
 }
 
-export default withRouter(App);
+export default connect(state => state)(withRouter(App));

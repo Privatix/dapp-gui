@@ -1,4 +1,6 @@
 import * as api from '../utils/api';
+import { WS } from '../utils/ws';
+
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
 import {DbSetting as Setting} from '../typings/settings';
@@ -11,7 +13,8 @@ export const enum actions {
     UPDATE_PRODUCTS,
     UPDATE_SETTINGS,
     UPDATE_OFFERINGS,
-    SET_CHANNEL
+    SET_CHANNEL,
+    SET_WS
 }
 
 
@@ -25,7 +28,8 @@ const handlers: ReduxHandlers = {
     updateSettings             : function(settings: Setting[]){ return { type: actions.UPDATE_SETTINGS, value: settings };},
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
     setMode                    : function(mode: Mode){ return { type: actions.SET_MODE, value: mode };},
-    setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };}
+    setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
+    setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};}
 };
 
 interface AsyncProviders {
