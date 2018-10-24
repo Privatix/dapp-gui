@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import Countdown from 'react-countdown-now';
@@ -10,6 +11,7 @@ import IncreaseDepositButton from '../connections/increaseDepositButton';
 import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import notice from '../../utils/notice';
 import * as api from '../../utils/api';
+import { State } from '../../typings/state';
 
 const countdownRender = ({ minutes, seconds }) => {
     return <span>{minutes}:{seconds}</span>;
@@ -57,12 +59,16 @@ class Connecting extends React.Component<any, any>{
     }
 
     async refresh() {
-
-        const { t } = this.props;
-
+        console.log('CONNECTING REFRESH!!!');
+        const { t, ws } = this.props;
+        console.log(await ws.getClientChannels('', 'pending', 0, 10));
         const pendingChannelsReq = api.channels.getClientList(null, 'pending');
         const activeChannelsReq = api.channels.getClientList(null, 'active');
         const suspendedChannelsReq = api.channels.getClientList(null, 'suspended');
+
+        // const pendingChannelsReq = ws.getClientChannels(null, 'pending');
+        // const activeChannelsReq = api.channels.getClientList(null, 'active');
+        // const suspendedChannelsReq = api.channels.getClientList(null, 'suspended');
 
         const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([
             pendingChannelsReq,
@@ -260,4 +266,4 @@ class Connecting extends React.Component<any, any>{
     }
 }
 
-export default withRouter(Connecting);
+export default connect((state: State) => ({ws: state.ws}))(withRouter(Connecting));

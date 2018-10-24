@@ -83,7 +83,7 @@ export default class AsyncList extends React.Component<any,any> {
 
         const { t } = this.props;
 
-        const clientOfferings = await (window as any).ws.getClientOfferings();
+        const {items: clientOfferings} = await (window as any).ws.getClientOfferings();
         // Show loader when downloading VPN list
         setTimeout(() => {
             this.refresh();
