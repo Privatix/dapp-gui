@@ -1,15 +1,6 @@
 import {fetch} from '../fetch';
-import {ServiceStatus, Channel, ClientChannelStatus, ChannelActions, OneChannelStatus} from '../../typings/channels';
+import {ClientChannelStatus, ChannelActions, OneChannelStatus} from '../../typings/channels';
 import {SaveAnswer} from '../../typings/SaveAnswer';
-
-export const getList = function (status?:ServiceStatus): Promise<Channel[]> {
-
-    if(status){
-        return fetch(`/channels/?serviceStatus=${status}`) as Promise<Channel[]>;
-    }else{
-        return fetch('/channels') as Promise<Channel[]>;
-    }
-};
 
 export const setClientChannelStatus = function (id: string, action:ChannelActions): Promise<SaveAnswer> {
     return fetch(`/client/channels/${id}/status`, {method: 'put', body: {action: action}}) as Promise<SaveAnswer>;

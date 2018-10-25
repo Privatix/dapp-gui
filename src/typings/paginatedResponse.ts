@@ -1,4 +1,4 @@
 export interface PaginatedResponse<T> {
-    items: T[];
+    items: T;
     totalItems: number;
 }

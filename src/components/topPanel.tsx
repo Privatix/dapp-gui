@@ -2,12 +2,12 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-import {fetch} from '../utils/fetch';
 import {asyncProviders} from '../redux/actions';
 import {Account} from '../typings/accounts';
 import {State} from '../typings/state';
 import {Mode} from '../typings/mode';
-import * as api from '../utils/api';
+
+import { WS } from '../utils/ws';
 
 interface Props {
     accounts: Account[];
@@ -15,6 +15,7 @@ interface Props {
     mode: Mode;
     dispatch: any;
     t: any;
+    ws: WS;
 }
 @translate(['topPanel'])
 class TopPanel extends React.Component <Props, any>{
@@ -96,34 +97,33 @@ class TopPanel extends React.Component <Props, any>{
         return diff.length > 0;
     }
 
-    updateAgent() {
-        api.channels.getList('active').then(res => {
-            const pscCount = (res as any).length;
-            this.setState({status: pscCount > 0, pscCount });
-        });
+    async updateAgent() {
+
+        const { ws } = this.props;
+
+        const channels = await ws.getAgentChannels('active', 'active', 0, 0);
+        const pscCount = channels.items.length;
+        this.setState({status: pscCount > 0, pscCount });
     }
 
-    updateClient() {
-        fetch('/client/channels?channelStatus=active', {}).then((res:any) => {
-            const activeConnections = res.length;
-            let totalTraffic = '0 MB';
-            if (activeConnections > 0) {
-                const traffic = res.reduce((traffic, item) => {
-                    if (item.usage.unit === 'MB') {
-                        return traffic + item.usage.current;
-                    }
-                }, 0);
+    async updateClient() {
 
-                totalTraffic = String(traffic) + ' MB';
-                // trafficBalance = (traffic.maxUsage - traffic.current) + ' ' + traffic.unit.toUpperCase();
-            }
+        const { ws } = this.props;
+
+        const channels = await ws.getClientChannels('active', 'active', 0, 0);
+        const activeConnections = channels.items.length;
+        let totalTraffic = '0 MB';
+        if (activeConnections > 0) {
+            const usage = await Promise.all(channels.items.map(channel => ws.getChannelUsage(channel.id)));
+            const traffic = channels.items.reduce((traffic, item, i) => traffic + usage[i], 0);
+
+            totalTraffic = String(traffic) + ' MB';
+        }
 
 
-            this.setState({
-                status: activeConnections > 0,
-                totalTraffic
-                /* ,trafficBalance */
-            });
+        this.setState({
+            status: activeConnections > 0,
+            totalTraffic
         });
     }
 
@@ -161,4 +161,4 @@ class TopPanel extends React.Component <Props, any>{
     }
 }
 
-export default connect( (state: State) => ({accounts: state.accounts}) )(TopPanel);
+export default connect( (state: State) => ({accounts: state.accounts, ws: state.ws}) )(TopPanel);

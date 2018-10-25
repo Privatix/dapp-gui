@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as api from '../../utils/api';
 import ChannelsListSortTable from './channelsListSortTable';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
@@ -12,6 +11,8 @@ import {Product as ProductType} from '../../typings/products';
 import {asyncProviders} from '../../redux/actions';
 import { translate } from 'react-i18next';
 
+import { WS } from '../../utils/ws';
+
 interface IProps{
     status: ServiceStatus;
     registerRefresh?: Function;
@@ -22,6 +23,7 @@ interface Props {
     products: ProductType[];
     dispatch: any;
     t?: any;
+    ws: WS;
 }
 
 @translate(['channels/channelsList'])
@@ -74,24 +76,25 @@ class Channels extends React.Component<Props, any> {
     refresh = async (once?: boolean) => {
 
         const status = this.state.status;
+        const { ws } = this.props;
 
-        const channels = await api.channels.getList(status);
+        const channels = await ws.getAgentChannels(status, '', 0, 100);
 
         if (!this.subscription) {
-            const channelsIds = (channels as any).map((channel: any) => channel.id);
+            const channelsIds = channels.items.map(channel => channel.id);
             if(channelsIds.length){
-                this.subscription = (window as any).ws.subscribe('channel', channelsIds, this.ws);
+                this.subscription = ws.subscribe('channel', channelsIds, this.ws);
             }
         }
 
-        const channelsOfferings = channels.map((channel: ChannelType) => (window as any).ws.getOffering(channel.offering));
+        const channelsOfferings = channels.items.map((channel: ChannelType) => ws.getOffering(channel.offering));
         const offerings = await Promise.all(channelsOfferings);
         const productsByChannels = offerings.map(offering => offering.product);
 
         this.setState({
             lastUpdatedStatus: status,
             productsByChannels,
-            channels,
+            channels: channels.items,
             offerings
         });
 
@@ -137,4 +140,4 @@ class Channels extends React.Component<Props, any> {
     }
 }
 
-export default connect( (state: State, ownProps: IProps) => Object.assign({}, {products: state.products}, ownProps))(Channels);
+export default connect( (state: State, ownProps: IProps) => Object.assign({}, {products: state.products, ws: state.ws}, ownProps))(Channels);

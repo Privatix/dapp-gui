@@ -9,6 +9,7 @@ import {Template} from '../typings/templates';
 import { PaginatedResponse} from '../typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
+type ChannelResponse  = PaginatedResponse<Channel[]>;
 
 export class WS {
     
@@ -318,12 +319,16 @@ export class WS {
 
 // channels
 
-    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number){
-        return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]);
+    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{
+        return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 
-    getChannelUsage(channelId: string) {
-        return this.send('ui_getChannelUsage', [channelId]);
+    getAgentChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{
+        return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
+    }
+
+    getChannelUsage(channelId: string): Promise<number>{
+        return this.send('ui_getChannelUsage', [channelId]) as Promise<number>;
     }
 
 // common
