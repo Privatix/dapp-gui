@@ -5,9 +5,6 @@ import {Transaction} from '../typings/transactions';
 import * as Settings from './api/settings';
 export const settings = Settings;
 
-import * as Channels from './api/channels';
-export const channels = Channels;
-
 import * as Offerings from './api/offerings';
 export const offerings = Offerings;
 
