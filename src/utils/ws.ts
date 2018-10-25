@@ -4,6 +4,8 @@ import {OfferStatus, Offering} from '../typings/offerings';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
 import {Session} from '../typings/session';
+import {Channel} from '../typings/channels';
+import {Template} from '../typings/templates';
 import { PaginatedResponse} from '../typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
@@ -325,7 +327,9 @@ export class WS {
     }
 
 // common
-
+    getObject(type: 'channel', id: string): Promise<Channel>;
+    getObject(type: 'template', id: string): Promise<Template>;
+    getObject(type: 'offering', id: string): Promise<Offering>;
     getObject(type: string, id: string){
         return this.send('ui_getObject', [type, id]);
     }

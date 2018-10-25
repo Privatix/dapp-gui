@@ -3,8 +3,9 @@ export enum TemplateType {
 }
 
 
-export interface OfferingTemplate {
-	id: string,
-	hash: string,
-	raw: Object
+export interface Template {
+    id: string,
+    hash: string,
+    raw: Object
+    kind: TemplateType;
 }

@@ -11,12 +11,6 @@ export const getList = function (status?:ServiceStatus): Promise<Channel[]> {
     }
 };
 
-
-export const getById = function (id: string): Promise<Channel> {
-    return fetch(`/channels?id=${id}`) as Promise<Channel>;
-};
-
-
 export const getClientList = function (channelStatus?:ChannelStatus, serviceStatus?:ServiceStatus, id?: string): Promise<ClientChannel[]> {
     let query = [];
     if (channelStatus) {query.push(`channelStatus=${channelStatus}`);}
