@@ -4,6 +4,9 @@ import {OfferStatus, Offering} from '../typings/offerings';
 import {Account} from '../typings/accounts';
 import {Product} from '../typings/products';
 import {Session} from '../typings/session';
+import { PaginatedResponse} from '../typings/paginatedResponse';
+
+type OfferingResponse = PaginatedResponse<Offering[]>;
 
 export class WS {
     
@@ -105,13 +108,14 @@ export class WS {
     }
 
     send(method: string, params: any[] = []){
-        const uuid = uuidv4();
 
+        const uuid = uuidv4();
+        params.unshift(this.pwd);
         const req = {
             jsonrpc: '2.0',
             id: uuid,
             method,
-            params: params.length ? [this.pwd, ...params] : [this.pwd]
+            params
         };
 
         return new Promise((resolve: Function, reject: Function) => {
@@ -278,12 +282,18 @@ export class WS {
 
 // offerings
 
-    getAgentOfferings(productId: string='', status: OfferStatus = OfferStatus.undef): Promise<Offering[]>{
-        return this.send('ui_getAgentOfferings', [productId, status]) as Promise<Offering[]>;
+    getAgentOfferings(productId: string='', status: OfferStatus = OfferStatus.undef, offset: number = 0, limit: number = 0): Promise<Offering[]>{
+        return this.send('ui_getAgentOfferings', [productId, status, offset, limit]) as Promise<Offering[]>;
     }
 
-    getClientOfferings(agent: string = '', minUnitPrice: number = 0, maxUnitPrice: number = 0, countries: string[] = []): Promise<Offering[]>{
-        return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries]) as Promise<Offering[]>;
+    getClientOfferings(agent: string = ''
+                      ,minUnitPrice: number = 0
+                      ,maxUnitPrice: number = 0
+                      ,countries: string[] = []
+                      ,offset: number = 0
+                      ,limit: number = 0) : Promise<OfferingResponse> {
+        console.log('getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries]);
+        return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries, offset, limit]) as Promise<OfferingResponse>;
     }
 
     getOffering(id: string): Promise<Offering>{
@@ -303,6 +313,17 @@ export class WS {
     getSessions(channelId: string = ''): Promise<Session[]>{
         return this.send('ui_getSessions', [channelId]) as Promise<Session[]>;
     }
+
+// channels
+
+    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number){
+        return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]);
+    }
+
+    getChannelUsage(channelId: string) {
+        return this.send('ui_getChannelUsage', [channelId]);
+    }
+
 // common
 
     getObject(type: string, id: string){
@@ -315,29 +336,6 @@ export class WS {
 
     getSettings() {
         return this.send('ui_getSettings');
-    }
-
-    getChannelUsage(channelId: string) {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getChannelUsage',
-            params: [this.pwd, channelId]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function(res: any){
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-
-            this.socket.send(JSON.stringify(req));
-        });
     }
 
     getTotalIncome() {
@@ -362,5 +360,4 @@ export class WS {
             this.socket.send(JSON.stringify(req));
         });
     }
-    
 }
