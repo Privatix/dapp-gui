@@ -1,6 +1,7 @@
 import * as React from 'react';
 import * as api from '../../utils/api';
 import {fetch} from '../../utils/fetch';
+import { connect } from 'react-redux';
 import ModalWindow from '../modalWindow';
 import SortableTable from 'react-sortable-table-vilan';
 import DateSorter from '../utils/sorters/sortingDate';
@@ -16,6 +17,7 @@ import Pagination from 'react-js-pagination';
 import notice from '../../utils/notice';
 import { translate } from 'react-i18next';
 import 'react-datepicker/dist/react-datepicker.css';
+import {State} from '../../typings/state';
 
 @translate('logs/logsList')
 
@@ -34,6 +36,8 @@ class Logs extends React.Component <any,any> {
             logsPerPage: 10,
             activePage: 1,
             pages: 1,
+            offset: 0,
+            totalItems: 0,
             levels: [],
             lang: null
         };
@@ -66,66 +70,70 @@ class Logs extends React.Component <any,any> {
     async getLogsData(dateFrom:any = null, dateTo:any = null, levels:string[] = []) {
         const dateFromData = dateFrom === null ? this.state.dateFrom : dateFrom;
         const dateToData = dateTo === null ? this.state.dateTo : dateTo;
+        const settings = await this.getSettings();
 
+        // getLogs params
         const isoDateFrom = new Date(dateFromData).toISOString();
         const isoDateTo = new Date(dateToData).toISOString();
-        const settings = await this.getSettings();
+        const searchText = this.state.searchText !== '' ? this.state.searchText : '';
+        const levelsData = this.state.levels.length > 0 ? this.state.levels : [];
         const logsPerPage = settings.logsCountPerPage;
+        const offset = this.state.activePage > 1 ? (this.state.activePage - 1) * logsPerPage : this.state.offset;
 
-        // form query params
-        let query = [];
-        query.push(`perPage=${logsPerPage}`);
-        query.push(`page=${this.state.activePage}`);
-        query.push(`dateFrom=${isoDateFrom}`);
-        query.push(`dateTo=${isoDateTo}`);
+        const logs = await this.props.ws.getLogs(levelsData, searchText, isoDateFrom, isoDateTo, offset, logsPerPage);
 
-        if (levels.length > 0 || this.state.levels.length > 0) {
-            const levelsData = levels.length > 0 ? levels : this.state.levels;
-            query.push(`level=${levelsData.join(',')}`);
-        }
-        if (this.state.searchText !== '') {
-            query.push(`searchText=${this.state.searchText}`);
-        }
-
-        const logs = await api.logs.getLogs(query.join('&'));
         const { t } = this.props;
 
         const logsDataArr = [];
-        (logs.items as any).map(log => {
-            let context = atob(log.Context);
+        if (logs.totalItems > 0) {
+            (logs.items as any).map(log => {
+                let row = {
+                    level: log.level,
+                    date: log.time,
+                    message: log.message,
+                    context: log.context !== '{}' ?
+                        <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('Context')}
+                                     text={t('ShowBtn')} component={<LogsContext context={log.context}/>}/> : '',
+                    stack: log.stack !== null ?
+                        <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('StackTrace')}
+                                     text={t('ShowBtn')} component={<LogsStack context={log.stack}/>}/> : ''
+                };
 
-            let row = {
-                level: log.Level,
-                date: log.Time,
-                message: log.Message,
-                context: context !== '{}' ? <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('Context')} text={t('ShowBtn')} component={<LogsContext context={log.Context} />} /> : '',
-                stack:  log.Stack !== null ? <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('StackTrace')} text={t('ShowBtn')} component={<LogsStack context={log.Stack} />} /> : ''
-            };
+                logsDataArr.push(row);
+            });
+        }
 
-            logsDataArr.push(row);
-        });
-
-        const activePage = logs.pages === 1 ? 1 : this.state.activePage;
+        const pages = Math.ceil(logs.totalItems / logsPerPage);
+        const activePage = pages === 1 ? 1 : this.state.activePage;
 
         this.setState({
             logsData: logs.items,
             logsDataArr,
             logsPerPage,
-            pages: logs.pages,
-            activePage
+            pages,
+            activePage,
+            totalItems: logs.totalItems
         });
     }
 
     getLogsDataExport() {
+        if (this.state.logsData === null) {
+            return [];
+        }
+
         return (this.state.logsData as any).map(log => {
             return [
-                log.Time,
-                log.Level,
-                '"' + log.Message.replace(/"/, '\"\"') + '"',
-                atob(log.Context),
-                log.Stack !== null ? '"' + log.Stack.replace(/"/, '\"\"') + '"' : ''
+                log.time,
+                log.level,
+                '"' + log.message.replace(/"/g, '\"\"') + '"',
+                '"' + JSON.stringify(log.context).replace(/"/g, '\"\"') + '"',
+                log.stack !== null ? '"' + log.stack.replace(/"/g, '\"\"') + '"' : ''
             ];
         });
+    }
+
+    resetActivePage() {
+        this.setState({activePage: 1});
     }
 
     handleChangeLevel(evt:any) {
@@ -138,11 +146,14 @@ class Logs extends React.Component <any,any> {
             levels.splice(levels.indexOf(level), 1);
         }
 
+        this.resetActivePage();
+
         this.setState({levels});
         this.getLogsData(null, null, levels);
     }
 
     handleChangeDateFrom(date: any) {
+        this.resetActivePage();
         this.alertOnBigDateRangeSelect(date, this.state.dateTo);
         this.setState({
             dateFrom: date
@@ -151,6 +162,7 @@ class Logs extends React.Component <any,any> {
     }
 
     handleChangeDateTo(date: any) {
+        this.resetActivePage();
         this.alertOnBigDateRangeSelect(this.state.dateFrom, date);
         this.setState({
             dateTo: date
@@ -159,6 +171,7 @@ class Logs extends React.Component <any,any> {
     }
 
     handleNow() {
+        this.resetActivePage();
         const date = moment();
         this.setState({
             dateTo: date
@@ -172,6 +185,7 @@ class Logs extends React.Component <any,any> {
     }
 
     handleSearch(evt:any) {
+        this.resetActivePage();
         if (evt.key === 'Enter') {
             const searchText = evt.target.value;
             this.setState({searchText});
@@ -184,6 +198,7 @@ class Logs extends React.Component <any,any> {
     }
 
     handleClearSearch() {
+        this.resetActivePage();
         let searchText = this.state.searchText;
         if (searchText !== '') {
             searchText = '';
@@ -252,6 +267,21 @@ class Logs extends React.Component <any,any> {
 
             }
         ];
+
+        const pagination = this.state.totalItems <= this.state.logsPerPage ? '' :
+            <Pagination
+                activePage={this.state.activePage}
+                itemsCountPerPage={this.state.logsPerPage}
+                totalItemsCount={this.state.totalItems}
+                pageRangeDisplayed={10}
+                onChange={this.handlePageChange.bind(this)}
+                prevPageText='‹'
+                nextPageText='›'
+            />;
+
+        const noResults = this.state.totalItems === 0 ?
+            <p className='text-warning text-center m-t-20 m-b-20'>{t('NoResults')}</p>
+            : '';
 
         return (
             <div className='container-fluid'>
@@ -355,23 +385,15 @@ class Logs extends React.Component <any,any> {
                                 </div>
                             </div>
 
-                            <div className='bootstrap-table bootstrap-table-sortable'>
+                            <div className='bootstrap-table bootstrap-table-sortable m-b-30'>
                                 <SortableTable
                                     data={this.state.logsDataArr}
                                     columns={columns}/>
+
+                                {noResults}
                             </div>
 
-                            <div>
-                                <Pagination
-                                    activePage={this.state.activePage}
-                                    itemsCountPerPage={this.state.logsPerPage}
-                                    totalItemsCount={this.state.logsPerPage * this.state.pages}
-                                    pageRangeDisplayed={10}
-                                    onChange={this.handlePageChange.bind(this)}
-                                    prevPageText='‹'
-                                    nextPageText='›'
-                                />
-                            </div>
+                            <div>{pagination}</div>
 
                         </div>
                     </div>
@@ -381,4 +403,4 @@ class Logs extends React.Component <any,any> {
     }
 }
 
-export default Logs;
+export default connect( (state: State) => ({ws: state.ws}) )(Logs);

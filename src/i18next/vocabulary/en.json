@@ -301,7 +301,8 @@
         "Stack": "Stack",
         "ShowBtn": "show",
         "StackTrace": "Stack trace:",
-        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!"
+        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!",
+        "NoResults": "Nothing was found on your request. Please modify the filtering options!"
     },
     "logs/logsContext": {
         "Key": "Key",
