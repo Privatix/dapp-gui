@@ -1,7 +1,9 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import * as api from '../../utils/api';
 import { translate } from 'react-i18next';
+
+import { State } from '../../typings/state';
 
 @translate('client/dashboard/start')
 
@@ -16,14 +18,16 @@ class StartVPN extends React.Component <any,any> {
     }
 
     async getNotTerminatedConnections() {
-        const pendingChannelsReq = api.channels.getClientList(null, 'pending');
-        const activeChannelsReq = api.channels.getClientList(null, 'active');
-        const suspendedChannelsReq = api.channels.getClientList(null, 'suspended');
+
+        const { ws } = this.props;
+
+        const pendingChannelsReq = ws.getClientChannels('active', 'pending', 0, 10);
+        const activeChannelsReq = ws.getClientChannels('active', 'active', 0, 10);
+        const suspendedChannelsReq = ws.getClientChannels('active', 'suspended', 0, 10);
+
         const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
 
-        if((activeChannels as any).length > 0
-            || (suspendedChannels as any).length > 0
-            || (pendingChannels as any).length > 0) {
+        if(activeChannels.items.length + suspendedChannels.items.length + pendingChannels.items.length > 0) {
             this.props.history.push('/client-dashboard-connecting');
         }
     }
@@ -50,4 +54,4 @@ class StartVPN extends React.Component <any,any> {
     }
 }
 
-export default withRouter(StartVPN);
+export default connect((state: State) => ({ws: state.ws}))(withRouter(StartVPN));

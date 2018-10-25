@@ -9,6 +9,7 @@ import {fetch} from '../../utils/fetch';
 import toFixedN from '../../utils/toFixedN';
 import SessionsTable from './sessionsTable';
 import { State } from '../../typings/state';
+import { Offering } from '../../typings/offerings';
 
 @translate(['sessions/sessionsList'])
 
@@ -34,18 +35,13 @@ class Sessions extends React.Component <any,any> {
         }, 0);
 
         const offeringsArr = sessions.map(session => {
-            // return (api.channels.getById(session.channel)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
             return ws.getObject('channel', session.channel)
-                     .then(channel => ws.getObject('offering', channel.offering)); // fetch(`/offerings?id=${channels[0].offering}`));
+                     .then(channel => ws.getObject('offering', channel.offering));
         });
-        const offerings = await Promise.all(offeringsArr);
+        const offerings = await Promise.all(offeringsArr as Promise<Offering>[]);
 
-        sessions.forEach((session, i, sessions) => {
-            sessions[i] = Object.assign({}, {'unitPrice': (offerings[i][0] as any).unitPrice}, session);
-        });
-
-        const income = sessions.reduce((income, session) => {
-            return income + session.unitsUsed * session.unitPrice;
+        const income = sessions.reduce((income, session, i) => {
+            return income + session.unitsUsed * offerings[i].unitPrice;
         }, 0);
 
         const sessionsData = sessions.map((session: any) => {
