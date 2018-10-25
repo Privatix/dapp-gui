@@ -108,7 +108,7 @@ export class WS {
     }
 
     send(method: string, params: any[] = []){
-        console.log('SEND!!!', method, params);
+
         const uuid = uuidv4();
         params.unshift(this.pwd);
         const req = {
@@ -117,7 +117,7 @@ export class WS {
             method,
             params
         };
-        console.log(req);
+
         return new Promise((resolve: Function, reject: Function) => {
             const handler = function(res: any){
                 if('error' in res){
