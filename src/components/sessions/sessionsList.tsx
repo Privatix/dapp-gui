@@ -1,16 +1,19 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
+
 import {remote} from 'electron';
 const {dialog} = remote;
-import { translate } from 'react-i18next';
 
 import {fetch} from '../../utils/fetch';
 import toFixedN from '../../utils/toFixedN';
-import * as api from '../../utils/api';
 import SessionsTable from './sessionsTable';
+import { State } from '../../typings/state';
+import { Offering } from '../../typings/offerings';
 
 @translate(['sessions/sessionsList'])
 
-export default class Sessions extends React.Component <any,any> {
+class Sessions extends React.Component <any,any> {
 
     constructor(props:any) {
         super(props);
@@ -24,23 +27,21 @@ export default class Sessions extends React.Component <any,any> {
     }
 
     async componentDidMount() {
-        const sessions = await (window as any).ws.getSessions(this.props.channel === 'all' ? '' : this.props.channel);
+        const { ws } = this.props;
+        const sessions = await ws.getSessions(this.props.channel === 'all' ? '' : this.props.channel);
 
         const usage = sessions.reduce((usage, session) => {
             return usage + session.unitsUsed;
         }, 0);
 
         const offeringsArr = sessions.map(session => {
-            return (api.channels.getById(session.channel)).then((channels:any) => fetch(`/offerings?id=${channels[0].offering}`));
+            return ws.getObject('channel', session.channel)
+                     .then(channel => ws.getObject('offering', channel.offering));
         });
-        const offerings = await Promise.all(offeringsArr);
+        const offerings = await Promise.all(offeringsArr as Promise<Offering>[]);
 
-        sessions.forEach((session, i, sessions) => {
-            sessions[i] = Object.assign({}, {'unitPrice': (offerings[i][0] as any).unitPrice}, session);
-        });
-
-        const income = sessions.reduce((income, session) => {
-            return income + session.unitsUsed * session.unitPrice;
+        const income = sessions.reduce((income, session, i) => {
+            return income + session.unitsUsed * offerings[i].unitPrice;
         }, 0);
 
         const sessionsData = sessions.map((session: any) => {
@@ -134,3 +135,5 @@ export default class Sessions extends React.Component <any,any> {
         </div>;
     }
 }
+
+export default connect((state: State) => ({ws: state.ws}))(Sessions);
