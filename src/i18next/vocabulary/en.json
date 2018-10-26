@@ -341,7 +341,6 @@
         "ExchangeBalanceOption": "Exchange balance",
         "ServiceBalanceOption": "Service balance",
         "Amount": "Amount:",
-        "TransactionLog": "Transaction Log",
         "TransferConfirmBtn": "Yes, transfer!",
         "TransferSwalTitle": "Are you sure?",
         "ServiceSwalBalanceFrom": "Service balance",
@@ -362,6 +361,7 @@
         "MoreInformation": "More information:"
     },
     "transactions/transactionsList": {
+        "TransactionLog": "Transaction Log",
         "Date": "Date",
         "EthereumLink": "Ethereum link"
     },

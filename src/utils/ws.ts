@@ -2,6 +2,7 @@ import * as uuidv4 from 'uuid/v4';
 import {TemplateType} from '../typings/templates';
 import {OfferStatus, Offering} from '../typings/offerings';
 import {Account} from '../typings/accounts';
+import {Transaction} from '../typings/transactions';
 import {Product} from '../typings/products';
 import {Session} from '../typings/session';
 import {Channel} from '../typings/channels';
@@ -10,6 +11,7 @@ import { PaginatedResponse} from '../typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
 type ChannelResponse  = PaginatedResponse<Channel[]>;
+type TransactionResponse = PaginatedResponse<Transaction[]>;
 
 export class WS {
     
@@ -339,8 +341,8 @@ export class WS {
         return this.send('ui_getObject', [type, id]);
     }
 
-    getTransactions(type: string, id: string) {
-        return this.send('ui_getEthTransactions', [type, id]);
+    getTransactions(type: string, id: string, offset: number, limit: number) : Promise<TransactionResponse> {
+        return this.send('ui_getEthTransactions', [type, id, offset, limit]) as Promise<TransactionResponse>;
     }
 
     getSettings() {
