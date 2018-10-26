@@ -342,7 +342,6 @@
         "ExchangeBalanceOption": "Баланс контракта",
         "ServiceBalanceOption": "Баланс сервиса",
         "Amount": "Сумма:",
-        "TransactionLog": "Журнал транзакций",
         "TransferConfirmBtn": "Да, перевести!",
         "TransferSwalTitle": "Вы уверены?",
         "ServiceSwalBalanceFrom": "баланса сервиса",
@@ -363,6 +362,7 @@
         "MoreInformation": "Больше информации:"
     },
     "transactions/transactionsList": {
+        "TransactionLog": "Журнал транзакций",
         "Date": "Дата",
         "EthereumLink": "Ссылка Ethereum"
     },

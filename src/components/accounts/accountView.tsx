@@ -17,7 +17,6 @@ class AccountView extends React.Component<any, any> {
                      ,destination: 'psc'
                      ,address: `0x${props.account.ethAddr}`
                      ,account: props.account
-                     ,transactions: []
                      ,network: ''
         };
     }
@@ -76,32 +75,9 @@ class AccountView extends React.Component<any, any> {
         notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
     }
 
-    async refreshTransactions() {
-        const transactions = await (window as any).ws.getTransactions('accountAggregated', this.state.account.id);
-        this.setState({transactions});
-    }
-
-    startRefreshing(){
-        this.refreshTransactions();
-        this.setState({handler: setTimeout( ()=> {
-            this.startRefreshing();
-        }, 3000)});
-    }
-
-    stopRefreshing(){
-        if(this.state.handler){
-            clearInterval(this.state.handler);
-        }
-    }
-
     componentDidMount(){
-        this.startRefreshing();
         api.getLocalSettings()
            .then(settings => this.setState({network: settings.network}));
-    }
-
-    componentWillUnmount(){
-        this.stopRefreshing();
     }
 
     changeTransferType(evt: any){
@@ -217,12 +193,8 @@ class AccountView extends React.Component<any, any> {
                     </div>
                 </div>
             </div>
-            <div className='card m-t-30'>
-                <h5 className='card-header'>{t('TransactionLog')}</h5>
-                <div className='card-body'>
-                    <Transactions transactions={this.state.transactions} network={this.state.network} />
-                </div>
-            </div>
+
+            <Transactions accountId={this.state.account.id} network={this.state.network} />
         </div>;
     }
 }
