@@ -14,7 +14,7 @@ export default class LogsContext extends React.Component <any, any> {
     }
 
     componentDidMount() {
-        const context = JSON.parse(atob(this.props.context));
+        const context = this.props.context;
 
         const contextTableData = this.renderContextTableRows(context);
         this.setState({contextTableData});
