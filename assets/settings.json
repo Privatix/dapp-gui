@@ -14,5 +14,6 @@
    "bugsnagEnable": true,
    "release": "0.7.0",
    "logsCountPerPage": 10,
+   "elementsPerPage": 10,
    "lang": "en"
 }
