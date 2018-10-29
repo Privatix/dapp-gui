@@ -54,7 +54,7 @@ class AsyncChannels extends React.Component<any, any> {
         this.props.dispatch(asyncProviders.updateProducts());
         this.props.dispatch(asyncProviders.updateOfferings());
 
-        this.setState({channels, products, offerings});
+        this.setState({channels, products, offerings: offerings.items});
 
     }
 

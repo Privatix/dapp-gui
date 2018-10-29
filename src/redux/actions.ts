@@ -65,7 +65,7 @@ export const asyncProviders: AsyncProviders = {
         return function(dispatch: any){
             (window as any).ws.getAgentOfferings()
                 .then(offerings => {
-                    dispatch(handlers.updateOfferings(offerings));
+                    dispatch(handlers.updateOfferings(offerings.items));
                 });
         };
     },
