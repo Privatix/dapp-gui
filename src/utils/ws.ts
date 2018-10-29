@@ -297,7 +297,6 @@ export class WS {
                       ,countries: string[] = []
                       ,offset: number = 0
                       ,limit: number = 0) : Promise<OfferingResponse> {
-        console.log('getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries]);
         return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries, offset, limit]) as Promise<OfferingResponse>;
     }
 

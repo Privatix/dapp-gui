@@ -10,10 +10,15 @@ import ModalWindow from '../../components/modalWindow';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import notice from '../../utils/notice';
 import toFixedN from '../../utils/toFixedN';
+import Pagination from 'react-js-pagination';
+import { connect } from 'react-redux';
+import {State} from '../../typings/state';
+import * as api from '../../utils/api';
+import {LocalSettings} from '../../typings/settings';
 
 @translate(['client/vpnList', 'utils/notice'])
 
-export default class AsyncList extends React.Component<any,any> {
+class VPNList extends React.Component<any,any> {
     constructor(props:any) {
         super(props);
 
@@ -21,18 +26,23 @@ export default class AsyncList extends React.Component<any,any> {
 
         this.state = {
             from: 0,
-            to: 0.01,
+            to: 0,
             step: 0.0001,
             min: 0,
             max: 0.01,
             spinner: true,
+            refreshHandler: null,
             changePriceInput: false,
-            data: [],
             countries: [],
             filteredCountries: [],
             checkedCountries: [],
             showAllCountries: false,
             filtered: [],
+            elementsPerPage: 0,
+            activePage: 1,
+            totalItems: 0,
+            agent: '',
+            defaultShowCountriesCount: 5,
             columns: [
                 {
                     header: t('Block'),
@@ -66,32 +76,71 @@ export default class AsyncList extends React.Component<any,any> {
 
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        await this.getElementsPerPage();
         this.getClientOfferings();
     }
 
-    async refresh(clicked?: boolean) {
+    async getElementsPerPage() {
+        const settings = (await api.settings.getLocal()) as LocalSettings;
+        this.setState({elementsPerPage: settings.elementsPerPage});
+    }
+
+    async refresh(clicked?: boolean, activePage:number = 1) {
         const { t } = this.props;
-        this.getClientOfferings(this.filter.bind(this)).then(() => {
+
+        this.getClientOfferings(activePage).then(() => {
             if (clicked === true) {
                 notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('SuccessUpdateMsg')});
             }
         });
     }
 
-    async getClientOfferings(done?: Function) {
+    shouldComponentUpdate(nextProps:any, nextState:any) {
+        return (this.state.spinner !== nextState.spinner)
+            || (this.state.showAllCountries !== nextState.showAllCountries)
+            || (this.state.filteredCountries !== nextState.filteredCountries)
+            || !(isEqual(nextState.filtered, this.state.filtered));
+    }
 
+    async getClientOfferings(activePage:number = 1, agent:string = '', from:number = 0, to:number = 0, countries:Array<string> = []) {
         const { t } = this.props;
+        const limit = this.state.elementsPerPage;
+        const offset = activePage > 1 ? (activePage - 1) * limit : 0;
+        agent = (agent !== '' ? agent : this.state.agent).replace(/^0x/, '');
+        agent = agent === '0' ? '' : agent;
+        const checkedCountries = countries.length > 0 ? countries : this.state.checkedCountries;
 
-        const {items: clientOfferings} = await (window as any).ws.getClientOfferings();
+        const allClientOfferings = await this.props.ws.getClientOfferings();
+        // get Countries list for filter by countries
+        await this.getCountriesFilterParams(allClientOfferings);
+        // get Min and Max offerings prices
+        const priceFilterParams = await this.getPriceFilterParams(allClientOfferings);
+        const min = priceFilterParams.min / 1e8;
+        const max = priceFilterParams.max / 1e8;
+
+        from = from === 0 && this.state.from === 0 ? min : from > 0 ? from : this.state.from;
+        to = to === 0 && this.state.to === 0 ? max : to > 0 ? to : this.state.to;
+
+        const fromVal = Math.round(from * 1e8);
+        const toVal = Math.round(to * 1e8);
+
+        const clientOfferingsLimited = await this.props.ws.getClientOfferings(agent, fromVal, toVal, checkedCountries, offset, limit);
+        const {items: clientOfferings} = clientOfferingsLimited;
+
         // Show loader when downloading VPN list
-        setTimeout(() => {
-            this.refresh();
-        }, 5000);
-
-        if (Object.keys(clientOfferings).length === 0) {
+        const isFiltered = checkedCountries.length > 0 || agent !== '' || from > 0 || to > 0;
+        if (Object.keys(clientOfferings).length === 0 && !isFiltered) {
             this.setState({spinner: true});
+            const refreshHandler = setTimeout(() => {
+                this.refresh();
+            }, 5000);
+            this.setState({refreshHandler});
             return;
+        } else {
+            if (this.state.handler !== null) {
+                clearInterval(this.state.refreshHandler);
+            }
         }
 
         let offerings = clientOfferings.map(offering => {
@@ -101,12 +150,12 @@ export default class AsyncList extends React.Component<any,any> {
             return {
                 block: offering.blockNumberUpdated,
                 hash: <ModalWindow
-                    customClass='shortTableText'
-                    modalTitle={t('AcceptOffering')}
-                    text={offeringHash}
-                    copyToClipboard={true}
-                    component={<AcceptOffering offering={offering} />}
-                />,
+                        customClass='shortTableText'
+                        modalTitle={t('AcceptOffering')}
+                        text={offeringHash}
+                        copyToClipboard={true}
+                        component={<AcceptOffering offering={offering} />}
+                    />,
                 country: offering.country,
                 price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
                 supply: offering.supply,
@@ -115,14 +164,28 @@ export default class AsyncList extends React.Component<any,any> {
             };
         });
 
-        // get countries list for filter by countries
+        this.setState({
+            spinner: false,
+            filtered: offerings,
+            totalItems: clientOfferingsLimited.totalItems,
+            offset,
+            activePage,
+            min,
+            max,
+            from,
+            to
+        });
+    }
+
+    getCountriesFilterParams(allClientOfferings:any) {
         let countriesArr = [];
-        let countriesAsocArr = [];
-        clientOfferings.forEach((offering) => {
-            if (countriesAsocArr[offering.country] !== undefined) {
-                countriesAsocArr[offering.country].count++;
+        let countriesAssocArr = [];
+
+        allClientOfferings.items.forEach((offering) => {
+            if (countriesAssocArr[offering.country] !== undefined) {
+                countriesAssocArr[offering.country].count++;
             } else {
-                countriesAsocArr[offering.country] = {
+                countriesAssocArr[offering.country] = {
                     name: offering.country,
                     defShow: 0,
                     count: 1
@@ -130,8 +193,8 @@ export default class AsyncList extends React.Component<any,any> {
             }
         });
 
-        (Object.keys(countriesAsocArr as any)).forEach((country) => {
-            countriesArr.push(countriesAsocArr[country]);
+        (Object.keys(countriesAssocArr as any)).forEach((country) => {
+            countriesArr.push(countriesAssocArr[country]);
         });
 
         countriesArr.sort((country1, country2) => {
@@ -143,35 +206,22 @@ export default class AsyncList extends React.Component<any,any> {
             countriesArrCount++;
             return {
                 name: country.name,
-                defShow: countriesArrCount > 5 ? 0 : 1
+                defShow: countriesArrCount > this.state.defaultShowCountriesCount ? 0 : 1
             };
         });
-        const max = clientOfferings.reduce((max, offering) => offering.unitPrice > max ? offering.unitPrice : max, 0);
-        const min = clientOfferings.reduce((min, offering) => offering.unitPrice < min ? offering.unitPrice : min, max);
+
         this.setState({
-            spinner: false,
-            data: offerings,
-            filtered: offerings,
             countries,
             filteredCountries: countries,
-            max: max/1e8,
-            to: max/1e8,
-            min: min/1e8,
-            from: min/1e8
         });
-
-        if ('function' === typeof done) {
-            done();
-        }
     }
 
-    shouldComponentUpdate(nextProps:any, nextState:any) {
-        return (this.state.spinner !== nextState.spinner)
-            || (this.state.data !== nextState.data)
-            || (this.state.changePriceInput !== nextState.changePriceInput)
-            || (this.state.showAllCountries !== nextState.showAllCountries)
-            || (this.state.filteredCountries !== nextState.filteredCountries)
-            || !(isEqual(nextState.filtered, this.state.filtered));
+    getPriceFilterParams(allClientOfferings:any) {
+        const offerings = allClientOfferings.items;
+        const max = offerings.reduce((max, offering) => offering.unitPrice > max ? offering.unitPrice : max, 0);
+        const min = offerings.reduce((min, offering) => offering.unitPrice < min ? offering.unitPrice : min, max);
+
+        return {min, max};
     }
 
     changeMinPriceInput(evt:any) {
@@ -211,19 +261,15 @@ export default class AsyncList extends React.Component<any,any> {
         (document.getElementById('priceFrom') as HTMLInputElement).value = from;
         (document.getElementById('priceTo') as HTMLInputElement).value = to;
 
-        this.setState({
-            from, to
-        });
-
         const handler = setTimeout(() => {
-            this.filter();
+            this.getClientOfferings(1, this.state.agent, from, to, this.state.checkedCountries);
         }, 200);
 
         if (this.state.handler !== null) {
             clearTimeout(this.state.handler);
         }
 
-        this.setState({handler});
+        this.setState({handler, from, to});
     }
 
     showCountriesHandler() {
@@ -248,17 +294,10 @@ export default class AsyncList extends React.Component<any,any> {
     }
 
     filterByAgent(e: any){
-        const searchText = e.target.value.toLowerCase().trim();
-        const agent = searchText.replace(/^0x/, '');
-        
-        if(agent === ''){
-            this.filter();
-            return;
-        }
+        let agent = e.target.value.toLowerCase().trim();
 
-        const filtered = this.state.data.filter(item => agent === item.agent.trim().toLowerCase().replace(/^0x/, ''));
-
-        this.setState({filtered});
+        this.getClientOfferings(1, agent);
+        this.setState({agent});
     }
 
     filterByCountryHandler(e:any) {
@@ -271,38 +310,12 @@ export default class AsyncList extends React.Component<any,any> {
             checkedCountries.splice(checkedCountries.indexOf(country), 1);
         }
 
+        this.getClientOfferings(1, this.state.agent, this.state.from, this.state.to, checkedCountries);
         this.setState({checkedCountries});
-
-        this.filter();
     }
 
-    filter() {
-        // filter by price
-        let fromEl = document.getElementById('priceFrom') as HTMLInputElement;
-        let from = fromEl !== null ? fromEl.value : false;
-        let to = (document.getElementById('priceTo') as HTMLInputElement).value;
-        let filtered = this.state.data.filter((item) => {
-            if (item.price >= from && item.price <= to) {
-                return true;
-            }
-            return false;
-        });
-
-        // filter by countries
-        const checkedCountries = this.state.checkedCountries;
-
-        if (checkedCountries.length > 0) {
-            filtered = filtered.filter((item) => {
-                if (checkedCountries.includes(item.country)) {
-                    return true;
-                }
-                return false;
-            });
-        }
-
-        this.setState({
-            filtered: filtered
-        });
+    handlePageChange(pageNumber:number) {
+        this.getClientOfferings(pageNumber);
     }
 
     render() {
@@ -326,6 +339,26 @@ export default class AsyncList extends React.Component<any,any> {
                 </div>
             </div>;
         }
+
+        const showHideCountriesBtn = this.state.filteredCountries.length > this.state.defaultShowCountriesCount
+            ? <div className='text-center'>
+                    <button type='button' className='btn btn-link waves-effect'
+                            onClick={this.showCountriesHandler.bind(this)}>{buttonText}</button>
+                </div>
+            : '';
+
+        const pagination = this.state.totalItems <= this.state.elementsPerPage ? '' :
+            <div>
+                <Pagination
+                    activePage={this.state.activePage}
+                    itemsCountPerPage={this.state.elementsPerPage}
+                    totalItemsCount={this.state.totalItems}
+                    pageRangeDisplayed={10}
+                    onChange={this.handlePageChange.bind(this)}
+                    prevPageText='‹'
+                    nextPageText='›'
+                />
+            </div>;
 
         return this.state.spinner ? <div className='container-fluid'>
                 <div className='row m-t-20'>
@@ -351,7 +384,7 @@ export default class AsyncList extends React.Component<any,any> {
 
                 <div className='row m-t-20'>
                     <div className='col-12 m-b-20'>
-                        <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this, true)}>{t('Refresh')}</button>
+                        <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this, true, this.state.activePage)}>{t('Refresh')}</button>
                     </div>
                     <div className='col-3'>
 
@@ -366,7 +399,11 @@ export default class AsyncList extends React.Component<any,any> {
                                             <div className='input-group-prepend'>
                                                 <span className='input-group-text'><i className='fa fa-search'></i></span>
                                             </div>
-                                            <input className='form-control' type='search' name='agent' placeholder='0x354B10B5c4A96b81b5e4F12F90cd0b7Ae5e05eE6'
+                                            <input className='form-control'
+                                                   type='search'
+                                                   name='agent'
+                                                   placeholder='0x354B10B5c4A96b81b5e4F12F90cd0b7Ae5e05eE6'
+                                                   value={this.state.agent}
                                                    onChange={this.filterByAgent.bind(this)} />
                                         </div>
                                     </div>
@@ -412,7 +449,7 @@ export default class AsyncList extends React.Component<any,any> {
                                 {searchHtml}
 
                                 {this.state.filteredCountries.map((country) => {
-                                    let countryCheckboxHtml = <div className='checkbox checkbox-custom'>
+                                    let countryCheckboxHtml = <div className='checkbox checkbox-custom' key={country.name}>
                                         <input id={country.name}
                                                type='checkbox'
                                                name='checkboxCountry'
@@ -430,10 +467,7 @@ export default class AsyncList extends React.Component<any,any> {
                                     }
                                 })}
 
-                                <div className='text-center'>
-                                    <button type='button' className='btn btn-link waves-effect'
-                                            onClick={this.showCountriesHandler.bind(this)}>{buttonText}</button>
-                                </div>
+                                {showHideCountriesBtn}
                             </div>
                         </div>
                     </div>
@@ -444,9 +478,13 @@ export default class AsyncList extends React.Component<any,any> {
                                     data={this.state.filtered}
                                     columns={this.state.columns}/>
                             </div>
+
+                            {pagination}
                         </div>
                     </div>
                 </div>
             </div>;
     }
 }
+
+export default connect( (state: State) => ({ws: state.ws}) )(VPNList);
