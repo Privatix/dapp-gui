@@ -277,6 +277,10 @@ export class WS {
 
 // products
 
+    getProduct(id: string): Promise<Product> {
+        return this.getObject('product', id) as Promise<Product>;
+    }
+
     getProducts(): Promise<Product[]> {
         return this.send('ui_getProducts')  as Promise<Product[]>;
     }
@@ -334,6 +338,7 @@ export class WS {
     }
 
 // common
+    getObject(type: 'product', id: string): Promise<Product>;
     getObject(type: 'channel', id: string): Promise<Channel>;
     getObject(type: 'template', id: string): Promise<Template>;
     getObject(type: 'offering', id: string): Promise<Offering>;
