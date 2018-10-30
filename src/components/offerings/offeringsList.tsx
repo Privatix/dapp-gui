@@ -1,17 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
-import {fetch} from '../../utils/fetch';
+import SortableTable from 'react-sortable-table-vilan';
 
 import OfferingStatus from './offeringStatus';
 import MessageStatus from './messageStatus';
-import SortableTable from 'react-sortable-table-vilan';
 import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
 import Product from '../products/product';
 import { State } from '../../typings/state';
-import {asyncProviders} from '../../redux/actions';
 import base64ToHex from '../utils/base64ToHex';
 
 @translate(['offerings/offeringsList'])
@@ -29,19 +27,18 @@ class Offerings extends React.Component<any, any> {
 
     async refresh() {
 
-        const endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
+        const { ws } = this.props;
 
-        const offeringsRaw = await fetch(endpoint, {method: 'GET'});
-        this.props.dispatch(asyncProviders.updateProducts());
-
-        const resolveTable = (this.props.products as any).reduce((table, product) => {
+        const offeringsRaw = await ws.getAgentOfferings(this.props.product === 'all' ? '' : this.props.product);
+        const products = await ws.getProducts();
+        const resolveTable = products.reduce((table, product) => {
             table[product.id] = product.name;
             return table;
         }, {});
 
-        const offerings = (offeringsRaw as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        const offerings = offeringsRaw.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
 
-        this.setState({offerings, products: this.props.products});
+        this.setState({offerings, products});
 
         const handler = setTimeout(this.refresh.bind(this), this.props.rate);
         this.setState({handler});
@@ -139,5 +136,5 @@ class Offerings extends React.Component<any, any> {
 }
 
 export default connect( (state: State, onProps: any) => {
-    return (Object.assign({}, {products: state.products}, onProps));
+    return (Object.assign({}, {ws: state.ws}, onProps));
 } )(Offerings);
