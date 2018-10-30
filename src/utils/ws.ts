@@ -309,6 +309,18 @@ export class WS {
         return this.getObject('offering', id) as Promise<Offering>;
     }
 
+    async fetchOfferingsAndProducts(productId: string){
+        const products = await this.getProducts();
+        const offerings = await this.getAgentOfferings(productId);
+        const resolveTable = products.reduce((table, product) => {
+            table[product.id] = product.name;
+            return table;
+        }, {});
+
+        const resOfferings = offerings.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        return {offerings: resOfferings, products};
+    }
+
     createOffering(payload: any){
         return this.send('ui_createOffering', [payload]);
     }

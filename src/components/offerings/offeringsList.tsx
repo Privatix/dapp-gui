@@ -12,10 +12,19 @@ import Product from '../products/product';
 import { State } from '../../typings/state';
 import base64ToHex from '../utils/base64ToHex';
 
-@translate(['offerings/offeringsList'])
-class Offerings extends React.Component<any, any> {
+import { WS } from '../../utils/ws';
 
-    constructor(props:any) {
+interface IProps {
+    product: string;
+    rate?: number;
+    ws?: WS;
+    t?: any;
+}
+
+@translate(['offerings/offeringsList'])
+class OfferingsList extends React.Component<IProps, any> {
+
+    constructor(props:IProps) {
         super(props);
 
         this.state = {
@@ -29,18 +38,10 @@ class Offerings extends React.Component<any, any> {
 
         const { ws } = this.props;
 
-        const offeringsRaw = await ws.getAgentOfferings(this.props.product === 'all' ? '' : this.props.product);
-        const products = await ws.getProducts();
-        const resolveTable = products.reduce((table, product) => {
-            table[product.id] = product.name;
-            return table;
-        }, {});
-
-        const offerings = offeringsRaw.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
-
+        const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
         this.setState({offerings, products});
 
-        const handler = setTimeout(this.refresh.bind(this), this.props.rate);
+        const handler = setTimeout(this.refresh.bind(this), this.props.rate ? this.props.rate : 3000);
         this.setState({handler});
     }
 
@@ -135,6 +136,6 @@ class Offerings extends React.Component<any, any> {
 
 }
 
-export default connect( (state: State, onProps: any) => {
+export default connect( (state: State, onProps: IProps) => {
     return (Object.assign({}, {ws: state.ws}, onProps));
-} )(Offerings);
+} )(OfferingsList);
