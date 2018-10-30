@@ -91,7 +91,7 @@ class Connecting extends React.Component<any, any>{
 
         if(activeChannels.items.length > 0){
             const offering = await ws.getOffering(activeChannels.items[0].offering);
-            this.setState({status: 'active', channels: activeChannels.items, offering});
+            this.setState({status: 'active', channels: activeChannels.items, offering, pendingTimeCounter: 0});
 
         }else if(suspendedChannels.items.length > 0){
             const channel = suspendedChannels.items[0];
@@ -109,16 +109,16 @@ class Connecting extends React.Component<any, any>{
             }
 
             if(channel.usage.current > 0){
-                this.setState({status: 'paused', channels: suspendedChannels.items});
+                this.setState({status: 'paused', channels: suspendedChannels.items, pendingTimeCounter: 0});
             }else{
-                this.setState({status: 'suspended', channels: suspendedChannels.items, countryAlert});
+                this.setState({status: 'suspended', channels: suspendedChannels.items, countryAlert, pendingTimeCounter: 0});
             }
         }else if(pendingChannels.items.length > 0){
-            this.setState({status: 'pending', channels: pendingChannels.items});
+            this.setState({status: 'pending', channels: pendingChannels.items, pendingTimeCounter: 0});
         } else {
             let pendingTimeCounter = this.state.pendingTimeCounter + 1;
 
-            if (pendingTimeCounter >= 20) {
+            if (pendingTimeCounter >= 100) {
                 clearTimeout(this.state.handler);
                 notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
                 this.props.history.push('/client-dashboard-start');

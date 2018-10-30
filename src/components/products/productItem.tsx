@@ -49,13 +49,11 @@ class ProductItem extends React.Component<any, any>{
         }
     }
 
-    getOfferings() {
-        (window as any).ws.getAgentOfferings(this.props.product.id)
-            .then(offerings => {
-                if(offerings){
-                    this.setState({offerings});
-                }
-            });
+    async getOfferings() {
+        const offerings = await (window as any).ws.getAgentOfferings(this.props.product.id);
+        if(offerings.items){
+            this.setState({offerings: offerings.items});
+        }
     }
 
     render(){
