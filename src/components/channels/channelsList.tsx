@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
 import {fetch} from '../../utils/fetch';
-import { GetProductIdByOfferingId } from '../products/productByOffering';
 import ChannelsListSortTable from './channelsListSortTable';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
@@ -38,6 +37,7 @@ class AsyncChannels extends React.Component<any, any> {
 
         const { ws } = this.props;
 
+        // TODO we need JSON-RPC method to fetch channels by offering id
         const endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
         const channels = await fetch(endpoint, {method: 'GET'});
 
@@ -48,7 +48,7 @@ class AsyncChannels extends React.Component<any, any> {
             }
         }
 
-        const channelsProductsIds = (channels as any).map((channel: any) => GetProductIdByOfferingId(channel.offering));
+        const channelsProductsIds = (channels as any).map(async (channel: any) => (await ws.getOffering(channel.offering)).product);
         const products = await Promise.all(channelsProductsIds);
         const offerings = await ws.getAgentOfferings();
         const allProducts = await ws.getProducts();
