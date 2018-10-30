@@ -71,7 +71,8 @@ class ProductView extends React.Component <Props,any> {
             clearable={false}
             options={countries.map((country:any) => ({value: country.id, label: country.name}))}
             onChange={this.handleCountryChange.bind(this)}
-            placeholder={t('common:Select')} />;
+            placeholder={t('common:Select')}
+            />;
 
         return <div>
             <form onSubmit={this.saveHost.bind(this)}>

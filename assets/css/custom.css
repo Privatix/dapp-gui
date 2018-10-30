@@ -192,6 +192,9 @@ ul.default li {
     color: #81c868;
 }
 
+.productModal{
+    height: 50vh;
+}
 .modal-content .modal-header h4.modal-title{
     margin: 0;
 }
@@ -705,6 +708,25 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
 
 .minWidth200{
     min-width: 200px;
+}
+
+.shortTableText{
+    max-width: 150px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.shortTableTextTd{
+    width: 18%;
+    min-width: 190px;
+}
+
+.copyToClipboardBtn{
+    float: right;
+    width: 15px;
+    padding: 0 5px;
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {

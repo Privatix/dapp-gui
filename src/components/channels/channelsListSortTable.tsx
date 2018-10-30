@@ -9,6 +9,7 @@ import SortableTable from 'react-sortable-table-vilan';
 import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import DateSorter from '../utils/sorters/sortingDate';
 import ChannelUsage from './channelUsage';
+import CopyToClipboard from '../copyToClipboard';
 
 @translate(['channels/channelsListSortTable'])
 class ChannelsTable extends React.Component<any, any> {
@@ -35,6 +36,7 @@ class ChannelsTable extends React.Component<any, any> {
             {
                 header: 'ID',
                 key: 'id',
+                dataProps: { className: 'shortTableTextTd' },
                 descSortFunction: ModalPropTextSorter.desc,
                 ascSortFunction: ModalPropTextSorter.asc
             },
@@ -46,7 +48,15 @@ class ChannelsTable extends React.Component<any, any> {
             },
             {
                 header: t('Client'),
-                key: 'client'
+                key: 'client',
+                dataProps: { className: 'shortTableTextTd' },
+                render: (client) => {
+                    const clientText = '0x' + client;
+                    return <div>
+                        <span className='shortTableText' title={clientText}>{clientText}</span>
+                        <CopyToClipboard text={clientText} />
+                    </div>;
+                }
             },
             {
                 header: t('ContractStatus'),
@@ -83,7 +93,7 @@ class ChannelsTable extends React.Component<any, any> {
             }
         ];
 
-        return <div className='bootstrap-table bootstrap-table-sortable'>
+        return <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
             <SortableTable
                 data={this.state.tableData}
                 columns={columns} />

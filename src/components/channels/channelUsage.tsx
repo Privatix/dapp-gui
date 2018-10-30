@@ -1,5 +1,5 @@
 import * as React from 'react';
-import * as api from '../../utils/api';
+// import * as api from '../../utils/api';
 import { translate } from 'react-i18next';
 import toFixedN from '../../utils/toFixedN';
 
@@ -26,8 +26,7 @@ export default class ChannelUsage extends React.Component <any,any> {
 
     async getUsage() {
         const channelId = this.state.channelId;
-        const sessions = await api.getSessions(this.state.channelId);
-        const usage = sessions.reduce( (usage, session) => {return usage + session.unitsUsed;}, 0);
+        const usage = await (window as any).ws.getChannelUsage(channelId);
 
         if (this.state.lastUpdatedChannelId === this.state.channelId && usage === this.state.usage) {
             return;

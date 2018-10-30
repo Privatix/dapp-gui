@@ -5,7 +5,6 @@ import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ContractStatus from '../../components/channels/contractStatus';
 import ClientAccessInfo from '../endpoints/clientAccessInfo';
 import toFixedN from '../../utils/toFixedN';
-import * as api from '../../utils/api';
 import Offering from '../vpn_list/acceptOffering';
 import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
@@ -32,7 +31,7 @@ class Connection extends React.Component<any, any>{
     }
 
     updateOffering(offeringId: string){
-        api.offerings.getClientOfferingById(offeringId)
+        (window as any).ws.getOffering(offeringId)
            .then(offering => {
                if(offering){
                    this.setState({offering});
@@ -174,7 +173,7 @@ class Connection extends React.Component<any, any>{
                         <h5 className='card-header'>{t('Sessions')}</h5>
                         <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                             <div className='card-body'>
-                                <div className='bootstrap-table bootstrap-table-sortable'>
+                                <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                                     <SortableTable
                                         data={sessionsData}
                                         columns={sessionsColumns}/>

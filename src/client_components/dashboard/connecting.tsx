@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import Countdown from 'react-countdown-now';
@@ -9,7 +10,7 @@ import IncreaseDepositButton from '../connections/increaseDepositButton';
 
 import ConfirmPopupSwal from '../../components/confirmPopupSwal';
 import notice from '../../utils/notice';
-import * as api from '../../utils/api';
+import { State } from '../../typings/state';
 
 const countdownRender = ({ minutes, seconds }) => {
     return <span>{minutes}:{seconds}</span>;
@@ -42,12 +43,14 @@ class Connecting extends React.Component<any, any>{
 
     componentWillUnmount() {
 
+        const { ws } = this.props;
+
         if(this.state.handler !== 0){
             clearTimeout(this.state.handler);
         }
 
         if(this.subscription){
-            (window as any).ws.unsubscribe(this.subscription);
+            ws.unsubscribe(this.subscription);
         }
     }
 
@@ -58,36 +61,43 @@ class Connecting extends React.Component<any, any>{
 
     async refresh() {
 
-        const { t } = this.props;
+        const { t, ws } = this.props;
 
-        const pendingChannelsReq = api.channels.getClientList(null, 'pending');
-        const activeChannelsReq = api.channels.getClientList(null, 'active');
-        const suspendedChannelsReq = api.channels.getClientList(null, 'suspended');
+        const pendingChannelsReq = ws.getClientChannels('active', 'pending', 0, 10);
+        const activeChannelsReq = ws.getClientChannels('active', 'active', 0, 10);
+        const suspendedChannelsReq = ws.getClientChannels('active', 'suspended', 0, 10);
 
         const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([
             pendingChannelsReq,
             activeChannelsReq,
-            suspendedChannelsReq
-        ]);
-
+            suspendedChannelsReq]);
 
         if(!this.subscription){
-            const ids = [...pendingChannels, ...activeChannels, ...suspendedChannels].map(channel => channel.id);
+            // TODO remove
+            if(!pendingChannels.items){
+                pendingChannels.items = [];
+            }
+            if(!activeChannels.items){
+                activeChannels.items = [];
+            }
+            if(!suspendedChannels.items){
+                suspendedChannels.items = [];
+            }
+            const ids = [...pendingChannels.items, ...activeChannels.items, ...suspendedChannels.items].map(channel => channel.id);
             if(ids.length){
-                this.subscription = (window as any).ws.subscribe('channel', ids, this.ws);
+                this.subscription = ws.subscribe('channel', ids, this.ws);
             }
         }
 
-        if((activeChannels as any).length > 0){
-            const offeringsReq = api.offerings.getClientOfferingById(activeChannels[0].offering);
-            const offerings = await Promise.all([offeringsReq]);
+        if(activeChannels.items.length > 0){
+            const offering = await ws.getOffering(activeChannels.items[0].offering);
+            this.setState({status: 'active', channels: activeChannels.items, offering, pendingTimeCounter: 0});
 
-            this.setState({status: 'active', channels: activeChannels, offering: offerings[0]});
-        }else if((suspendedChannels as any).length > 0){
-            const channel = suspendedChannels[0];
+        }else if(suspendedChannels.items.length > 0){
+            const channel = suspendedChannels.items[0];
 
             let countryAlert = '';
-            const endpoint = await (window as any).ws.getEndpoints(channel.id);
+            const endpoint = await ws.getEndpoints(channel.id);
             if (endpoint[0]) {
                 const ip = endpoint[0].serviceEndpointAddress;
                 const countryStatus = endpoint[0].countryStatus;
@@ -99,23 +109,23 @@ class Connecting extends React.Component<any, any>{
             }
 
             if(channel.usage.current > 0){
-                this.setState({status: 'paused', channels: suspendedChannels});
+                this.setState({status: 'paused', channels: suspendedChannels.items, pendingTimeCounter: 0});
             }else{
-                this.setState({status: 'suspended', channels: suspendedChannels, countryAlert});
+                this.setState({status: 'suspended', channels: suspendedChannels.items, countryAlert, pendingTimeCounter: 0});
             }
-        }else if((pendingChannels as any).length > 0){
-            this.setState({status: 'pending', channels: pendingChannels});
+        }else if(pendingChannels.items.length > 0){
+            this.setState({status: 'pending', channels: pendingChannels.items, pendingTimeCounter: 0});
         } else {
             let pendingTimeCounter = this.state.pendingTimeCounter + 1;
 
-            if (pendingTimeCounter >= 20) {
+            if (pendingTimeCounter >= 100) {
                 clearTimeout(this.state.handler);
                 notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
                 this.props.history.push('/client-dashboard-start');
                 return;
             }
 
-            this.setState({status: 'pending', channels: pendingChannels, pendingTimeCounter});
+            this.setState({status: 'pending', channels: pendingChannels.items, pendingTimeCounter});
         }
 
         if(!this.subscription){
@@ -260,4 +270,4 @@ class Connecting extends React.Component<any, any>{
     }
 }
 
-export default withRouter(Connecting);
+export default connect((state: State) => ({ws: state.ws}))(withRouter(Connecting));

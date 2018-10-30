@@ -8,7 +8,7 @@ export const fetchOfferings = async function(product: string){
         return table;
     }, {});
 
-    offerings = (offerings as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+    offerings = offerings.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
     return {offerings, products};
 
 };

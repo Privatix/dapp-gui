@@ -1,6 +1,5 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as api from '../../utils/api';
 import ChannelsListSortTable from './channelsListSortTable';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
@@ -12,6 +11,8 @@ import {Product as ProductType} from '../../typings/products';
 import {asyncProviders} from '../../redux/actions';
 import { translate } from 'react-i18next';
 
+import { WS } from '../../utils/ws';
+
 interface IProps{
     status: ServiceStatus;
     registerRefresh?: Function;
@@ -22,11 +23,14 @@ interface Props {
     products: ProductType[];
     dispatch: any;
     t?: any;
+    ws: WS;
 }
 
 @translate(['channels/channelsList'])
 
 class Channels extends React.Component<Props, any> {
+
+    subscription: String;
 
     constructor(props: Props) {
         super(props);
@@ -53,25 +57,44 @@ class Channels extends React.Component<Props, any> {
         this.refresh(true);
     }
 
+    ws = (event: any) => {
+        console.log('WS event catched!!!!', event);
+        this.refresh();
+    }
+
     componentDidMount(){
         this.props.dispatch(asyncProviders.updateProducts());
         this.refresh();
     }
 
+    componentWillUnmount() {
+        if (this.subscription) {
+            (window as any).ws.unsubscribe(this.subscription);
+        }
+    }
+
     refresh = async (once?: boolean) => {
 
         const status = this.state.status;
+        const { ws } = this.props;
 
-        const channels = await api.channels.getList(status);
+        const channels = await ws.getAgentChannels(status, '', 0, 100);
 
-        const channelsOfferings = channels.map((channel: ChannelType) => (window as any).ws.getOffering(channel.offering));
+        if (!this.subscription) {
+            const channelsIds = channels.items.map(channel => channel.id);
+            if(channelsIds.length){
+                this.subscription = ws.subscribe('channel', channelsIds, this.ws);
+            }
+        }
+
+        const channelsOfferings = channels.items.map((channel: ChannelType) => ws.getOffering(channel.offering));
         const offerings = await Promise.all(channelsOfferings);
         const productsByChannels = offerings.map(offering => offering.product);
 
         this.setState({
             lastUpdatedStatus: status,
             productsByChannels,
-            channels,
+            channels: channels.items,
             offerings
         });
 
@@ -96,9 +119,9 @@ class Channels extends React.Component<Props, any> {
             const channel = this.state.channels[index];
             const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
             return {
-                id: <ModalWindow customClass='' modalTitle={t('Service')} text={channel.id} component={<Channel channel={channel} />} />,
+                id: <ModalWindow customClass='shortTableText' modalTitle={t('Service')} text={channel.id} copyToClipboard={true} component={<Channel channel={channel} />} />,
                 server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={product.name} component={<Product product={product} />} />,
-                client: '0x'+channel.client,
+                client: channel.client,
                 contractStatus: channel.channelStatus,
                 serviceStatus: channel.serviceStatus,
                 usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
@@ -117,4 +140,4 @@ class Channels extends React.Component<Props, any> {
     }
 }
 
-export default connect( (state: State, ownProps: IProps) => Object.assign({}, {products: state.products}, ownProps))(Channels);
+export default connect( (state: State, ownProps: IProps) => Object.assign({}, {products: state.products, ws: state.ws}, ownProps))(Channels);

@@ -12,6 +12,7 @@ import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPr
 import JobStatus from '../connections/jobStatus';
 import JobName from '../connections/jobName';
 import { translate } from 'react-i18next';
+import CopyToClipboard from '../../components/copyToClipboard';
 
 @translate(['client/history', 'utils/notice'])
 
@@ -48,8 +49,13 @@ export default class ClientHistory extends React.Component<any,any> {
                 }
             }).map((channel) => {
                 return {
-                    id: <ModalWindow customClass='' modalTitle={t('Service')} text={channel.id}
-                                     component={<ServiceView service={channel}/>}/>,
+                    id: <ModalWindow
+                        customClass='shortTableText'
+                        modalTitle={t('Service')}
+                        text={channel.id}
+                        copyToClipboard={true}
+                        component={<ServiceView service={channel}/>}
+                    />,
                     agent: channel.agent,
                     contractStatus: channel.channelStatus.channelStatus,
                     usage: channel.usage.current + ' ' + channel.usage.unit,
@@ -72,7 +78,13 @@ export default class ClientHistory extends React.Component<any,any> {
                 const jobStatus = <JobStatus status={channel.job.status} />;
 
                 return {
-                    id: <ModalWindow customClass='' modalTitle={t('Service')} text={channel.id} component={<ServiceView service={channel} />} />,
+                    id: <ModalWindow
+                        customClass='shortTableText'
+                        modalTitle={t('Service')}
+                        text={channel.id}
+                        copyToClipboard={true}
+                        component={<ServiceView service={channel} />}
+                    />,
                     agent: channel.agent,
                     contractStatus: channel.channelStatus.channelStatus,
                     serviceStatus: channel.channelStatus.serviceStatus,
@@ -92,12 +104,21 @@ export default class ClientHistory extends React.Component<any,any> {
             {
                 header: t('Id'),
                 key: 'id',
+                dataProps: { className: 'shortTableTextTd' },
                 descSortFunction: ModalPropTextSorter.desc,
                 ascSortFunction: ModalPropTextSorter.asc
             },
             {
                 header: t('Agent'),
-                key: 'agent'
+                key: 'agent',
+                dataProps: { className: 'shortTableTextTd' },
+                render: (agent) => {
+                    return <div>
+                        <span className='shortTableText' title={agent}>{agent}</span>
+                        <CopyToClipboard text={agent} />
+                    </div>;
+                }
+
             },
             {
                 header: t('ContractStatus'),
@@ -132,12 +153,20 @@ export default class ClientHistory extends React.Component<any,any> {
             {
                 header: t('Id'),
                 key: 'id',
+                dataProps: { className: 'shortTableTextTd' },
                 descSortFunction: ModalPropTextSorter.desc,
                 ascSortFunction: ModalPropTextSorter.asc
             },
             {
                 header: t('Agent'),
-                key: 'agent'
+                key: 'agent',
+                dataProps: { className: 'shortTableTextTd' },
+                render: (agent) => {
+                    return <div>
+                        <span className='shortTableText' title={agent}>{agent}</span>
+                        <CopyToClipboard text={agent} />
+                    </div>;
+                }
             },
             {
                 header: t('ContractStatus'),
@@ -171,7 +200,7 @@ export default class ClientHistory extends React.Component<any,any> {
             <div className='card m-b-20'>
                 <h5 className='card-header'>{t('AwaitForTerminate')}</h5>
                 <div className='card-body'>
-                    <div className='bootstrap-table bootstrap-table-sortable'>
+                    <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                         <SortableTable
                             data={this.state.awaitForTerminateData}
                             columns={awaitForTerminateColumns}/>
@@ -182,7 +211,7 @@ export default class ClientHistory extends React.Component<any,any> {
             <div className='card m-b-20'>
                 <h5 className='card-header'>{t('History')}</h5>
                 <div className='card-body'>
-                    <div className='bootstrap-table bootstrap-table-sortable'>
+                    <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                         <SortableTable
                             data={this.state.historyData}
                             columns={historyColumns}/>

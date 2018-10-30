@@ -107,13 +107,14 @@
         "ConnectionInfo": "Connection info",
         "MaxSuspendTime": "Max suspend time",
         "sec": "sec",
+        "min": "min",
         "MaximumTimeServiceCan": "Maximum time service can be in Suspended status due to payment lag.",
         "AfterThisTimePeriodService": "After this time period service will be terminated, if no sufficient payment was received.",
-        "PeriodIsSpecifiedInSeconds": "Period is specified in seconds.",
+        "PeriodIsSpecifiedInMinutes": "Period is specified in minutes. Minimal period - 10 minutes.",
         "MaxInactiveTime": "Max inactive time",
         "MaximumTimeWithoutServiceUsage": "Maximum time without service usage.",
         "AgentWillConsider": "Agent will consider that Client will not use service and stop providing it.",
-        "PeriodIsSpecified": "Period is specified in seconds.",
+        "PeriodIsSpecified": "Period is specified in minutes. Minimal period - 10 minutes.",
         "AdditionalParameters": "Additional parameters",
         "MinDownloadMbits": "Min download speed",
         "MinUploadMbits": "Min upload speed",
@@ -143,7 +144,9 @@
         "haveNegativeValue": "have negative value.",
         "haveNegativeValue_plural": "have negative value.",
         "cantBeEmpty": "can't be empty.",
-        "cantBeEmpty_plural": "can't be empty."
+        "cantBeEmpty_plural": "can't be empty.",
+        "MaxSuspendTimeMustBeMoreOrEquals10Min": "Maximum suspend time must be equals or more than 10 min.",
+        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Maximum inactive time must be equals or more than 10 min."
     },
     "offerings/offeringTools":{
         "WarningArea": "Warning area",
@@ -298,7 +301,8 @@
         "Stack": "Stack",
         "ShowBtn": "show",
         "StackTrace": "Stack trace:",
-        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!"
+        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!",
+        "NoResults": "Nothing was found on your request. Please modify the filtering options!"
     },
     "logs/logsContext": {
         "Key": "Key",
@@ -337,7 +341,6 @@
         "ExchangeBalanceOption": "Exchange balance",
         "ServiceBalanceOption": "Service balance",
         "Amount": "Amount:",
-        "TransactionLog": "Transaction Log",
         "TransferConfirmBtn": "Yes, transfer!",
         "TransferSwalTitle": "Are you sure?",
         "ServiceSwalBalanceFrom": "Service balance",
@@ -358,6 +361,7 @@
         "MoreInformation": "More information:"
     },
     "transactions/transactionsList": {
+        "TransactionLog": "Transaction Log",
         "Date": "Date",
         "EthereumLink": "Ethereum link"
     },
@@ -614,5 +618,9 @@
         "eth_event_lastProcessedBlock_Description": "Last block number in blockchain stores last proccessed block.",
         "offering_autopopup_Description": "Allow offerings to pop up automatically.",
         "system_version_app_Description": "Application version"
+    },
+    "copyToClipboard": {
+        "Copied": "Copied!",
+        "Copy": "Copy"
     }
 }

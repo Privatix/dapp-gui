@@ -66,7 +66,7 @@ class Offerings extends React.Component<any, any> {
         this.state.offerings.map((offering: any) => {
             let product = this.state.products.filter((product: any) => product.id === offering.product)[0];
             let row = {
-                id: <ModalWindow customClass='' modalTitle={t('Offering')} text={base64ToHex(offering.hash)} component={<Offering offering={offering} />} />,
+                id: <ModalWindow customClass='shortTableText' modalTitle={t('Offering')} text={base64ToHex(offering.hash)} copyToClipboard={true} component={<Offering offering={offering} />} />,
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={offering.productName} component={<Product product={product} />} />,
                 status: offering.status,
@@ -82,6 +82,7 @@ class Offerings extends React.Component<any, any> {
             {
                 header: 'ID',
                 key: 'id',
+                dataProps: { className: 'shortTableTextTd' },
                 descSortFunction: ModalPropTextSorter.desc,
                 ascSortFunction: ModalPropTextSorter.asc
             },
@@ -125,7 +126,7 @@ class Offerings extends React.Component<any, any> {
         return <div className='row'>
             <div className='col-12'>
                 <div className='card-box'>
-                    <div className='bootstrap-table bootstrap-table-sortable'>
+                    <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                         <SortableTable
                             data={offeringsDataArr}
                             columns={columns} />

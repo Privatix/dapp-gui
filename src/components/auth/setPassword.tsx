@@ -1,12 +1,17 @@
 import * as React from 'react';
-import Steps from './steps';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import notice from '../../utils/notice';
-import * as ReactTooltip from 'react-tooltip';
-import {NextButton, PreviousButton, back} from './utils';
-import * as api from '../../utils/api';
-import { WS } from '../../utils/ws';
 import { translate } from 'react-i18next';
+import * as ReactTooltip from 'react-tooltip';
+
+import {NextButton, PreviousButton, back} from './utils';
+import Steps from './steps';
+
+import notice from '../../utils/notice';
+import * as api from '../../utils/api';
+import handlers from '../../redux/actions';
+import {fetch} from '../../utils/fetch';
+import { WS } from '../../utils/ws';
 
 @translate(['auth/setPassword', 'utils/notice'])
 class SetPassword extends React.Component<any, any>{
@@ -63,18 +68,27 @@ class SetPassword extends React.Component<any, any>{
             return;
         }
 
-        const res  = await api.auth.newPassword(pwd);
-        // TODO notice if server returns error (not implemented on dappctrl yet)
-        console.log(res);
-
         await api.settings.updateLocal({firstStart:false});
-        api.settings.getLocal()
-           .then(settings => {
-                const ws = new WS(settings.wsEndpoint);
-                ws.setPassword(pwd);
+        const settings = await api.settings.getLocal();
+        const ws = new WS(settings.wsEndpoint);
+        const ready = await ws.whenReady();
+        if(ready){
+            try {
+                // TODO remove when /accounts/${props.account.id}/status will be implemented on ws
+                const body = {pwd};
+                await fetch('/login', {method: 'post', body});
+                await ws.setPassword(pwd);
                 (window as any).ws = ws;
-           });
-        this.props.history.push('/setAccount');
+                this.props.dispatch(handlers.setWS(ws));
+                const mode = await api.getUserRole();
+                this.props.dispatch(handlers.setMode(mode));
+                this.props.history.push('/setAccount');
+            }catch(e){
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
+            }
+        }else{
+            // TODO
+        }
     }
 
     render(){
@@ -141,4 +155,4 @@ class SetPassword extends React.Component<any, any>{
     }
 }
 
-export default withRouter(SetPassword);
+export default connect(state => state)(withRouter(SetPassword));

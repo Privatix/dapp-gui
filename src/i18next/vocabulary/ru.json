@@ -108,13 +108,14 @@
         "ConnectionInfo": "Информация о соединении",
         "MaxSuspendTime": "Максимальное время ожидания",
         "sec": "секунд",
+        "min": "мин",
         "MaximumTimeServiceCan": "Максимальное время в течении которого сервис может быть в приостановленном состоянии в ожидании оплаты.",
         "AfterThisTimePeriodService": "По истечении этого срока сервис будет отключен, если оплата не будет получена.",
-        "PeriodIsSpecifiedInSeconds": "Период указан в секундах",
+        "PeriodIsSpecifiedInMinutes": "Период указан в минутах. Минимальный период - 10 минут.",
         "MaxInactiveTime": "Максимальное время бездействия",
         "MaximumTimeWithoutServiceUsage": "Максимальное время, в течении которого пользователь может не пользоваться сервисом",
         "AgentWillConsider": "По истечении этого срока Агент предполагает, что пользователь отказался от услуги и прекращает предоставление сервиса.",
-        "PeriodIsSpecified": "Период указан в секундах.",
+        "PeriodIsSpecified": "Период указан в минутах. Минимальный период - 10 минут.",
         "AdditionalParameters": "Дополнительные параметры",
         "MinDownloadMbits": "Минимальная входящая скорость",
         "MinUploadMbits": "Минимальная исходящая скорость",
@@ -144,7 +145,9 @@
         "haveNegativeValue": "имеет отрицательное значение.",
         "haveNegativeValue_plural": "имеют отрицательное значение.",
         "cantBeEmpty": "не может быть пустым.",
-        "cantBeEmpty_plural": "не могут быть пустыми."
+        "cantBeEmpty_plural": "не могут быть пустыми.",
+        "MaxSuspendTimeMustBeMoreOrEquals10Min": "Максимальное время приостановки должно быть равно или больше 10 минут.",
+        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Максимальное неактивное время должно быть равно или больше 10 минут."
     },
     "offerings/offeringTools": {
         "WarningArea": "Внимание!",
@@ -299,7 +302,8 @@
         "Stack": "Стек",
         "ShowBtn": "показать",
         "StackTrace": "Stack Trace",
-        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!"
+        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!",
+        "NoResults": "По вашему запросу ничего не найдено. Измените, пожалуйста, параметры фильтрации!"
     },
     "logs/logsContext": {
         "Key": "Ключ",
@@ -338,7 +342,6 @@
         "ExchangeBalanceOption": "Баланс контракта",
         "ServiceBalanceOption": "Баланс сервиса",
         "Amount": "Сумма:",
-        "TransactionLog": "Журнал транзакций",
         "TransferConfirmBtn": "Да, перевести!",
         "TransferSwalTitle": "Вы уверены?",
         "ServiceSwalBalanceFrom": "баланса сервиса",
@@ -359,6 +362,7 @@
         "MoreInformation": "Больше информации:"
     },
     "transactions/transactionsList": {
+        "TransactionLog": "Журнал транзакций",
         "Date": "Дата",
         "EthereumLink": "Ссылка Ethereum"
     },
@@ -615,5 +619,9 @@
         "eth_event_lastProcessedBlock_Description": "Последний номер блока в блок-цепочке хранит последний обработанный блок.",
         "offering_autopopup_Description": "Разрешить поднять предложение автоматически.",
         "system_version_app_Description": "Версия приложения."
+    },
+    "copyToClipboard": {
+        "Copied": "Скопировано!",
+        "Copy": "Копировать"
     }
 }

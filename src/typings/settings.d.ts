@@ -17,6 +17,7 @@ export interface LocalSettings {
     release: string;
     commit: string;
     logsCountPerPage: number;
+    elementsPerPage: number;
     lang: string;
 }
 
