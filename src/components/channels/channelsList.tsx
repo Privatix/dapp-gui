@@ -36,7 +36,8 @@ class AsyncChannels extends React.Component<any, any> {
     }
 
     async refresh() {
-        const ws = (window as any).ws;
+
+        const { ws } = this.props.ws;
 
         const endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
         const channels = await fetch(endpoint, {method: 'GET'});
@@ -121,5 +122,5 @@ class AsyncChannels extends React.Component<any, any> {
 }
 
 export default connect( (state: State, onProps: any) => {
-    return (Object.assign({}, {products: state.products}, onProps));
+    return (Object.assign({}, {ws: state.ws, products: state.products}, onProps));
 } )(withRouter(AsyncChannels));

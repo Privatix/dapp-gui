@@ -1,20 +1,30 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import {fetch} from '../../utils/fetch';
-import {asyncReactor} from 'async-reactor';
 
-function Loader() {
+import { State } from '../../typings/state';
 
-  return (<b>Loading data ...</b>);
+class LinkToProductByOfferingId extend React.Component<any, any> {
 
+    constructor(props:any){
+        super(props);
+        this.state = {offering: null};
+    }
+
+    async conponentDidMount(){
+        const { ws, offeringId } = this.props;
+        const offering = await ws.getOffering(offeringId);
+        this.setState({offering});
+    }
+
+    render {
+        const product = this.state.offering ? this.state.offering.product : '';
+        return (
+            <Link to={`/productById/${product}`}>{props.children}</Link>
+       );
+    }
 }
 
-async function AsyncLink(props:any){
-    const endpoint = `/offerings/?id=${props.offeringId}`;
-    const offerings = await fetch(endpoint, {method: 'GET'});
-    return (
-        <Link to={`/productById/${offerings[0].product}`}>{props.children}</Link>
-   );
-}
-
-export default asyncReactor(AsyncLink, Loader);
+export default connect((state: State, onProps: Props) => {
+    return (Object.assign({}, {ws: state.ws}, onProps));
+})(LinkToProductByOfferingId);
