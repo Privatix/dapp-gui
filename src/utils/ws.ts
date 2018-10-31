@@ -7,11 +7,14 @@ import {Product} from '../typings/products';
 import {Session} from '../typings/session';
 import {Channel} from '../typings/channels';
 import {Template} from '../typings/templates';
+import { Log } from '../typings/logs';
+
 import { PaginatedResponse} from '../typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
 type ChannelResponse  = PaginatedResponse<Channel[]>;
 type TransactionResponse = PaginatedResponse<Transaction[]>;
+type LogResponse = PaginatedResponse<Log[]>;
 
 export class WS {
     
@@ -371,27 +374,8 @@ export class WS {
     }
 
 // logs
-    getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number) {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getLogs',
-            params: [this.pwd, levels, searchText, dateFrom, dateTo, offset, limit]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function (res: any) {
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-
-            this.socket.send(JSON.stringify(req));
-        });
+    getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
+        return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
     }
 
 }
