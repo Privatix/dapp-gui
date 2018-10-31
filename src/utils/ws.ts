@@ -7,11 +7,14 @@ import {Product} from '../typings/products';
 import {Session} from '../typings/session';
 import {Channel} from '../typings/channels';
 import {Template} from '../typings/templates';
+import { Log } from '../typings/logs';
+
 import { PaginatedResponse} from '../typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
 type ChannelResponse  = PaginatedResponse<Channel[]>;
 type TransactionResponse = PaginatedResponse<Transaction[]>;
+type LogResponse = PaginatedResponse<Log[]>;
 
 export class WS {
     
@@ -277,6 +280,10 @@ export class WS {
 
 // products
 
+    getProduct(id: string): Promise<Product> {
+        return this.getObject('product', id) as Promise<Product>;
+    }
+
     getProducts(): Promise<Product[]> {
         return this.send('ui_getProducts')  as Promise<Product[]>;
     }
@@ -302,6 +309,18 @@ export class WS {
 
     getOffering(id: string): Promise<Offering>{
         return this.getObject('offering', id) as Promise<Offering>;
+    }
+
+    async fetchOfferingsAndProducts(productId: string){
+        const products = await this.getProducts();
+        const offerings = await this.getAgentOfferings(productId);
+        const resolveTable = products.reduce((table, product) => {
+            table[product.id] = product.name;
+            return table;
+        }, {});
+
+        const resOfferings = offerings.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        return {offerings: resOfferings, products};
     }
 
     createOffering(payload: any){
@@ -333,6 +352,7 @@ export class WS {
     }
 
 // common
+    getObject(type: 'product', id: string): Promise<Product>;
     getObject(type: 'channel', id: string): Promise<Channel>;
     getObject(type: 'template', id: string): Promise<Template>;
     getObject(type: 'offering', id: string): Promise<Offering>;
@@ -348,51 +368,13 @@ export class WS {
         return this.send('ui_getSettings');
     }
 
-    getTotalIncome() {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getTotalIncome',
-            params: [this.pwd]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function (res: any) {
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-
-            this.socket.send(JSON.stringify(req));
-        });
+    getTotalIncome(): Promise<number> {
+        return this.send('ui_getTotalIncome', []) as Promise<number>;
     }
 
 // logs
-    getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number) {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getLogs',
-            params: [this.pwd, levels, searchText, dateFrom, dateTo, offset, limit]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function (res: any) {
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-
-            this.socket.send(JSON.stringify(req));
-        });
+    getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
+        return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
     }
 
 }

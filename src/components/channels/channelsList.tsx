@@ -4,14 +4,12 @@ import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
 import {fetch} from '../../utils/fetch';
-import { GetProductIdByOfferingId } from '../products/productByOffering';
 import ChannelsListSortTable from './channelsListSortTable';
 import Channel from './channel';
 import ModalWindow from '../modalWindow';
 import Product from '../products/product';
 import toFixedN from '../../utils/toFixedN';
 import { State } from '../../typings/state';
-import {asyncProviders} from '../../redux/actions';
 
 @translate(['channels/channelsList', 'common'])
 class AsyncChannels extends React.Component<any, any> {
@@ -23,11 +21,11 @@ class AsyncChannels extends React.Component<any, any> {
         this.state = {
             isLoading: true,
             products: [],
+            allProducts: [],
             channels: [],
             offerings: []
         };
 
-        this.props.dispatch(asyncProviders.updateProducts());
     }
 
     ws = (event: any) => {
@@ -36,8 +34,10 @@ class AsyncChannels extends React.Component<any, any> {
     }
 
     async refresh() {
-        const ws = (window as any).ws;
 
+        const { ws } = this.props;
+
+        // TODO we need JSON-RPC method to fetch channels by offering id
         const endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
         const channels = await fetch(endpoint, {method: 'GET'});
 
@@ -48,13 +48,12 @@ class AsyncChannels extends React.Component<any, any> {
             }
         }
 
-        const channelsProductsIds = (channels as any).map((channel: any) => GetProductIdByOfferingId(channel.offering));
+        const channelsProductsIds = (channels as any).map(async (channel: any) => (await ws.getOffering(channel.offering)).product);
         const products = await Promise.all(channelsProductsIds);
         const offerings = await ws.getAgentOfferings();
-        this.props.dispatch(asyncProviders.updateProducts());
-        this.props.dispatch(asyncProviders.updateOfferings());
+        const allProducts = await ws.getProducts();
 
-        this.setState({channels, products, offerings: offerings.items});
+        this.setState({channels, products, allProducts, offerings: offerings.items});
 
     }
 
@@ -64,8 +63,11 @@ class AsyncChannels extends React.Component<any, any> {
     }
 
     componentWillUnmount() {
+
+        const { ws } = this.props;
+
         if (this.subscription) {
-            (window as any).ws.unsubscribe(this.subscription);
+            ws.unsubscribe(this.subscription);
         }
     }
 
@@ -73,8 +75,8 @@ class AsyncChannels extends React.Component<any, any> {
 
         const { t } = this.props;
 
-        const channelsDataArr = (this.state.products as any)
-            .map((productId) => this.props.products.find((product) => product.id === productId))
+        const channelsDataArr = this.state.products
+            .map((productId) => this.state.allProducts.find((product) => product.id === productId))
             .map((product, index) => {
                     const channel = this.state.channels[index];
                     const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
@@ -121,5 +123,5 @@ class AsyncChannels extends React.Component<any, any> {
 }
 
 export default connect( (state: State, onProps: any) => {
-    return (Object.assign({}, {products: state.products}, onProps));
+    return (Object.assign({}, {ws: state.ws}, onProps));
 } )(withRouter(AsyncChannels));

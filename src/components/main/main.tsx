@@ -1,12 +1,16 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
+
 import ChannelsListByStatus from '../channels/channelsListByStatus';
 import OfferingsList from '../offerings/offeringsList';
 import toFixedN from '../../utils/toFixedN';
-import { translate } from 'react-i18next';
+
+import { State } from '../../typings/state';
 
 @translate('agent/dashboard')
 
-export default class Main extends React.Component <any,any> {
+class Main extends React.Component <any,any> {
 
     constructor(props:any) {
         super(props);
@@ -33,12 +37,13 @@ export default class Main extends React.Component <any,any> {
         }
     }
 
-    getTotalIncome() {
-        (window as any).ws.getTotalIncome()
-            .then((totalIncome: number) => {
-                const income = toFixedN({number: (totalIncome / 1e8), fixed: 8});
-                this.setState({income});
-            });
+    async getTotalIncome() {
+
+        const { ws } = this.props;
+
+        const totalIncome = await ws.getTotalIncome();
+        const income = toFixedN({number: (totalIncome / 1e8), fixed: 8});
+        this.setState({income});
     }
 
     render() {
@@ -76,3 +81,5 @@ export default class Main extends React.Component <any,any> {
         </div>;
     }
 }
+
+export default connect((state: State) => ({ws: state.ws}))(Main);

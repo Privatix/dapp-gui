@@ -1,23 +1,30 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
-import {fetch} from '../../utils/fetch';
+import SortableTable from 'react-sortable-table-vilan';
 
 import OfferingStatus from './offeringStatus';
 import MessageStatus from './messageStatus';
-import SortableTable from 'react-sortable-table-vilan';
 import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
 import Product from '../products/product';
 import { State } from '../../typings/state';
-import {asyncProviders} from '../../redux/actions';
 import base64ToHex from '../utils/base64ToHex';
 
-@translate(['offerings/offeringsList'])
-class Offerings extends React.Component<any, any> {
+import { WS } from '../../utils/ws';
 
-    constructor(props:any) {
+interface IProps {
+    product: string;
+    rate?: number;
+    ws?: WS;
+    t?: any;
+}
+
+@translate(['offerings/offeringsList'])
+class OfferingsList extends React.Component<IProps, any> {
+
+    constructor(props:IProps) {
         super(props);
 
         this.state = {
@@ -29,21 +36,12 @@ class Offerings extends React.Component<any, any> {
 
     async refresh() {
 
-        const endpoint = '/offerings/' + (this.props.product === 'all' ? '' : `?product=${this.props.product}`);
+        const { ws } = this.props;
 
-        const offeringsRaw = await fetch(endpoint, {method: 'GET'});
-        this.props.dispatch(asyncProviders.updateProducts());
+        const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
+        this.setState({offerings, products});
 
-        const resolveTable = (this.props.products as any).reduce((table, product) => {
-            table[product.id] = product.name;
-            return table;
-        }, {});
-
-        const offerings = (offeringsRaw as any).map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
-
-        this.setState({offerings, products: this.props.products});
-
-        const handler = setTimeout(this.refresh.bind(this), this.props.rate);
+        const handler = setTimeout(this.refresh.bind(this), this.props.rate ? this.props.rate : 3000);
         this.setState({handler});
     }
 
@@ -138,6 +136,6 @@ class Offerings extends React.Component<any, any> {
 
 }
 
-export default connect( (state: State, onProps: any) => {
-    return (Object.assign({}, {products: state.products}, onProps));
-} )(Offerings);
+export default connect( (state: State, onProps: IProps) => {
+    return (Object.assign({}, {ws: state.ws}, onProps));
+} )(OfferingsList);
