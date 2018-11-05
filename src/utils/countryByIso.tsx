@@ -1,16 +1,6 @@
-export default function (props: any) {
-    const number = props.number;
-    let fixed = props.fixed;
+import countries from './countries';
 
-    if (typeof number === 'undefined' || number === null || isNaN(number)) {
-        return 0;
-    }
-
-    if (typeof fixed === 'undefined' || fixed === null || isNaN(fixed)) {
-        fixed = 0;
-    }
-
-    const isHaveDecimals = Math.floor(number) !== number;
-
-    return isHaveDecimals ? number.toFixed(fixed).replace(/0+$/, '') : number;
+export default function (iso: string) {
+    const country = countries.filter((country:any) => country.id === iso.toUpperCase());
+    return country[0] ? country[0].name : '';
 }

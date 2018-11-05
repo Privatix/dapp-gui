@@ -26,7 +26,7 @@ import Backup from './auth/backup';
 import AccountsList from './accounts/accountsList';
 import ClientDashboardStart from '../client_components/dashboard/startVPNBtn';
 import ClientDashboardConnecting from '../client_components/dashboard/connecting';
-import VPNList from '../client_components/vpn_list/list';
+import VPNList from '../client_components/vpn_list/list/';
 import AcceptOffering from '../client_components/vpn_list/acceptOffering';
 import ClientHistory from '../client_components/vpn_list/history';
 

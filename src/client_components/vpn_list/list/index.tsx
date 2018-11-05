@@ -1,21 +1,22 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
+import './list.css';
 import SortableTable from 'react-sortable-table-vilan';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
-import AcceptOffering from './acceptOffering';
-import ModalWindow from '../../components/modalWindow';
-import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
-import notice from '../../utils/notice';
-import toFixedN from '../../utils/toFixedN';
+import AcceptOffering from '../acceptOffering';
+import ModalWindow from '../../../components/modalWindow';
+import ModalPropTextSorter from '../../../components/utils/sorters/sortingModalByPropText';
+import notice from '../../../utils/notice';
+import toFixedN from '../../../utils/toFixedN';
 import Pagination from 'react-js-pagination';
 import { connect } from 'react-redux';
-import {State} from '../../typings/state';
-import * as api from '../../utils/api';
-import {LocalSettings} from '../../typings/settings';
-import countryByIso from '../../utils/countryByIso';
+import {State} from '../../../typings/state';
+import * as api from '../../../utils/api';
+import {LocalSettings} from '../../../typings/settings';
+import countryByIso from '../../../utils/countryByIso';
 
 @translate(['client/vpnList', 'utils/notice'])
 
@@ -286,7 +287,8 @@ class VPNList extends React.Component<any,any> {
         const searchText = e.target.value;
         let patt = new RegExp(searchText, 'i');
         let filteredCountries = this.state.countries.filter((item) => {
-            return patt.test(countryByIso(item.name));
+            const countryName = countryByIso(item.name);
+            return patt.test(countryName);
         });
 
         this.setState({
