@@ -8,6 +8,7 @@ import GasRange from '../../components/utils/gasRange';
 import {LocalSettings} from '../../typings/settings';
 import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
+import countryByIso from '../../utils/countryByIso';
 
 @translate(['client/acceptOffering', 'utils/gasRange', 'utils/notice'])
 
@@ -145,7 +146,7 @@ class AcceptOffering extends React.Component<any, any>{
                     <div className='form-group row'>
                         <label className='col-3 col-form-label'>{t('Country')}</label>
                         <div className='col-9'>
-                            <input type='text' className='form-control' value={offering.country} readOnly/>
+                            <input type='text' className='form-control' value={countryByIso(offering.country)} readOnly/>
                         </div>
                     </div>
                 </div>
