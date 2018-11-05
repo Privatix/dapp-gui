@@ -174,8 +174,8 @@ class AcceptOffering extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>{t('MaxInactiveTime')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={offering.maxInactiveTimeSec} readOnly/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>{t('sec')}</span>
+                                <input type='text' className='form-control' value={Math.ceil(parseFloat(offering.maxInactiveTimeSec)) / 60} readOnly/>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>{t('min')}</span>
                             </div>
                             <span className='help-block'>
                                 <small>{t('MaxTimeWithoutServiceSmallText')}</small>
