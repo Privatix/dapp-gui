@@ -1,20 +1,22 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
+import './list.css';
 import SortableTable from 'react-sortable-table-vilan';
 import Slider from 'rc-slider';
 import 'rc-slider/assets/index.css';
 import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
-import AcceptOffering from './acceptOffering';
-import ModalWindow from '../../components/modalWindow';
-import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
-import notice from '../../utils/notice';
-import toFixedN from '../../utils/toFixedN';
+import AcceptOffering from '../acceptOffering';
+import ModalWindow from '../../../components/modalWindow';
+import ModalPropTextSorter from '../../../components/utils/sorters/sortingModalByPropText';
+import notice from '../../../utils/notice';
+import toFixedN from '../../../utils/toFixedN';
 import Pagination from 'react-js-pagination';
 import { connect } from 'react-redux';
-import {State} from '../../typings/state';
-import * as api from '../../utils/api';
-import {LocalSettings} from '../../typings/settings';
+import {State} from '../../../typings/state';
+import * as api from '../../../utils/api';
+import {LocalSettings} from '../../../typings/settings';
+import countryByIso from '../../../utils/countryByIso';
 
 @translate(['client/vpnList', 'utils/notice'])
 
@@ -156,7 +158,7 @@ class VPNList extends React.Component<any,any> {
                         copyToClipboard={true}
                         component={<AcceptOffering offering={offering} />}
                     />,
-                country: offering.country,
+                country: countryByIso(offering.country),
                 price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
                 supply: offering.supply,
                 availableSupply: offering.currentSupply,
@@ -285,7 +287,8 @@ class VPNList extends React.Component<any,any> {
         const searchText = e.target.value;
         let patt = new RegExp(searchText, 'i');
         let filteredCountries = this.state.countries.filter((item) => {
-            return patt.test(item.name);
+            const countryName = countryByIso(item.name);
+            return patt.test(countryName);
         });
 
         this.setState({
@@ -443,7 +446,7 @@ class VPNList extends React.Component<any,any> {
                             </div>
                         </div>
 
-                        <div className='card m-t-15 m-b-20'>
+                        <div className='card m-t-15 m-b-20 vpnListCountryFilterBl'>
                             <h5 className='card-header'>{t('Country')}</h5>
                             <div className='card-body'>
                                 {searchHtml}
@@ -456,7 +459,7 @@ class VPNList extends React.Component<any,any> {
                                                value={country.name}
                                                checked={this.state.checkedCountries.indexOf(country.name) !== -1}
                                                onChange={this.filterByCountryHandler.bind(this)} />
-                                        <label htmlFor={country.name}>{country.name}</label>
+                                        <label htmlFor={country.name}>{countryByIso(country.name)}</label>
                                     </div>;
                                     if (!this.state.showAllCountries) {
                                         if (country.defShow === 1) {

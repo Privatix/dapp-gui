@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
-// import LinkToProductByOfferingId from '../products/linkToProductByOfferingId';
+import countryByIso from '../../utils/countryByIso';
 import ProductNameByOffering from '../products/productNameByOffering';
 
 @translate('offerings/createOffering')
 export default class OfferingView extends React.Component<any, any>{
-    
+
     constructor(props:any){
         super(props);
     }
@@ -44,7 +44,7 @@ export default class OfferingView extends React.Component<any, any>{
                     <div className='form-group row'>
                         <label className='col-3 col-form-label'>{t('Country')}: </label>
                         <div className='col-9'>
-                            <input type='text' className='form-control' value={props.offering.country} readOnly/>
+                            <input type='text' className='form-control' value={countryByIso(props.offering.country)} readOnly/>
                         </div>
                     </div>
                     <div className='form-group row'>
