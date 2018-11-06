@@ -490,6 +490,7 @@
         "Connection": "Connection",
         "ActiveConnection": "Active Connection:",
         "Id": "Id",
+        "Offering": "Offering",
         "Agent": "Agent",
         "ContractStatus": "Contract status",
         "ServiceStatus": "Service status",

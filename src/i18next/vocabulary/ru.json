@@ -491,6 +491,7 @@
         "Connection": "Соединение",
         "ActiveConnection": "Активное соединение:",
         "Id": "Id",
+        "Offering": "Предложение",
         "Agent": "Агент",
         "ContractStatus": "Статус контракта",
         "ServiceStatus": "Статус сервиса",

@@ -10,6 +10,9 @@ import { withRouter } from 'react-router-dom';
 import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
 import CopyToClipboard from '../../components/copyToClipboard';
+import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
+import SortableTable from 'react-sortable-table-vilan';
+import OfferingById from './offeringById';
 
 @translate('client/connections/active')
 
@@ -17,9 +20,63 @@ class ActiveConnection extends React.Component<any, any>{
 
     constructor(props: any){
         super(props);
+
+        const { t } = props;
+
         this.state = {
             popup: false,
-            channels: props.channels
+            channels: props.channels,
+            columns: [
+                {
+                    header: t('Id'),
+                    key: 'id',
+                    dataProps: { className: 'shortTableTextTd' },
+                    descSortFunction: ModalPropTextSorter.desc,
+                    ascSortFunction: ModalPropTextSorter.asc
+                },
+                {
+                    header: t('Offering'),
+                    key: 'offering',
+                    dataProps: { className: 'shortTableTextTd' },
+                    descSortFunction: ModalPropTextSorter.desc,
+                    ascSortFunction: ModalPropTextSorter.asc
+                },
+                {
+                    header: t('Agent'),
+                    key: 'agent',
+                    dataProps: { className: 'shortTableTextTd' },
+                    render: (agent) => {
+                        return <div>
+                            <span className='shortTableText' title={agent}>{agent}</span>
+                            <CopyToClipboard text={agent} />
+                        </div>;
+                    }
+                },
+                {
+                    header: t('ContractStatus'),
+                    key: 'contractStatus',
+                    render: (status) => { return <ContractStatus contractStatus={status}/>; }
+                },
+                {
+                    header: t('ServiceStatus'),
+                    key: 'serviceStatus',
+                    render: (status) => { return <ChannelStatus serviceStatus={status}/>; }
+                },
+                {
+                    header: t('JobStatus'),
+                    key: 'jobStatus',
+                    render: ([jobtype, jobStatus, jobTime]) => { return <div><JobName jobtype={jobtype} /> ({jobStatus} {jobTime})</div>;}
+                },
+                {
+                    header: t('Usage'),
+                    key: 'usage',
+                    render: (channel) => { return <Usage channel={channel} />; }
+                },
+                {
+                    header: t('CostPRIX'),
+                    key: 'costPRIX'
+                }
+            ]
         };
     }
 
@@ -30,36 +87,38 @@ class ActiveConnection extends React.Component<any, any>{
     render() {
         const { t } = this.props;
 
-        const connections = this.state.channels.map((channel: any) => {
-
+        let connections = [];
+        this.state.channels.map((channel: any) => {
             const jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
             const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
             const jobStatus = <JobStatus status={channel.job.status} />;
 
-            return <tr key={channel.id} >
-                <td className='shortTableTextTd'>
-                    <ModalWindow
-                        visible={this.state.popup}
-                        customClass='shortTableText'
-                        modalTitle={t('Connection')}
-                        text={channel.id}
-                        copyToClipboard={true}
-                        component={<Connection connection={channel}
-                        />}
-                    />
-                </td>
-                <td className='shortTableTextTd'>
-                    <div>
-                        <span className='shortTableText' title={channel.agent}>{channel.agent}</span>
-                        <CopyToClipboard text={channel.agent} />
-                    </div>
-                </td>
-                <td><ContractStatus contractStatus={channel.channelStatus.channelStatus}/></td>
-                <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus}/></td>
-                <td><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</td>
-                <td><Usage channel={channel} /></td>
-                <td>{toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})}</td>
-            </tr>;
+            let row = {
+                id: <ModalWindow
+                    visible={this.state.popup}
+                    customClass='shortTableText'
+                    modalTitle={t('Connection')}
+                    text={channel.id}
+                    copyToClipboard={true}
+                    component={<Connection connection={channel} />}
+                />,
+                offering: <ModalWindow
+                    visible={this.state.popup}
+                    customClass='shortTableText'
+                    modalTitle={t('Offering')}
+                    text={new Buffer(channel.offeringHash, 'base64').toString('hex')}
+                    copyToClipboard={true}
+                    component={<OfferingById offeringId={channel.offering} />}
+                />,
+                agent: channel.agent,
+                contractStatus: channel.channelStatus.channelStatus,
+                serviceStatus: channel.channelStatus.serviceStatus,
+                jobStatus: [channel.job.jobtype, jobStatus, jobTime],
+                usage: channel,
+                costPRIX: toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})
+            };
+
+            connections.push(row);
         });
 
         return <div className='row'>
@@ -68,22 +127,11 @@ class ActiveConnection extends React.Component<any, any>{
                     <h5 className='card-header'>{t('ActiveConnection')}</h5>
                     <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                         <div className='card-body'>
-                            <table className='table table-bordered table-striped table-responsive'>
-                                <thead>
-                                <tr>
-                                    <th>{t('Id')}</th>
-                                    <th>{t('Agent')}</th>
-                                    <th>{t('ContractStatus')}</th>
-                                    <th>{t('ServiceStatus')}</th>
-                                    <th>{t('JobStatus')}</th>
-                                    <th>{t('Usage')}</th>
-                                    <th>{t('CostPRIX')}</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                { connections }
-                                </tbody>
-                            </table>
+                            <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
+                                <SortableTable
+                                    data={connections}
+                                    columns={this.state.columns}/>
+                            </div>
                         </div>
                     </div>
                 </div>
