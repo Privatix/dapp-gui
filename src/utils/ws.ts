@@ -17,7 +17,7 @@ type TransactionResponse = PaginatedResponse<Transaction[]>;
 type LogResponse = PaginatedResponse<Log[]>;
 
 export class WS {
-    
+
     static listeners = {}; // uuid -> listener
     static handlers = {}; // uuid -> handler
 
@@ -329,6 +329,10 @@ export class WS {
 
     changeOfferingStatus(offeringId: string, action: string, gasPrice: number){
         return this.send('ui_changeOfferingStatus', [offeringId, action, gasPrice]);
+    }
+
+    acceptOffering(ethAddress: string, offeringId: string, deposit: number, gasPrice: number) {
+        return this.send('ui_acceptOffering', [ethAddress, offeringId, deposit, gasPrice]);
     }
 
 // sessions
