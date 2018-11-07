@@ -92,7 +92,7 @@
         "ChangeCountryHelpTextPart2": "page",
         "ChangeCountryHelpTextServers": "Servers",
         "Supply": "Supply",
-        "ie": "i.e.",
+        "ie": "e.g.",
         "MaximumSupplyOfServices": "Maximum supply of services according to service offerings.",
         "ItRepresentsTheMaximum": "It represents the maximum number of clients that can consume this service offering concurrently.",
         "BillingInfo": "Billing info",
