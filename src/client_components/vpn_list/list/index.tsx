@@ -147,7 +147,7 @@ class VPNList extends React.Component<any,any> {
 
         let offerings = clientOfferings.map(offering => {
 
-            const offeringHash = '0x' + new Buffer(offering.hash, 'base64').toString('hex');
+            const offeringHash = '0x' + offering.hash;
 
             return {
                 block: offering.blockNumberUpdated,

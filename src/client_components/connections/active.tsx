@@ -106,7 +106,7 @@ class ActiveConnection extends React.Component<any, any>{
                     visible={this.state.popup}
                     customClass='shortTableText'
                     modalTitle={t('Offering')}
-                    text={new Buffer(channel.offeringHash, 'base64').toString('hex')}
+                    text={channel.offeringHash}
                     copyToClipboard={true}
                     component={<OfferingById offeringId={channel.offering} />}
                 />,
