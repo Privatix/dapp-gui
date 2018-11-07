@@ -5,7 +5,7 @@ import {Account} from '../typings/accounts';
 import {Transaction} from '../typings/transactions';
 import {Product} from '../typings/products';
 import {Session} from '../typings/session';
-import {Channel} from '../typings/channels';
+import {Channel, ClientChannel} from '../typings/channels';
 import {Template} from '../typings/templates';
 import { Log } from '../typings/logs';
 
@@ -13,6 +13,7 @@ import { PaginatedResponse} from '../typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
 type ChannelResponse  = PaginatedResponse<Channel[]>;
+type ClientChannelResponse  = PaginatedResponse<ClientChannel[]>;
 type TransactionResponse = PaginatedResponse<Transaction[]>;
 type LogResponse = PaginatedResponse<Log[]>;
 
@@ -339,8 +340,8 @@ export class WS {
 
 // channels
 
-    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{
-        return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
+    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ClientChannelResponse>{
+        return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ClientChannelResponse>;
     }
 
     getAgentChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{

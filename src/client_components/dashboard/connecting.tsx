@@ -63,7 +63,7 @@ class Connecting extends React.Component<any, any>{
 
         const { t, ws } = this.props;
 
-        const pendingChannelsReq = ws.getClientChannels('active', 'pending', 0, 10);
+        const pendingChannelsReq = ws.getClientChannels('', 'pending', 0, 10);
         const activeChannelsReq = ws.getClientChannels('active', 'active', 0, 10);
         const suspendedChannelsReq = ws.getClientChannels('active', 'suspended', 0, 10);
 
@@ -85,6 +85,7 @@ class Connecting extends React.Component<any, any>{
             }
             const ids = [...pendingChannels.items, ...activeChannels.items, ...suspendedChannels.items].map(channel => channel.id);
             if(ids.length){
+                console.log('subscription!!!');
                 this.subscription = ws.subscribe('channel', ids, this.ws);
             }
         }

@@ -15,36 +15,82 @@ import JobStatus from '../connections/jobStatus';
 import JobName from '../connections/jobName';
 import CopyToClipboard from '../../components/copyToClipboard';
 
-import { State } from '../../typings/state';
+import { State } from 'typings/state';
+import { ClientChannel } from 'typings/channels';
 
 @translate(['client/history', 'utils/notice'])
 
 class ClientHistory extends React.Component<any,any> {
 
     constructor(props:any) {
+
         super(props);
 
         this.state = {
             historyData: [],
-            awaitForTerminateData: []
+            awaitForTerminateData: [],
+            ids: [],
+            subscribeId: null
         };
     }
 
     componentDidMount() {
-        this.getHistoryData();
-        this.getAwaitForTerminateColumns();
+
+        this.refresh();
+
     }
 
-    refresh() {
+    componentWillUnmount(){
+
+        const { ws } = this.props;
+
+        ws.unsubscribe(this.state.subscribeId);
+
+    }
+
+    refresh = () => {
+
         this.getHistoryData();
         this.getAwaitForTerminateColumns();
+
+    }
+
+    onRefresh = () => {
+
         const { t } = this.props;
+
+        this.refresh();
         notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('SuccessfullyRefreshed')});
+
+    }
+
+    private getIds(channels: ClientChannel[]): string[]{
+
+        return channels.map(channel => channel.id);
+
+    }
+
+    subscribe(channels: ClientChannel[]){
+
+        const { ws } = this.props;
+        const ids = this.state.ids.concat(this.getIds(channels)).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index);
+
+        this.setState({ids});
+
+        if(this.state.subsribeId){
+            ws.unsubscribe(this.state.subscribeId);
+        }
+
+        this.setState({subscribeId: ws.subscribe('channel', ids, this.refresh)});
     }
 
     async getHistoryData() {
+
         const { t, ws } = this.props;
         const clientChannels = await ws.getClientChannels('', 'terminated', 0, 0);
+
+        this.subscribe(clientChannels.items);
+
         const historyData = clientChannels.items.filter((channel) => {
             if (channel.channelStatus.channelStatus !== 'active') {
                 return true;
@@ -70,8 +116,12 @@ class ClientHistory extends React.Component<any,any> {
     }
 
     async getAwaitForTerminateColumns() {
+
         const { t, ws } = this.props;
         const clientChannels = await ws.getClientChannels('active', 'terminated', 0, 0);
+
+        this.subscribe(clientChannels.items);
+
         const data = clientChannels.items.map((channel) => {
             let jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
             let jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
@@ -98,6 +148,7 @@ class ClientHistory extends React.Component<any,any> {
     }
 
     render() {
+
         const { t } = this.props;
         const awaitForTerminateColumns = [
             {
@@ -194,7 +245,7 @@ class ClientHistory extends React.Component<any,any> {
 
         return <div className='col-lg-12 col-md-12'>
             <div className='m-t-5 m-b-20'>
-                <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this)}>{t('Refresh')}</button>
+                <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.onRefresh}>{t('Refresh')}</button>
             </div>
             <div className='card m-b-20'>
                 <h5 className='card-header'>{t('AwaitForTerminate')}</h5>
