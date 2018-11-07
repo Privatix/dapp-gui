@@ -1,22 +1,40 @@
 import * as React from 'react';
-import Select from 'react-select';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
 import { translate } from 'react-i18next';
+import Select from 'react-select';
 
-import * as api from '../../utils/api';
-import GasRange from '../utils/gasRange';
-import notice from '../../utils/notice';
-import toFixedN from '../../utils/toFixedN';
-import parseFloatPrix from '../../utils/parseFloatPrix';
-import {LocalSettings} from '../../typings/settings';
-import countries from '../../utils/countries';
+import * as api from 'utils/api';
+import notice from 'utils/notice';
+import toFixedN from 'utils/toFixedN';
+import parseFloatPrix from 'utils/parseFloatPrix';
+import {LocalSettings} from 'typings/settings';
+import countries from 'utils/countries';
+import GasRange from 'components/utils/gasRange';
+
+import * as ubold from 'css/index.css';
+// import * as styles from './index.css';
+
+import { WS } from 'utils/ws';
+import { State } from 'typings/state';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
 };
 
+
+interface IProps {
+    product?: string;
+    ws?: WS;
+    t?: any;
+    done?: Function;
+    closeModal?: Function;
+    location?: any;
+    history?: any;
+}
+
 @translate(['offerings/createOffering', 'common', 'utils/notice'])
-class CreateOffering extends React.Component<any, any>{
+class CreateOffering extends React.Component<IProps, any>{
 
     static defaultState = {
         payload: {
@@ -57,7 +75,8 @@ class CreateOffering extends React.Component<any, any>{
 
     async refresh(){
 
-        const ws = (window as any).ws;
+        const { ws } = this.props;
+
         const accounts = await ws.getAccounts();
         const products = await ws.getProducts();
         // TODO check products length
@@ -109,7 +128,7 @@ class CreateOffering extends React.Component<any, any>{
         this.setState({errMsg: ''});
         evt.preventDefault();
 
-        const { t } = this.props;
+        const { t, ws } = this.props;
 
         const aliases = {
             serviceName: t('Name')
@@ -322,7 +341,7 @@ class CreateOffering extends React.Component<any, any>{
                 }
                 delete payload.minUploadMbits;
             }
-            const ws = (window as any).ws;
+            // const ws = (window as any).ws;
             const offeringId = await ws.createOffering(payload);
             await ws.changeOfferingStatus(offeringId, 'publish', this.state.gasPrice);
             this.setState(this.getDefaultState());
@@ -382,10 +401,10 @@ class CreateOffering extends React.Component<any, any>{
                 <img src={`images/country/${this.state.payload.country.toLowerCase()}.png`} width='25px'/>
             </span>;
 
-        return <div className='container-fluid'>
-            <div className='row'>
+        return <div className='containerFluid'>
+            <div className={ubold.row}>
                 <div className='col-sm-12'>
-                        <div className='card m-b-20 card-body'>
+                        <div className={ubold.cardCardBodyMB20}>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>{t('Server')}:</label>
                                 <div className='col-6'>
@@ -393,7 +412,7 @@ class CreateOffering extends React.Component<any, any>{
                                 </div>
                             </div>
                         </div>
-                        <div className='card m-b-20'>
+                        <div className={ubold.cardMB20}>
                             <h5 className='card-header'>{t('GeneralInfo')}</h5>
                             <div className='card-body'>
                                 <div className='form-group row'>
@@ -684,4 +703,7 @@ class CreateOffering extends React.Component<any, any>{
     }
 }
 
-export default withRouter(CreateOffering);
+// export default withRouter(CreateOffering);
+export default connect( (state: State, onProps: IProps) => {
+    return (Object.assign({}, {ws: state.ws}, onProps));
+} )(withRouter(CreateOffering));

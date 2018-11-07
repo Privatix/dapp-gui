@@ -2,7 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import ProductView from './productView';
-import CreateOffering from '../offerings/createOffering';
+import CreateOffering from 'components/offerings/createOffering/';
 
 
 @translate(['offerings', 'offerings/offerings'])
