@@ -165,6 +165,7 @@
     "offerings/offeringsList":{
         "Offering": "Offering",
         "ServerInfo": "Server info",
+        "Hash": "Hash",
         "ServiceName": "Service name",
         "Server": "Server",
         "MessageStatus": "Message status",
@@ -292,7 +293,7 @@
         "LogsFilterFrom": "From:",
         "LogsFilterTo": "To:",
         "LogsFilterTime": "time",
-        "LogsSearchPlaceholder": "search",
+        "LogsSearchPlaceholder": "e.g. failed",
         "NowBtn": "Now",
         "Level": "Level",
         "Date": "Date",

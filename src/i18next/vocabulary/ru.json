@@ -166,6 +166,7 @@
     "offerings/offeringsList": {
         "Offering": "Предложение",
         "ServerInfo": "Информация о сервере",
+        "Hash": "Хеш",
         "ServiceName": "Название сервиса",
         "Server": "Сервер",
         "MessageStatus": "Статус сообщения",
@@ -293,7 +294,7 @@
         "LogsFilterFrom": "От:",
         "LogsFilterTo": "До:",
         "LogsFilterTime": "время",
-        "LogsSearchPlaceholder": "поиск",
+        "LogsSearchPlaceholder": "например failed",
         "NowBtn": "Сейчас",
         "Level": "Уровень",
         "Date": "Дата",

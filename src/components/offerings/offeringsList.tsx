@@ -64,7 +64,7 @@ class OfferingsList extends React.Component<IProps, any> {
         this.state.offerings.map((offering: any) => {
             let product = this.state.products.filter((product: any) => product.id === offering.product)[0];
             let row = {
-                id: <ModalWindow customClass='shortTableText' modalTitle={t('Offering')} text={base64ToHex(offering.hash)} copyToClipboard={true} component={<Offering offering={offering} />} />,
+                hash: <ModalWindow customClass='shortTableText' modalTitle={t('Offering')} text={base64ToHex(offering.hash)} copyToClipboard={true} component={<Offering offering={offering} />} />,
                 serviceName: offering.serviceName,
                 server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={offering.productName} component={<Product product={product} />} />,
                 status: offering.status,
@@ -78,8 +78,8 @@ class OfferingsList extends React.Component<IProps, any> {
 
         const columns = [
             {
-                header: 'ID',
-                key: 'id',
+                header: t('Hash'),
+                key: 'hash',
                 dataProps: { className: 'shortTableTextTd' },
                 descSortFunction: ModalPropTextSorter.desc,
                 ascSortFunction: ModalPropTextSorter.asc
