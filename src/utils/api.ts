@@ -5,9 +5,6 @@ import {Transaction} from '../typings/transactions';
 import * as Settings from './api/settings';
 export const settings = Settings;
 
-import * as Offerings from './api/offerings';
-export const offerings = Offerings;
-
 import * as UserRole from './api/userrole';
 export const userrole = UserRole;
 

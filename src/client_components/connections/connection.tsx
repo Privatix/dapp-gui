@@ -116,7 +116,7 @@ class Connection extends React.Component<any, any>{
                                             <td>{t('OfferingT')}</td>
                                             <td>{this.state.offering
                                                 ? <a href='#' onClick={this.showOffering.bind(this)}>
-                                                    { new Buffer(this.state.offering.hash, 'base64').toString('hex') }
+                                                    {this.state.offering.hash}
                                                   </a>
                                                 : ''}
                                             </td>

@@ -340,6 +340,7 @@ class Logs extends React.Component <any,any> {
                                         <div className='col-md-10 col-10'>
                                             <div className='input-group'>
                                                 <DatePicker
+                                                    id={'dateFrom'}
                                                     selected={this.state.dateFrom}
                                                     showTimeSelect
                                                     timeFormat='HH:mm'
@@ -350,9 +351,10 @@ class Logs extends React.Component <any,any> {
                                                     onChange={this.handleChangeDateFrom.bind(this)}
                                                     locale={this.state.lang}
                                                 />
-                                                <div className='input-group-append'>
-                                                    <span className='input-group-text'><i className='md md-event-note'></i></span>
-                                                </div>
+                                                <label className='input-group-append input-group-append-label' htmlFor='dateFrom'>
+                                                    <span className='input-group-text input-group-text-bordered'><i className='md md-event-note'></i></span>
+                                                </label>
+
                                             </div>
                                         </div>
                                     </div>
@@ -363,6 +365,7 @@ class Logs extends React.Component <any,any> {
                                         <div className='col-md-10 col-10'>
                                             <div className='input-group'>
                                                 <DatePicker
+                                                    id={'dateTo'}
                                                     selected={this.state.dateTo}
                                                     showTimeSelect
                                                     timeFormat='HH:mm'
@@ -374,9 +377,9 @@ class Logs extends React.Component <any,any> {
                                                     locale={this.state.lang}
                                                 />
                                                 
-                                                <div className='input-group-append'>
+                                                <label className='input-group-append input-group-append-label' htmlFor='dateTo'>
                                                     <span className='input-group-text input-group-text-bordered'><i className='md md-event-note'></i></span>
-                                                </div>
+                                                </label>
 
                                                 <button className='btn btn-white waves-effect m-l-15 p-t-7 p-b-8' onClick={this.handleNow.bind(this)}>{t('NowBtn')}</button>
                                             </div>

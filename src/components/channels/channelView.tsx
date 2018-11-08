@@ -65,7 +65,7 @@ export default class ChannelView extends React.Component<any, any> {
                                         <td>{t('OfferingTd')}</td>
                                         <td>{this.state.offering
                                                 ? <a href='#' onClick={this.showOffering.bind(this)}>
-                                                    { new Buffer(this.state.offering.hash, 'base64').toString('hex') }
+                                                    { this.state.offering.hash }
                                                   </a>
                                                 : ''}
                                         </td>

@@ -52,15 +52,6 @@ ul.default li {
     border-bottom-left-radius: 4px;
     padding-left: 40px;
 }
-.searchInputGroupVPNList .input-group-prepend .input-group-text{
-    border: none;
-    background: #fff;
-    padding: 8px 10px 9px;
-}
-.searchInputGroupVPNList .form-control:not(:first-child){
-    padding: 8px 5px 8px 36px;
-    font-size: 12px;
-}
 
 .warningAreaCard{
     border: 1px solid #e83546;
@@ -528,21 +519,6 @@ input:checked + .slider:before {
 }
 /*********** END Menu styles **********/
 
-@media only screen and (max-width: 1750px) {
-    .priceMinMaxInputBl {
-        width: 100%;
-        flex: 0 0 100%;
-        max-width: 100%;
-        margin-bottom: 15px;
-    }
-    .priceMinMaxInputBl .input-group-text{
-        padding: 6px 0px;
-        width: 50px;
-        align-content: center;
-        display: inline-block;
-    }
-}
-
 #wrapper .topbar .topbar-left,
 #wrapper .navbar-custom,
 #wrapper .button-menu-mobile {
@@ -568,6 +544,12 @@ input:checked + .slider:before {
     border-bottom-right-radius: 0;
     padding: 8px 12px;
 }
+
+.input-group-append-label{
+    margin-bottom: 0;
+    cursor: pointer;
+}
+
 .react-datepicker__time-container .react-datepicker__time .react-datepicker__time-box ul.react-datepicker__time-list{
     padding: 0 !important;
 }

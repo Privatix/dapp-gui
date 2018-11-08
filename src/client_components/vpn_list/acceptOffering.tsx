@@ -8,6 +8,14 @@ import GasRange from '../../components/utils/gasRange';
 import {LocalSettings} from '../../typings/settings';
 import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
+import countryByIso from '../../utils/countryByIso';
+import {connect} from 'react-redux';
+import {State} from '../../typings/state';
+
+interface IProps{
+    offering: Object;
+    mode?: string;
+}
 
 @translate(['client/acceptOffering', 'utils/gasRange', 'utils/notice'])
 
@@ -118,12 +126,13 @@ class AcceptOffering extends React.Component<any, any>{
             return;
         }
 
-        api.offerings.changeClientOfferingsStatus(this.props.offering.id, 'accept', this.state.account.id, this.state.gasPrice, this.state.customDeposit)
-            .then((res) =>{
-                notice({level: 'info', title: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
-                document.body.classList.remove('modal-open');
-                this.props.history.push('/client-dashboard-connecting');
-            });
+        const acceptRes = await this.props.ws.acceptOffering(this.state.account.ethAddr, this.props.offering.id, this.state.customDeposit, this.state.gasPrice);
+        if (typeof acceptRes === 'string') {
+            notice({level: 'info', title: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
+            document.body.classList.remove('modal-open');
+            this.props.history.push('/client-dashboard-connecting');
+        }
+
     }
 
 
@@ -145,7 +154,7 @@ class AcceptOffering extends React.Component<any, any>{
                     <div className='form-group row'>
                         <label className='col-3 col-form-label'>{t('Country')}</label>
                         <div className='col-9'>
-                            <input type='text' className='form-control' value={offering.country} readOnly/>
+                            <input type='text' className='form-control' value={countryByIso(offering.country)} readOnly/>
                         </div>
                     </div>
                 </div>
@@ -173,8 +182,8 @@ class AcceptOffering extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>{t('MaxInactiveTime')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={offering.maxInactiveTimeSec} readOnly/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>{t('sec')}</span>
+                                <input type='text' className='form-control' value={Math.ceil(parseFloat(offering.maxInactiveTimeSec)) / 60} readOnly/>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>{t('min')}</span>
                             </div>
                             <span className='help-block'>
                                 <small>{t('MaxTimeWithoutServiceSmallText')}</small>
@@ -241,4 +250,4 @@ class AcceptOffering extends React.Component<any, any>{
     }
 }
 
-export default withRouter(AcceptOffering);
+export default connect( (state: State, ownProps: IProps) => Object.assign({}, {ws: state.ws}, ownProps) )(withRouter(AcceptOffering));
