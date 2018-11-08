@@ -34,10 +34,10 @@ const electronMainConfig = {
 };
 
 const electronRendererConfig = {
-    context: __dirname,
+    context: path.resolve('./'),
     entry: {
         dapp: [
-            "../src/dapp.tsx"
+            "./src/dapp.tsx"
         ]
     },
     target: 'electron-renderer',
@@ -48,15 +48,15 @@ const electronRendererConfig = {
     },
     resolve: {
         plugins: [new TsconfigPathsPlugin({configFile: __dirname + '/tsconfig.json', baseUrl: __dirname + '/src/'})],
-        extensions: ['.ts', '.tsx', '.js', '.json', '.node', '.html'],
-        modules: ['node_modules'],
+        extensions: ['.ts', '.tsx', 'index.tsx', '.js', '.json', '.node', '.html', '.css'],
+        modules: ['src', 'node_modules'],
     },
     module: {
         rules:[
             /* {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: './configs/tslint.json'}}
            , */ {test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
-           {test: /\.node$/, use: 'node-loader'},
-            {test: /\.css$/, use: ['style-loader', 'css-loader']}
+            {test: /\.node$/, use: 'node-loader'},
+            {test: /\.css$/, loader: 'style-loader!typings-for-css-modules-loader?namedExport&modules&camelCase'}
         ]
     }
 

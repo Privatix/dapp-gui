@@ -324,8 +324,8 @@ export class WS {
         return {offerings: resOfferings, products};
     }
 
-    createOffering(payload: any){
-        return this.send('ui_createOffering', [payload]);
+    createOffering(payload: any): Promise<string>{
+        return this.send('ui_createOffering', [payload]) as Promise<string>;
     }
 
     changeOfferingStatus(offeringId: string, action: string, gasPrice: number){
