@@ -12,7 +12,9 @@ class ImportHexKey extends React.Component<any, any>{
 
     constructor(props: any){
         super(props);
-        this.state = {privateKey: '', name: ''};
+        this.state = {name: this.props.default === 'true' ? 'main' : ''
+                     ,privateKey: ''
+                     };
     }
 
     back = back('/setAccount').bind(this);
