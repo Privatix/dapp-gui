@@ -7,7 +7,6 @@ import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ServiceView from './serviceView';
-import notice from '../../utils/notice';
 import ModalWindow from '../../components/modalWindow';
 import DateSorter from '../../components/utils/sorters/sortingDate';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
@@ -15,36 +14,66 @@ import JobStatus from '../connections/jobStatus';
 import JobName from '../connections/jobName';
 import CopyToClipboard from '../../components/copyToClipboard';
 
-import { State } from '../../typings/state';
+import { State } from 'typings/state';
+import { ClientChannel } from 'typings/channels';
 
 @translate(['client/history', 'utils/notice'])
 
 class ClientHistory extends React.Component<any,any> {
 
+    subscribeId = null;
+
     constructor(props:any) {
+
         super(props);
 
         this.state = {
             historyData: [],
-            awaitForTerminateData: []
+            awaitForTerminateData: [],
         };
     }
 
     componentDidMount() {
-        this.getHistoryData();
-        this.getAwaitForTerminateColumns();
+
+        this.refresh();
+
     }
 
-    refresh() {
+    componentWillUnmount(){
+
+        const { ws } = this.props;
+
+        if(this.subscribeId){
+            ws.unsubscribe(this.subscribeId);
+        }
+
+    }
+
+    refresh = () => {
+
         this.getHistoryData();
         this.getAwaitForTerminateColumns();
-        const { t } = this.props;
-        notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('SuccessfullyRefreshed')});
+
+    }
+
+    subscribe(channels: ClientChannel[]){
+
+        const { ws } = this.props;
+
+        if(this.subscribeId){
+            ws.unsubscribe(this.subscribeId);
+        }
+        const ids = channels.map(channel => channel.id);
+        this.subscribeId = ws.subscribe('channel', ids, this.refresh);
     }
 
     async getHistoryData() {
+
         const { t, ws } = this.props;
         const clientChannels = await ws.getClientChannels('', 'terminated', 0, 0);
+        const allClientChannels = await ws.getClientChannels('', '', 0, 0);
+        this.subscribe(allClientChannels.items);
+
         const historyData = clientChannels.items.filter((channel) => {
             if (channel.channelStatus.channelStatus !== 'active') {
                 return true;
@@ -70,8 +99,12 @@ class ClientHistory extends React.Component<any,any> {
     }
 
     async getAwaitForTerminateColumns() {
+
         const { t, ws } = this.props;
         const clientChannels = await ws.getClientChannels('active', 'terminated', 0, 0);
+
+        this.subscribe(clientChannels.items);
+
         const data = clientChannels.items.map((channel) => {
             let jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
             let jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
@@ -98,6 +131,7 @@ class ClientHistory extends React.Component<any,any> {
     }
 
     render() {
+
         const { t } = this.props;
         const awaitForTerminateColumns = [
             {
@@ -193,9 +227,6 @@ class ClientHistory extends React.Component<any,any> {
         ];
 
         return <div className='col-lg-12 col-md-12'>
-            <div className='m-t-5 m-b-20'>
-                <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this)}>{t('Refresh')}</button>
-            </div>
             <div className='card m-b-20'>
                 <h5 className='card-header'>{t('AwaitForTerminate')}</h5>
                 <div className='card-body'>

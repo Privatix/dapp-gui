@@ -21,7 +21,7 @@ class StartVPN extends React.Component <any,any> {
 
         const { ws } = this.props;
 
-        const pendingChannelsReq = ws.getClientChannels('active', 'pending', 0, 10);
+        const pendingChannelsReq = ws.getClientChannels('', 'pending', 0, 10);
         const activeChannelsReq = ws.getClientChannels('active', 'active', 0, 10);
         const suspendedChannelsReq = ws.getClientChannels('active', 'suspended', 0, 10);
 
