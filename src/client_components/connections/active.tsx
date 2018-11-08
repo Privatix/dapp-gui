@@ -29,7 +29,6 @@ class ActiveConnection extends React.Component<any, any>{
 
     render() {
         const { t } = this.props;
-        console.log('ACTIVE!!!', this.state);
         const connections = this.state.channels.map((channel: any) => {
 
             const jobTimeRaw = new Date(Date.parse(channel.job.createdAt));

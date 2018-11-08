@@ -445,7 +445,6 @@
         "AcceptancePrice": "Стоимость:"
     },
     "client/history": {
-        "SuccessfullyRefreshed": "Страница успешно обновлена!",
         "Service": "Сервис",
         "of": "с",
         "Id": "Id",
@@ -456,7 +455,6 @@
         "Usage": "Использовано",
         "CostPRIX": "Стоимость (PRIX)",
         "LastUsed": "Время последнего использования",
-        "Refresh": "Обновить",
         "AwaitForTerminate": "Ожидают прекращения",
         "History": "История"
     },

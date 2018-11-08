@@ -444,7 +444,6 @@
         "AcceptancePrice": "Acceptance Price:"
     },
     "client/history": {
-        "SuccessfullyRefreshed": "Page was successfully refreshed!",
         "Service": "Service",
         "of": "of",
         "Id": "Id",
@@ -455,7 +454,6 @@
         "Usage": "Usage",
         "CostPRIX": "Cost (PRIX)",
         "LastUsed": "Last used",
-        "Refresh": "Refresh",
         "AwaitForTerminate": "Await for terminate",
         "History": "History"
     },

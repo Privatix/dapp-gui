@@ -7,7 +7,6 @@ import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ServiceView from './serviceView';
-import notice from '../../utils/notice';
 import ModalWindow from '../../components/modalWindow';
 import DateSorter from '../../components/utils/sorters/sortingDate';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
@@ -22,6 +21,8 @@ import { ClientChannel } from 'typings/channels';
 
 class ClientHistory extends React.Component<any,any> {
 
+    subscribeId = null;
+
     constructor(props:any) {
 
         super(props);
@@ -29,8 +30,6 @@ class ClientHistory extends React.Component<any,any> {
         this.state = {
             historyData: [],
             awaitForTerminateData: [],
-            ids: [],
-            subscribeId: null
         };
     }
 
@@ -44,7 +43,9 @@ class ClientHistory extends React.Component<any,any> {
 
         const { ws } = this.props;
 
-        ws.unsubscribe(this.state.subscribeId);
+        if(this.subscribeId){
+            ws.unsubscribe(this.subscribeId);
+        }
 
     }
 
@@ -55,41 +56,23 @@ class ClientHistory extends React.Component<any,any> {
 
     }
 
-    onRefresh = () => {
-
-        const { t } = this.props;
-
-        this.refresh();
-        notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('SuccessfullyRefreshed')});
-
-    }
-
-    private getIds(channels: ClientChannel[]): string[]{
-
-        return channels.map(channel => channel.id);
-
-    }
-
     subscribe(channels: ClientChannel[]){
 
         const { ws } = this.props;
-        const ids = this.state.ids.concat(this.getIds(channels)).filter((value: string, index: number, self: string[]) => self.indexOf(value) === index);
 
-        this.setState({ids});
-
-        if(this.state.subsribeId){
-            ws.unsubscribe(this.state.subscribeId);
+        if(this.subscribeId){
+            ws.unsubscribe(this.subscribeId);
         }
-
-        this.setState({subscribeId: ws.subscribe('channel', ids, this.refresh)});
+        const ids = channels.map(channel => channel.id);
+        this.subscribeId = ws.subscribe('channel', ids, this.refresh);
     }
 
     async getHistoryData() {
 
         const { t, ws } = this.props;
         const clientChannels = await ws.getClientChannels('', 'terminated', 0, 0);
-
-        this.subscribe(clientChannels.items);
+        const allClientChannels = await ws.getClientChannels('', '', 0, 0);
+        this.subscribe(allClientChannels.items);
 
         const historyData = clientChannels.items.filter((channel) => {
             if (channel.channelStatus.channelStatus !== 'active') {
@@ -244,9 +227,6 @@ class ClientHistory extends React.Component<any,any> {
         ];
 
         return <div className='col-lg-12 col-md-12'>
-            <div className='m-t-5 m-b-20'>
-                <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.onRefresh}>{t('Refresh')}</button>
-            </div>
             <div className='card m-b-20'>
                 <h5 className='card-header'>{t('AwaitForTerminate')}</h5>
                 <div className='card-body'>
