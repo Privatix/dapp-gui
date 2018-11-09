@@ -247,7 +247,7 @@ class VPNList extends React.Component<any,any> {
         });
     }
 
-    async filterByAgent(e: any){
+    filterByAgent(e: any){
         let agent = e.target.value.toLowerCase().trim();
 
         this.setState({agent}, this.getClientOfferings);
