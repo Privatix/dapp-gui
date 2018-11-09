@@ -160,36 +160,34 @@ class SettingsTable extends React.Component<IProps, any> {
                                     {/*</div>*/}
                                 {/*</div>*/}
                             {/*</div>*/}
-                            <form id='optionsForm'>
-                                {/*<ReactTable*/}
-                                    {/*data={data}*/}
-                                    {/*columns={columns}*/}
-                                    {/*showPagination={false}*/}
-                                    {/*defaultPageSize={(this.state.data as any).length}*/}
-                                    {/*filterable={false}*/}
-                                    {/*filtered={this.state.filtered}*/}
-                                    {/*ref={r => (this as any).reactTable = r}*/}
-                                    {/*onFilteredChange={this.onFilteredChange.bind(this)}*/}
+                            {/*<ReactTable*/}
+                                {/*data={data}*/}
+                                {/*columns={columns}*/}
+                                {/*showPagination={false}*/}
+                                {/*defaultPageSize={(this.state.data as any).length}*/}
+                                {/*filterable={false}*/}
+                                {/*filtered={this.state.filtered}*/}
+                                {/*ref={r => (this as any).reactTable = r}*/}
+                                {/*onFilteredChange={this.onFilteredChange.bind(this)}*/}
 
-                                {/*/>*/}
-                                {/*<hr />*/}
-                                <table className='table table-bordered table-striped'>
-                                    <thead>
-                                    <tr>
-                                        <th>{t('Name')}</th>
-                                        <th>{t('Value')}</th>
-                                        <th>{t('Description')}</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                        {Object.keys(settings).map(name => <SettingsItem key={name} name={name} setting={settings[name]} onChange={this.onUserInput} />)}
-                                    </tbody>
-                                </table>
-                                {Object.keys(this.state.payload).length
-                                    ? <button className='btn btn-default waves-effect waves-light btn-block' onClick={this.onSubmit}>{t('Save')}</button>
-                                    : <div className='btn btnCustomDisabled disabled btn-block' >{t('Save')}</div>
-                                }
-                            </form>
+                            {/*/>*/}
+                            {/*<hr />*/}
+                            <table className='table table-bordered table-striped'>
+                                <thead>
+                                <tr>
+                                    <th>{t('Name')}</th>
+                                    <th>{t('Value')}</th>
+                                    <th>{t('Description')}</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    {Object.keys(settings).map(name => <SettingsItem key={name} name={name} setting={settings[name]} onChange={this.onUserInput} />)}
+                                </tbody>
+                            </table>
+                            {Object.keys(this.state.payload).length
+                                ? <button className='btn btn-default waves-effect waves-light btn-block' onClick={this.onSubmit}>{t('Save')}</button>
+                                : <div className='btn btnCustomDisabled disabled btn-block' >{t('Save')}</div>
+                            }
                         </div>
                     </div>
                 </div>
