@@ -113,13 +113,11 @@ class VPNList extends React.Component<any,any> {
         agent = agent === '0' ? '' : agent;
         const checkedCountries = countries.length > 0 ? countries : this.state.checkedCountries;
 
-        const allClientOfferings = await this.props.ws.getClientOfferings();
-        // get Countries list for filter by countries
-        await this.getCountriesFilterParams(allClientOfferings);
-        // get Min and Max offerings prices
-        const priceFilterParams = await this.getPriceFilterParams(allClientOfferings);
-        const min = priceFilterParams.min / 1e8;
-        const max = priceFilterParams.max / 1e8;
+        const filterParams = await this.props.ws.getClientOfferingsFilterParams();
+        const allCountries = filterParams.countries;
+
+        const min = filterParams.minPrice / 1e8;
+        const max = filterParams.maxPrice / 1e8;
 
         from = from === 0 && this.state.from === 0 ? min : from > 0 ? from : this.state.from;
         to = to === 0 && this.state.to === 0 ? max : to > 0 ? to : this.state.to;
@@ -146,7 +144,6 @@ class VPNList extends React.Component<any,any> {
         }
 
         let offerings = clientOfferings.map(offering => {
-
             const offeringHash = '0x' + offering.hash;
 
             return {
@@ -175,55 +172,10 @@ class VPNList extends React.Component<any,any> {
             min,
             max,
             from,
-            to
+            to,
+            countries: allCountries,
+            filteredCountries: allCountries
         });
-    }
-
-    getCountriesFilterParams(allClientOfferings:any) {
-        let countriesArr = [];
-        let countriesAssocArr = [];
-
-        allClientOfferings.items.forEach((offering) => {
-            if (countriesAssocArr[offering.country] !== undefined) {
-                countriesAssocArr[offering.country].count++;
-            } else {
-                countriesAssocArr[offering.country] = {
-                    name: offering.country,
-                    defShow: 0,
-                    count: 1
-                };
-            }
-        });
-
-        (Object.keys(countriesAssocArr as any)).forEach((country) => {
-            countriesArr.push(countriesAssocArr[country]);
-        });
-
-        countriesArr.sort((country1, country2) => {
-            return country2.count - country1.count;
-        });
-
-        let countriesArrCount = 0;
-        let countries = (countriesArr as any).map((country) => {
-            countriesArrCount++;
-            return {
-                name: country.name,
-                defShow: countriesArrCount > this.state.defaultShowCountriesCount ? 0 : 1
-            };
-        });
-
-        this.setState({
-            countries,
-            filteredCountries: countries,
-        });
-    }
-
-    getPriceFilterParams(allClientOfferings:any) {
-        const offerings = allClientOfferings.items;
-        const max = offerings.reduce((max, offering) => offering.unitPrice > max ? offering.unitPrice : max, 0);
-        const min = offerings.reduce((min, offering) => offering.unitPrice < min ? offering.unitPrice : min, max);
-
-        return {min, max};
     }
 
     changeMinPriceInput(evt:any) {
@@ -287,7 +239,7 @@ class VPNList extends React.Component<any,any> {
         const searchText = e.target.value;
         let patt = new RegExp(searchText, 'i');
         let filteredCountries = this.state.countries.filter((item) => {
-            const countryName = countryByIso(item.name);
+            const countryName = countryByIso(item);
             return patt.test(countryName);
         });
 
@@ -451,18 +403,18 @@ class VPNList extends React.Component<any,any> {
                             <div className='card-body'>
                                 {searchHtml}
 
-                                {this.state.filteredCountries.map((country) => {
-                                    let countryCheckboxHtml = <div className='checkbox checkbox-custom' key={country.name}>
-                                        <input id={country.name}
+                                {this.state.filteredCountries.map((country, key) => {
+                                    let countryCheckboxHtml = <div className='checkbox checkbox-custom' key={country}>
+                                        <input id={country}
                                                type='checkbox'
                                                name='checkboxCountry'
-                                               value={country.name}
-                                               checked={this.state.checkedCountries.indexOf(country.name) !== -1}
+                                               value={country}
+                                               checked={this.state.checkedCountries.indexOf(country) !== -1}
                                                onChange={this.filterByCountryHandler.bind(this)} />
-                                        <label htmlFor={country.name}>{countryByIso(country.name)}</label>
+                                        <label htmlFor={country}>{countryByIso(country)}</label>
                                     </div>;
                                     if (!this.state.showAllCountries) {
-                                        if (country.defShow === 1) {
+                                        if (key < this.state.defaultShowCountriesCount) {
                                             return countryCheckboxHtml;
                                         }
                                     } else {
