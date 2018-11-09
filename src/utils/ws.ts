@@ -369,10 +369,6 @@ export class WS {
         return this.send('ui_getEthTransactions', [type, id, offset, limit]) as Promise<TransactionResponse>;
     }
 
-    getSettings() {
-        return this.send('ui_getSettings');
-    }
-
     getTotalIncome(): Promise<number> {
         return this.send('ui_getTotalIncome', []) as Promise<number>;
     }
@@ -381,5 +377,15 @@ export class WS {
     getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
         return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
     }
+
+    getSettings() {
+        return this.send('ui_getSettings');
+    }
+
+    // TODO typings
+    updateSettings(updateSettings: Object) {
+        return this.send('ui_updateSettings', [updateSettings]);
+    }
+
 
 }

@@ -589,6 +589,9 @@
         "AccessDenied": "access denied, possibly wrong password"
     },
     "settings": {
+        "Success": "Changes has been successfully saved.",
+        "Error": "an error occurred while saving. Please check the data entered.",
+        "Save": "Save",
         "Settings": "Settings",
         "Name": "Name",
         "Value": "Value",

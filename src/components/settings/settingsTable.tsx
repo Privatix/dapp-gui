@@ -1,15 +1,30 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 
-@translate('settings')
+import notice from 'utils/notice';
 
-class SettingsTable extends React.Component<any, any> {
+import SettingsItem from './settingsItem';
+
+import { WS } from 'utils/ws';
+import { State } from 'typings/state';
+
+interface IProps {
+    ws?: WS;
+    t?: any;
+    options: any;
+}
+
+@translate(['settings', 'utils/notice'])
+
+class SettingsTable extends React.Component<IProps, any> {
 
     constructor(props: any) {
         super(props);
         this.state = {
-          data: this.props.options
+          data: this.props.options,
+          payload: {}
           // filtered: [],
           // filterAll: '',
         };
@@ -18,6 +33,24 @@ class SettingsTable extends React.Component<any, any> {
 
     static getDerivedStateFromProps(props:any, state:any) {
         return {data: props.options};
+    }
+
+    onUserInput = (evt: any) => {
+
+        const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.id]: evt.target.value});
+        this.setState({payload});
+    }
+
+    onSubmit = async (evt: any) => {
+        const { ws, t } = this.props;
+        evt.preventDefault();
+        try {
+            ws.updateSettings(this.state.payload);
+            notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('Success')});
+            this.setState({payload: {}});
+        } catch (e) {
+            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('Error')});
+        }
     }
 
     // filterAll(e:any) {
@@ -44,44 +77,12 @@ class SettingsTable extends React.Component<any, any> {
     //     }
     // }
     //
-    // saveOptions(evt:any){
-    //     evt.preventDefault();
-    //     const inputs = document.getElementById('optionsForm').querySelectorAll('input');
-    //     const payload = [].slice.call(inputs, 0).map(option => ({
-    //         key: option.id
-    //        ,value: option.value
-    //        ,description: option.dataset.desc
-    //        ,name: option.dataset.name
-    //     }));
-    //     fetch('/settings', {method: 'put', body: payload}).then(res => {
-    //         // TODO notice?
-    //         this.props.history.push('/app');
-    //     });
-    // }
 
     render() {
+
         const { t } = this.props;
         const settings = this.state.data;
 
-        const optionsDOM = Object.keys(settings).map((key) => {
-            const name = key.split('.').join('_') + '_Name';
-            const description = key.split('.').join('_') + '_Description';
-
-            return <tr key={key}>
-                <td>{t(name)}:</td>
-                <td className='minWidth200'>
-                    <input className='form-control'
-                           disabled
-                           id={key}
-                           type='text'
-                           defaultValue={settings[key]}
-                           data-desc={t(description)}
-                           data-name={t(name)}
-                    />
-                </td>
-                <td>{t(description)}</td>
-            </tr>;
-        });
 
   // const columns = [{
   //   Header: 'Name',
@@ -181,10 +182,13 @@ class SettingsTable extends React.Component<any, any> {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                        {optionsDOM}
+                                        {Object.keys(settings).map(name => <SettingsItem key={name} name={name} setting={settings[name]} onChange={this.onUserInput} />)}
                                     </tbody>
                                 </table>
-                                {/*<button className='btn btn-default waves-effect waves-light' onClick={this.saveOptions}>Save</button>*/}
+                                {Object.keys(this.state.payload).length
+                                    ? <button className='btn btn-default waves-effect waves-light btn-block' onClick={this.onSubmit}>{t('Save')}</button>
+                                    : <div className='btn btnCustomDisabled disabled btn-block' >{t('Save')}</div>
+                                }
                             </form>
                         </div>
                     </div>
@@ -194,4 +198,6 @@ class SettingsTable extends React.Component<any, any> {
     }
 }
 
-export default withRouter(SettingsTable);
+export default connect( (state: State, onProps: IProps) => {
+    return (Object.assign({}, {ws: state.ws}, onProps));
+} )(withRouter(SettingsTable));

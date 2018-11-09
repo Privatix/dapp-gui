@@ -1,9 +1,11 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import SettingsTable from './settingsTable';
 import {connect} from 'react-redux';
-import {State} from '../typings/state';
-import {asyncProviders} from '../redux/actions';
+
+import {State} from 'typings/state';
+import {asyncProviders} from 'redux/actions';
+
+import SettingsTable from './settingsTable';
 
 class Settings extends React.Component <any, any>{
     constructor(props:any) {
