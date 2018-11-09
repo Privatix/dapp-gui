@@ -12,7 +12,7 @@ import {LocalSettings} from 'typings/settings';
 import countries from 'utils/countries';
 import GasRange from 'components/utils/gasRange';
 
-import * as ubold from 'css/index.css';
+import * as ubold from 'css/index.cssx';
 // import * as styles from './index.css';
 
 import { WS } from 'utils/ws';

@@ -109,8 +109,7 @@ class VPNList extends React.Component<any,any> {
         const { t } = this.props;
         const limit = this.state.elementsPerPage;
         const offset = activePage > 1 ? (activePage - 1) * limit : 0;
-        agent = (agent !== '' ? agent : this.state.agent).replace(/^0x/, '');
-        agent = agent === '0' ? '' : agent;
+
         const checkedCountries = countries.length > 0 ? countries : this.state.checkedCountries;
 
         const filterParams = await this.props.ws.getClientOfferingsFilterParams();
@@ -125,7 +124,7 @@ class VPNList extends React.Component<any,any> {
         const fromVal = Math.round(from * 1e8);
         const toVal = Math.round(to * 1e8);
 
-        const clientOfferingsLimited = await this.props.ws.getClientOfferings(agent, fromVal, toVal, checkedCountries, offset, limit);
+        const clientOfferingsLimited = await this.props.ws.getClientOfferings(this.state.agent.replace(/^0x/, ''), fromVal, toVal, checkedCountries, offset, limit);
         const {items: clientOfferings} = clientOfferingsLimited;
 
         // Show loader when downloading VPN list
@@ -248,11 +247,10 @@ class VPNList extends React.Component<any,any> {
         });
     }
 
-    filterByAgent(e: any){
+    async filterByAgent(e: any){
         let agent = e.target.value.toLowerCase().trim();
 
-        this.getClientOfferings(1, agent);
-        this.setState({agent});
+        this.setState({agent}, this.getClientOfferings);
     }
 
     filterByCountryHandler(e:any) {
