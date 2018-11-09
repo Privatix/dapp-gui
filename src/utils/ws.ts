@@ -336,6 +336,10 @@ export class WS {
         return this.send('ui_acceptOffering', [ethAddress, offeringId, deposit, gasPrice]);
     }
 
+    getClientOfferingsFilterParams() {
+        return this.send('ui_getClientOfferingsFilterParams');
+    }
+
 // sessions
 
     getSessions(channelId: string = ''): Promise<Session[]>{
