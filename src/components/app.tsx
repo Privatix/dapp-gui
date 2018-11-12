@@ -10,7 +10,7 @@ import { createMemoryHistory } from 'history';
 import Main from './main/main';
 import Navigation from './navigation';
 import Header from './header';
-import Settings from './settings';
+import Settings from 'components/settings/settings';
 import Products from './products/products';
 import Offerings from './offerings/offerings';
 import ChannelsList from './channels/channelsList';
