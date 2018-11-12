@@ -632,6 +632,7 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
 
 .selectLangStep{
     margin: 20px auto 50px;
+    height: 45vh;
 }
 .langSelectBl{
     width: 200px;
