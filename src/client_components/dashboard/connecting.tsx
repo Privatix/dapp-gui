@@ -116,6 +116,7 @@ class Connecting extends React.Component<any, any>{
                     break;
                 case 'pending':
                 case 'activating':
+                case 'suspending':
                 case 'terminating':
                     this.setState({status: 'pending', channel, pendingTimeCounter: 0});
                     break;
