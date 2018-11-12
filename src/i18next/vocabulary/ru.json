@@ -2,7 +2,8 @@
     "common": {
         "RefreshAll": "Обновить все",
         "Refresh": "Обновить",
-        "Select": "Выберите"
+        "Select": "Выберите",
+        "NoResults": "По вашему запросу ничего не найдено. Измените, пожалуйста, параметры фильтрации!"
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "Выбор языка",
@@ -303,8 +304,7 @@
         "Stack": "Стек",
         "ShowBtn": "показать",
         "StackTrace": "Stack Trace",
-        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!",
-        "NoResults": "По вашему запросу ничего не найдено. Измените, пожалуйста, параметры фильтрации!"
+        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!"
     },
     "logs/logsContext": {
         "Key": "Ключ",
@@ -403,6 +403,7 @@
     "client/vpnList": {
         "Block": "Блок",
         "Hash": "Хеш",
+        "Agent": "Агент",
         "Country": "Страна",
         "Price": "Цена (PRIX/MB)",
         "SupplyTotal": "Предложения (всего)",
@@ -418,6 +419,7 @@
         "AverageTimeForDownloading": "Среднее время для загрузки 2-5 мин.",
         "Refresh": "Обновить",
         "AgentAddress": "Адрес агента",
+        "OfferingHash": "Хеш предложения",
         "PriceFilter": "Цена (PRIX/MB):",
         "From": "от",
         "To": "до"

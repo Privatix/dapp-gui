@@ -17,8 +17,9 @@ import {State} from '../../../typings/state';
 import * as api from '../../../utils/api';
 import {LocalSettings} from '../../../typings/settings';
 import countryByIso from '../../../utils/countryByIso';
+import CopyToClipboard from 'components/copyToClipboard';
 
-@translate(['client/vpnList', 'utils/notice'])
+@translate(['client/vpnList', 'utils/notice', 'common'])
 
 class VPNList extends React.Component<any,any> {
     constructor(props:any) {
@@ -44,6 +45,7 @@ class VPNList extends React.Component<any,any> {
             activePage: 1,
             totalItems: 0,
             agent: '',
+            offeringHash: '',
             defaultShowCountriesCount: 5,
             columns: [
                 {
@@ -58,6 +60,18 @@ class VPNList extends React.Component<any,any> {
                     ascSortFunction: ModalPropTextSorter.asc
                 },
                 {
+                    header: t('Agent'),
+                    key: 'agent',
+                    dataProps: { className: 'shortTableTextTd' },
+                    render: (agent) => {
+                        const agentText = '0x' + agent;
+                        return <div>
+                            <span className='shortTableText' title={agentText}>{agentText}</span>
+                            <CopyToClipboard text={agentText} />
+                        </div>;
+                    }
+                },
+                {
                     header: t('Country'),
                     key: 'country'
                 },
@@ -66,12 +80,12 @@ class VPNList extends React.Component<any,any> {
                     key: 'price'
                 },
                 {
-                    header: t('SupplyTotal'),
-                    key: 'supply'
-                },
-                {
                     header: t('AvailableSupply'),
                     key: 'availableSupply'
+                },
+                {
+                    header: t('SupplyTotal'),
+                    key: 'supply'
                 }
             ]
         };
@@ -105,12 +119,16 @@ class VPNList extends React.Component<any,any> {
             || !(isEqual(nextState.filtered, this.state.filtered));
     }
 
-    async getClientOfferings(activePage:number = 1, agent:string = '', from:number = 0, to:number = 0, countries:Array<string> = []) {
-        const { t } = this.props;
+    async getClientOfferings(activePage:number = 1, from:number = 0, to:number = 0) {
+        // If not empty filter input Offering hash - search only by Offering hash
+        if (this.state.offeringHash !== '') {
+            return;
+        }
+
         const limit = this.state.elementsPerPage;
         const offset = activePage > 1 ? (activePage - 1) * limit : 0;
 
-        const checkedCountries = countries.length > 0 ? countries : this.state.checkedCountries;
+        const checkedCountries = this.state.checkedCountries;
 
         const filterParams = await this.props.ws.getClientOfferingsFilterParams();
         const allCountries = filterParams.countries;
@@ -128,7 +146,7 @@ class VPNList extends React.Component<any,any> {
         const {items: clientOfferings} = clientOfferingsLimited;
 
         // Show loader when downloading VPN list
-        const isFiltered = checkedCountries.length > 0 || agent !== '' || from > 0 || to > 0;
+        const isFiltered = checkedCountries.length > 0 || this.state.agent !== '' || this.state.offeringHash !== '' || from > 0 || to > 0;
         if (Object.keys(clientOfferings).length === 0 && !isFiltered) {
             this.setState({spinner: true});
             const refreshHandler = setTimeout(() => {
@@ -143,23 +161,7 @@ class VPNList extends React.Component<any,any> {
         }
 
         let offerings = clientOfferings.map(offering => {
-            const offeringHash = '0x' + offering.hash;
-
-            return {
-                block: offering.blockNumberUpdated,
-                hash: <ModalWindow
-                        customClass='shortTableText'
-                        modalTitle={t('AcceptOffering')}
-                        text={offeringHash}
-                        copyToClipboard={true}
-                        component={<AcceptOffering offering={offering} />}
-                    />,
-                country: countryByIso(offering.country),
-                price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
-                supply: offering.supply,
-                availableSupply: offering.currentSupply,
-                agent: '0x' + new Buffer(offering.agent, 'base64').toString('hex')
-            };
+            return this.formFilteredDataRow(offering);
         });
 
         this.setState({
@@ -175,6 +177,42 @@ class VPNList extends React.Component<any,any> {
             countries: allCountries,
             filteredCountries: allCountries
         });
+    }
+
+    async getClientOfferingsByOfferingHash() {
+        if (this.state.offeringHash === '') {
+            this.getClientOfferings();
+            return;
+        }
+
+        try {
+            const offering = await this.props.ws.getObjectByHash('offering', this.state.offeringHash.replace(/^0x/, ''));
+            const offeringRow = this.formFilteredDataRow(offering);
+            this.setState({filtered: [offeringRow]});
+        } catch (e) {
+            this.setState({filtered: []});
+        }
+    }
+
+    formFilteredDataRow(offering: any) {
+        const { t } = this.props;
+        const offeringHash = '0x' + offering.hash;
+
+        return {
+            block: offering.blockNumberUpdated,
+            hash: <ModalWindow
+                customClass='shortTableText'
+                modalTitle={t('AcceptOffering')}
+                text={offeringHash}
+                copyToClipboard={true}
+                component={<AcceptOffering offering={offering} />}
+            />,
+            agent: offering.agent,
+            country: countryByIso(offering.country),
+            price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
+            availableSupply: offering.currentSupply,
+            supply: offering.supply
+        };
     }
 
     changeMinPriceInput(evt:any) {
@@ -215,7 +253,7 @@ class VPNList extends React.Component<any,any> {
         (document.getElementById('priceTo') as HTMLInputElement).value = to;
 
         const handler = setTimeout(() => {
-            this.getClientOfferings(1, this.state.agent, from, to, this.state.checkedCountries);
+            this.getClientOfferings(1, from, to);
         }, 200);
 
         if (this.state.handler !== null) {
@@ -253,6 +291,12 @@ class VPNList extends React.Component<any,any> {
         this.setState({agent}, this.getClientOfferings);
     }
 
+    filterByOfferingHash(e: any){
+        let offeringHash = e.target.value.toLowerCase().trim();
+
+        this.setState({offeringHash}, this.getClientOfferingsByOfferingHash);
+    }
+
     filterByCountryHandler(e:any) {
         let checkedCountries = this.state.checkedCountries;
         const country = e.target.value;
@@ -263,8 +307,7 @@ class VPNList extends React.Component<any,any> {
             checkedCountries.splice(checkedCountries.indexOf(country), 1);
         }
 
-        this.getClientOfferings(1, this.state.agent, this.state.from, this.state.to, checkedCountries);
-        this.setState({checkedCountries});
+        this.setState({checkedCountries}, this.getClientOfferings);
     }
 
     handlePageChange(pageNumber:number) {
@@ -313,6 +356,10 @@ class VPNList extends React.Component<any,any> {
                 />
             </div>;
 
+        const noResults = this.state.filtered.length === 0 ?
+            <p className='text-warning text-center m-t-20 m-b-20'>{t('common:NoResults')}</p>
+            : '';
+
         return this.state.spinner ? <div className='container-fluid'>
                 <div className='row m-t-20'>
                     <div className='col-12'>
@@ -347,7 +394,7 @@ class VPNList extends React.Component<any,any> {
                                     <div className='col-12'>
                                         <label className='control-label'>{t('AgentAddress')}</label>
                                     </div>
-                                    <div className='col-md-12 m-t-10 m-b-10'>
+                                    <div className='col-md-12'>
                                         <div className='input-group searchInputGroup searchInputGroupVPNList'>
                                             <div className='input-group-prepend'>
                                                 <span className='input-group-text'><i className='fa fa-search'></i></span>
@@ -358,6 +405,25 @@ class VPNList extends React.Component<any,any> {
                                                    placeholder='0x354B10B5c4A96b81b5e4F12F90cd0b7Ae5e05eE6'
                                                    value={this.state.agent}
                                                    onChange={this.filterByAgent.bind(this)} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className='form-group row'>
+                                    <div className='col-12'>
+                                        <label className='control-label'>{t('OfferingHash')}</label>
+                                    </div>
+                                    <div className='col-md-12'>
+                                        <div className='input-group searchInputGroup searchInputGroupVPNList'>
+                                            <div className='input-group-prepend'>
+                                                <span className='input-group-text'><i className='fa fa-search'></i></span>
+                                            </div>
+                                            <input className='form-control'
+                                                   type='search'
+                                                   name='offeringHash'
+                                                   placeholder='0x74c96979ae4fbb11a7122a71e90161f1feee7523472cea74f8b9f3ca8481fb37'
+                                                   defaultValue={this.state.offeringHash}
+                                                   onChange={this.filterByOfferingHash.bind(this)} />
                                         </div>
                                     </div>
                                 </div>
@@ -430,6 +496,8 @@ class VPNList extends React.Component<any,any> {
                                 <SortableTable
                                     data={this.state.filtered}
                                     columns={this.state.columns}/>
+
+                                {noResults}
                             </div>
 
                             {pagination}
