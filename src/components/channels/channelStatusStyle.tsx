@@ -8,8 +8,11 @@ export default class ChannelStatusStyle extends React.Component<any, any> {
     get classes() {
         return {
             pending: 'primary',
+            activating: 'success',
             active: 'success',
+            suspending: 'warning',
             suspended: 'warning',
+            terminating: 'inverse',
             terminated: 'inverse'
         };
     }
