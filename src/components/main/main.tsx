@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
 import ChannelsListByStatus from '../channels/channelsListByStatus';
-import OfferingsList from '../offerings/offeringsList';
+import Offerings from '../offerings/offerings';
 import toFixedN from '../../utils/toFixedN';
 
 import { State } from '../../typings/state';
@@ -73,7 +73,7 @@ class Main extends React.Component <any,any> {
                     <div className='card m-b-20'>
                         <h5 className='card-header'>{t('ActiveOfferings')}</h5>
                         <div className='card-body'>
-                            <OfferingsList product={'all'} rate={3000}/>
+                            <Offerings product={'all'} onlyTable={true}/>
                         </div>
                     </div>
                 </div>

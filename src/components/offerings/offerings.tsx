@@ -2,40 +2,73 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 import ModalWindow from '../modalWindow';
 import CreateOffering from './createOffering';
-import OfferingsList from './offeringsList';
+import OfferingsListView from './offeringsListView';
 
-import { State } from '../../typings/state';
-import { WS } from '../../utils/ws';
+import { State } from 'typings/state';
+
+import { WS } from 'utils/ws';
 
 interface IProps {
     product: string;
     ws?: WS;
     t?: any;
+    onlyTable?: boolean;
 }
 
-@translate(['offerings/offerings', 'offerings', 'common'])
+@translate(['offerings/offerings', 'offerings'])
 class Offerings extends React.Component<IProps, any>{
 
-    constructor(props: any){
+    private subscribes = [];
+
+    constructor(props: IProps){
         super(props);
         this.state = {offerings: [], products: []};
+    }
+
+    componentDidMount(){
+        this.refresh();
+    }
+
+    componentWillUnmount(){
+        this.unsubscribe();
+    }
+
+    unsubscribe(){
+
+        const { ws } = this.props;
+
+        if(this.subscribes.length){
+            this.subscribes.forEach(subscribeId => ws.unsubscribe(subscribeId));
+        }
+
+        this.subscribes = [];
+
     }
 
     refresh = async () => {
 
         const { ws } = this.props;
 
+        this.unsubscribe();
+
         const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
+
+        this.subscribes.push(ws.subscribe('product', products.map(product => product.id), this.refresh));
+        this.subscribes.push(ws.subscribe('offering', offerings.map(offering => offering.id), this.refresh));
         this.setState({offerings, products});
+
     }
 
-    render(){
+    render() {
 
-        const { t } = this.props;
+        const { t, onlyTable } = this.props;
+
+        if(onlyTable){
+            return <OfferingsListView products={this.state.products} offerings={this.state.offerings} />;
+        }
 
         return <div className='container-fluid'>
             <div className='row'>
@@ -52,13 +85,10 @@ class Offerings extends React.Component<IProps, any>{
                                      text={t('offerings:CreateAnOffering')}
                                      component={<CreateOffering done={this.refresh} />}
                         />
-                        <Link to={'#'} onClick={this.refresh} className='btn btn-default btn-custom waves-effect waves-light'>
-                            {t('common:RefreshAll')}
-                        </Link>
                     </div>
                 </div>
             </div>
-            <OfferingsList product={this.props.product} rate={3000} />
+            <OfferingsListView products={this.state.products} offerings={this.state.offerings} />
        </div>;
     }
 }
