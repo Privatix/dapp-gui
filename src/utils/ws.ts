@@ -377,6 +377,10 @@ export class WS {
         return this.send('ui_getTotalIncome', []) as Promise<number>;
     }
 
+    getObjectByHash(type: 'offering', hash: string) : Promise<OfferingResponse> {
+        return this.send('ui_getObjectByHash', [type, hash]) as Promise<OfferingResponse>;
+    }
+
 // logs
     getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
         return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;

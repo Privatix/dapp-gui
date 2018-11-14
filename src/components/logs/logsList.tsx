@@ -19,7 +19,7 @@ import { translate } from 'react-i18next';
 import 'react-datepicker/dist/react-datepicker.css';
 import {State} from '../../typings/state';
 
-@translate('logs/logsList')
+@translate(['logs/logsList', 'common'])
 
 class Logs extends React.Component <any,any> {
 
@@ -280,7 +280,7 @@ class Logs extends React.Component <any,any> {
             />;
 
         const noResults = this.state.totalItems === 0 ?
-            <p className='text-warning text-center m-t-20 m-b-20'>{t('NoResults')}</p>
+            <p className='text-warning text-center m-t-20 m-b-20'>{t('common:NoResults')}</p>
             : '';
 
         return (
@@ -376,7 +376,7 @@ class Logs extends React.Component <any,any> {
                                                     onChange={this.handleChangeDateTo.bind(this)}
                                                     locale={this.state.lang}
                                                 />
-                                                
+
                                                 <label className='input-group-append input-group-append-label' htmlFor='dateTo'>
                                                     <span className='input-group-text input-group-text-bordered'><i className='md md-event-note'></i></span>
                                                 </label>

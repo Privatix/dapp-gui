@@ -2,7 +2,8 @@
     "common": {
         "RefreshAll": "Refresh all",
         "Refresh": "Refresh",
-        "Select": "Select"
+        "Select": "Select",
+        "NoResults": "Nothing was found on your request. Please modify the filtering options!"
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "Choose the language",
@@ -302,8 +303,7 @@
         "Stack": "Stack",
         "ShowBtn": "show",
         "StackTrace": "Stack trace:",
-        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!",
-        "NoResults": "Nothing was found on your request. Please modify the filtering options!"
+        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!"
     },
     "logs/logsContext": {
         "Key": "Key",
@@ -402,6 +402,7 @@
     "client/vpnList": {
         "Block": "Block",
         "Hash": "Hash",
+        "Agent": "Agent",
         "Country": "Country",
         "Price": "Price (PRIX/MB)",
         "SupplyTotal": "Supply (total)",
@@ -417,6 +418,7 @@
         "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
         "Refresh": "Refresh",
         "AgentAddress": "Agent address",
+        "OfferingHash": "Offering hash",
         "PriceFilter": "Price (PRIX/MB):",
         "From": "from",
         "To": "to"
