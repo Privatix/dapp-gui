@@ -6,16 +6,16 @@ const en = require('./vocabulary/en.json');
 /* tslint:enable: no-var-requires */
 
 export const langs = [
+    {value: 'en', label: 'English'},
+    {value: 'cn', label: '中文'},
     {value: 'ru', label: 'Русский'},
     {value: 'ar', label: 'العربية'},
-    {value: 'cn', label: '中文'},
     {value: 'de', label: 'Germanisch'},
     {value: 'es', label: 'Español'},
     {value: 'fr', label: 'Français'},
     {value: 'ja', label: '日本人'},
-    {value: 'ko', label: '한국어'},
-    {value: 'en', label: 'English'}
-    ];
+    {value: 'ko', label: '한국어'}
+];
 
 export const defLang = 'en';
 
