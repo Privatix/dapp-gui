@@ -16,16 +16,20 @@ class ProductName extends React.Component <any, any> {
 
     async componentDidMount() {
 
-        const offering = await (window as any).ws.getOffering(this.props.offeringId);
+        const { ws } = this.props;
+
+        const offering = await ws.getOffering(this.props.offeringId);
 
         this.props.dispatch(asyncProviders.updateProducts());
-        const product = (this.props.products as any).filter(product => product.id === offering.product)[0];
+        const product = this.props.products.filter(product => product.id === offering.product)[0];
 
         this.setState({product});
     }
 
     showProduct(evt: any){
+
         evt.preventDefault();
+
         this.props.render('Product', <Product product={this.state.product} {...this.props} />);
     }
 
@@ -42,5 +46,5 @@ class ProductName extends React.Component <any, any> {
 }
 
 export default connect( (state: State) =>
-    ({products: state.products})
+    ({products: state.products, ws: state.ws})
 )(ProductName);

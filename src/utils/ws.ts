@@ -5,16 +5,20 @@ import {Account} from '../typings/accounts';
 import {Transaction} from '../typings/transactions';
 import {Product} from '../typings/products';
 import {Session} from '../typings/session';
-import {Channel} from '../typings/channels';
+import {Channel, ClientChannel} from '../typings/channels';
 import {Template} from '../typings/templates';
+import { Log } from '../typings/logs';
+
 import { PaginatedResponse} from '../typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
 type ChannelResponse  = PaginatedResponse<Channel[]>;
+type ClientChannelResponse  = PaginatedResponse<ClientChannel[]>;
 type TransactionResponse = PaginatedResponse<Transaction[]>;
+type LogResponse = PaginatedResponse<Log[]>;
 
 export class WS {
-    
+
     static listeners = {}; // uuid -> listener
     static handlers = {}; // uuid -> handler
 
@@ -277,6 +281,10 @@ export class WS {
 
 // products
 
+    getProduct(id: string): Promise<Product> {
+        return this.getObject('product', id) as Promise<Product>;
+    }
+
     getProducts(): Promise<Product[]> {
         return this.send('ui_getProducts')  as Promise<Product[]>;
     }
@@ -297,7 +305,6 @@ export class WS {
                       ,countries: string[] = []
                       ,offset: number = 0
                       ,limit: number = 0) : Promise<OfferingResponse> {
-        console.log('getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries]);
         return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries, offset, limit]) as Promise<OfferingResponse>;
     }
 
@@ -305,12 +312,32 @@ export class WS {
         return this.getObject('offering', id) as Promise<Offering>;
     }
 
-    createOffering(payload: any){
-        return this.send('ui_createOffering', [payload]);
+    async fetchOfferingsAndProducts(productId: string){
+        const products = await this.getProducts();
+        const offerings = await this.getAgentOfferings(productId);
+        const resolveTable = products.reduce((table, product) => {
+            table[product.id] = product.name;
+            return table;
+        }, {});
+
+        const resOfferings = offerings.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        return {offerings: resOfferings, products};
+    }
+
+    createOffering(payload: any): Promise<string>{
+        return this.send('ui_createOffering', [payload]) as Promise<string>;
     }
 
     changeOfferingStatus(offeringId: string, action: string, gasPrice: number){
         return this.send('ui_changeOfferingStatus', [offeringId, action, gasPrice]);
+    }
+
+    acceptOffering(ethAddress: string, offeringId: string, deposit: number, gasPrice: number) {
+        return this.send('ui_acceptOffering', [ethAddress, offeringId, deposit, gasPrice]);
+    }
+
+    getClientOfferingsFilterParams() {
+        return this.send('ui_getClientOfferingsFilterParams');
     }
 
 // sessions
@@ -321,8 +348,8 @@ export class WS {
 
 // channels
 
-    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{
-        return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
+    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ClientChannelResponse>{
+        return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ClientChannelResponse>;
     }
 
     getAgentChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{
@@ -334,6 +361,7 @@ export class WS {
     }
 
 // common
+    getObject(type: 'product', id: string): Promise<Product>;
     getObject(type: 'channel', id: string): Promise<Channel>;
     getObject(type: 'template', id: string): Promise<Template>;
     getObject(type: 'offering', id: string): Promise<Offering>;
@@ -345,55 +373,23 @@ export class WS {
         return this.send('ui_getEthTransactions', [type, id, offset, limit]) as Promise<TransactionResponse>;
     }
 
+    getTotalIncome(): Promise<number> {
+        return this.send('ui_getTotalIncome', []) as Promise<number>;
+    }
+
+// logs
+    getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
+        return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
+    }
+
     getSettings() {
         return this.send('ui_getSettings');
     }
 
-    getTotalIncome() {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getTotalIncome',
-            params: [this.pwd]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function (res: any) {
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-
-            this.socket.send(JSON.stringify(req));
-        });
+    // TODO typings
+    updateSettings(updateSettings: Object) {
+        return this.send('ui_updateSettings', [updateSettings]);
     }
 
-// logs
-    getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number) {
-        const uuid = uuidv4();
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getLogs',
-            params: [this.pwd, levels, searchText, dateFrom, dateTo, offset, limit]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            WS.handlers[uuid] = function (res: any) {
-                if ('err' in res) {
-                    reject(res.err);
-                } else {
-                    resolve(res.result);
-                }
-            };
-
-            this.socket.send(JSON.stringify(req));
-        });
-    }
 
 }

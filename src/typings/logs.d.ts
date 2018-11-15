@@ -1,9 +1,3 @@
-export interface Logs{
-    items: Log[];
-    current: number;
-    pages: number;
-}
-
 export interface Log{
     time: string;
     level: string;

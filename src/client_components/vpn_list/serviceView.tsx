@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
-import {fetch} from '../../utils/fetch';
 
 import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
@@ -10,7 +10,8 @@ import ClientAccessInfo from '../endpoints/clientAccessInfo';
 import TerminateContractButton from '../connections/terminateContractButton';
 import notice from '../../utils/notice';
 
-import {Product} from '../../typings/products';
+import { Product } from '../../typings/products';
+import { State } from '../../typings/state';
 
 @translate(['client/serviceView', 'utils/notice'])
 
@@ -40,22 +41,20 @@ class ServiceView extends React.Component <any,any> {
     }
 
     async getSessions() {
+        const { ws } = this.props;
         const service = this.state.service;
-        const sessionsRaw = await (window as any).ws.getSessions(service.id);
-        // TODO there is no `get GLIENT offering by id` method in JSON-RPC
-        const offerings = await fetch(`/offerings?id=${service.offering}`, {});
+        const sessionsRaw = await ws.getSessions(service.id);
+        const offering = await ws.getOffering(service.offering);
 
-        if (Object.keys(offerings).length === 0) {
+        if (!offering) {
             return false;
         }
 
-        const offering = (offerings as any)[0];
-
-        const products = await (window as any).ws.getProducts();
+        const products = await ws.getProducts();
 
         const product = products.filter((product: Product) => product.id === offering.product)[0];
 
-        const sessions = (sessionsRaw as any).map((session) => {
+        const sessions = sessionsRaw.map((session) => {
             return {
                 id: session.channel,
                 agent: this.state.service.agent,
@@ -225,4 +224,4 @@ class ServiceView extends React.Component <any,any> {
     }
 }
 
-export default withRouter(ServiceView);
+export default connect( (state: State, onProps: any) => Object.assign({}, {ws: state.ws}, onProps))(withRouter(ServiceView));

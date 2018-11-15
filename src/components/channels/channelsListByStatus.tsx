@@ -78,7 +78,7 @@ class Channels extends React.Component<Props, any> {
         const status = this.state.status;
         const { ws } = this.props;
 
-        const channels = await ws.getAgentChannels(status, '', 0, 100);
+        const channels = await ws.getAgentChannels('', status, 0, 100);
 
         if (!this.subscription) {
             const channelsIds = channels.items.map(channel => channel.id);

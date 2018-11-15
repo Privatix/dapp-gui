@@ -1,104 +1,137 @@
 import * as React from 'react';
-import {fetch} from '../../utils/fetch';
+import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
+
 import PgTime from '../../components/utils/pgTime';
 import ContractStatus from '../../components/channels/contractStatus';
 import ChannelStatus from '../../components/channels/channelStatusStyle';
 import ServiceView from './serviceView';
-import notice from '../../utils/notice';
 import ModalWindow from '../../components/modalWindow';
 import DateSorter from '../../components/utils/sorters/sortingDate';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
 import JobStatus from '../connections/jobStatus';
 import JobName from '../connections/jobName';
-import { translate } from 'react-i18next';
 import CopyToClipboard from '../../components/copyToClipboard';
+
+import { State } from 'typings/state';
+import { ClientChannel } from 'typings/channels';
 
 @translate(['client/history', 'utils/notice'])
 
-export default class ClientHistory extends React.Component<any,any> {
+class ClientHistory extends React.Component<any,any> {
+
+    subscribeId = null;
 
     constructor(props:any) {
+
         super(props);
 
         this.state = {
             historyData: [],
-            awaitForTerminateData: []
+            awaitForTerminateData: [],
         };
     }
 
     componentDidMount() {
+
+        this.refresh();
+
+    }
+
+    componentWillUnmount(){
+
+        const { ws } = this.props;
+
+        if(this.subscribeId){
+            ws.unsubscribe(this.subscribeId);
+        }
+
+    }
+
+    refresh = () => {
+
         this.getHistoryData();
         this.getAwaitForTerminateColumns();
+
     }
 
-    refresh() {
-        this.getHistoryData();
-        this.getAwaitForTerminateColumns();
-        const { t } = this.props;
-        notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('SuccessfullyRefreshed')});
+    subscribe(channels: ClientChannel[]){
+
+        const { ws } = this.props;
+
+        if(this.subscribeId){
+            ws.unsubscribe(this.subscribeId);
+        }
+        const ids = channels.map(channel => channel.id);
+        this.subscribeId = ws.subscribe('channel', ids, this.refresh);
     }
 
-    getHistoryData() {
-        let endpoint = '/client/channels?serviceStatus=terminated';
-        const { t } = this.props;
-        fetch(endpoint, {}).then(async (clientChannels) => {
-            const historyData = (clientChannels as any).filter((channel) => {
-                if (channel.channelStatus.channelStatus !== 'active') {
-                    return true;
-                }
-            }).map((channel) => {
-                return {
-                    id: <ModalWindow
-                        customClass='shortTableText'
-                        modalTitle={t('Service')}
-                        text={channel.id}
-                        copyToClipboard={true}
-                        component={<ServiceView service={channel}/>}
-                    />,
-                    agent: channel.agent,
-                    contractStatus: channel.channelStatus.channelStatus,
-                    usage: channel.usage.current + ' ' + channel.usage.unit,
-                    cost: channel.usage.cost / 1e8,
-                    lastUsed: channel.channelStatus.lastChanged
-                };
-            });
+    async getHistoryData() {
 
-            this.setState({historyData});
+        const { t, ws } = this.props;
+        const clientChannels = await ws.getClientChannels('', 'terminated', 0, 0);
+        const allClientChannels = await ws.getClientChannels('', '', 0, 0);
+        this.subscribe(allClientChannels.items);
+
+        const historyData = clientChannels.items.filter((channel) => {
+            if (channel.channelStatus.channelStatus !== 'active') {
+                return true;
+            }
+        }).map((channel) => {
+            return {
+                id: <ModalWindow
+                    customClass='shortTableText'
+                    modalTitle={t('Service')}
+                    text={channel.id}
+                    copyToClipboard={true}
+                    component={<ServiceView service={channel}/>}
+                />,
+                agent: channel.agent,
+                contractStatus: channel.channelStatus.channelStatus,
+                usage: channel.usage.current + ' ' + channel.usage.unit,
+                cost: channel.usage.cost / 1e8,
+                lastUsed: channel.channelStatus.lastChanged
+            };
         });
+
+        this.setState({historyData});
     }
 
-    getAwaitForTerminateColumns() {
-        let endpoint = '/client/channels?channelStatus=active&serviceStatus=terminated';
-        const { t } = this.props;
-        fetch(endpoint, {}).then(async (clientChannels) => {
-            const data = (clientChannels as any).map((channel) => {
-                let jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
-                let jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
-                const jobStatus = <JobStatus status={channel.job.status} />;
+    async getAwaitForTerminateColumns() {
 
-                return {
-                    id: <ModalWindow
-                        customClass='shortTableText'
-                        modalTitle={t('Service')}
-                        text={channel.id}
-                        copyToClipboard={true}
-                        component={<ServiceView service={channel} />}
-                    />,
-                    agent: channel.agent,
-                    contractStatus: channel.channelStatus.channelStatus,
-                    serviceStatus: channel.channelStatus.serviceStatus,
-                    jobStatus: <span><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</span>,
-                    usage: channel.usage.current + ' ' + channel.usage.unit + ' ' + t('of') + ' ' + channel.usage.maxUsage + ' ' + channel.usage.unit,
-                    cost: channel.usage.cost / 1e8
-                };
-            });
+        const { t, ws } = this.props;
+        const clientChannels = await ws.getClientChannels('active', 'terminated', 0, 0);
 
-            this.setState({awaitForTerminateData: data});
+        this.subscribe(clientChannels.items);
+
+        const data = clientChannels.items.map((channel) => {
+            let jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
+            let jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
+            const jobStatus = <JobStatus status={channel.job.status} />;
+
+            return {
+                id: <ModalWindow
+                    customClass='shortTableText'
+                    modalTitle={t('Service')}
+                    text={channel.id}
+                    copyToClipboard={true}
+                    component={<ServiceView service={channel} />}
+                />,
+                agent: channel.agent,
+                contractStatus: channel.channelStatus.channelStatus,
+                serviceStatus: channel.channelStatus.serviceStatus,
+                jobStatus: <span><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</span>,
+                usage: channel.usage.current + ' ' + channel.usage.unit + ' ' + t('of') + ' ' + channel.usage.maxUsage + ' ' + channel.usage.unit,
+                cost: channel.usage.cost / 1e8
+            };
         });
+
+        this.setState({awaitForTerminateData: data});
     }
 
     render() {
+
         const { t } = this.props;
         const awaitForTerminateColumns = [
             {
@@ -194,9 +227,6 @@ export default class ClientHistory extends React.Component<any,any> {
         ];
 
         return <div className='col-lg-12 col-md-12'>
-            <div className='m-t-5 m-b-20'>
-                <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this)}>{t('Refresh')}</button>
-            </div>
             <div className='card m-b-20'>
                 <h5 className='card-header'>{t('AwaitForTerminate')}</h5>
                 <div className='card-body'>
@@ -221,3 +251,5 @@ export default class ClientHistory extends React.Component<any,any> {
         </div>;
     }
 }
+
+export default connect((state: State) => ({ws: state.ws}))(ClientHistory);

@@ -24,13 +24,13 @@ const completeRemaining = translate('client/dashboard/connecting')(({t}) => {
 class Connecting extends React.Component<any, any>{
 
     subscription: String;
+    handler = 0;
 
     constructor(props:any) {
         super(props);
         this.state = {
-            status: 'pending',
-            handler: 0,
-            channels: [],
+            status: 'waiting',
+            channel: null,
             pendingTimeCounter: 0,
             offering: null,
             countryAlert: ''
@@ -45,7 +45,7 @@ class Connecting extends React.Component<any, any>{
 
         const { ws } = this.props;
 
-        if(this.state.handler !== 0){
+        if(this.handler !== 0){
             clearTimeout(this.state.handler);
         }
 
@@ -55,83 +55,108 @@ class Connecting extends React.Component<any, any>{
     }
 
     ws = (event: any) => {
-        console.log('WS event catched!!!!', event);
         this.refresh();
+    }
+
+    async getAllClientChannels(){
+        const { ws } = this.props;
+        const statuses = [
+            ['', 'pending'],
+            ['', 'activating'],
+            ['', 'active'],
+            ['', 'suspending'],
+            ['', 'suspended'],
+            ['', 'terminating']
+        ];
+        const requests = statuses.map(status => ws.getClientChannels(status[0], status[1], 0, 10));
+        const resolvedRequests = await Promise.all(requests);
+        const channels = resolvedRequests.reduce((acc, cv) => cv.items.length ? acc.concat(cv.items) : acc, []);
+        return channels;
     }
 
     async refresh() {
 
         const { t, ws } = this.props;
 
-        const pendingChannelsReq = ws.getClientChannels('active', 'pending', 0, 10);
-        const activeChannelsReq = ws.getClientChannels('active', 'active', 0, 10);
-        const suspendedChannelsReq = ws.getClientChannels('active', 'suspended', 0, 10);
+        const channels = await this.getAllClientChannels();
 
-        const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([
-            pendingChannelsReq,
-            activeChannelsReq,
-            suspendedChannelsReq]);
-
-        if(!this.subscription){
-            // TODO remove
-            if(!pendingChannels.items){
-                pendingChannels.items = [];
-            }
-            if(!activeChannels.items){
-                activeChannels.items = [];
-            }
-            if(!suspendedChannels.items){
-                suspendedChannels.items = [];
-            }
-            const ids = [...pendingChannels.items, ...activeChannels.items, ...suspendedChannels.items].map(channel => channel.id);
-            if(ids.length){
-                this.subscription = ws.subscribe('channel', ids, this.ws);
-            }
+        if(this.subscription){
+            ws.unsubscribe(this.subscription);
         }
 
-        if(activeChannels.items.length > 0){
-            const offering = await ws.getOffering(activeChannels.items[0].offering);
-            this.setState({status: 'active', channels: activeChannels.items, offering, pendingTimeCounter: 0});
+        if(channels.length){
 
-        }else if(suspendedChannels.items.length > 0){
-            const channel = suspendedChannels.items[0];
+            const ids = channels.map(channel => channel.id);
+            this.subscription = ws.subscribe('channel', ids, this.ws);
 
-            let countryAlert = '';
-            const endpoint = await ws.getEndpoints(channel.id);
-            if (endpoint[0]) {
-                const ip = endpoint[0].serviceEndpointAddress;
-                const countryStatus = endpoint[0].countryStatus;
-                if (countryStatus === 'invalid') {
-                    countryAlert = t('CountryAlertInvalid', {ip: ip});
-                } else if (countryStatus === 'unknown') {
-                    countryAlert = t('CountryAlertUnknown', {ip: ip});
-                }
+            const channel = channels[0];
+            switch(channel.channelStatus.serviceStatus){
+                case 'active':
+                    const offering = await ws.getOffering(channel.offering);
+                    this.setState({status: 'active', channel, offering, pendingTimeCounter: 0});
+                    break;
+                case 'suspended':
+                    let countryAlert = '';
+                    const endpoint = await ws.getEndpoints(channel.id);
+                    if (endpoint[0]) {
+                        const ip = endpoint[0].serviceEndpointAddress;
+                        const countryStatus = endpoint[0].countryStatus;
+                        if (countryStatus === 'invalid') {
+                            countryAlert = t('CountryAlertInvalid', {ip: ip});
+                        } else if (countryStatus === 'unknown') {
+                            countryAlert = t('CountryAlertUnknown', {ip: ip});
+                        }
+                    }
+
+                    if(channel.usage.current > 0){
+                        this.setState({status: 'paused', channel, pendingTimeCounter: 0});
+                    }else{
+                        this.setState({status: 'suspended', channel, countryAlert, pendingTimeCounter: 0});
+                    }
+                    break;
+                case 'pending':
+                case 'activating':
+                case 'suspending':
+                case 'terminating':
+                    this.setState({status: 'pending', channel, pendingTimeCounter: 0});
+                    break;
+                default:
+                    let pendingTimeCounter = this.state.pendingTimeCounter + 1;
+
+                    if (pendingTimeCounter >= 100) {
+                        clearTimeout(this.state.handler);
+                        notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
+                        this.props.history.push('/client-dashboard-start');
+                        return;
+                    }
+
+                    this.setState({status: 'pending', channel, pendingTimeCounter});
             }
+        }else{
 
-            if(channel.usage.current > 0){
-                this.setState({status: 'paused', channels: suspendedChannels.items, pendingTimeCounter: 0});
-            }else{
-                this.setState({status: 'suspended', channels: suspendedChannels.items, countryAlert, pendingTimeCounter: 0});
-            }
-        }else if(pendingChannels.items.length > 0){
-            this.setState({status: 'pending', channels: pendingChannels.items, pendingTimeCounter: 0});
-        } else {
-            let pendingTimeCounter = this.state.pendingTimeCounter + 1;
+            this.handler = setTimeout(this.refresh.bind(this), 3000);
+            this.setState({status: 'waiting', channel: null});
 
-            if (pendingTimeCounter >= 100) {
-                clearTimeout(this.state.handler);
-                notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
-                this.props.history.push('/client-dashboard-start');
-                return;
-            }
-
-            this.setState({status: 'pending', channels: pendingChannels.items, pendingTimeCounter});
         }
 
-        if(!this.subscription){
-            this.setState({handler: setTimeout(this.refresh.bind(this), 3000)});
-        }
+    }
 
+    waiting(){
+
+        const { t } = this.props;
+
+        return <div className='container-fluid'>
+            <div className='row m-t-20'>
+                <div className='col-5'>
+                    <div className='card m-b-20 card-body'>
+                        <p className='card-text'>{t('AfterTheConnectionIsReady')}</p>
+                        <button className='btn btn-inverse btn-block btn-lg disabled'>
+                            <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>{t('Synchronizing')}...
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>;
     }
 
     pending(){
@@ -149,7 +174,7 @@ class Connecting extends React.Component<any, any>{
                     </div>
                 </div>
             </div>
-            <ActiveConnection channels={this.state.channels}/>
+            <ActiveConnection channels={[this.state.channel]}/>
         </div>;
     }
 
@@ -166,7 +191,7 @@ class Connecting extends React.Component<any, any>{
                         <p className='card-text m-t-5'><strong>{t('YouCanStartUsingVPN')}</strong></p>
                         {countryAlert}
                         <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
+                            endpoint={`/client/channels/${this.state.channel.id}/status`}
                             options={{method: 'put', body: {action: 'resume'}}}
                             title={t('Connect')}
                             text={<span></span>}
@@ -180,12 +205,12 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-0 col-xl-2'></div>
 
                 <div className='col-6 col-xl-5 clientConnectionBl'>
-                    <FinishServiceButton channel={this.state.channels[0]} />
+                    <FinishServiceButton channel={this.state.channel} />
                 </div>
 
             </div>
 
-            <ActiveConnection channels={this.state.channels}/>
+            <ActiveConnection channels={[this.state.channel]}/>
         </div>;
     }
 
@@ -196,15 +221,14 @@ class Connecting extends React.Component<any, any>{
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
                 <div className='col-4 col-xl-4 buttonBlock'>
-                    <IncreaseDepositButton channel={this.state.channels[0]} />
+                    <IncreaseDepositButton channel={this.state.channel} />
                 </div>
                 <div className='col-4 col-xl-4 buttonBlock'>
                     <div className='card m-b-20 card-body buttonBlock'>
                         <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
-                        { /* TODO insert real max suspend time */ }
                         <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: Math.ceil(this.state.offering.maxSuspendTime / 60)})}</p>
                         <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
+                            endpoint={`/client/channels/${this.state.channel.id}/status`}
                             options={{method: 'put', body: {action: 'pause'}}}
                             title={t('Pause')}
                             text={<span>{t('ThisOperationWillPauseVPNUsage')}<br />
@@ -217,11 +241,11 @@ class Connecting extends React.Component<any, any>{
                 </div>
 
                 <div className='col-4 col-xl-4 buttonBlock'>
-                    <FinishServiceButton channel={this.state.channels[0]} />
+                    <FinishServiceButton channel={this.state.channel} />
                 </div>
             </div>
 
-            <ActiveConnection channels={this.state.channels}/>
+            <ActiveConnection channels={[this.state.channel]}/>
         </div>;
     }
 
@@ -235,7 +259,7 @@ class Connecting extends React.Component<any, any>{
                     <div className='card m-b-20 card-body'>
                         <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
                             <strong>
-                                <Countdown date={Date.parse(this.state.channels[0].channelStatus.lastChanged) + this.state.channels[0].channelStatus.maxInactiveTime*1000}
+                                <Countdown date={Date.parse(this.state.channel.channelStatus.lastChanged) + this.state.channel.channelStatus.maxInactiveTime*1000}
                                            renderer={countdownRender}
                                            onComplete={completeRemaining}
                                 />
@@ -243,7 +267,7 @@ class Connecting extends React.Component<any, any>{
                         </p>
                         <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
                         <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channels[0].id}/status`}
+                            endpoint={`/client/channels/${this.state.channel.id}/status`}
                             options={{method: 'put', body: {action: 'resume'}}}
                             title={t('Resume')}
                             text={<span></span>}
@@ -257,11 +281,11 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-0 col-xl-2'></div>
 
                 <div className='col-6 col-xl-5'>
-                    <FinishServiceButton channel={this.state.channels[0]} />
+                    <FinishServiceButton channel={this.state.channel} />
                 </div>
             </div>
 
-            <ActiveConnection channels={this.state.channels}/>
+            <ActiveConnection channels={[this.state.channel]}/>
         </div>;
     }
 

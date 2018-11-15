@@ -13,7 +13,10 @@ class ImportJsonKey extends React.Component<any, any>{
 
     constructor(props: any){
         super(props);
-        this.state = {name: '', fileName: '', pwd: ''};
+        this.state = {name: this.props.default === 'true' ? 'main' : ''
+                     ,fileName: ''
+                     ,pwd: ''
+                     };
     }
 
     back = back('/setAccount').bind(this);

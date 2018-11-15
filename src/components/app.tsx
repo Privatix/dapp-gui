@@ -10,7 +10,7 @@ import { createMemoryHistory } from 'history';
 import Main from './main/main';
 import Navigation from './navigation';
 import Header from './header';
-import Settings from './settings';
+import Settings from 'components/settings/settings';
 import Products from './products/products';
 import Offerings from './offerings/offerings';
 import ChannelsList from './channels/channelsList';
@@ -26,7 +26,7 @@ import Backup from './auth/backup';
 import AccountsList from './accounts/accountsList';
 import ClientDashboardStart from '../client_components/dashboard/startVPNBtn';
 import ClientDashboardConnecting from '../client_components/dashboard/connecting';
-import VPNList from '../client_components/vpn_list/list';
+import VPNList from '../client_components/vpn_list/list/';
 import AcceptOffering from '../client_components/vpn_list/acceptOffering';
 import ClientHistory from '../client_components/vpn_list/history';
 

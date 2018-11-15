@@ -1,29 +1,36 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
-import { withRouter } from 'react-router-dom';
+import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
+import { withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 import ModalWindow from '../modalWindow';
 import CreateOffering from './createOffering';
 import OfferingsList from './offeringsList';
-import {fetchOfferings} from './utils';
+
+import { State } from '../../typings/state';
+import { WS } from '../../utils/ws';
+
+interface IProps {
+    product: string;
+    ws?: WS;
+    t?: any;
+}
 
 @translate(['offerings/offerings', 'offerings', 'common'])
-class Offerings extends React.Component<any, any>{
+class Offerings extends React.Component<IProps, any>{
 
     constructor(props: any){
         super(props);
         this.state = {offerings: [], products: []};
     }
 
-    // componentDidMount(){
-    //     this.refresh();
-    // }
+    refresh = async () => {
 
-    refresh = () => {
-        fetchOfferings(this.props.product).then((res: any) => {
-            this.setState(res);
-        });
+        const { ws } = this.props;
+
+        const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
+        this.setState({offerings, products});
     }
 
     render(){
@@ -56,4 +63,6 @@ class Offerings extends React.Component<any, any>{
     }
 }
 
-export default withRouter(Offerings);
+export default connect((state: State, onProps: IProps) => {
+    return (Object.assign({}, {ws: state.ws}, onProps));
+})(withRouter(Offerings));
