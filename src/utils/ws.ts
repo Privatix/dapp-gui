@@ -1,13 +1,17 @@
+import * as React from 'react';
+import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
-import {TemplateType} from '../typings/templates';
-import {OfferStatus, Offering} from '../typings/offerings';
-import {Account} from '../typings/accounts';
-import {Transaction} from '../typings/transactions';
-import {Product} from '../typings/products';
-import {Session} from '../typings/session';
-import {Channel, ClientChannel} from '../typings/channels';
-import {Template} from '../typings/templates';
-import { Log } from '../typings/logs';
+
+import {TemplateType} from 'typings/templates';
+import {OfferStatus, Offering} from 'typings/offerings';
+import {Account} from 'typings/accounts';
+import {Transaction} from 'typings/transactions';
+import {Product} from 'typings/products';
+import {Session} from 'typings/session';
+import {Channel, ClientChannel} from 'typings/channels';
+import {Template} from 'typings/templates';
+import { Log } from 'typings/logs';
+import { State } from 'typings/state';
 
 import { PaginatedResponse} from '../typings/paginatedResponse';
 
@@ -142,17 +146,7 @@ export class WS {
     }
 
     topUp(channelId: string, gasPrice: number, handler: Function){
-        const uuid = uuidv4();
-        WS.handlers[uuid] = handler;
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_topUpChannel',
-            params: [this.pwd, channelId, gasPrice]
-        };
-
-        this.socket.send(JSON.stringify(req));
+        return this.send('ui_topUpChannel', [channelId, gasPrice]) as Promise<any>;
     }
 
 // auth
@@ -202,18 +196,8 @@ export class WS {
         return this.send('ui_getAccounts') as Promise<Account[]>;
     }
 
-    generateAccount(payload: any, handler: Function){
-        const uuid = uuidv4();
-        WS.handlers[uuid] = handler;
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_generateAccount',
-            params: [this.pwd, payload]
-        };
-
-        this.socket.send(JSON.stringify(req));
+    generateAccount(payload: any){
+        return this.send('ui_generateAccount', [payload]);
     }
 
     importAccountFromHex(payload: any, handler: Function){
@@ -260,6 +244,10 @@ export class WS {
 
     updateBalance(accountId: string){
         return this.send('ui_updateBalance', [accountId]);
+    }
+
+    transferTokens(accountId: string, destination: 'ptc'|'psc', tokenAmount: number, gasPrice: number){
+        return this.send('ui_transferTokens', [accountId, destination, tokenAmount, gasPrice]);
     }
 // templates
 
@@ -352,12 +340,31 @@ export class WS {
         return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ClientChannelResponse>;
     }
 
+    async getNotTerminatedClientChannels(): Promise<ClientChannel[]>{
+        const statuses = [
+            ['', 'pending'],
+            ['', 'activating'],
+            ['', 'active'],
+            ['', 'suspending'],
+            ['', 'suspended'],
+            ['', 'terminating']
+        ];
+        const requests = statuses.map(status => this.getClientChannels(status[0], status[1], 0, 10));
+        const resolvedRequests = await Promise.all(requests);
+        const channels = resolvedRequests.reduce((acc, cv) => cv.items.length ? acc.concat(cv.items) : acc, []);
+        return channels;
+    }
+
     getAgentChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 
     getChannelUsage(channelId: string): Promise<number>{
         return this.send('ui_getChannelUsage', [channelId]) as Promise<number>;
+    }
+
+    changeChannelStatus(channelId: string, channelStatus: string){
+        return this.send('ui_changeChannelStatus', [channelId, channelStatus]) as Promise<any>; // null actually
     }
 
 // common
@@ -377,10 +384,6 @@ export class WS {
         return this.send('ui_getTotalIncome', []) as Promise<number>;
     }
 
-    getObjectByHash(type: 'offering', hash: string) : Promise<OfferingResponse> {
-        return this.send('ui_getObjectByHash', [type, hash]) as Promise<OfferingResponse>;
-    }
-
 // logs
     getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
         return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
@@ -397,3 +400,9 @@ export class WS {
 
 
 }
+
+export const ws = function<T>(constructor: React.ComponentType){
+    return connect( (state: State, onProps: T) => {
+        return (Object.assign({}, {ws: state.ws}, onProps));
+    } )(constructor);
+};

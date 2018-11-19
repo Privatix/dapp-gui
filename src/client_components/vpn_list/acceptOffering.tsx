@@ -1,27 +1,30 @@
 import * as React from 'react';
-import Select from 'react-select';
-import * as api from '../../utils/api';
-import {fetch} from '../../utils/fetch';
-import notice from '../../utils/notice';
-import { withRouter } from 'react-router-dom';
-import GasRange from '../../components/utils/gasRange';
-import {LocalSettings} from '../../typings/settings';
-import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
-import countryByIso from '../../utils/countryByIso';
-import {connect} from 'react-redux';
-import {State} from '../../typings/state';
+import { withRouter } from 'react-router-dom';
+
+import Select from 'react-select';
+import * as api from 'utils/api';
+import notice from 'utils/notice';
+import GasRange from 'components/utils/gasRange';
+import toFixedN from 'utils/toFixedN';
+import countryByIso from 'utils/countryByIso';
+
+import {LocalSettings} from 'typings/settings';
+import {Offering} from 'typings/offerings';
+import { WS, ws } from 'utils/ws';
 
 interface IProps{
-    offering: Object;
+    ws?: WS;
+    t?: any;
+    history?: any;
+    offering: Offering;
     mode?: string;
 }
 
 @translate(['client/acceptOffering', 'utils/gasRange', 'utils/notice'])
+class AcceptOffering extends React.Component<IProps, any>{
 
-class AcceptOffering extends React.Component<any, any>{
-
-    constructor(props:any){
+    constructor(props:IProps){
         super(props);
 
         const { t } = props;
@@ -55,17 +58,12 @@ class AcceptOffering extends React.Component<any, any>{
     }
 
     async getNotTerminatedConnections() {
-        const pendingChannelsReq = fetch('/client/channels?serviceStatus=pending', {});
-        const activeChannelsReq = fetch('/client/channels?serviceStatus=active', {});
-        const suspendedChannelsReq = fetch('/client/channels?serviceStatus=suspended', {});
 
-        const [pendingChannels, activeChannels, suspendedChannels] = await Promise.all([pendingChannelsReq, activeChannelsReq, suspendedChannelsReq]);
+        const { t, ws } = this.props;
 
-        if((activeChannels as any).length > 0
-            || (suspendedChannels as any).length > 0
-            || (pendingChannels as any).length > 0) {
-            const { t } = this.props;
+        const activeChannels = await ws.getNotTerminatedClientChannels();
 
+        if(activeChannels.length > 0){
             this.setState({
                 acceptOfferingBtnBl: <div className='form-group row'>
                     <div className='col-md-12'>
@@ -102,7 +100,7 @@ class AcceptOffering extends React.Component<any, any>{
             msg += ' ' + t('DepositMustBeMoreThan') + ' ' + toFixedN({number: (this.state.deposit / 1e8), fixed: 8}) + ' PRIX.';
         }
 
-        if(this.props.offering.maxUnit && parseFloat(this.props.offering.maxUnit) > 0) {
+        if(this.props.offering.maxUnit && this.props.offering.maxUnit > 0) {
             const topDepositLimit = this.props.offering.maxUnit * this.props.offering.unitPrice;
             if (this.state.customDeposit > topDepositLimit) {
                 err = true;
@@ -182,7 +180,7 @@ class AcceptOffering extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>{t('MaxInactiveTime')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={Math.ceil(parseFloat(offering.maxInactiveTimeSec)) / 60} readOnly/>
+                                <input type='text' className='form-control' value={Math.ceil(offering.maxInactiveTimeSec / 60)} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>{t('min')}</span>
                             </div>
                             <span className='help-block'>
@@ -250,4 +248,5 @@ class AcceptOffering extends React.Component<any, any>{
     }
 }
 
-export default connect( (state: State, ownProps: IProps) => Object.assign({}, {ws: state.ws}, ownProps) )(withRouter(AcceptOffering));
+// export default connect( (state: State, ownProps: IProps) => Object.assign({}, {ws: state.ws}, ownProps) )(withRouter(AcceptOffering));
+export default ws<IProps>(withRouter(AcceptOffering));

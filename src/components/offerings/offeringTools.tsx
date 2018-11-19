@@ -3,8 +3,10 @@ import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
 import {asyncProviders} from '../../redux/actions';
-import {State} from '../../typings/state';
-import {Offering} from '../../typings/offerings';
+
+import { WS } from 'utils/ws';
+import {State} from 'typings/state';
+import {Offering} from 'typings/offerings';
 
 import ConfirmPopupSwal from '../confirmPopupSwal';
 import notice from '../../utils/notice';
@@ -14,6 +16,7 @@ interface Props {
     challengePeriod: number;
     dispatch: any;
     t: any;
+    ws: WS;
     closeModal?: Function;
 }
 
@@ -33,14 +36,36 @@ class OfferingTools extends React.Component<Props, any>{
     }
 
     render(){
-        const { t } = this.props;
-        const offeringStatus = this.props.offering.offerStatus;
-        const challengePeriodMinutes = Math.floor(this.props.challengePeriod / 4);
+        const { t, ws, offering, challengePeriod } = this.props;
+
+        const offeringStatus = offering.offerStatus;
+        const challengePeriodMinutes = Math.floor(challengePeriod / 4);
         const removeInfo = t('removeInfo', {minutes: challengePeriodMinutes});
         const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
 
         const disabledPopUp = !(['registered', 'popped_up'].includes(offeringStatus));
         const popupInfo = disabledPopUp ? t('popupInfoDisabled', {min: challengePeriodMinutes}) : t('popupInfo');
+
+        const doPopup = () => {
+            ws.changeOfferingStatus(offering.id, 'popup', 4e9); // TODO gas price component???
+        };
+
+        const doDeactivate = async () => {
+            try {
+                await ws.changeOfferingStatus(offering.id, 'deactivate', 4e9); // TODO gas price component???
+                notice({
+                    level: 'info',
+                    header: t('utils/notice:Congratulations!'),
+                    msg: t('DeleteOfferingRequestScheduled1') + ' ' + challengePeriodMinutes + ' ' + t('DeleteOfferingRequestScheduled2')
+                });
+
+                this.props.closeModal();
+
+            } catch (e) {
+                notice({level: 'error', header: t('utils/notice:Error!'), msg: t('DeleteOfferingRequestProcessing')});
+            }
+        };
+
         const popUpBtn = disabledPopUp ?
             <div>
                 <p>
@@ -49,8 +74,7 @@ class OfferingTools extends React.Component<Props, any>{
             </div>
             :
             <ConfirmPopupSwal
-                endpoint={`/offerings/${this.props.offering.id}/status`}
-                options={{method: 'put', body: {action: 'popup'}}}
+                done={doPopup}
                 title={t('Popup')}
                 text={<span>{popupInfo}</span>}
                 class={'btn btn-block btn-primary btn-custom'}
@@ -63,8 +87,6 @@ class OfferingTools extends React.Component<Props, any>{
                 <h5 className='card-title'>{t('WarningArea')}</h5>
                 <p className='card-text'>{removeInfo}</p>
                 <ConfirmPopupSwal
-                    endpoint={`/offerings/${this.props.offering.id}/status`}
-                    options={{method: 'put', body: {action: 'deactivate'}}}
                     title={t('Remove')}
                     text={<span>{removeInfo}<br />
                         {t('WouldYouLikeToProceed')}</span>}
@@ -72,19 +94,8 @@ class OfferingTools extends React.Component<Props, any>{
                     swalType='danger'
                     swalConfirmBtnText={t('YesRemoveIt')}
                     swalTitle={t('confirmPopupSwal:AreYouSure')}
-                    done={(res) => {
-                        if (res.code === 0) {
-                            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('DeleteOfferingRequestProcessing')});
-                        } else {
-                            notice({
-                                level: 'info',
-                                header: t('utils/notice:Congratulations!'),
-                                msg: t('DeleteOfferingRequestScheduled1') + ' ' + challengePeriodMinutes + ' ' + t('DeleteOfferingRequestScheduled2')
-                            });
-
-                            this.props.closeModal();
-                        }
-                    }} />
+                    done={doDeactivate}
+                />
             </div>;
 
         return <div className='col-lg-3 col-md-4'>
@@ -100,5 +111,5 @@ class OfferingTools extends React.Component<Props, any>{
 
 export default connect( (state: State) => {
     const settings = state.settings;
-    return {challengePeriod: settings['eth.challenge.period'] ? parseInt(settings['eth.challenge.period'].value, 10) : 0};
+    return {ws: state.ws, challengePeriod: settings['eth.challenge.period'] ? parseInt(settings['eth.challenge.period'].value, 10) : 0};
 } )(OfferingTools);

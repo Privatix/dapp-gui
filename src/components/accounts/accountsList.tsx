@@ -28,10 +28,6 @@ class Accounts extends React.Component<Props, any> {
         super(props);
     }
 
-    done(){
-        this.setState({visible: false});
-    }
-
     async onRefresh(accountId:any, evt: any){
         evt.preventDefault();
         const { t, ws } = this.props;
@@ -47,7 +43,7 @@ class Accounts extends React.Component<Props, any> {
             let isDefault = account.isDefault === true ? 'on' : 'off';
             const ethereumAddress = `0x${account.ethAddr}`;
             return {
-                name: <ModalWindow key={ethereumAddress} visible={false} customClass='' modalTitle={t('ModalTitle')} text={account.name} component={<Account account={account} done={this.done.bind(this)} />} />,
+                name: <ModalWindow key={ethereumAddress} visible={false} customClass='' modalTitle={t('ModalTitle')} text={account.name} component={<Account account={account} />} />,
                 ethereumAddress,
                 eth: (account.ethBalance/1e18).toFixed(3),
                 exchangeBalance: (account.ptcBalance/1e8).toFixed(3),

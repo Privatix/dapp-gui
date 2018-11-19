@@ -20,7 +20,7 @@ class IncreaseDepositView extends React.Component<any, any> {
         this.state = {gasPrice: 6*1e9
                      ,account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase())
         };
-        (window as any).ws.getOffering(props.channel.offering)
+        props.ws.getOffering(props.channel.offering)
            .then(offering => {
                this.setState({offering});
            });
@@ -51,17 +51,17 @@ class IncreaseDepositView extends React.Component<any, any> {
         }
     }
 
-    onConfirm = () => {
-        (window as any).ws.topUp(this.props.channel.id, this.state.gasPrice, (res: any) =>{
+    onConfirm = async () => {
 
-            const { t, closeModal } = this.props;
-            if('error' in res){
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
-            }else{
-                notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
-                closeModal();
-            }
-        } );
+        const { ws, t, closeModal } = this.props;
+
+        try {
+            await ws.topUp(this.props.channel.id, this.state.gasPrice);
+            notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
+            closeModal();
+        } catch ( e ) {
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
+        }
     }
 
     render(){
@@ -126,7 +126,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                         <div className='col-12'>
                             <ConfirmPopupSwal
                                 beforeAsking={this.checkUserInput.bind(this)}
-                                confirmHandler={this.onConfirm}
+                                done={this.onConfirm}
                                 title={t('IncreaseBtn')}
                                 text={<div>{t('client/increaseDepositButton:ThisOperationWillIncrease')}<br />{t('WouldYouLikeToProceed')}</div>}
                                 class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
@@ -141,4 +141,4 @@ class IncreaseDepositView extends React.Component<any, any> {
     }
 }
 
-export default connect( (state: State) => ({accounts: state.accounts}) )(IncreaseDepositView);
+export default connect( (state: State) => ({ws: state.ws, accounts: state.accounts}) )(IncreaseDepositView);
