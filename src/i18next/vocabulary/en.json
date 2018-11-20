@@ -422,7 +422,7 @@
         "From": "from",
         "To": "to",
         "ClearOfferingHashToUseOtherFilters": "You must clear the offering hash field to use other filters",
-        "ResetFilters": "Reset filters"
+        "ResetFilters": "Reset filtering"
     },
     "client/acceptOffering": {
         "Accept": "Accept",
