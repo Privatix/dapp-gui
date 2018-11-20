@@ -61,7 +61,7 @@ class Connecting extends React.Component<any, any>{
         const channels = await ws.getNotTerminatedClientChannels();
 
         if(this.subscription){
-            ws.unsubscribe(this.subscription);
+            await ws.unsubscribe(this.subscription);
         }
 
         if(channels.length){

@@ -28,11 +28,6 @@ class AsyncChannels extends React.Component<any, any> {
 
     }
 
-    ws = (event: any) => {
-        console.log('WS event catched!!!!', event);
-        this.refresh();
-    }
-
     async refresh() {
 
         const { ws } = this.props;
@@ -44,7 +39,7 @@ class AsyncChannels extends React.Component<any, any> {
         if (!this.subscription) {
             const channelsIds = (channels as any).map((channel: any) => channel.id);
             if(channelsIds.length){
-                this.subscription = ws.subscribe('channel', channelsIds, this.ws);
+                this.subscription = ws.subscribe('channel', channelsIds, this.refresh);
             }
         }
 
@@ -53,13 +48,12 @@ class AsyncChannels extends React.Component<any, any> {
         const offerings = await ws.getAgentOfferings();
         const allProducts = await ws.getProducts();
 
-        this.setState({channels, products, allProducts, offerings: offerings.items});
+        this.setState({channels, products, allProducts, offerings: offerings.items, isLoading: false});
 
     }
 
     componentDidMount() {
         this.refresh();
-        this.setState({isLoading: false});
     }
 
     componentWillUnmount() {
@@ -104,7 +98,7 @@ class AsyncChannels extends React.Component<any, any> {
                 <div className='row'>
                     <div className='col-sm-12 m-b-15'>
                         <div className='m-t-15'>
-                            <a onClick={this.refresh.bind(this)} className='btn btn-default btn-custom waves-effect waves-light' href='#'>
+                            <a onClick={this.refresh} className='btn btn-default btn-custom waves-effect waves-light' href='#'>
                                 {t('common:RefreshAll')}
                             </a>
                         </div>

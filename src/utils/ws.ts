@@ -113,10 +113,22 @@ export class WS {
 	            method: 'ui_unsubscribe',
 	            params: [ WS.byUUID[id] ]
             };
-            this.socket.send(JSON.stringify(req));
-            delete WS.listeners[id];
-            delete WS.bySubscription[WS.byUUID[id]];
-            delete WS.byUUID[id];
+
+            return new Promise((resolve: Function, reject: Function) => {
+                const handler = function(res: any){
+                    if('error' in res){
+                        reject(res.error);
+                    }else{
+                        resolve(res.result);
+                    }
+                };
+
+                WS.handlers[uuid] = handler;
+                this.socket.send(JSON.stringify(req));
+                delete WS.listeners[id];
+                delete WS.bySubscription[WS.byUUID[id]];
+                delete WS.byUUID[id];
+            });
         }
     }
 

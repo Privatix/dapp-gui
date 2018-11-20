@@ -36,14 +36,10 @@ class Offerings extends React.Component<IProps, any>{
         this.unsubscribe();
     }
 
-    unsubscribe(){
+    async unsubscribe(){
 
         const { ws } = this.props;
-
-        if(this.subscribes.length){
-            this.subscribes.forEach(subscribeId => ws.unsubscribe(subscribeId));
-        }
-
+        await Promise.all(this.subscribes.map(subscribeId => ws.unsubscribe(subscribeId)));
         this.subscribes = [];
 
     }
@@ -52,7 +48,7 @@ class Offerings extends React.Component<IProps, any>{
 
         const { ws } = this.props;
 
-        this.unsubscribe();
+        await this.unsubscribe();
 
         const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
 
