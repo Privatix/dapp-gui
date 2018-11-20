@@ -28,6 +28,7 @@ export class WS {
 
     static byUUID = {}; // uuid -> subscribeID
     static bySubscription = {}; // subscribeId -> uuid
+    static subscriptions = {};
 
     private socket: WebSocket;
     private pwd: string;
@@ -60,12 +61,15 @@ export class WS {
             const msg = JSON.parse(event.data);
             if('id' in msg && 'string' === typeof msg.id){
                 if(msg.id in WS.handlers){
-                    WS.handlers[msg.id](msg);
+                    const handler = WS.handlers[msg.id];
                     delete WS.handlers[msg.id];
+                    handler(msg);
                 }else {
                     if('result' in msg && 'string' === typeof msg.result){
                         WS.byUUID[msg.id] = msg.result;
                         WS.bySubscription[msg.result] = msg.id;
+                        WS.subscriptions[msg.id](msg.result);
+                        delete WS.subscriptions[msg.id];
                     }
                 }
             }else if('method' in msg && msg.method === 'ui_subscription'){
@@ -89,17 +93,21 @@ export class WS {
         return this.ready;
     }
 
-    subscribe(entityType:string, ids: string[], handler: Function) {
-        const uuid = uuidv4();
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_subscribe',
-            params: ['objectChange', this.pwd, entityType, ids]
-        };
-        WS.listeners[uuid] = handler;
-        this.socket.send(JSON.stringify(req));
-        return uuid;
+    subscribe(entityType:string, ids: string[], handler: Function): Promise<string>{
+        return new Promise((resolve: Function, reject: Function) => {
+            const uuid = uuidv4();
+            const req = {
+                jsonrpc: '2.0',
+                id: uuid,
+                method: 'ui_subscribe',
+                params: ['objectChange', this.pwd, entityType, ids]
+            };
+            WS.subscriptions[uuid] = () => {
+                WS.listeners[uuid] = handler;
+                resolve(uuid);
+            };
+            this.socket.send(JSON.stringify(req));
+        }) as Promise<string>;
     }
 
     unsubscribe(id: string){
@@ -113,10 +121,22 @@ export class WS {
 	            method: 'ui_unsubscribe',
 	            params: [ WS.byUUID[id] ]
             };
-            this.socket.send(JSON.stringify(req));
-            delete WS.listeners[id];
-            delete WS.bySubscription[WS.byUUID[id]];
-            delete WS.byUUID[id];
+
+            return new Promise((resolve: Function, reject: Function) => {
+                const handler = function(res: any){
+                    if('error' in res){
+                        reject(res.error);
+                    }else{
+                        resolve(res.result);
+                    }
+                };
+
+                WS.handlers[uuid] = handler;
+                this.socket.send(JSON.stringify(req));
+                delete WS.listeners[id];
+                delete WS.bySubscription[WS.byUUID[id]];
+                delete WS.byUUID[id];
+            });
         }
     }
 

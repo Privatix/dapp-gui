@@ -61,14 +61,13 @@ class Connecting extends React.Component<any, any>{
         const channels = await ws.getNotTerminatedClientChannels();
 
         if(this.subscription){
-            ws.unsubscribe(this.subscription);
+            await ws.unsubscribe(this.subscription);
         }
 
         if(channels.length){
 
             const ids = channels.map(channel => channel.id);
-            this.subscription = ws.subscribe('channel', ids, this.refresh);
-
+            this.subscription = await ws.subscribe('channel', ids, this.refresh);
             const channel = channels[0];
             switch(channel.channelStatus.serviceStatus){
                 case 'active':

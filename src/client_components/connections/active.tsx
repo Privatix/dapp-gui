@@ -85,6 +85,7 @@ class ActiveConnection extends React.Component<any, any>{
     }
 
     render() {
+
         const { t } = this.props;
 
         let connections = [];

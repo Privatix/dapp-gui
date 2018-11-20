@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-// import ChannelToolClose from './channelToolClose';
 import ConfirmPopupSwal from '../confirmPopupSwal';
 
 import { State } from 'typings/state';

@@ -30,7 +30,7 @@ interface Props {
 
 class Channels extends React.Component<Props, any> {
 
-    subscription: String;
+    subscription: string;
 
     constructor(props: Props) {
         super(props);
@@ -57,19 +57,19 @@ class Channels extends React.Component<Props, any> {
         this.refresh(true);
     }
 
-    ws = (event: any) => {
-        console.log('WS event catched!!!!', event);
-        this.refresh();
-    }
-
     componentDidMount(){
+        // TODO remove this when storage will subscribe to the products
         this.props.dispatch(asyncProviders.updateProducts());
         this.refresh();
     }
 
     componentWillUnmount() {
+
+        const { ws } = this.props;
+
         if (this.subscription) {
-            (window as any).ws.unsubscribe(this.subscription);
+            ws.unsubscribe(this.subscription);
+            this.subscription = undefined;
         }
     }
 
@@ -83,7 +83,7 @@ class Channels extends React.Component<Props, any> {
         if (!this.subscription) {
             const channelsIds = channels.items.map(channel => channel.id);
             if(channelsIds.length){
-                this.subscription = ws.subscribe('channel', channelsIds, this.ws);
+                this.subscription = await ws.subscribe('channel', channelsIds, this.refresh);
             }
         }
 
