@@ -53,7 +53,7 @@ class Navigation extends React.Component<Props, any> {
 
                         <li className='has_sub' aria-current={this.state.submenu ? 'page' : null}>
                             <div onClick={this.handleClick.bind(this)}>
-                                <NavLink to='/channels/all' activeClassName='active' className='waves-effect'>
+                                <NavLink to='/channels' activeClassName='active' className='waves-effect'>
                                     <i className='fa fa-tasks'></i> <span> {t('Services')} </span> <span className='menu-arrow'></span>
                                 </NavLink>
                             </div>

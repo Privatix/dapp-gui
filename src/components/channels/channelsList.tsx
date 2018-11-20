@@ -3,13 +3,14 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-import {fetch} from '../../utils/fetch';
 import ChannelsListSortTable from './channelsListSortTable';
 import Channel from './channel';
-import ModalWindow from '../modalWindow';
-import Product from '../products/product';
-import toFixedN from '../../utils/toFixedN';
-import { State } from '../../typings/state';
+import ModalWindow from 'components/modalWindow';
+import Product from 'components/products/product';
+import toFixedN from 'utils/toFixedN';
+
+import { State } from 'typings/state';
+import { Offering } from 'typings/offerings';
 
 @translate(['channels/channelsList', 'common'])
 class AsyncChannels extends React.Component<any, any> {
@@ -32,19 +33,16 @@ class AsyncChannels extends React.Component<any, any> {
 
         const { ws } = this.props;
 
-        // TODO we need JSON-RPC method to fetch channels by offering id
-        const endpoint = '/channels' + (this.props.offering === 'all' ? '' : `?offeringId=${this.props.offering}`);
-        const channels = await fetch(endpoint, {method: 'GET'});
+        const channels = (await ws.getAgentChannels('', '', 0, 0)).items;
 
         if (!this.subscription) {
-            const channelsIds = (channels as any).map((channel: any) => channel.id);
+            const channelsIds = channels.map(channel => channel.id);
             if(channelsIds.length){
-                this.subscription = ws.subscribe('channel', channelsIds, this.refresh);
+                this.subscription = await ws.subscribe('channel', channelsIds, this.refresh);
             }
         }
 
-        const channelsProductsIds = (channels as any).map(async (channel: any) => (await ws.getOffering(channel.offering)).product);
-        const products = await Promise.all(channelsProductsIds);
+        const products = (await Promise.all(channels.map(channel => ws.getOffering(channel.offering)) as Promise<Offering>[] )).map(offering => offering.product);
         const offerings = await ws.getAgentOfferings();
         const allProducts = await ws.getProducts();
 
@@ -63,6 +61,8 @@ class AsyncChannels extends React.Component<any, any> {
         if (this.subscription) {
             ws.unsubscribe(this.subscription);
         }
+
+        this.subscription = undefined;
     }
 
     render() {
@@ -70,13 +70,22 @@ class AsyncChannels extends React.Component<any, any> {
         const { t } = this.props;
 
         const channelsDataArr = this.state.products
-            .map((productId) => this.state.allProducts.find((product) => product.id === productId))
+            .map((productId) => this.state.allProducts.find(product => product.id === productId))
             .map((product, index) => {
                     const channel = this.state.channels[index];
-                    const offering = this.state.offerings.find((offering) => offering.id === channel.offering);
+                    const offering = this.state.offerings.find(offering => offering.id === channel.offering);
                     return {
-                        id: <ModalWindow customClass='shortTableText' modalTitle={t('Service')} text={channel.id} copyToClipboard={true} component={<Channel channel={channel} />} />,
-                        server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={product.name} component={<Product product={product} />} />,
+                        id: <ModalWindow customClass='shortTableText'
+                                         modalTitle={t('Service')}
+                                         text={channel.id}
+                                         copyToClipboard={true}
+                                         component={<Channel channel={channel} />}
+                            />,
+                        server: <ModalWindow customClass=''
+                                             modalTitle={t('ServerInfo')}
+                                             text={product.name}
+                                             component={<Product product={product} />}
+                                />,
                         client: channel.client,
                         contractStatus: channel.channelStatus,
                         serviceStatus: channel.serviceStatus,

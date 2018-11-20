@@ -39,6 +39,7 @@ class Offerings extends React.Component<IProps, any>{
     async unsubscribe(){
 
         const { ws } = this.props;
+
         await Promise.all(this.subscribes.map(subscribeId => ws.unsubscribe(subscribeId)));
         this.subscribes = [];
 
@@ -52,8 +53,9 @@ class Offerings extends React.Component<IProps, any>{
 
         const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
 
-        this.subscribes.push(ws.subscribe('product', products.map(product => product.id), this.refresh));
-        this.subscribes.push(ws.subscribe('offering', offerings.map(offering => offering.id), this.refresh));
+        this.subscribes = await Promise.all([/* ws.subscribe('product', products.map(product => product.id), this.refresh), */
+                                             ws.subscribe('offering', offerings.map(offering => offering.id), this.refresh)
+                                            ]);
         this.setState({offerings, products});
 
     }

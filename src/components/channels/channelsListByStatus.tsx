@@ -83,7 +83,7 @@ class Channels extends React.Component<Props, any> {
         if (!this.subscription) {
             const channelsIds = channels.items.map(channel => channel.id);
             if(channelsIds.length){
-                this.subscription = ws.subscribe('channel', channelsIds, this.refresh);
+                this.subscription = await ws.subscribe('channel', channelsIds, this.refresh);
             }
         }
 

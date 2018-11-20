@@ -64,7 +64,7 @@ class ClientHistory extends React.Component<any,any> {
             await ws.unsubscribe(this.subscribeId);
         }
         const ids = channels.map(channel => channel.id);
-        this.subscribeId = ws.subscribe('channel', ids, this.refresh);
+        this.subscribeId = await ws.subscribe('channel', ids, this.refresh);
     }
 
     async getHistoryData() {
