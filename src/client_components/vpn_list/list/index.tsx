@@ -116,12 +116,15 @@ class VPNList extends React.Component<any,any> {
         return (this.state.spinner !== nextState.spinner)
             || (this.state.showAllCountries !== nextState.showAllCountries)
             || (this.state.filteredCountries !== nextState.filteredCountries)
+            || (this.state.offeringHash !== nextState.offeringHash)
             || !(isEqual(nextState.filtered, this.state.filtered));
     }
 
     async getClientOfferings(activePage:number = 1, from:number = 0, to:number = 0) {
         // If not empty filter input Offering hash - search only by Offering hash
         if (this.state.offeringHash !== '') {
+            const { t } = this.props;
+            notice({level: 'warning', title: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
             return;
         }
 
@@ -188,9 +191,12 @@ class VPNList extends React.Component<any,any> {
         try {
             const offering = await this.props.ws.getObjectByHash('offering', this.state.offeringHash.replace(/^0x/, ''));
             const offeringRow = this.formFilteredDataRow(offering);
-            this.setState({filtered: [offeringRow]});
+            this.setState({
+                filtered: [offeringRow],
+                totalItems: 1
+            });
         } catch (e) {
-            this.setState({filtered: []});
+            this.setState({filtered: [], totalItems: 0});
         }
     }
 
@@ -314,6 +320,16 @@ class VPNList extends React.Component<any,any> {
         this.getClientOfferings(pageNumber);
     }
 
+    resetFilters() {
+        this.setState({
+            agent: '',
+            offeringHash: '',
+            checkedCountries: [],
+            from: this.state.min,
+            to: this.state.max
+        }, this.getClientOfferings);
+    }
+
     render() {
         const { t } = this.props;
         const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -359,6 +375,17 @@ class VPNList extends React.Component<any,any> {
         const noResults = this.state.filtered.length === 0 ?
             <p className='text-warning text-center m-t-20 m-b-20'>{t('common:NoResults')}</p>
             : '';
+
+        const resetFilters = this.state.agent !== ''
+            || this.state.offeringHash !== ''
+            || this.state.min !== this.state.from
+            || this.state.max !== this.state.to
+            || this.state.offeringHash !== ''
+            || this.state.checkedCountries.length > 0 ?
+                <div className='m-b-20'>
+                    <button className='btn btn-block btn-warning' onClick={this.resetFilters.bind(this)}>{t('ResetFilters')}</button>
+                </div>
+                : '';
 
         return this.state.spinner ? <div className='container-fluid'>
                 <div className='row m-t-20'>
@@ -422,7 +449,7 @@ class VPNList extends React.Component<any,any> {
                                                    type='search'
                                                    name='offeringHash'
                                                    placeholder='0x74c96979ae4fbb11a7122a71e90161f1feee7523472cea74f8b9f3ca8481fb37'
-                                                   defaultValue={this.state.offeringHash}
+                                                   value={this.state.offeringHash}
                                                    onChange={this.filterByOfferingHash.bind(this)} />
                                         </div>
                                     </div>
@@ -489,6 +516,8 @@ class VPNList extends React.Component<any,any> {
                                 {showHideCountriesBtn}
                             </div>
                         </div>
+
+                        {resetFilters}
                     </div>
                     <div className='col-9'>
                         <div className='card-box'>

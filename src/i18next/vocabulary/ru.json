@@ -420,7 +420,9 @@
         "OfferingHash": "Хеш предложения",
         "PriceFilter": "Цена (PRIX/MB):",
         "From": "от",
-        "To": "до"
+        "To": "до",
+        "ClearOfferingHashToUseOtherFilters": "Вы должны очистить поле хеш-предложения для использования других фильтров",
+        "ResetFilters": "Сбросить фильтры"
     },
     "client/acceptOffering": {
         "Accept": "Принять",
