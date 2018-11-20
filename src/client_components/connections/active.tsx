@@ -21,79 +21,78 @@ class ActiveConnection extends React.Component<any, any>{
     constructor(props: any){
         super(props);
 
-        const { t } = props;
-
         this.state = {
             popup: false,
-            channels: props.channels,
-            columns: [
-                {
-                    header: t('Id'),
-                    key: 'id',
-                    dataProps: { className: 'shortTableTextTd' },
-                    descSortFunction: ModalPropTextSorter.desc,
-                    ascSortFunction: ModalPropTextSorter.asc
-                },
-                {
-                    header: t('Offering'),
-                    key: 'offering',
-                    dataProps: { className: 'shortTableTextTd' },
-                    descSortFunction: ModalPropTextSorter.desc,
-                    ascSortFunction: ModalPropTextSorter.asc
-                },
-                {
-                    header: t('Agent'),
-                    key: 'agent',
-                    dataProps: { className: 'shortTableTextTd' },
-                    render: (agent) => {
-                        return <div>
-                            <span className='shortTableText' title={agent}>{agent}</span>
-                            <CopyToClipboard text={agent} />
-                        </div>;
-                    }
-                },
-                {
-                    header: t('ContractStatus'),
-                    key: 'contractStatus',
-                    render: (status) => { return <ContractStatus contractStatus={status}/>; }
-                },
-                {
-                    header: t('ServiceStatus'),
-                    key: 'serviceStatus',
-                    render: (status) => { return <ChannelStatus serviceStatus={status}/>; }
-                },
-                {
-                    header: t('JobStatus'),
-                    key: 'jobStatus',
-                    render: ([jobtype, jobStatus, jobTime]) => { return <div><JobName jobtype={jobtype} /> ({jobStatus} {jobTime})</div>;}
-                },
-                {
-                    header: t('Usage'),
-                    key: 'usage',
-                    render: (channel) => { return <Usage channel={channel} />; }
-                },
-                {
-                    header: t('CostPRIX'),
-                    key: 'costPRIX'
-                }
-            ]
         };
     }
 
-    static getDerivedStateFromProps(props:any, state:any) {
-        return {channels: props.channels};
+    private getColumns(){
+
+        const { t } = this.props;
+
+        return [
+            {
+                header: t('Id'),
+                key: 'id',
+                dataProps: { className: 'shortTableTextTd' },
+                descSortFunction: ModalPropTextSorter.desc,
+                ascSortFunction: ModalPropTextSorter.asc
+            },
+            {
+                header: t('Offering'),
+                key: 'offering',
+                dataProps: { className: 'shortTableTextTd' },
+                descSortFunction: ModalPropTextSorter.desc,
+                ascSortFunction: ModalPropTextSorter.asc
+            },
+            {
+                header: t('Agent'),
+                key: 'agent',
+                dataProps: { className: 'shortTableTextTd' },
+                render: (agent) => {
+                    return <div>
+                        <span className='shortTableText' title={agent}>{agent}</span>
+                        <CopyToClipboard text={agent} />
+                    </div>;
+                }
+            },
+            {
+                header: t('ContractStatus'),
+                key: 'contractStatus',
+                render: (status) => { return <ContractStatus contractStatus={status}/>; }
+            },
+            {
+                header: t('ServiceStatus'),
+                key: 'serviceStatus',
+                render: (status) => { return <ChannelStatus serviceStatus={status}/>; }
+            },
+            {
+                header: t('JobStatus'),
+                key: 'jobStatus',
+                render: ([jobtype, jobStatus, jobTime]) => { return <div><JobName jobtype={jobtype} /> ({jobStatus} {jobTime})</div>;}
+            },
+            {
+                header: t('Usage'),
+                key: 'usage',
+                render: (usage) => { return <Usage usage={usage} />; }
+            },
+            {
+                header: t('CostPRIX'),
+                key: 'costPRIX'
+            }
+        ];
     }
 
     render() {
-        const { t } = this.props;
+        const { t, channels } = this.props;
 
-        let connections = [];
-        this.state.channels.map((channel: any) => {
+        const connections = channels.map((channel: any) => {
+
             const jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
             const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
             const jobStatus = <JobStatus status={channel.job.status} />;
 
-            let row = {
+            return {
                 id: <ModalWindow
                     visible={this.state.popup}
                     customClass='shortTableText'
@@ -114,11 +113,9 @@ class ActiveConnection extends React.Component<any, any>{
                 contractStatus: channel.channelStatus.channelStatus,
                 serviceStatus: channel.channelStatus.serviceStatus,
                 jobStatus: [channel.job.jobtype, jobStatus, jobTime],
-                usage: channel,
+                usage: channel.usage,
                 costPRIX: toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})
             };
-
-            connections.push(row);
         });
 
         return <div className='row'>
@@ -130,7 +127,7 @@ class ActiveConnection extends React.Component<any, any>{
                             <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                                 <SortableTable
                                     data={connections}
-                                    columns={this.state.columns}/>
+                                    columns={this.getColumns()}/>
                             </div>
                         </div>
                     </div>
