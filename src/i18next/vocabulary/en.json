@@ -420,7 +420,9 @@
         "OfferingHash": "Offering hash",
         "PriceFilter": "Price (PRIX/MB):",
         "From": "from",
-        "To": "to"
+        "To": "to",
+        "ClearOfferingHashToUseOtherFilters": "You must clear the offering hash field to use other filters",
+        "ResetFilters": "Reset filtering"
     },
     "client/acceptOffering": {
         "Accept": "Accept",
