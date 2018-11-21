@@ -47,9 +47,9 @@ class GenerateKey extends React.Component<any, any>{
         };
 
         try {
-            const res = await (window as any).ws.generateAccount(payload);
+            const accountId = await (window as any).ws.generateAccount(payload);
             api.settings.updateLocal({accountCreated:true});
-            this.props.history.push(`/backup/${res.result}/generateKey`);
+            this.props.history.push(`/backup/${accountId}/generateKey`);
         } catch (e){
             msg = t('SomethingWentWrong');
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
