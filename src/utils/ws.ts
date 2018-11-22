@@ -375,7 +375,7 @@ export class WS {
         return channels;
     }
 
-    getAgentChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{
+    getAgentChannels(channelStatus: Array<string>, serviceStatus: Array<string>, offset: number, limit: number): Promise<ChannelResponse>{
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 

@@ -40,7 +40,8 @@ class Channels extends React.Component<Props, any> {
             lastUpdatedStatus: null,
             productsByChannels: [],
             channels: [],
-            offerings: []
+            offerings: [],
+            handler: null
         };
 
         if ('function' === typeof props.registerRefresh) {
@@ -64,8 +65,11 @@ class Channels extends React.Component<Props, any> {
     }
 
     componentWillUnmount() {
-
         const { ws } = this.props;
+
+        if (this.state.handler !== null) {
+            clearInterval(this.state.handler);
+        }
 
         if (this.subscription) {
             ws.unsubscribe(this.subscription);
@@ -76,9 +80,14 @@ class Channels extends React.Component<Props, any> {
     refresh = async (once?: boolean) => {
 
         const status = this.state.status;
+        let statusArr = [status];
         const { ws } = this.props;
 
-        const channels = await ws.getAgentChannels('', status, 0, 100);
+        if (status === 'active') {
+            statusArr = ['pending', 'activating', 'active', 'suspending', 'suspended', 'terminating'];
+        }
+
+        const channels = await ws.getAgentChannels([], statusArr, 0, 100);
 
         if (!this.subscription) {
             const channelsIds = channels.items.map(channel => channel.id);
@@ -98,8 +107,15 @@ class Channels extends React.Component<Props, any> {
             offerings
         });
 
-        if(!once){
-            setTimeout(this.refresh, 5000);
+        if (!once) {
+            if (this.state.handler !== null) {
+                clearInterval(this.state.handler);
+            }
+
+            const handler = setTimeout(() => {
+                this.refresh();
+            }, 5000);
+            this.setState({handler});
         }
     }
 
