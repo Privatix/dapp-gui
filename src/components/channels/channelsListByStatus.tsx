@@ -67,9 +67,7 @@ class Channels extends React.Component<Props, any> {
     componentWillUnmount() {
         const { ws } = this.props;
 
-        if (this.state.handler !== null) {
-            clearInterval(this.state.handler);
-        }
+        this.clearTimeoutHandler();
 
         if (this.subscription) {
             ws.unsubscribe(this.subscription);
@@ -108,14 +106,18 @@ class Channels extends React.Component<Props, any> {
         });
 
         if (!once) {
-            if (this.state.handler !== null) {
-                clearInterval(this.state.handler);
-            }
+            this.clearTimeoutHandler();
 
             const handler = setTimeout(() => {
                 this.refresh();
             }, 5000);
             this.setState({handler});
+        }
+    }
+
+    clearTimeoutHandler() {
+        if (this.state.handler !== null) {
+            clearInterval(this.state.handler);
         }
     }
 
