@@ -33,7 +33,7 @@ class AsyncChannels extends React.Component<any, any> {
 
         const { ws } = this.props;
 
-        const channels = (await ws.getAgentChannels('', '', 0, 0)).items;
+        const channels = (await ws.getAgentChannels([], [], 0, 0)).items;
 
         if (!this.subscription) {
             const channelsIds = channels.map(channel => channel.id);
@@ -107,7 +107,7 @@ class AsyncChannels extends React.Component<any, any> {
                 <div className='row'>
                     <div className='col-sm-12 m-b-15'>
                         <div className='m-t-15'>
-                            <a onClick={this.refresh} className='btn btn-default btn-custom waves-effect waves-light' href='#'>
+                            <a onClick={this.refresh.bind(this)} className='btn btn-default btn-custom waves-effect waves-light' href='#'>
                                 {t('common:RefreshAll')}
                             </a>
                         </div>
