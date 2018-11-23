@@ -4,12 +4,8 @@ import {app, ipcMain, BrowserWindow} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
-import fetch from 'electron-fetch';
-import mocks from './mocks';
-import * as  btoa from 'btoa';
 
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
-let password = '';
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
@@ -24,11 +20,7 @@ let password = '';
         req.options.method = 'get';
     }
 
-// MOCK!!!
-    if(mocks.has(req)){
-        const res = mocks.get(req);
-        event.sender.send('api-reply', JSON.stringify({req: msg, res}));
-    }else if(req.endpoint === '/backup'){
+    if(req.endpoint === '/backup'){
         fs.writeFile(req.options.body.fileName, req.options.body.pk, {encoding: 'utf8'}, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
@@ -47,60 +39,6 @@ let password = '';
             fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
         }
-    }else if(req.endpoint === '/login'){
-        // TODO remove when /accounts/${props.account.id}/status will be implemented on ws
-        password = req.options.body.pwd;
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: true}));
-    }else if(req.endpoint === '/switchMode'){
-        settings.mode = settings.mode === 'agent' ? 'client' : 'agent';
-        fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
-    }else if(req.endpoint === '/accounts' && req.options.method === 'post'){
-        req.options.body = JSON.stringify(req.options.body);
-        req.options.headers = {};
-        req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
-
-        fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
-            .then(res => {
-                return res.json();
-            })
-            .then(json => {
-           
-                  // const json = true;
-                  if(settings.firstStart){
-                      settings.firstStart = false;
-                      fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
-                  }
-                  event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
-           });
-    }else {
-        if(/\/templates/.test(req.endpoint) && req.options.method === 'post') { // DO NOT REMOVE!!! 
-            // console.log(req);
-            if(req.options.body.path){
-                // get file content
-                req.options.body = {
-                    raw: btoa(fs.readFileSync(req.options.body.path, {encoding: 'utf8'})),
-                    kind: req.options.body.kind
-                };
-            }
-        }
-        req.options.body = JSON.stringify(req.options.body);
-        if(!req.options.headers){
-            req.options.headers = {};
-        }
-        req.options.headers.Authorization = 'Basic ' + Buffer.from(`username:${password}`).toString('base64');
-
-        fetch(`${settings.apiEndpoint}${req.endpoint}`, req.options)
-            .then(res => {
-                // console.log(req.endpoint, res.headers.get('content-type'));
-                // const contentType = res.headers.get('content-type');
-                return res.json()
-                    .then(((res) =>  res), () => { return {}; });
-                // return  (contentType !== null && contentType.includes('application/json')) || res.status === 201 ? res.json() : {};
-            })
-            .then(json => {
-                  event.sender.send('api-reply', JSON.stringify({req: msg, res: json}));
-            });
     }
   });
 

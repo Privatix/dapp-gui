@@ -33,12 +33,12 @@ import ClientHistory from '../client_components/vpn_list/history';
 
 import Logs from './logs/logsList';
 
-import {Mode} from '../typings/mode';
+import { Role } from 'typings/mode';
 
 const MemoryHistory = createMemoryHistory();
 
 interface Props {
-    mode: Mode;
+    mode: Role;
     dispatch: any;
 }
 
@@ -59,7 +59,7 @@ class App extends React.Component<Props, any> {
                     <div className='content-page'>
                         <div className='content'>
                             <Switch>
-                                <Route exact path='/' render={(props: any) => mode === Mode.CLIENT ? <ClientDashboardStart /> : <Main /> } />
+                                <Route exact path='/' render={(props: any) => mode === Role.CLIENT ? <ClientDashboardStart /> : <Main /> } />
                                 <Route path='/settings' component={Settings} />
                                 <Route path='/products' render={() => <Products />} />
                                 <Route path='/accounts' component={AccountsList} />

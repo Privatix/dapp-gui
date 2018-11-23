@@ -1,12 +1,14 @@
 import * as React from 'react';
-import Transactions from '../transactions/transactionsList';
-import * as api from '../../utils/api';
-import notice from '../../utils/notice';
-import ConfirmPopupSwal from '../confirmPopupSwal';
-import GasRange from '../utils/gasRange';
 import { translate } from 'react-i18next';
 
+import Transactions from 'components/transactions/transactionsList';
+import ConfirmPopupSwal from 'components/confirmPopupSwal';
+import GasRange from 'components/utils/gasRange';
+
+import * as api from 'utils/api';
 import { WS, ws } from 'utils/ws';
+import notice from 'utils/notice';
+
 import { Account } from 'typings/accounts';
 
 interface IProps {
@@ -48,7 +50,7 @@ class AccountView extends React.Component<IProps, any> {
 
         let err = false;
         let msg = '';
-        const settings = await api.getLocalSettings();
+        const settings = await api.settings.getLocal();
 
         if(this.state.amount <= 0){
             err = true;
@@ -94,7 +96,7 @@ class AccountView extends React.Component<IProps, any> {
     }
 
     componentDidMount(){
-        api.getLocalSettings()
+        api.settings.getLocal()
            .then(settings => this.setState({network: settings.network}));
     }
 

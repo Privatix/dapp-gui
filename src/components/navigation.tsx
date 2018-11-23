@@ -2,13 +2,13 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
-import {Mode} from '../typings/mode';
+import {Role} from '../typings/mode';
 import {State} from '../typings/state';
 
 // declare var window: any;
 
 interface Props {
-    mode: Mode;
+    mode: Role;
     t: any;
 }
 
@@ -40,7 +40,7 @@ class Navigation extends React.Component<Props, any> {
 
         const { t } = this.props;
 
-        return this.props.mode === Mode.AGENT ? <div className='left side-menu'>
+        return this.props.mode === Role.AGENT ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>

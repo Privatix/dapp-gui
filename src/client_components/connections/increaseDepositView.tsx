@@ -1,15 +1,16 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 import Select from 'react-select';
 
-import * as api from '../../utils/api';
-import notice from '../../utils/notice';
-import ConfirmPopupSwal from '../../components/confirmPopupSwal';
-import GasRange from '../../components/utils/gasRange';
-import { translate } from 'react-i18next';
-import {State} from '../../typings/state';
-import toFixedN from '../../utils/toFixedN';
+import ConfirmPopupSwal from 'components/confirmPopupSwal';
+import GasRange from 'components/utils/gasRange';
 
+import * as api from 'utils/api';
+import notice from 'utils/notice';
+import toFixedN from 'utils/toFixedN';
+
+import {State} from 'typings/state';
 
 @translate(['client/connections/increaseDepositView', 'utils/notice'])
 class IncreaseDepositView extends React.Component<any, any> {
@@ -36,7 +37,7 @@ class IncreaseDepositView extends React.Component<any, any> {
 
         let err = false;
         let msg = '';
-        const settings = await api.getLocalSettings();
+        const settings = await api.settings.getLocal();
 
         if(settings.gas.increaseDeposit*this.state.gasPrice > this.state.account.ethBalance) {
             err = true;
