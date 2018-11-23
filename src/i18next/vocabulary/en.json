@@ -370,9 +370,12 @@
         "AreYouSure": "Are you sure?"
     },
     "client/dashboard/connecting": {
+        "TheServiceHasAPendingStatus": "The service has a pending status. After the connection is ready, you can start using the VPN",
+        "TheServiceHasAnActivatingStatus": "The service has an activating status. After the connection is ready, you can start using the VPN",
+        "TheServiceHasASuspendingStatus": "The service has a suspending status. After connections is suspended, you can resume or terminate it.",
+        "TheServiceHasATerminatingStatus": "The service has a terminating status. After the connection is terminated, the contract can also be terminated.",
         "WaitingTimeIsOver": "Waiting time is over. Finish procedure will be called automatically.",
         "FailedToAcceptOffering": "Failed to accept offering. Please, try another one.",
-        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the VPN.",
         "Synchronizing": "Synchronizing",
         "YouCanStartUsingVPN": "You can start using VPN",
         "Connect": "Connect",

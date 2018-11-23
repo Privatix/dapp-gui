@@ -97,7 +97,7 @@ class Connecting extends React.Component<any, any>{
                 case 'activating':
                 case 'suspending':
                 case 'terminating':
-                    this.setState({status: 'pending', channel, pendingTimeCounter: 0});
+                    this.setState({status: channel.channelStatus.serviceStatus, channel, pendingTimeCounter: 0});
                     break;
                 default:
                     let pendingTimeCounter = this.state.pendingTimeCounter + 1;
@@ -141,15 +141,23 @@ class Connecting extends React.Component<any, any>{
         </div>;
     }
 
-    pending(){
+    getTransitionView(status: string){
 
         const { t } = this.props;
+
+        const titles = {
+            pending: 'TheServiceHasAPendingStatus',
+            activating: 'TheServiceHasAnActivatingStatus',
+            suspending: 'TheServiceHasASuspendingStatus',
+            terminating: 'TheServiceHasATerminatingStatus'
+        };
+
 
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text'>{t('AfterTheConnectionIsReady')}</p>
+                        <p className='card-text'>{t(titles[status])}</p>
                         <button className='btn btn-inverse btn-block btn-lg disabled'>
                             <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>{t('Synchronizing')}...
                         </button>
@@ -158,6 +166,22 @@ class Connecting extends React.Component<any, any>{
             </div>
             <ActiveConnection channels={[this.state.channel]}/>
         </div>;
+    }
+
+    pending(){
+        return this.getTransitionView('rending');
+    }
+
+    activating(){
+        return this.getTransitionView('activating');
+    }
+
+    suspending(){
+        return this.getTransitionView('suspending');
+    }
+
+    terminating(){
+        return this.getTransitionView('terminating');
     }
 
     suspended(){
