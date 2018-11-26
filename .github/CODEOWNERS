@@ -9,6 +9,7 @@
 # notify drew2a about changes in scripts and settings
 /.github/       @drew2a
 *.md            @drew2a
+vocabulary/     @drew2a
 
 # notify devops team about changes in settings.json
 settings.json   @kelewind
