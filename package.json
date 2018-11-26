@@ -43,7 +43,6 @@
         "cors": "^2.8.4",
         "dateformat": "^3.0.3",
         "electron": "^1.8.8",
-        "electron-fetch": "1.1.0",
         "history": "^4.7.2",
         "i18next": "^11.9.0",
         "jquery": "^3.3.1",
