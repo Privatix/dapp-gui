@@ -36,7 +36,7 @@
         "update_versions": "node ./update_versions.js",
         "build": "shx rm -rf ./build && shx mkdir ./build && tslint -c ./configs/tslint.json -p ./configs/tsconfig.json && webpack --mode development --config configs/webpack.config.js && shx cp -R assets/* ./build/ && node ./build.js",
         "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --icon=assets/icon_64.png --prune=true --out=release-builds",
-        "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icon_64.png --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName=\"Privatix Network\"",
+        "package-win": "electron-packager . --overwrite --asar=true --platform=win32 --arch=x64 --icon=assets/icon_64.png --prune=true --out=release-builds --version-string.CompanyName=Privatix --version-string.FileDescription=Privatix --version-string.ProductName=\"Privatix Network\"",
         "package-linux": "electron-packager . --overwrite --asar=true --platform=linux --arch=x64 --icon=assets/icon_64.png --prune=true --out=release-builds"
     },
     "dependencies": {
