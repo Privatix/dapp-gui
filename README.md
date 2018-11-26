@@ -64,6 +64,23 @@ Tests are run using the following command:
 npm test
 ```
 
+# Packaging
+
+* Linux: 
+    ```bash
+    npm run package-linux
+    ```
+* MacOS
+    ```bash
+    npm run package-mac
+    ```    
+* Win
+    ```bash
+    npm run package-win
+    ```
+
+    
+
 # Contributing
 
 Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
