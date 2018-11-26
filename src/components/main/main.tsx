@@ -73,7 +73,7 @@ class Main extends React.Component <any,any> {
                     <div className='card m-b-20'>
                         <h5 className='card-header'>{t('ActiveOfferings')}</h5>
                         <div className='card-body'>
-                            <Offerings product={'all'} onlyTable={true}/>
+                            <Offerings product={'all'} statuses={['registering', 'registered', 'popping_up', 'popped_up', 'removing']} onlyTable={true}/>
                         </div>
                     </div>
                 </div>

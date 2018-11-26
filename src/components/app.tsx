@@ -63,7 +63,7 @@ class App extends React.Component<Props, any> {
                                 <Route path='/settings' component={Settings} />
                                 <Route path='/products' render={() => <Products />} />
                                 <Route path='/accounts' component={AccountsList} />
-                                <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
+                                <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} statuses={[]} />} />
                                 <Route path='/channels' component={ChannelsList} />
                                 <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                                 <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
