@@ -356,23 +356,16 @@ export class WS {
 
 // channels
 
-    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ClientChannelResponse>{
+    getClientChannels(channelStatus: string[], serviceStatus: string[], offset: number, limit: number): Promise<ClientChannelResponse>{
         return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ClientChannelResponse>;
     }
 
     async getNotTerminatedClientChannels(): Promise<ClientChannel[]>{
-        const statuses = [
-            ['', 'pending'],
-            ['', 'activating'],
-            ['', 'active'],
-            ['', 'suspending'],
-            ['', 'suspended'],
-            ['', 'terminating']
-        ];
-        const requests = statuses.map(status => this.getClientChannels(status[0], status[1], 0, 10));
-        const resolvedRequests = await Promise.all(requests);
-        const channels = resolvedRequests.reduce((acc, cv) => cv.items.length ? acc.concat(cv.items) : acc, []);
-        return channels;
+
+        const statuses = ['pending', 'activating', 'active', 'suspending', 'suspended', 'terminating'];
+
+        const channels = await this.getClientChannels([], statuses, 0, 10);
+        return channels.items;
     }
 
     getAgentChannels(channelStatus: Array<string>, serviceStatus: Array<string>, offset: number, limit: number): Promise<ChannelResponse>{
