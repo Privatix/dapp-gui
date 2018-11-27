@@ -70,8 +70,8 @@ class ClientHistory extends React.Component<any,any> {
     async getHistoryData() {
 
         const { t, ws } = this.props;
-        const clientChannels = await ws.getClientChannels('', 'terminated', 0, 0);
-        const allClientChannels = await ws.getClientChannels('', '', 0, 0);
+        const clientChannels = await ws.getClientChannels([], ['terminated'], 0, 0);
+        const allClientChannels = await ws.getClientChannels([], [], 0, 0);
         this.subscribe(allClientChannels.items);
 
         const historyData = clientChannels.items.filter((channel) => {
@@ -101,7 +101,7 @@ class ClientHistory extends React.Component<any,any> {
     async getAwaitForTerminateColumns() {
 
         const { t, ws } = this.props;
-        const clientChannels = await ws.getClientChannels('active', 'terminated', 0, 0);
+        const clientChannels = await ws.getClientChannels(['active'], ['terminated'], 0, 0);
 
         this.subscribe(clientChannels.items);
 
