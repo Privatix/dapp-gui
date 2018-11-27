@@ -303,7 +303,7 @@ export class WS {
 
 // offerings
 
-    getAgentOfferings(productId: string='', status: OfferStatus = OfferStatus.undef, offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
+    getAgentOfferings(productId: string='', status: OfferStatus = '', offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
         return this.send('ui_getAgentOfferings', [productId, status, offset, limit]) as Promise<OfferingResponse>;
     }
 
@@ -320,15 +320,24 @@ export class WS {
         return this.getObject('offering', id) as Promise<Offering>;
     }
 
-    async fetchOfferingsAndProducts(productId: string){
+    async fetchOfferingsAndProducts(productId: string, statuses: OfferStatus[]){
+
+        let offerings = [];
         const products = await this.getProducts();
-        const offerings = await this.getAgentOfferings(productId);
+
+        if(statuses.length){
+            const offeringsRequests = statuses.map(status => this.getAgentOfferings(productId, status));
+            offerings = (await Promise.all(offeringsRequests)).reduce((res, offerings) => res.concat(offerings.items), []);
+        } else {
+            offerings = (await this.getAgentOfferings(productId)).items;
+        }
+
         const resolveTable = products.reduce((table, product) => {
             table[product.id] = product.name;
             return table;
         }, {});
 
-        const resOfferings = offerings.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        const resOfferings = offerings.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
         return {offerings: resOfferings, products};
     }
 

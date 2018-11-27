@@ -616,6 +616,7 @@
         "eth_event_lastProcessedBlock_Name": "последний обработанный блок",
         "offering_autopopup_Name": "автоподнятие предложения",
         "system_version_app_Name": "версия приложения",
+        "somc_transport_tor_Name": "использовать Tor",
         "error_sendremote_Description": "Разрешить отчет об ошибках отправлять в Privatix.",
         "eth_challenge_period_Description": "Количество блоков, ожидающих от uncooperativeClose, инициированных Клиентом, чтобы дать Агенту возможность ответить с подтверждением баланса в случае, если Клиент обманывает. После периода запроса Клиент может установить и удалить канал. Количество блоков Агент будет ждать от registerServiceOffering или от createChannel, прежде чем он сможет удалить предложение сервиса и получить депозит агента.",
         "eth_default_gasprice_Description": "Цена по умолчанию GAS для транзакций.",
@@ -628,7 +629,8 @@
         "user_isagent_Description": "Указывает роль пользователя. \"true\" - агент. \"false\" - клиент.",
         "eth_event_lastProcessedBlock_Description": "Последний номер блока в блок-цепочке хранит последний обработанный блок.",
         "offering_autopopup_Description": "Разрешить поднять предложение автоматически.",
-        "system_version_app_Description": "Версия приложения."
+        "system_version_app_Description": "Версия приложения.",
+        "somc_transport_tor_Description": "Полностью децентрализованный режим. Если установлено в true - используется Tor для обмена сообщениями между Агентом и Клиентом. Офферинги и данные для доступа будут передаваться через Tor. Сообщения, опубликованные через централизованный SOMC, будут недоступны."
     },
     "copyToClipboard": {
         "Copied": "Скопировано!",

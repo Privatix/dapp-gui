@@ -1,7 +1,6 @@
 {
    "firstStart": true,
    "accountCreated": false,
-   "apiEndpoint": "http://localhost:3000",
    "wsEndpoint": "ws://localhost:8888/ws",
    "gas": {
         "acceptOffering": 100000,

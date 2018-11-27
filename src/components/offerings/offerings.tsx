@@ -8,11 +8,12 @@ import CreateOffering from './createOffering';
 import OfferingsListView from './offeringsListView';
 
 import { State } from 'typings/state';
-
+import { OfferStatus } from 'typings/offerings';
 import { WS } from 'utils/ws';
 
 interface IProps {
     product: string;
+    statuses: OfferStatus[];
     ws?: WS;
     t?: any;
     onlyTable?: boolean;
@@ -47,11 +48,11 @@ class Offerings extends React.Component<IProps, any>{
 
     refresh = async () => {
 
-        const { ws } = this.props;
+        const { ws, product, statuses } = this.props;
 
         await this.unsubscribe();
 
-        const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
+        const {offerings, products} = await ws.fetchOfferingsAndProducts(product === 'all' ? '' : product, statuses);
 
         this.subscribes = await Promise.all([/* ws.subscribe('product', products.map(product => product.id), this.refresh), */
                                              ws.subscribe('offering', offerings.map(offering => offering.id), this.refresh)

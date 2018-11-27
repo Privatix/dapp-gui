@@ -2,9 +2,7 @@ export enum BillType {
     prepaid = 'prepaid', postpaid = 'postpaid'
 }
 
-export enum OfferStatus {
-    undef='', empty = 'empty', register = 'register', remove = 'remove'
-}
+export type OfferStatus = '' | 'registering' | 'registered' | 'popping_up' | 'popped_up' | 'removing' | 'removed';
 
 export enum MsgStatus {
     unpublished = 'unpublished'
