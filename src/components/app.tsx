@@ -33,12 +33,12 @@ import ClientHistory from '../client_components/vpn_list/history';
 
 import Logs from './logs/logsList';
 
-import {Mode} from '../typings/mode';
+import { Role } from 'typings/mode';
 
 const MemoryHistory = createMemoryHistory();
 
 interface Props {
-    mode: Mode;
+    mode: Role;
     dispatch: any;
 }
 
@@ -59,12 +59,12 @@ class App extends React.Component<Props, any> {
                     <div className='content-page'>
                         <div className='content'>
                             <Switch>
-                                <Route exact path='/' render={(props: any) => mode === Mode.CLIENT ? <ClientDashboardStart /> : <Main /> } />
+                                <Route exact path='/' render={(props: any) => mode === Role.CLIENT ? <ClientDashboardStart /> : <Main /> } />
                                 <Route path='/settings' component={Settings} />
                                 <Route path='/products' render={() => <Products />} />
                                 <Route path='/accounts' component={AccountsList} />
-                                <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} />} />
-                                <Route path='/channels/:offering' render={(props: any) => <ChannelsList offering={props.match.params.offering} /> } />
+                                <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} statuses={[]} />} />
+                                <Route path='/channels' component={ChannelsList} />
                                 <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                                 <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
                                 <Route path='/setAccount' render={() => <SetAccount default={false} />} />

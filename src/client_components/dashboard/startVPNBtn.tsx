@@ -17,27 +17,10 @@ class StartVPN extends React.Component <any,any> {
         this.getNotTerminatedConnections();
     }
 
-    async getAllClientChannels(){
-
-        const { ws } = this.props;
-
-        const statuses = [
-            ['', 'pending'],
-            ['', 'activating'],
-            ['', 'active'],
-            ['', 'suspending'],
-            ['', 'suspended'],
-            ['', 'terminating']
-        ];
-        const requests = statuses.map(status => ws.getClientChannels(status[0], status[1], 0, 10));
-        const resolvedRequests = await Promise.all(requests);
-        const channels = resolvedRequests.reduce((acc, cv) => cv.items.length ? acc.concat(cv.items) : acc, []);
-        return channels;
-    }
-
     async getNotTerminatedConnections() {
 
-        const channels = await this.getAllClientChannels();
+        const { ws } = this.props;
+        const channels = await ws.getNotTerminatedClientChannels();
 
         if(channels.length) {
             this.props.history.push('/client-dashboard-connecting');

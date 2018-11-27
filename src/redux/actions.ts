@@ -1,11 +1,10 @@
-import * as api from '../utils/api';
-import { WS } from '../utils/ws';
+import { WS } from 'utils/ws';
 
-import {Account} from '../typings/accounts';
-import {Product} from '../typings/products';
-import {DbSetting as Setting} from '../typings/settings';
-import {Offering} from '../typings/offerings';
-import {Mode} from '../typings/mode';
+import {Account} from 'typings/accounts';
+import {Product} from 'typings/products';
+import {DbSetting as Setting} from 'typings/settings';
+import {Offering} from 'typings/offerings';
+import { Role } from 'typings/mode';
 
 export const enum actions {
     REFRESH_ACCOUNTS,
@@ -27,7 +26,7 @@ const handlers: ReduxHandlers = {
     updateProducts             : function(products: Product[]){ return { type: actions.UPDATE_PRODUCTS, value: products };},
     updateSettings             : function(settings: Setting[]){ return { type: actions.UPDATE_SETTINGS, value: settings };},
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
-    setMode                    : function(mode: Mode){ return { type: actions.SET_MODE, value: mode };},
+    setMode                    : function(mode: Role){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};}
 };
@@ -69,9 +68,9 @@ export const asyncProviders: AsyncProviders = {
                 });
         };
     },
-    setMode: function(mode:Mode, history: any, t: any){
+    setMode: function(mode:Role, history: any, t: any){
         return function(dispatch: any){
-            api.getUserRole()
+            (window as any).ws.getUserRole()
                .then(role => {
                    // TODO check if error
                    dispatch(handlers.setMode(role));

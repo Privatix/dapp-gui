@@ -1,5 +1,4 @@
 import * as React from 'react';
-// import * as api from '../../utils/api';
 import { translate } from 'react-i18next';
 import toFixedN from '../../utils/toFixedN';
 

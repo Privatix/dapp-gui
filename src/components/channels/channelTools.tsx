@@ -1,30 +1,43 @@
 import * as React from 'react';
-
-// import ChannelToolClose from './channelToolClose';
-import ConfirmPopupSwal from '../confirmPopupSwal';
+import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-export default translate('channels/channelView')(function(props: any) {
-        const { t } = props;
+import ConfirmPopupSwal from '../confirmPopupSwal';
+
+import { State } from 'typings/state';
+
+@translate('channels/channelView')
+class ChannelTools extends React.Component<any, any>{
+
+    constructor(props: any) {
+        super(props);
+    }
+
+    render(){
+
+        const { t, ws, channel } = this.props;
 
         const warning = t('YouCanNotUndoThis');
-        const info = props.channel.receiptBalance === 0
+        const info = channel.receiptBalance === 0
             ? t('TerminateServiceText')
             : t('TerminateServiceAndCloseContract');
 
-        const buttonTitle = props.channel.receiptBalance === 0
+        const buttonTitle = channel.receiptBalance === 0
             ? t('TerminateService')
             : t('TerminateContract');
 
-        return ['active', 'pending'].includes(props.channel.channelStatus) && props.channel.serviceStatus !== 'terminated'
+        const done = () => {
+            ws.changeChannelStatus(channel.id, 'terminate');
+        };
+
+        return ['active', 'pending'].includes(channel.channelStatus) && channel.serviceStatus !== 'terminated'
             ? <div className='col-lg-3 col-md-4'>
                 <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                     <form>
                         <h5 className='card-title'>{t('WarningArea')}</h5>
                         <p className='card-text'>{info}</p>
                         <ConfirmPopupSwal
-                            endpoint={`/channels/${props.channel.id}/status`}
-                            options={{method: 'put', body: {action: 'terminate'}}}
+                            done={done}
                             title={buttonTitle}
                             text={<span>{`${info} ${warning}`}</span>}
                             class={'btn btn-danger btn-custom btn-block'}
@@ -36,4 +49,6 @@ export default translate('channels/channelView')(function(props: any) {
             </div>
             : <div></div>;
     }
-);
+}
+
+export default connect((state: State) => ({ws: state.ws}))(ChannelTools);

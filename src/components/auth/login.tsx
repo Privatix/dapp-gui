@@ -3,11 +3,10 @@ import { withRouter } from 'react-router-dom';
 import * as api from '../../utils/api';
 import { connect } from 'react-redux';
 
-import { WS } from '../../utils/ws';
-import {fetch} from '../../utils/fetch';
-import notice from '../../utils/notice';
-import i18n from '../../i18next/init';
-import handlers from '../../redux/actions';
+import { WS } from 'utils/ws';
+import notice from 'utils/notice';
+import i18n from 'i18next/init';
+import handlers from 'redux/actions';
 
 const pwdIsCorrect = function(pwd: string){
     return pwd.trim() !== '';
@@ -37,15 +36,12 @@ class Login extends React.Component<any, any> {
                     const ready = await ws.whenReady();
                     if(ready){
                         try {
-                            // TODO remove when /accounts/${props.account.id}/status will be implemented on ws
-                            const body = {pwd};
-                            await fetch('/login', {method: 'post', body});
                             await ws.setPassword(pwd);
                             // TODO notice if server returns error (not implemented on dappctrl yet)
                             (window as any).ws = ws;
                             this.props.dispatch(handlers.setWS(ws));
-                            const mode = await api.getUserRole();
-                            this.props.dispatch(handlers.setMode(mode));
+                            const role = await ws.getUserRole();
+                            this.props.dispatch(handlers.setMode(role));
                             history.push(this.props.entryPoint);
                         }catch(e){
                             notice({level: 'error', header: i18n.t('utils/notice:Attention!'), msg: i18n.t('login:AccessDenied')});

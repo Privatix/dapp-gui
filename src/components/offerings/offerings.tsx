@@ -2,40 +2,72 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
-import { Link } from 'react-router-dom';
 
 import ModalWindow from '../modalWindow';
 import CreateOffering from './createOffering';
-import OfferingsList from './offeringsList';
+import OfferingsListView from './offeringsListView';
 
-import { State } from '../../typings/state';
-import { WS } from '../../utils/ws';
+import { State } from 'typings/state';
+import { OfferStatus } from 'typings/offerings';
+import { WS } from 'utils/ws';
 
 interface IProps {
     product: string;
+    statuses: OfferStatus[];
     ws?: WS;
     t?: any;
+    onlyTable?: boolean;
 }
 
-@translate(['offerings/offerings', 'offerings', 'common'])
+@translate(['offerings/offerings', 'offerings'])
 class Offerings extends React.Component<IProps, any>{
 
-    constructor(props: any){
+    private subscribes = [];
+
+    constructor(props: IProps){
         super(props);
         this.state = {offerings: [], products: []};
     }
 
-    refresh = async () => {
+    componentDidMount(){
+        this.refresh();
+    }
+
+    componentWillUnmount(){
+        this.unsubscribe();
+    }
+
+    async unsubscribe(){
 
         const { ws } = this.props;
 
-        const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
-        this.setState({offerings, products});
+        await Promise.all(this.subscribes.map(subscribeId => ws.unsubscribe(subscribeId)));
+        this.subscribes = [];
+
     }
 
-    render(){
+    refresh = async () => {
 
-        const { t } = this.props;
+        const { ws, product, statuses } = this.props;
+
+        await this.unsubscribe();
+
+        const {offerings, products} = await ws.fetchOfferingsAndProducts(product === 'all' ? '' : product, statuses);
+
+        this.subscribes = await Promise.all([/* ws.subscribe('product', products.map(product => product.id), this.refresh), */
+                                             ws.subscribe('offering', offerings.map(offering => offering.id), this.refresh)
+                                            ]);
+        this.setState({offerings, products});
+
+    }
+
+    render() {
+
+        const { t, onlyTable } = this.props;
+
+        if(onlyTable){
+            return <OfferingsListView products={this.state.products} offerings={this.state.offerings} />;
+        }
 
         return <div className='container-fluid'>
             <div className='row'>
@@ -52,13 +84,10 @@ class Offerings extends React.Component<IProps, any>{
                                      text={t('offerings:CreateAnOffering')}
                                      component={<CreateOffering done={this.refresh} />}
                         />
-                        <Link to={'#'} onClick={this.refresh} className='btn btn-default btn-custom waves-effect waves-light'>
-                            {t('common:RefreshAll')}
-                        </Link>
                     </div>
                 </div>
             </div>
-            <OfferingsList product={this.props.product} rate={3000} />
+            <OfferingsListView products={this.state.products} offerings={this.state.offerings} />
        </div>;
     }
 }

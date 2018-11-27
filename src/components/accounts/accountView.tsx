@@ -1,14 +1,24 @@
 import * as React from 'react';
-import Transactions from '../transactions/transactionsList';
-import * as api from '../../utils/api';
-import notice from '../../utils/notice';
-import ConfirmPopupSwal from '../confirmPopupSwal';
-import GasRange from '../utils/gasRange';
 import { translate } from 'react-i18next';
 
-@translate(['accounts/accountView', 'utils/notice'])
+import Transactions from 'components/transactions/transactionsList';
+import ConfirmPopupSwal from 'components/confirmPopupSwal';
+import GasRange from 'components/utils/gasRange';
 
-class AccountView extends React.Component<any, any> {
+import * as api from 'utils/api';
+import { WS, ws } from 'utils/ws';
+import notice from 'utils/notice';
+
+import { Account } from 'typings/accounts';
+
+interface IProps {
+    ws?: WS;
+    t?: any;
+    account: Account;
+}
+
+@translate(['accounts/accountView', 'utils/notice'])
+class AccountView extends React.Component<IProps, any> {
 
     constructor(props: any) {
         super(props);
@@ -40,7 +50,7 @@ class AccountView extends React.Component<any, any> {
 
         let err = false;
         let msg = '';
-        const settings = await api.getLocalSettings();
+        const settings = await api.settings.getLocal();
 
         if(this.state.amount <= 0){
             err = true;
@@ -70,13 +80,23 @@ class AccountView extends React.Component<any, any> {
         }
     }
 
-    onTransferComplete(){
-        const {t} = this.props;
-        notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
+    transferTokens = async () => {
+
+        const { t, ws } = this.props;
+        const { account, amount, destination, gasPrice } = this.state;
+
+        try {
+            await ws.transferTokens(account.id, destination, amount, gasPrice);
+            notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
+        } catch ( e ) {
+            // TODO something wrong !!!
+            console.log('ERROR', e);
+        }
+
     }
 
     componentDidMount(){
-        api.getLocalSettings()
+        api.settings.getLocal()
            .then(settings => this.setState({network: settings.network}));
     }
 
@@ -85,7 +105,11 @@ class AccountView extends React.Component<any, any> {
         this.setState({destination: evt.target.value === 'psc' ? 'ptc' : 'psc'});
     }
 
+
+
+
     render(){
+
         const { t } = this.props;
 
         return <div className='col-lg-9 col-md-8'>
@@ -173,15 +197,7 @@ class AccountView extends React.Component<any, any> {
                         <div className='col-12'>
                             <ConfirmPopupSwal
                                 beforeAsking={this.checkUserInput.bind(this)}
-                                endpoint={`/accounts/${this.state.account.id}/status`}
-                                options={{method: 'put'
-                                         ,body: {action: 'transfer'
-                                                ,amount: this.state.amount
-                                                ,destination: this.state.destination
-                                                ,gasPrice: this.state.gasPrice
-                                                }
-                                }}
-                                done={this.onTransferComplete.bind(this)}
+                                done={this.transferTokens}
                                 title={t('TransferBtn')}
                                 text={<span>{t('TransferSwalText1')} {this.state.destination === 'ptc' ? t('ServiceSwalBalanceFrom') : t('ExchangeSwalBalanceFrom')} {t('TransferSwalText2')} {this.state.destination === 'psc' ? t('ServiceSwalBalance') : t('ExchangeSwalBalance')} {t('TransferSwalText3')}<br />
                                     {t('TransferSwalText4')}<br /><br />{t('TransferSwalText5')}</span>}
@@ -199,4 +215,4 @@ class AccountView extends React.Component<any, any> {
     }
 }
 
-export default AccountView;
+export default ws<IProps>(AccountView);

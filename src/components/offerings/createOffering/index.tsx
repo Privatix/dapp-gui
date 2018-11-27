@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router';
-import { translate } from 'react-i18next';
+import { translate, Trans } from 'react-i18next';
 import Select from 'react-select';
 
 import * as api from 'utils/api';
@@ -448,9 +448,14 @@ class CreateOffering extends React.Component<IProps, any>{
                                         </div>
                                         <span className='help-block'>
                                             <small>
-                                                {t('ChangeCountryHelpTextPart1')}&nbsp;
-                                                <button className='btn btn-link btnLinkSmallCustom' onClick={this.redirectToServers.bind(this)}>{t('ChangeCountryHelpTextServers')}</button>&nbsp;
-                                                {t('ChangeCountryHelpTextPart2')}
+                                                <Trans i18nKey='ChangeCountryHelpText'>
+                                                    For changing country you must go to the
+                                                    <button
+                                                        className='btn btn-link btnLinkSmallCustom'
+                                                        onClick={this.redirectToServers.bind(this)}
+                                                    >Servers</button>
+                                                    page
+                                                </Trans>
                                             </small>
                                         </span>
                                     </div>

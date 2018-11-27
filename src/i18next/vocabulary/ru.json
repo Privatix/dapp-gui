@@ -2,7 +2,8 @@
     "common": {
         "RefreshAll": "Обновить все",
         "Refresh": "Обновить",
-        "Select": "Выберите"
+        "Select": "Выберите",
+        "NoResults": "По вашему запросу ничего не найдено. Измените, пожалуйста, параметры фильтрации!"
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "Выбор языка",
@@ -89,9 +90,7 @@
         "Description": "Описание",
         "description": "описание",
         "Country": "Страна",
-        "ChangeCountryHelpTextPart1": "Для изменения страны вы должны перейти на страницу",
-        "ChangeCountryHelpTextPart2": "",
-        "ChangeCountryHelpTextServers": "Серверы",
+        "ChangeCountryHelpText": "Для изменения страны вы должны перейти на страницу <1>Серверы</1>",
         "Supply": "Количесто слотов",
         "ie": "например",
         "MaximumSupplyOfServices": "Максимальное количество слотов согласно предложению.",
@@ -303,8 +302,7 @@
         "Stack": "Стек",
         "ShowBtn": "показать",
         "StackTrace": "Stack Trace",
-        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!",
-        "NoResults": "По вашему запросу ничего не найдено. Измените, пожалуйста, параметры фильтрации!"
+        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!"
     },
     "logs/logsContext": {
         "Key": "Ключ",
@@ -372,9 +370,13 @@
         "AreYouSure": "Вы уверены?"
     },
     "client/dashboard/connecting": {
+        "AfterTheConnectionIsReady": "После того как соединение будет готовы Вы сможете начать использовать VPN.",
+        "TheServiceHasAPendingStatus": "Соединение находится в статусе ожидания. После того как соединение будет готово Вы сможете начать использовать VPN.",
+        "TheServiceHasAnActivatingStatus": "Соединение находится в статусе активации. После того как соединение будет готово Вы сможете начать использовать VPN.",
+        "TheServiceHasASuspendingStatus": "Соединение находится в статусе остановки. После того как соединение будет остановлено Вы можете возобновить его либо завершить",
+        "TheServiceHasATerminatingStatus": "Соединение находится в статусе завершения. После того как соединение будет завершено Вы можете также завершить контракт.",
         "WaitingTimeIsOver": "Время ожидания истекло. Процедура завершения будет вызвана автоматически.",
         "FailedToAcceptOffering": "Не удалось принять предложение. Пожалуйста, попробуйте другое.",
-        "AfterTheConnectionIsReady": "После того как соединение будет готовы Вы сможете начать использовать VPN.",
         "Synchronizing": "Синхронизация",
         "YouCanStartUsingVPN": "Вы можете начать использовать VPN",
         "Connect": "Подключение",
@@ -403,6 +405,7 @@
     "client/vpnList": {
         "Block": "Блок",
         "Hash": "Хеш",
+        "Agent": "Агент",
         "Country": "Страна",
         "Price": "Цена (PRIX/MB)",
         "SupplyTotal": "Предложения (всего)",
@@ -418,9 +421,12 @@
         "AverageTimeForDownloading": "Среднее время для загрузки 2-5 мин.",
         "Refresh": "Обновить",
         "AgentAddress": "Адрес агента",
+        "OfferingHash": "Хеш предложения",
         "PriceFilter": "Цена (PRIX/MB):",
         "From": "от",
-        "To": "до"
+        "To": "до",
+        "ClearOfferingHashToUseOtherFilters": "Вы должны очистить поле хеш-предложения для использования других фильтров",
+        "ResetFilters": "Сбросить фильтры"
     },
     "client/acceptOffering": {
         "Accept": "Принять",
@@ -610,6 +616,7 @@
         "eth_event_lastProcessedBlock_Name": "последний обработанный блок",
         "offering_autopopup_Name": "автоподнятие предложения",
         "system_version_app_Name": "версия приложения",
+        "somc_transport_tor_Name": "использовать Tor",
         "error_sendremote_Description": "Разрешить отчет об ошибках отправлять в Privatix.",
         "eth_challenge_period_Description": "Количество блоков, ожидающих от uncooperativeClose, инициированных Клиентом, чтобы дать Агенту возможность ответить с подтверждением баланса в случае, если Клиент обманывает. После периода запроса Клиент может установить и удалить канал. Количество блоков Агент будет ждать от registerServiceOffering или от createChannel, прежде чем он сможет удалить предложение сервиса и получить депозит агента.",
         "eth_default_gasprice_Description": "Цена по умолчанию GAS для транзакций.",
@@ -622,7 +629,8 @@
         "user_isagent_Description": "Указывает роль пользователя. \"true\" - агент. \"false\" - клиент.",
         "eth_event_lastProcessedBlock_Description": "Последний номер блока в блок-цепочке хранит последний обработанный блок.",
         "offering_autopopup_Description": "Разрешить поднять предложение автоматически.",
-        "system_version_app_Description": "Версия приложения."
+        "system_version_app_Description": "Версия приложения.",
+        "somc_transport_tor_Description": "Полностью децентрализованный режим. Если установлено в true - используется Tor для обмена сообщениями между Агентом и Клиентом. Офферинги и данные для доступа будут передаваться через Tor. Сообщения, опубликованные через централизованный SOMC, будут недоступны."
     },
     "copyToClipboard": {
         "Copied": "Скопировано!",

@@ -30,7 +30,7 @@ interface Props {
 
 class Channels extends React.Component<Props, any> {
 
-    subscription: String;
+    subscription: string;
 
     constructor(props: Props) {
         super(props);
@@ -40,7 +40,8 @@ class Channels extends React.Component<Props, any> {
             lastUpdatedStatus: null,
             productsByChannels: [],
             channels: [],
-            offerings: []
+            offerings: [],
+            handler: null
         };
 
         if ('function' === typeof props.registerRefresh) {
@@ -57,33 +58,39 @@ class Channels extends React.Component<Props, any> {
         this.refresh(true);
     }
 
-    ws = (event: any) => {
-        console.log('WS event catched!!!!', event);
-        this.refresh();
-    }
-
     componentDidMount(){
+        // TODO remove this when storage will subscribe to the products
         this.props.dispatch(asyncProviders.updateProducts());
         this.refresh();
     }
 
     componentWillUnmount() {
+        const { ws } = this.props;
+
+        this.clearTimeoutHandler();
+
         if (this.subscription) {
-            (window as any).ws.unsubscribe(this.subscription);
+            ws.unsubscribe(this.subscription);
+            this.subscription = undefined;
         }
     }
 
     refresh = async (once?: boolean) => {
 
         const status = this.state.status;
+        let statusArr = [status];
         const { ws } = this.props;
 
-        const channels = await ws.getAgentChannels('', status, 0, 100);
+        if (status === 'active') {
+            statusArr = ['pending', 'activating', 'active', 'suspending', 'suspended', 'terminating'];
+        }
+
+        const channels = await ws.getAgentChannels([], statusArr, 0, 100);
 
         if (!this.subscription) {
             const channelsIds = channels.items.map(channel => channel.id);
             if(channelsIds.length){
-                this.subscription = ws.subscribe('channel', channelsIds, this.ws);
+                this.subscription = await ws.subscribe('channel', channelsIds, this.refresh);
             }
         }
 
@@ -98,8 +105,19 @@ class Channels extends React.Component<Props, any> {
             offerings
         });
 
-        if(!once){
-            setTimeout(this.refresh, 5000);
+        if (!once) {
+            this.clearTimeoutHandler();
+
+            const handler = setTimeout(() => {
+                this.refresh();
+            }, 5000);
+            this.setState({handler});
+        }
+    }
+
+    clearTimeoutHandler() {
+        if (this.state.handler !== null) {
+            clearInterval(this.state.handler);
         }
     }
 

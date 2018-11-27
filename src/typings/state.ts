@@ -1,5 +1,5 @@
 import {Account} from './accounts';
-import {Mode} from './mode';
+import {Role} from './mode';
 import {Product} from './products';
 import {DbSetting} from './settings';
 import { WS } from '../utils/ws';
@@ -10,7 +10,7 @@ interface State {
     products: Product[];
     settings: DbSetting[];
     channel: string;
-    mode: Mode;
+    mode: Role;
     ws: WS;
 }
 
@@ -19,7 +19,7 @@ const StateDefault: State = {
     products: [],
     settings: [],
     channel: '',
-    mode: Mode.CLIENT,
+    mode: Role.CLIENT,
     ws: null
 };
 

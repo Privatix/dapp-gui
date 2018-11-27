@@ -1,12 +1,23 @@
 import * as React from 'react';
 
 import ReactSweetAlert from 'react-sweetalert-vilan';
-import {fetch} from '../utils/fetch';
 import { translate } from 'react-i18next';
+
+interface IProps {
+    t?: any;
+    beforeAsking?: Function;
+    done?: Function;
+    class: string;
+    title: string;
+    swalType: string;
+    swalTitle: string|JSX.Element;
+    swalConfirmBtnText: string;
+    text: string|JSX.Element;
+}
 
 @translate('confirmPopupSwal')
 
-export default class ConfirmPopupSwal extends React.Component<any, any>{
+export default class ConfirmPopupSwal extends React.Component<IProps, any>{
 
     constructor(props: any) {
         super(props);
@@ -24,20 +35,10 @@ export default class ConfirmPopupSwal extends React.Component<any, any>{
 
     confirmHandler() {
 
-        const cancel = (res?:any) => {
-            if('done' in this.props && typeof this.props.done === 'function'){
-                this.props.done(res);
-            }
-            this.cancelHandler();
-        };
-
-        if('function' === typeof this.props.confirmHandler){
-            this.props.confirmHandler();
-            cancel();
-        }else{
-            const options = this.props.options;
-            fetch(this.props.endpoint, options).then(cancel);
+        if('done' in this.props && 'function' === typeof this.props.done){
+            this.props.done();
         }
+        this.cancelHandler();
     }
 
     cancelHandler(event?: any) {

@@ -1,15 +1,19 @@
+import * as React from 'react';
+import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
-import {TemplateType} from '../typings/templates';
-import {OfferStatus, Offering} from '../typings/offerings';
-import {Account} from '../typings/accounts';
-import {Transaction} from '../typings/transactions';
-import {Product} from '../typings/products';
-import {Session} from '../typings/session';
-import {Channel, ClientChannel} from '../typings/channels';
-import {Template} from '../typings/templates';
-import { Log } from '../typings/logs';
 
-import { PaginatedResponse} from '../typings/paginatedResponse';
+import {TemplateType} from 'typings/templates';
+import {OfferStatus, Offering} from 'typings/offerings';
+import {Account} from 'typings/accounts';
+import {Transaction} from 'typings/transactions';
+import {Product} from 'typings/products';
+import {Session} from 'typings/session';
+import {Channel, ClientChannel} from 'typings/channels';
+import {Template} from 'typings/templates';
+import { Log } from 'typings/logs';
+import { State } from 'typings/state';
+import { Role } from 'typings/mode';
+import { PaginatedResponse} from 'typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
 type ChannelResponse  = PaginatedResponse<Channel[]>;
@@ -24,6 +28,7 @@ export class WS {
 
     static byUUID = {}; // uuid -> subscribeID
     static bySubscription = {}; // subscribeId -> uuid
+    static subscriptions = {};
 
     private socket: WebSocket;
     private pwd: string;
@@ -56,12 +61,15 @@ export class WS {
             const msg = JSON.parse(event.data);
             if('id' in msg && 'string' === typeof msg.id){
                 if(msg.id in WS.handlers){
-                    WS.handlers[msg.id](msg);
+                    const handler = WS.handlers[msg.id];
                     delete WS.handlers[msg.id];
+                    handler(msg);
                 }else {
                     if('result' in msg && 'string' === typeof msg.result){
                         WS.byUUID[msg.id] = msg.result;
                         WS.bySubscription[msg.result] = msg.id;
+                        WS.subscriptions[msg.id](msg.result);
+                        delete WS.subscriptions[msg.id];
                     }
                 }
             }else if('method' in msg && msg.method === 'ui_subscription'){
@@ -85,17 +93,21 @@ export class WS {
         return this.ready;
     }
 
-    subscribe(entityType:string, ids: string[], handler: Function) {
-        const uuid = uuidv4();
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_subscribe',
-            params: ['objectChange', this.pwd, entityType, ids]
-        };
-        WS.listeners[uuid] = handler;
-        this.socket.send(JSON.stringify(req));
-        return uuid;
+    subscribe(entityType:string, ids: string[], handler: Function): Promise<string>{
+        return new Promise((resolve: Function, reject: Function) => {
+            const uuid = uuidv4();
+            const req = {
+                jsonrpc: '2.0',
+                id: uuid,
+                method: 'ui_subscribe',
+                params: ['objectChange', this.pwd, entityType, ids]
+            };
+            WS.subscriptions[uuid] = () => {
+                WS.listeners[uuid] = handler;
+                resolve(uuid);
+            };
+            this.socket.send(JSON.stringify(req));
+        }) as Promise<string>;
     }
 
     unsubscribe(id: string){
@@ -109,10 +121,22 @@ export class WS {
 	            method: 'ui_unsubscribe',
 	            params: [ WS.byUUID[id] ]
             };
-            this.socket.send(JSON.stringify(req));
-            delete WS.listeners[id];
-            delete WS.bySubscription[WS.byUUID[id]];
-            delete WS.byUUID[id];
+
+            return new Promise((resolve: Function, reject: Function) => {
+                const handler = function(res: any){
+                    if('error' in res){
+                        reject(res.error);
+                    }else{
+                        resolve(res.result);
+                    }
+                };
+
+                WS.handlers[uuid] = handler;
+                this.socket.send(JSON.stringify(req));
+                delete WS.listeners[id];
+                delete WS.bySubscription[WS.byUUID[id]];
+                delete WS.byUUID[id];
+            });
         }
     }
 
@@ -142,17 +166,7 @@ export class WS {
     }
 
     topUp(channelId: string, gasPrice: number, handler: Function){
-        const uuid = uuidv4();
-        WS.handlers[uuid] = handler;
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_topUpChannel',
-            params: [this.pwd, channelId, gasPrice]
-        };
-
-        this.socket.send(JSON.stringify(req));
+        return this.send('ui_topUpChannel', [channelId, gasPrice]) as Promise<any>;
     }
 
 // auth
@@ -202,18 +216,8 @@ export class WS {
         return this.send('ui_getAccounts') as Promise<Account[]>;
     }
 
-    generateAccount(payload: any, handler: Function){
-        const uuid = uuidv4();
-        WS.handlers[uuid] = handler;
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_generateAccount',
-            params: [this.pwd, payload]
-        };
-
-        this.socket.send(JSON.stringify(req));
+    generateAccount(payload: any){
+        return this.send('ui_generateAccount', [payload]);
     }
 
     importAccountFromHex(payload: any, handler: Function){
@@ -261,6 +265,10 @@ export class WS {
     updateBalance(accountId: string){
         return this.send('ui_updateBalance', [accountId]);
     }
+
+    transferTokens(accountId: string, destination: 'ptc'|'psc', tokenAmount: number, gasPrice: number){
+        return this.send('ui_transferTokens', [accountId, destination, tokenAmount, gasPrice]);
+    }
 // templates
 
     getTemplates(templateType?: TemplateType){
@@ -295,7 +303,7 @@ export class WS {
 
 // offerings
 
-    getAgentOfferings(productId: string='', status: OfferStatus = OfferStatus.undef, offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
+    getAgentOfferings(productId: string='', status: OfferStatus = '', offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
         return this.send('ui_getAgentOfferings', [productId, status, offset, limit]) as Promise<OfferingResponse>;
     }
 
@@ -312,15 +320,24 @@ export class WS {
         return this.getObject('offering', id) as Promise<Offering>;
     }
 
-    async fetchOfferingsAndProducts(productId: string){
+    async fetchOfferingsAndProducts(productId: string, statuses: OfferStatus[]){
+
+        let offerings = [];
         const products = await this.getProducts();
-        const offerings = await this.getAgentOfferings(productId);
+
+        if(statuses.length){
+            const offeringsRequests = statuses.map(status => this.getAgentOfferings(productId, status));
+            offerings = (await Promise.all(offeringsRequests)).reduce((res, offerings) => res.concat(offerings.items), []);
+        } else {
+            offerings = (await this.getAgentOfferings(productId)).items;
+        }
+
         const resolveTable = products.reduce((table, product) => {
             table[product.id] = product.name;
             return table;
         }, {});
 
-        const resOfferings = offerings.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        const resOfferings = offerings.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
         return {offerings: resOfferings, products};
     }
 
@@ -348,16 +365,28 @@ export class WS {
 
 // channels
 
-    getClientChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ClientChannelResponse>{
+    getClientChannels(channelStatus: string[], serviceStatus: string[], offset: number, limit: number): Promise<ClientChannelResponse>{
         return this.send('ui_getClientChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ClientChannelResponse>;
     }
 
-    getAgentChannels(channelStatus: string, serviceStatus: string, offset: number, limit: number): Promise<ChannelResponse>{
+    async getNotTerminatedClientChannels(): Promise<ClientChannel[]>{
+
+        const statuses = ['pending', 'activating', 'active', 'suspending', 'suspended', 'terminating'];
+
+        const channels = await this.getClientChannels([], statuses, 0, 10);
+        return channels.items;
+    }
+
+    getAgentChannels(channelStatus: Array<string>, serviceStatus: Array<string>, offset: number, limit: number): Promise<ChannelResponse>{
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 
     getChannelUsage(channelId: string): Promise<number>{
         return this.send('ui_getChannelUsage', [channelId]) as Promise<number>;
+    }
+
+    changeChannelStatus(channelId: string, channelStatus: string){
+        return this.send('ui_changeChannelStatus', [channelId, channelStatus]) as Promise<any>; // null actually
     }
 
 // common
@@ -376,7 +405,9 @@ export class WS {
     getTotalIncome(): Promise<number> {
         return this.send('ui_getTotalIncome', []) as Promise<number>;
     }
-
+    getUserRole(): Promise<Role>{
+        return this.send('ui_getUserRole', []) as Promise<Role>;
+    }
 // logs
     getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
         return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
@@ -393,3 +424,9 @@ export class WS {
 
 
 }
+
+export const ws = function<T>(constructor: React.ComponentType){
+    return connect( (state: State, onProps: T) => {
+        return (Object.assign({}, {ws: state.ws}, onProps));
+    } )(constructor);
+};

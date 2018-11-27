@@ -13,6 +13,9 @@
     padding: 8px 5px 8px 36px;
     font-size: 12px;
 }
+.searchInputGroupVPNList .form-control::placeholder {
+    color: #bfbfbf;
+}
 
 @media only screen and (max-width: 1750px) {
     .priceMinMaxInputBl {

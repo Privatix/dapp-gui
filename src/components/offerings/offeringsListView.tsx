@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
@@ -9,59 +8,27 @@ import ModalPropTextSorter from '../utils/sorters/sortingModalByPropText';
 import ModalWindow from '../modalWindow';
 import Offering from './offering';
 import Product from '../products/product';
-import { State } from '../../typings/state';
 
-import { WS } from '../../utils/ws';
+import { Product as ProductType } from 'typings/products';
+import { Offering as OfferingType} from 'typings/offerings';
 
 interface IProps {
-    product: string;
-    rate?: number;
-    ws?: WS;
+    products: ProductType[];
+    offerings: OfferingType[];
     t?: any;
 }
 
 @translate(['offerings/offeringsList'])
-class OfferingsList extends React.Component<IProps, any> {
-
-    constructor(props:IProps) {
-        super(props);
-
-        this.state = {
-            handler: 0,
-            offerings: [],
-            products: []
-        };
-    }
-
-    async refresh() {
-
-        const { ws } = this.props;
-
-        const {offerings, products} = await ws.fetchOfferingsAndProducts(this.props.product === 'all' ? '' : this.props.product);
-        this.setState({offerings, products});
-
-        const handler = setTimeout(this.refresh.bind(this), this.props.rate ? this.props.rate : 3000);
-        this.setState({handler});
-    }
-
-    componentDidMount() {
-        this.refresh();
-    }
-
-    componentWillUnmount() {
-        if (this.state.handler) {
-            clearTimeout(this.state.handler);
-        }
-    }
+class OfferingsListView extends React.Component<IProps, any> {
 
     render() {
 
-        const { t } = this.props;
+        const { t, products, offerings } = this.props;
 
         const offeringsDataArr = [];
 
-        this.state.offerings.map((offering: any) => {
-            let product = this.state.products.filter((product: any) => product.id === offering.product)[0];
+        offerings.map((offering: any) => {
+            let product = products.filter((product: any) => product.id === offering.product)[0];
             let row = {
                 hash: <ModalWindow customClass='shortTableText' modalTitle={t('Offering')} text={'0x' + offering.hash} copyToClipboard={true} component={<Offering offering={offering} />} />,
                 serviceName: offering.serviceName,
@@ -135,6 +102,4 @@ class OfferingsList extends React.Component<IProps, any> {
 
 }
 
-export default connect( (state: State, onProps: IProps) => {
-    return (Object.assign({}, {ws: state.ws}, onProps));
-} )(OfferingsList);
+export default OfferingsListView;

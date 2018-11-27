@@ -56,22 +56,22 @@ class ClientHistory extends React.Component<any,any> {
 
     }
 
-    subscribe(channels: ClientChannel[]){
+    async subscribe(channels: ClientChannel[]){
 
         const { ws } = this.props;
 
         if(this.subscribeId){
-            ws.unsubscribe(this.subscribeId);
+            await ws.unsubscribe(this.subscribeId);
         }
         const ids = channels.map(channel => channel.id);
-        this.subscribeId = ws.subscribe('channel', ids, this.refresh);
+        this.subscribeId = await ws.subscribe('channel', ids, this.refresh);
     }
 
     async getHistoryData() {
 
         const { t, ws } = this.props;
-        const clientChannels = await ws.getClientChannels('', 'terminated', 0, 0);
-        const allClientChannels = await ws.getClientChannels('', '', 0, 0);
+        const clientChannels = await ws.getClientChannels([], ['terminated'], 0, 0);
+        const allClientChannels = await ws.getClientChannels([], [], 0, 0);
         this.subscribe(allClientChannels.items);
 
         const historyData = clientChannels.items.filter((channel) => {
@@ -101,7 +101,7 @@ class ClientHistory extends React.Component<any,any> {
     async getAwaitForTerminateColumns() {
 
         const { t, ws } = this.props;
-        const clientChannels = await ws.getClientChannels('active', 'terminated', 0, 0);
+        const clientChannels = await ws.getClientChannels(['active'], ['terminated'], 0, 0);
 
         this.subscribe(clientChannels.items);
 

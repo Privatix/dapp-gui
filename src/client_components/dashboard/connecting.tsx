@@ -8,9 +8,9 @@ import ActiveConnection from '../connections/active';
 import FinishServiceButton from '../connections/finishServiceButton';
 import IncreaseDepositButton from '../connections/increaseDepositButton';
 
-import ConfirmPopupSwal from '../../components/confirmPopupSwal';
-import notice from '../../utils/notice';
-import { State } from '../../typings/state';
+import ConfirmPopupSwal from 'components/confirmPopupSwal';
+import notice from 'utils/notice';
+import { State } from 'typings/state';
 
 const countdownRender = ({ minutes, seconds }) => {
     return <span>{minutes}:{seconds}</span>;
@@ -54,41 +54,20 @@ class Connecting extends React.Component<any, any>{
         }
     }
 
-    ws = (event: any) => {
-        this.refresh();
-    }
-
-    async getAllClientChannels(){
-        const { ws } = this.props;
-        const statuses = [
-            ['', 'pending'],
-            ['', 'activating'],
-            ['', 'active'],
-            ['', 'suspending'],
-            ['', 'suspended'],
-            ['', 'terminating']
-        ];
-        const requests = statuses.map(status => ws.getClientChannels(status[0], status[1], 0, 10));
-        const resolvedRequests = await Promise.all(requests);
-        const channels = resolvedRequests.reduce((acc, cv) => cv.items.length ? acc.concat(cv.items) : acc, []);
-        return channels;
-    }
-
-    async refresh() {
+    refresh = async () => {
 
         const { t, ws } = this.props;
 
-        const channels = await this.getAllClientChannels();
+        const channels = await ws.getNotTerminatedClientChannels();
 
         if(this.subscription){
-            ws.unsubscribe(this.subscription);
+            await ws.unsubscribe(this.subscription);
         }
 
         if(channels.length){
 
             const ids = channels.map(channel => channel.id);
-            this.subscription = ws.subscribe('channel', ids, this.ws);
-
+            this.subscription = await ws.subscribe('channel', ids, this.refresh);
             const channel = channels[0];
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
@@ -118,7 +97,7 @@ class Connecting extends React.Component<any, any>{
                 case 'activating':
                 case 'suspending':
                 case 'terminating':
-                    this.setState({status: 'pending', channel, pendingTimeCounter: 0});
+                    this.setState({status: channel.channelStatus.serviceStatus, channel, pendingTimeCounter: 0});
                     break;
                 default:
                     let pendingTimeCounter = this.state.pendingTimeCounter + 1;
@@ -133,9 +112,12 @@ class Connecting extends React.Component<any, any>{
                     this.setState({status: 'pending', channel, pendingTimeCounter});
             }
         }else{
-
-            this.handler = setTimeout(this.refresh.bind(this), 3000);
-            this.setState({status: 'waiting', channel: null});
+            if(this.state.status !== 'waiting'){
+                this.props.history.push('/client-dashboard-start');
+            } else {
+                this.handler = setTimeout(this.refresh.bind(this), 3000);
+                this.setState({status: 'waiting', channel: null});
+            }
 
         }
 
@@ -159,15 +141,23 @@ class Connecting extends React.Component<any, any>{
         </div>;
     }
 
-    pending(){
+    getTransitionView(status: string){
 
         const { t } = this.props;
+
+        const titles = {
+            pending: 'TheServiceHasAPendingStatus',
+            activating: 'TheServiceHasAnActivatingStatus',
+            suspending: 'TheServiceHasASuspendingStatus',
+            terminating: 'TheServiceHasATerminatingStatus'
+        };
+
 
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text'>{t('AfterTheConnectionIsReady')}</p>
+                        <p className='card-text'>{t(titles[status])}</p>
                         <button className='btn btn-inverse btn-block btn-lg disabled'>
                             <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>{t('Synchronizing')}...
                         </button>
@@ -178,11 +168,31 @@ class Connecting extends React.Component<any, any>{
         </div>;
     }
 
+    pending(){
+        return this.getTransitionView('rending');
+    }
+
+    activating(){
+        return this.getTransitionView('activating');
+    }
+
+    suspending(){
+        return this.getTransitionView('suspending');
+    }
+
+    terminating(){
+        return this.getTransitionView('terminating');
+    }
+
     suspended(){
-        const { t } = this.props;
+        const { t, ws } = this.props;
 
         const countryAlert = this.state.countryAlert === '' ? '' :
             <div className='alert alert-warning clientCountryAlert'>{this.state.countryAlert}</div>;
+
+        const done = () => {
+            ws.changeChannelStatus(this.state.channel.id, 'resume');
+        };
 
         return <div className='container-fluid'>
             <div className='row m-t-20'>
@@ -191,8 +201,7 @@ class Connecting extends React.Component<any, any>{
                         <p className='card-text m-t-5'><strong>{t('YouCanStartUsingVPN')}</strong></p>
                         {countryAlert}
                         <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channel.id}/status`}
-                            options={{method: 'put', body: {action: 'resume'}}}
+                            done={done}
                             title={t('Connect')}
                             text={<span></span>}
                             class={'btn btn-primary btn-custom btn-block'}
@@ -216,7 +225,11 @@ class Connecting extends React.Component<any, any>{
 
     active(){
 
-        const { t } = this.props;
+        const { t, ws } = this.props;
+
+        const done = () => {
+            ws.changeChannelStatus(this.state.channel.id, 'pause');
+        };
 
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
@@ -228,8 +241,7 @@ class Connecting extends React.Component<any, any>{
                         <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
                         <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: Math.ceil(this.state.offering.maxSuspendTime / 60)})}</p>
                         <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channel.id}/status`}
-                            options={{method: 'put', body: {action: 'pause'}}}
+                            done={done}
                             title={t('Pause')}
                             text={<span>{t('ThisOperationWillPauseVPNUsage')}<br />
                             {t('ForThisContractMaxSuspendTimeIs')}</span>}
@@ -251,7 +263,11 @@ class Connecting extends React.Component<any, any>{
 
     paused(){
 
-        const { t } = this.props;
+        const { t, ws } = this.props;
+
+        const done = () => {
+            ws.changeChannelStatus(this.state.channel.id, 'resume');
+        };
 
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
@@ -267,8 +283,7 @@ class Connecting extends React.Component<any, any>{
                         </p>
                         <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
                         <ConfirmPopupSwal
-                            endpoint={`/client/channels/${this.state.channel.id}/status`}
-                            options={{method: 'put', body: {action: 'resume'}}}
+                            done={done}
                             title={t('Resume')}
                             text={<span></span>}
                             class={'btn btn-primary btn-custom btn-block'}
