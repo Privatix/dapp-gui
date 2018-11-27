@@ -66,20 +66,23 @@ npm test
 
 # Packaging
 
-* Linux: 
+* Linux:
+
     ```bash
     npm run package-linux
     ```
-* MacOS
+
+* MacOS:
+
     ```bash
     npm run package-mac
     ```    
-* Win
+
+* Win:
+
     ```bash
     npm run package-win
     ```
-
-    
 
 # Contributing
 
