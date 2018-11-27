@@ -11,6 +11,8 @@
         "@types/react": "^16.4.14",
         "@types/react-redux": "^6.0.9",
         "css-loader": "^0.28.11",
+        "electron": "^1.8.8",
+        "electron-packager": "^8.1.0",
         "electron-react-devtools": "^0.5.3",
         "mocha": "^5.0.1",
         "shx": "^0.2.2",
@@ -32,7 +34,10 @@
         "test": "mocha -R xunit-file tests/spec.js",
         "posttest": "",
         "update_versions": "node ./update_versions.js",
-        "build": "shx rm -rf ./build && shx mkdir ./build && tslint -c ./configs/tslint.json -p ./configs/tsconfig.json && webpack --mode development --config configs/webpack.config.js && shx cp -R assets/* ./build/ && node ./build.js"
+        "build": "shx rm -rf ./build && shx mkdir ./build && tslint -c ./configs/tslint.json -p ./configs/tsconfig.json && webpack --mode development --config configs/webpack.config.js && shx cp -R assets/* ./build/ && node ./build.js",
+        "package-mac": "electron-packager . --overwrite --platform=darwin --arch=x64 --prune=true --out=release-builds",
+        "package-win": "electron-packager . --overwrite  --platform=win32 --arch=x64 --prune=true --out=release-builds --version-string.CompanyName=Privatix --version-string.FileDescription=Privatix --version-string.ProductName=\"Privatix Network\"",
+        "package-linux": "electron-packager . --overwrite --platform=linux --arch=x64 --prune=true --out=release-builds"
     },
     "dependencies": {
         "async-reactor": "^1.2.2",
@@ -42,7 +47,6 @@
         "colors": "^1.3.2",
         "cors": "^2.8.4",
         "dateformat": "^3.0.3",
-        "electron": "^1.8.8",
         "electron-fetch": "1.1.0",
         "history": "^4.7.2",
         "i18next": "^11.9.0",

@@ -1,6 +1,7 @@
 .DS_Store
 build
 node_modules
+release-builds
 *.swp
 *.swo
 *.log
@@ -8,3 +9,4 @@ xunit.xml
 .idea/
 *.iml
 package-lock.json
+
