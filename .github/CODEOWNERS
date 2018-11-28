@@ -3,6 +3,7 @@
 
 # notify frontend-team about changes
 *.ts            @gonzazoid @Vitold55 @EKorobov
+*.tsx           @gonzazoid @Vitold55 @EKorobov
 *.js            @gonzazoid @Vitold55 @EKorobov
 *.json          @gonzazoid @Vitold55 @EKorobov
 
