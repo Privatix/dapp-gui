@@ -231,6 +231,8 @@ class Connecting extends React.Component<any, any>{
             ws.changeChannelStatus(this.state.channel.id, 'pause');
         };
 
+        const maxSuspendTimeMinutes = Math.ceil(this.state.offering.maxSuspendTime / 60);
+
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
                 <div className='col-4 col-xl-4 buttonBlock'>
@@ -239,12 +241,12 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-4 col-xl-4 buttonBlock'>
                     <div className='card m-b-20 card-body buttonBlock'>
                         <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
-                        <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: Math.ceil(this.state.offering.maxSuspendTime / 60)})}</p>
+                        <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: maxSuspendTimeMinutes})}</p>
                         <ConfirmPopupSwal
                             done={done}
                             title={t('Pause')}
                             text={<span>{t('ThisOperationWillPauseVPNUsage')}<br />
-                            {t('ForThisContractMaxSuspendTimeIs')}</span>}
+                            {t('ForThisContractMaxSuspendTimeIs', {minutes: maxSuspendTimeMinutes})}</span>}
                             class={'btn btn-primary btn-custom btn-block'}
                             swalType='warning'
                             swalConfirmBtnText={t('YesPauseIt')}
