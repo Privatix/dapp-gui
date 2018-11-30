@@ -7,7 +7,7 @@ import JobStatus from './jobStatus';
 import JobName from './jobName';
 import Usage from './usage';
 import { withRouter } from 'react-router-dom';
-import toFixedN from '../../utils/toFixedN';
+// import toFixedN from '../../utils/toFixedN';
 import { translate } from 'react-i18next';
 import CopyToClipboard from '../../components/copyToClipboard';
 import ModalPropTextSorter from '../../components/utils/sorters/sortingModalByPropText';
@@ -74,11 +74,12 @@ class ActiveConnection extends React.Component<any, any>{
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: (usage) => { return <Usage usage={usage} />; }
+                render: ([channelId, serviceStatus, usage]) => { return <Usage usage={usage} channelId={channelId} channelStatus={serviceStatus} mode='units' />; }
             },
             {
                 header: t('CostPRIX'),
-                key: 'costPRIX'
+                key: 'costPRIX',
+                render: ([channelId, serviceStatus, usage]) => { return <Usage usage={usage} channelId={channelId} channelStatus={serviceStatus} mode='prix' />; }
             }
         ];
     }
@@ -114,8 +115,9 @@ class ActiveConnection extends React.Component<any, any>{
                 contractStatus: channel.channelStatus.channelStatus,
                 serviceStatus: channel.channelStatus.serviceStatus,
                 jobStatus: [channel.job.jobtype, jobStatus, jobTime],
-                usage: channel.usage,
-                costPRIX: toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})
+                usage: [channel.id, channel.channelStatus.serviceStatus, channel.usage],
+                costPRIX: [channel.id, channel.channelStatus.serviceStatus, channel.usage],
+                // costPRIX: toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})
             };
         });
 

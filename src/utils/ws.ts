@@ -8,7 +8,7 @@ import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
 import {Session} from 'typings/session';
-import {Channel, ClientChannel} from 'typings/channels';
+import {Channel, ClientChannel, ClientChannelUsage} from 'typings/channels';
 import {Template} from 'typings/templates';
 import { Log } from 'typings/logs';
 import { State } from 'typings/state';
@@ -379,6 +379,15 @@ export class WS {
 
     getAgentChannels(channelStatus: Array<string>, serviceStatus: Array<string>, offset: number, limit: number): Promise<ChannelResponse>{
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
+    }
+
+    async getActiveChannelUsage(): Promise<ClientChannelUsage>{
+        const channels =  await this.getClientChannels(['active'], ['active'], 0, 0);
+        if(channels.items.length){
+            return channels.items[0].usage;
+        }else{
+            return null;
+        }
     }
 
     getChannelUsage(channelId: string): Promise<number>{
