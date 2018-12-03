@@ -13,7 +13,8 @@ import notice from '../../utils/notice';
 
 interface Props {
     offering: Offering;
-    challengePeriod: number;
+    lastProcessedBlock?: number;
+    gasPrice?: number;
     dispatch: any;
     t: any;
     ws: WS;
@@ -36,27 +37,34 @@ class OfferingTools extends React.Component<Props, any>{
     }
 
     render(){
-        const { t, ws, offering, challengePeriod } = this.props;
+        const { t, ws, offering, lastProcessedBlock, gasPrice } = this.props;
+        // TODO remove with getContractInfo method or something
+        const removePeriod = 100;
+        const popupPeriod = 500;
+
+        const removePeriodMinutes = Math.floor(removePeriod/4);
+        const popupPeriodMinutes = Math.floor(popupPeriod/4);
 
         const offeringStatus = offering.offerStatus;
-        const challengePeriodMinutes = Math.floor(challengePeriod / 4);
-        const removeInfo = t('removeInfo', {minutes: challengePeriodMinutes});
-        const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
+        const offeringAge = lastProcessedBlock - offering.blockNumberUpdated;
 
-        const disabledPopUp = !(['registered', 'popped_up'].includes(offeringStatus));
-        const popupInfo = disabledPopUp ? t('popupInfoDisabled', {min: challengePeriodMinutes}) : t('popupInfo');
+        const removeInfo = t('removeInfo', {minutes: removePeriodMinutes});
+        const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus) || offeringAge < removePeriod;
+
+        const disabledPopUp = !(['registered', 'popped_up'].includes(offeringStatus)) || offeringAge < popupPeriod;
+        const popupInfo = disabledPopUp ? t('popupInfoDisabled', {min: popupPeriodMinutes}) : t('popupInfo');
 
         const doPopup = () => {
-            ws.changeOfferingStatus(offering.id, 'popup', 4e9); // TODO gas price component???
+            ws.changeOfferingStatus(offering.id, 'popup', gasPrice);
         };
 
         const doDeactivate = async () => {
             try {
-                await ws.changeOfferingStatus(offering.id, 'deactivate', 4e9); // TODO gas price component???
+                await ws.changeOfferingStatus(offering.id, 'deactivate', gasPrice);
                 notice({
                     level: 'info',
                     header: t('utils/notice:Congratulations!'),
-                    msg: t('DeleteOfferingRequestScheduled1') + ' ' + challengePeriodMinutes + ' ' + t('DeleteOfferingRequestScheduled2')
+                    msg: t('DeleteOfferingRequestScheduled1') + ' ' + removePeriodMinutes + ' ' + t('DeleteOfferingRequestScheduled2')
                 });
 
                 this.props.closeModal();
@@ -111,5 +119,5 @@ class OfferingTools extends React.Component<Props, any>{
 
 export default connect( (state: State) => {
     const settings = state.settings;
-    return {ws: state.ws, challengePeriod: settings['eth.challenge.period'] ? parseInt(settings['eth.challenge.period'].value, 10) : 0};
+    return {ws: state.ws, lastProcessedBlock: settings['eth.event.lastProcessedBlock'], gasPrice: settings['eth.default.gasprice']};
 } )(OfferingTools);
