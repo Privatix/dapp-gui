@@ -637,7 +637,6 @@
         "Copy": "Копировать"
     },
     "jobName": {
-        "unknownJobType": "неизвестный тип задачи",
         "clientPreChannelCreate": "размещение депозита сервиса",
         "clientAfterChannelCreate": "обновление данных сервиса",
         "clientPreChannelTopUp" : "увеличение депозита",
@@ -676,6 +675,8 @@
         "afterAccountAddBalance" : "обновление баланса аккаунта сервиса",
         "preAccountReturnBalance" : "запрос трансфера токенов на ERC20 аккаунт",
         "afterAccountReturnBalance" : "обновление баланса на ERC20 аккаунте",
-        "accountUpdateBalances" : "проверка и обновление информации аккаунта"
+        "accountUpdateBalances" : "проверка и обновление информации аккаунта",
+        "decrementCurrentSupply": "уменьшение числа свободных сервисов предложения",
+        "incrementCurrentSupply": "увеличение числа свободных сервисов предложения"
     }
 }

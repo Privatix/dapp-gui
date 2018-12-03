@@ -12,8 +12,7 @@ class JobStatus extends React.Component<any, any>{
 
         const { t, jobtype } = this.props;
 
-        const description = t(jobtype) === jobtype ? t('unknownJobType') : t(jobtype);
-        return <span>{description}</span>;
+        return <span>{t(jobtype)}</span>;
 
     }
 }
