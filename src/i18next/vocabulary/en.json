@@ -636,7 +636,6 @@
         "Copy": "Copy"
     },
     "jobName": {
-        "unknownJobType": "unknown job type",
         "clientPreChannelCreate": "place service deposit",
         "clientAfterChannelCreate": "update service data",
         "clientPreChannelTopUp" : "increase deposit",
@@ -675,6 +674,8 @@
         "afterAccountAddBalance" : "update balance on service account",
         "preAccountReturnBalance" : "request token transfer to ERC20 account",
         "afterAccountReturnBalance" : "update balance on ERC20 account",
-        "accountUpdateBalances" : "check and update account balance info"
+        "accountUpdateBalances" : "check and update account balance info",
+        "decrementCurrentSupply": "decrement offering current supply",
+        "incrementCurrentSupply": "increment offering current supply"
     }
 }
