@@ -73,7 +73,7 @@ class IncreaseDepositView extends React.Component<any, any> {
             const trafic = toFixedN({number: this.props.channel.deposit/this.state.offering.unitPrice, fixed: 2});
             value = `${trafic} ${this.state.offering.unitName}`;
         }
-        const deposit = `${toFixedN({number: (this.props.channel.deposit/1e8), fixed: 8})} / ${value}`;
+        let deposit = `${toFixedN({number: (this.props.channel.deposit/1e8), fixed: 8})} / ${value}`;
 
         const selectAccount =  <Select className='form-control'
             value={this.state.account.id}
@@ -117,7 +117,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                         <label className='col-2 col-form-label'>{t('AddToDeposit')}</label>
                         <div className='col-6'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={ deposit } readOnly/>
+                                <input type='text' className='form-control' value={ deposit } />
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
