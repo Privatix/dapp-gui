@@ -25,5 +25,5 @@ p.push(new Promise((resolve, reject) => {
 Promise.all(p).then(()=> {
     fs.writeFileSync(__dirname + '/../build/settings.json', JSON.stringify(settings, null, 4));
 });
-console.log(__dirname);
+
 fs.writeFileSync(__dirname + '/../build/package.json', JSON.stringify(config, null, 4));
