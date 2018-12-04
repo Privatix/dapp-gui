@@ -2,10 +2,10 @@
 # https://help.github.com/articles/about-codeowners/
 
 # notify frontend-team about changes
-*.ts            @privatix/js
-*.tsx           @privatix/js
-*.js            @privatix/js
-*.json          @privatix/js
+*.ts            @gonzazoid @Vitold55 @EKorobov
+*.tsx           @gonzazoid @Vitold55 @EKorobov
+*.js            @gonzazoid @Vitold55 @EKorobov
+*.json          @gonzazoid @Vitold55 @EKorobov
 
 # notify drew2a about changes in scripts and settings
 /.github/       @drew2a
