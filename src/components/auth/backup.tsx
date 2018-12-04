@@ -17,12 +17,23 @@ class Backup extends React.Component<any, any>{
 
     componentDidMount(){
         const { t } = this.props;
+        document.addEventListener('keydown', this.handleKeyDown);
         notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t(this.props.from)});
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown = (evt: any) => {
+        if (evt.keyCode === 13) {
+            this.onSubmit(evt);
+        }
     }
 
     saveDialog(e: any){
         e.preventDefault();
-      
+
         let fileName=remote.dialog.showSaveDialog({});
 
         this.setState({fileName: 'string' === typeof fileName ? fileName : ''});

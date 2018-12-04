@@ -8,12 +8,25 @@ import SelectLanguage from '../../i18next/selectLanguage';
 @translate(['auth/setLanguage'])
 class SetLanguage extends React.Component<any, any>{
 
-    onSubmit = (evt: any) => {
-        evt.preventDefault();
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown = (evt: any) => {
+        if (evt.keyCode === 13) {
+            this.onSubmit();
+        }
+    }
+
+    onSubmit = () => {
         this.props.history.push('/setPassword');
     }
 
-    render(){
+    render() {
 
         const { t } = this.props;
 
