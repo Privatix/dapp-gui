@@ -2,57 +2,97 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import { WS, ws } from 'utils/ws';
+import { ClientChannelUsage, ServiceStatus } from 'typings/channels';
+
 import toFixedN from 'utils/toFixedN';
 
 interface IProps {
     t?: any;
     ws?: WS;
+    usage?: ClientChannelUsage;
+    channelStatus: ServiceStatus;
+    channelId: string;
+    mode: string;
+}
+
+interface IState {
+    usage?: ClientChannelUsage;
+    channelStatus: ServiceStatus;
     channelId: string;
 }
 
-@translate(['channels/channelUsage'])
-class ChannelUsage extends React.Component <any,any> {
+@translate('client/connections/usage')
+class Usage extends React.Component<IProps, IState>{
 
-    constructor(props:any) {
+    private handlerId =  undefined;
+
+    constructor(props: IProps){
         super(props);
 
-        this.state = {
-            usage: null
-        };
+        const { channelId, channelStatus, usage, ws } = this.props;
+        this.state = { channelId, channelStatus, usage };
+
+        if(!usage){
+            ws.getChannelUsage(channelId)
+              .then(usage => {
+                  this.setState({usage});
+              });
+        }
     }
 
-    static getDerivedStateFromProps(props:any, state:any) {
-        return {
-            channelId: props.channelId
-        };
+    static getDerivedStateFromProps(props: IProps, state: IState){
+        const {channelId, channelStatus} = state;
+        return {channelId, channelStatus};
     }
 
-    async getUsage() {
+    componentDidMount(){
+        if(this.state.channelStatus === 'active'){
+            this.startRefresh();
+        }
+    }
 
-        const { ws } = this.props;
+    componentWillUnmount(){
+        this.stopRefresh();
+    }
 
-        const { channelId, lastUpdatedChannelId } = this.state;
+    startRefresh(){
+        this.handlerId = setTimeout(this.refresh, 1000);
+    }
 
+    stopRefresh(){
+        if(this.handlerId){
+            clearTimeout(this.handlerId);
+            this.handlerId = undefined;
+        }
+    }
+
+    refresh = async () => {
+        const { ws, channelId } = this.props;
         const usage = await ws.getChannelUsage(channelId);
-
-        if (lastUpdatedChannelId === channelId /* && usage === this.state.usage */) {
-            return;
-        }
-
-        this.setState({usage, lastUpdatedChannelId: channelId});
+        this.setState({usage});
+        this.handlerId = setTimeout(this.refresh, 1000);
     }
 
-    render () {
-        this.getUsage();
+    render(){
 
-        const { t } = this.props;
+        const { t, mode } = this.props;
+        const { usage, channelStatus } = this.state;
 
-        if (this.state.trafficLimit){
-            return <span>{toFixedN({number: this.state.usage, fixed: 2})}&nbsp;{t('of')}&nbsp;{toFixedN({number: this.state.trafficLimit, fixed: 2})}&nbsp;MB</span>;
-        }else {
-            return <span>{toFixedN({number: this.state.usage, fixed: 2})} MB</span>;
+        if(channelStatus === 'active' && !this.handlerId){
+            this.startRefresh();
         }
+
+        if(channelStatus !== 'active' && this.handlerId){
+            this.stopRefresh();
+        }
+
+        return mode === 'unit'
+            ? (usage
+                ? <span>{`${usage.current}&nbsp;${t('of')}&nbsp;${usage.maxUsage}&nbsp;${usage.unit}`}</span>
+                : <span></span>
+              )
+            : <span>{toFixedN({number: (usage.cost / 1e8), fixed: 8})}</span>;
     }
 }
 
-export default ws<IProps>(ChannelUsage);
+export default ws<IProps>(Usage);

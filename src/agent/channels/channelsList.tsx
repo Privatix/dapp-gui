@@ -24,7 +24,6 @@ class AsyncChannels extends React.Component<any, any> {
             products: [],
             allProducts: [],
             channels: [],
-            offerings: []
         };
 
     }
@@ -43,10 +42,9 @@ class AsyncChannels extends React.Component<any, any> {
         }
 
         const products = (await Promise.all(channels.map(channel => ws.getOffering(channel.offering)) as Promise<Offering>[] )).map(offering => offering.product);
-        const offerings = await ws.getAgentOfferings();
         const allProducts = await ws.getProducts();
 
-        this.setState({channels, products, allProducts, offerings: offerings.items, isLoading: false});
+        this.setState({channels, products, allProducts, isLoading: false});
 
     }
 
@@ -73,7 +71,6 @@ class AsyncChannels extends React.Component<any, any> {
             .map((productId) => this.state.allProducts.find(product => product.id === productId))
             .map((product, index) => {
                     const channel = this.state.channels[index];
-                    const offering = this.state.offerings.find(offering => offering.id === channel.offering);
                     return {
                         id: <ModalWindow customClass='shortTableText'
                                          modalTitle={t('Service')}
@@ -89,7 +86,7 @@ class AsyncChannels extends React.Component<any, any> {
                         client: channel.client,
                         contractStatus: channel.channelStatus,
                         serviceStatus: channel.serviceStatus,
-                        usage: [channel.id,((channel.totalDeposit-offering.setupPrice)/offering.unitPrice)],
+                        usage: [channel.id, channel.serviceStatus],
                         incomePRIX: toFixedN({number: (channel.receiptBalance/1e8), fixed: 8}),
                         serviceChangedTime: channel.serviceChangedTime
                     };

@@ -9,7 +9,7 @@ import Connection from './connection';
 
 import JobStatus from 'common/badges/jobStatus';
 import JobName from 'common/badges/jobName';
-import Usage from 'common/badges/usage';
+import Usage from 'common/badges/channelUsage';
 import ContractStatus from 'common/badges/contractStatus';
 import ChannelStatus from 'common/badges/channelStatus';
 

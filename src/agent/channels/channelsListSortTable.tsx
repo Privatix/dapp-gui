@@ -9,7 +9,7 @@ import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import CopyToClipboard from 'common/copyToClipboard';
 import DateSorter from 'common/sorters/sortingDate';
 
-import ChannelStatusStyle from 'common/badges/channelStatus';
+import ChannelStatus from 'common/badges/channelStatus';
 import ContractStatus from 'common/badges/contractStatus';
 import ChannelUsage from 'common/badges/channelUsage';
 
@@ -72,12 +72,12 @@ class ChannelsTable extends React.Component<any, any> {
                 key: 'serviceStatus',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
-                render: (serviceStatus) => <ChannelStatusStyle serviceStatus={serviceStatus} />
+                render: (serviceStatus) => <ChannelStatus serviceStatus={serviceStatus} />
             },
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: (channelId) => <ChannelUsage channelId={channelId} />
+                render: (channelId, serviceStatus) => <ChannelUsage channelId={channelId} channelStatus={serviceStatus} mode='unit'/>
             },
             {
                 header: t('Income'),
