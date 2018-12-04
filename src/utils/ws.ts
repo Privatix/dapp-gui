@@ -381,17 +381,8 @@ export class WS {
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 
-    async getActiveChannelUsage(): Promise<ClientChannelUsage>{
-        const channels =  await this.getClientChannels(['active'], ['active'], 0, 0);
-        if(channels.items.length){
-            return channels.items[0].usage;
-        }else{
-            return null;
-        }
-    }
-
-    getChannelUsage(channelId: string): Promise<number>{
-        return this.send('ui_getChannelUsage', [channelId]) as Promise<number>;
+    getChannelUsage(channelId: string): Promise<ClientChannelUsage>{
+        return this.send('ui_getChannelUsage', [channelId]) as Promise<ClientChannelUsage>;
     }
 
     changeChannelStatus(channelId: string, channelStatus: string){
