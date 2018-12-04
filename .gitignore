@@ -9,4 +9,4 @@ xunit.xml
 .idea/
 *.iml
 package-lock.json
-
+src/i18next/langs.ts
