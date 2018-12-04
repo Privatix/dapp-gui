@@ -18,13 +18,16 @@ class IncreaseDepositView extends React.Component<any, any> {
     constructor(props: any) {
         super(props);
         console.log(props);
-        this.state = {gasPrice: 6*1e9
-                     ,account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase())
+        this.state = {
+            gasPrice: 6*1e9,
+            account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase()),
         };
         props.ws.getOffering(props.channel.offering)
-           .then(offering => {
-               this.setState({offering});
-           });
+            .then(offering => {
+                this.setState({offering});
+            });
+
+        this.depositChanged = this.depositChanged.bind(this);
     }
 
     onGasPriceChanged(evt: any){
@@ -65,6 +68,12 @@ class IncreaseDepositView extends React.Component<any, any> {
         }
     }
 
+    depositChanged(evt: any) {
+        this.setState({
+            deposit: evt.target.value
+        });
+    }
+
     render(){
 
         const { t } = this.props;
@@ -73,18 +82,24 @@ class IncreaseDepositView extends React.Component<any, any> {
             const trafic = toFixedN({number: this.props.channel.deposit/this.state.offering.unitPrice, fixed: 2});
             value = `${trafic} ${this.state.offering.unitName}`;
         }
-        const deposit = `${toFixedN({number: (this.props.channel.deposit/1e8), fixed: 8})} / ${value}`;
+
+        // TODO ek: mb it should be 'addToDeposit' instead of 'deposit'
+        this.setState({
+            deposit: `${toFixedN({number: (this.props.channel.deposit/1e8), fixed: 8})} / ${value}`
+        });
 
         const selectAccount =  <Select className='form-control'
-            value={this.state.account.id}
-            searchable={false}
-            clearable={false}
-            disabled={true}
-            options={this.props.accounts.map((account:any) => ({value: account.id, label: account.name}))}
+                                       value={this.state.account.id}
+                                       searchable={false}
+                                       clearable={false}
+                                       disabled={true}
+                                       options={this.props.accounts.map((account:any) => ({value: account.id, label: account.name}))}
         />;
 
         const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
         const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8})) : 0;
+
+        let deposit = this.state.deposit;
 
         return <div className='col-lg-9 col-md-9'>
             <div className='card m-b-20'>
@@ -117,7 +132,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                         <label className='col-2 col-form-label'>{t('AddToDeposit')}</label>
                         <div className='col-6'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={ deposit } readOnly/>
+                                <input type='text' className='form-control' onChange={this.depositChanged} value={ deposit } />
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
