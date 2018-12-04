@@ -21,7 +21,6 @@ class IncreaseDepositView extends React.Component<any, any> {
         this.state = {
             gasPrice: 6*1e9,
             account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase()),
-            deposit: `${toFixedN({number: (this.props.channel.deposit/1e8), fixed: 8})} / ${value}`;
         };
         props.ws.getOffering(props.channel.offering)
            .then(offering => {
@@ -72,7 +71,7 @@ class IncreaseDepositView extends React.Component<any, any> {
     depositChanged(evt: any) {
         this.setState({
             deposit: evt.target.value
-        })
+        });
     }
 
     render(){
@@ -83,6 +82,11 @@ class IncreaseDepositView extends React.Component<any, any> {
             const trafic = toFixedN({number: this.props.channel.deposit/this.state.offering.unitPrice, fixed: 2});
             value = `${trafic} ${this.state.offering.unitName}`;
         }
+
+        // TODO ek: mb it should be 'addToDeposit' instead of 'deposit'
+        this.setState({
+            deposit: `${toFixedN({number: (this.props.channel.deposit/1e8), fixed: 8})} / ${value}`
+        });
 
         const selectAccount =  <Select className='form-control'
             value={this.state.account.id}
