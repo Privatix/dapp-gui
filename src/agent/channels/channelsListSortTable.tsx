@@ -9,9 +9,9 @@ import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import CopyToClipboard from 'common/copyToClipboard';
 import DateSorter from 'common/sorters/sortingDate';
 
-import ChannelStatusStyle from './channelStatusStyle';
-import ContractStatus from './contractStatus';
-import ChannelUsage from './channelUsage';
+import ChannelStatusStyle from 'common/badges/channelStatus';
+import ContractStatus from 'common/badges/contractStatus';
+import ChannelUsage from 'common/badges/channelUsage';
 
 @translate(['channels/channelsListSortTable'])
 class ChannelsTable extends React.Component<any, any> {

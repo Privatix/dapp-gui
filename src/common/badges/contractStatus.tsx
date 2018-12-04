@@ -1,5 +1,16 @@
 import * as React from 'react';
-import {channelStatusDescription} from './channel';
+
+// TODO move to vocabulary
+const channelStatusDescription = {
+    'pending': 'pending',
+    'active': 'active',
+    'wait_coop': 'closing normaly',
+    'closed_coop': 'normally closed',
+    'wait_challenge': 'opening dispute',
+    'in_challenge': 'dispute opened',
+    'wait_uncoop': 'closing dispute',
+    'closed_uncoop': 'dispute closed'
+};
 
 export default class ContractStatus extends React.Component<any, any> {
 

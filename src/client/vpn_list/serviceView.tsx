@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
 import PgTime from 'common/etc/pgTime';
-import ContractStatus from 'agent/channels/contractStatus';
-import ChannelStatus from 'agent/channels/channelStatusStyle';
+import ContractStatus from 'common/badges/contractStatus';
+import ChannelStatus from 'common/badges/channelStatus';
 import ClientAccessInfo from 'client/endpoints/clientAccessInfo';
 import TerminateContractButton from 'client/connections/terminateContractButton';
 

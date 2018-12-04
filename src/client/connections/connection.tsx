@@ -3,8 +3,9 @@ import { translate } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
 
-import ChannelStatus from 'agent/channels/channelStatusStyle';
-import ContractStatus from 'agent/channels/contractStatus';
+import ChannelStatus from 'common/badges/channelStatus';
+import ContractStatus from 'common/badges/contractStatus';
+
 import ClientAccessInfo from 'client/endpoints/clientAccessInfo';
 import Offering from 'client/vpn_list/acceptOffering';
 

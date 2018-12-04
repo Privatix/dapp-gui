@@ -3,9 +3,11 @@ import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
 import Offering from './offering';
-import OfferingStatus from './offeringStatus';
 import Product from 'agent/products/product';
-import MessageStatus from './messageStatus';
+
+import OfferingStatus from 'common/badges/offeringStatus';
+import MessageStatus from 'common/badges/messageStatus';
+
 import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import ModalWindow from 'common/modalWindow';
 

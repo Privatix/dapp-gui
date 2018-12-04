@@ -3,15 +3,17 @@ import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
-import PgTime from 'common/etc/pgTime';
-import ContractStatus from 'agent/channels/contractStatus';
-import ChannelStatus from 'agent/channels/channelStatusStyle';
+import ContractStatus from 'common/badges/contractStatus';
+import ChannelStatus from 'common/badges/channelStatus';
+import JobStatus from 'common/badges/jobStatus';
+import JobName from 'common/badges/jobName';
+
 import ServiceView from './serviceView';
+
+import PgTime from 'common/etc/pgTime';
 import ModalWindow from 'common/modalWindow';
 import DateSorter from 'common/sorters/sortingDate';
 import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
-import JobStatus from 'client/connections/jobStatus';
-import JobName from 'client/connections/jobName';
 import CopyToClipboard from 'common/copyToClipboard';
 
 import { State } from 'typings/state';

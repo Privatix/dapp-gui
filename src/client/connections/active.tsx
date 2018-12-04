@@ -6,14 +6,14 @@ import SortableTable from 'react-sortable-table-vilan';
 
 import OfferingById from './offeringById';
 import Connection from './connection';
-import JobStatus from './jobStatus';
-import JobName from './jobName';
-import Usage from './usage';
 
-import ContractStatus from 'agent/channels/contractStatus';
-import ChannelStatus from 'agent/channels/channelStatusStyle';
+import JobStatus from 'common/badges/jobStatus';
+import JobName from 'common/badges/jobName';
+import Usage from 'common/badges/usage';
+import ContractStatus from 'common/badges/contractStatus';
+import ChannelStatus from 'common/badges/channelStatus';
+
 import ModalWindow from 'common/modalWindow';
-// import toFixedN from '../../utils/toFixedN';
 import CopyToClipboard from 'common/copyToClipboard';
 import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 

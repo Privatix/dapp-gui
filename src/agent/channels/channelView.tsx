@@ -1,14 +1,15 @@
 import * as React from 'react';
-
-import ChannelUsage from './channelUsage';
-import AgentAccessInfo from '../endpoints/agentAccessInfo';
-import ProductNameByOffering from '../products/productNameByOffering';
-
-import ChannelStatusStyle from './channelStatusStyle';
-import ContractStatus from './contractStatus';
-import toFixedN from '../../utils/toFixedN';
-import Offering from '../offerings/offeringView';
 import { translate } from 'react-i18next';
+
+import AgentAccessInfo from 'agent/endpoints/agentAccessInfo';
+import ProductNameByOffering from 'agent/products/productNameByOffering';
+
+import ChannelUsage from 'common/badges/channelUsage';
+import ChannelStatusStyle from 'common/badges/channelStatus';
+import ContractStatus from 'common/badges/contractStatus';
+
+import toFixedN from 'utils/toFixedN';
+import Offering from 'agent/offerings/offeringView';
 
 @translate('channels/channelView')
 
