@@ -14,6 +14,20 @@ class SetAccount extends React.Component<any, any> {
         this.keyType = 'generateKey';
     }
 
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown = (evt: any) => {
+        if (evt.keyCode === 13) {
+            this.onSubmit(evt);
+        }
+    }
+
     handleChange = (e:any) => {
         this.keyType = e.target.value;
     }
