@@ -16,12 +16,25 @@ class GenerateKey extends React.Component<any, any>{
 
     back = back('/setAccount').bind(this);
 
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown = (evt: any) => {
+        if (evt.keyCode === 13) {
+            this.onSubmit(evt);
+        }
+    }
+
     onUserInput(evt:any){
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
     }
 
     onSubmit = async (evt: any) => {
-
         evt.preventDefault();
 
         const { t } = this.props;

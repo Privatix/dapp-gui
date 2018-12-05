@@ -22,6 +22,20 @@ class SetPassword extends React.Component<any, any>{
 
     back = back('/').bind(this);
 
+    componentDidMount() {
+        document.addEventListener('keydown', this.handleKeyDown);
+    }
+
+    componentWillUnmount() {
+        document.removeEventListener('keydown', this.handleKeyDown);
+    }
+
+    handleKeyDown = (evt: any) => {
+        if (evt.keyCode === 13) {
+            this.onSubmit(evt);
+        }
+    }
+
     equality(){
 
         if(this.state.pwd === '' || this.state.conf === ''){
@@ -40,7 +54,6 @@ class SetPassword extends React.Component<any, any>{
     }
 
     onUserInput(evt:any){
-        console.log(evt);
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
     }
 
@@ -94,7 +107,7 @@ class SetPassword extends React.Component<any, any>{
                 <h4 className='text-center'> {t('setThePassword')} <strong className='text-custom'>Privatix</strong></h4>
             </div>
             <form className='form-horizontal m-t-20' action='#' onSubmit={this.onSubmit.bind(this)} >
-            <div className='p-20 wizard clearfix'>
+                <div className='p-20 wizard clearfix'>
                     <Steps step='2' />
                     <div className='content clearfix'>
                         <section className='setPasswordsBl'>
@@ -145,7 +158,7 @@ class SetPassword extends React.Component<any, any>{
                             <ReactTooltip place='top' type='dark' effect='float'/>
                         </section>
                     </div>
-            </div>
+                </div>
             </form>
         </div>;
     }
