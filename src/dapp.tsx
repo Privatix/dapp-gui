@@ -1,16 +1,16 @@
-// tslint:disable-next-line
 import * as React from 'react';
-// tslint:disable-next-line
-
 import { render } from 'react-dom';
-import Start from './components/start';
-import {LocalSettings} from './typings/settings';
-import * as api from './utils/api';
-import { registerBugsnag } from './utils/bugsnag';
 import { Provider } from 'react-redux';
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import reducers from './redux/reducers';
+
+import Start from 'common/start';
+
+import * as api from 'utils/api';
+import { registerBugsnag } from 'utils/bugsnag';
+import reducers from 'redux/reducers';
+
+import {LocalSettings} from 'typings/settings';
 
 (async () => {
     const settings = (await api.settings.getLocal()) as LocalSettings;
