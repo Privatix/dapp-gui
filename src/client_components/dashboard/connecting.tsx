@@ -54,6 +54,11 @@ class Connecting extends React.Component<any, any>{
         }
     }
 
+    connectHandler(evt: any) {
+        evt.preventDefault();
+        this.props.ws.changeChannelStatus(this.state.channel.id, 'resume');
+    }
+
     refresh = async () => {
 
         const { t, ws } = this.props;
@@ -185,14 +190,10 @@ class Connecting extends React.Component<any, any>{
     }
 
     suspended(){
-        const { t, ws } = this.props;
+        const { t } = this.props;
 
         const countryAlert = this.state.countryAlert === '' ? '' :
             <div className='alert alert-warning clientCountryAlert'>{this.state.countryAlert}</div>;
-
-        const done = () => {
-            ws.changeChannelStatus(this.state.channel.id, 'resume');
-        };
 
         return <div className='container-fluid'>
             <div className='row m-t-20'>
@@ -200,14 +201,8 @@ class Connecting extends React.Component<any, any>{
                     <div className='card m-b-20 card-body buttonBlock'>
                         <p className='card-text m-t-5'><strong>{t('YouCanStartUsingVPN')}</strong></p>
                         {countryAlert}
-                        <ConfirmPopupSwal
-                            done={done}
-                            title={t('Connect')}
-                            text={<span></span>}
-                            class={'btn btn-primary btn-custom btn-block'}
-                            swalType='warning'
-                            swalConfirmBtnText={t('YesConnectIt')}
-                            swalTitle={t('confirmPopupSwal:AreYouSure')} />
+
+                        <button className='btn btn-primary btn-custom btn-block' onClick={this.connectHandler.bind(this)}>{t('Connect')}</button>
                     </div>
                 </div>
 
@@ -265,11 +260,7 @@ class Connecting extends React.Component<any, any>{
 
     paused(){
 
-        const { t, ws } = this.props;
-
-        const done = () => {
-            ws.changeChannelStatus(this.state.channel.id, 'resume');
-        };
+        const { t } = this.props;
 
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
@@ -284,14 +275,8 @@ class Connecting extends React.Component<any, any>{
                             </strong> {t('min')}
                         </p>
                         <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
-                        <ConfirmPopupSwal
-                            done={done}
-                            title={t('Resume')}
-                            text={<span></span>}
-                            class={'btn btn-primary btn-custom btn-block'}
-                            swalType='warning'
-                            swalConfirmBtnText={t('YesResumeIt')}
-                            swalTitle={t('confirmPopupSwal:AreYouSure')} />
+
+                        <button className='btn btn-primary btn-custom btn-block' onClick={this.connectHandler.bind(this)}>{t('Resume')}</button>
                     </div>
                 </div>
 
