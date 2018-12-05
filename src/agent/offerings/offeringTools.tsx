@@ -14,6 +14,8 @@ import notice from 'utils/notice';
 interface Props {
     offering: Offering;
     lastProcessedBlock?: number;
+    removePeriod?: number;
+    popupPeriod?: number;
     gasPrice?: number;
     dispatch: any;
     t: any;
@@ -37,11 +39,8 @@ class OfferingTools extends React.Component<Props, any>{
     }
 
     render(){
-        const { t, ws, offering, lastProcessedBlock, gasPrice } = this.props;
-        // TODO remove with getContractInfo method or something
-        const removePeriod = 100;
-        const popupPeriod = 500;
-
+        const { t, ws, offering, lastProcessedBlock, removePeriod, popupPeriod, gasPrice } = this.props;
+        console.log(lastProcessedBlock, removePeriod, popupPeriod, gasPrice);
         const removePeriodMinutes = Math.floor(removePeriod/4);
         const popupPeriodMinutes = Math.floor(popupPeriod/4);
 
@@ -119,5 +118,11 @@ class OfferingTools extends React.Component<Props, any>{
 
 export default connect( (state: State) => {
     const settings = state.settings;
-    return {ws: state.ws, lastProcessedBlock: settings['eth.event.lastProcessedBlock'], gasPrice: settings['eth.default.gasprice']};
+    return {
+        ws: state.ws
+       ,lastProcessedBlock: settings['eth.event.lastProcessedBlock']
+       ,removePeriod: settings['psc.periods.remove']
+       ,popupPeriod: settings['psc.periods.popup']
+       ,gasPrice: settings['eth.default.gasprice']
+    };
 } )(OfferingTools);
