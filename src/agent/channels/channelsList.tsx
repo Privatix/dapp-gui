@@ -28,7 +28,7 @@ class AsyncChannels extends React.Component<any, any> {
 
     }
 
-    async refresh() {
+    refresh = async () => {
 
         const { ws } = this.props;
 
