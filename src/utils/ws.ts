@@ -8,7 +8,7 @@ import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
 import {Session} from 'typings/session';
-import {Channel, ClientChannel} from 'typings/channels';
+import {Channel, ClientChannel, ClientChannelUsage} from 'typings/channels';
 import {Template} from 'typings/templates';
 import { Log } from 'typings/logs';
 import { State } from 'typings/state';
@@ -381,8 +381,8 @@ export class WS {
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 
-    getChannelUsage(channelId: string): Promise<number>{
-        return this.send('ui_getChannelUsage', [channelId]) as Promise<number>;
+    getChannelUsage(channelId: string): Promise<ClientChannelUsage>{
+        return this.send('ui_getChannelUsage', [channelId]) as Promise<ClientChannelUsage>;
     }
 
     changeChannelStatus(channelId: string, channelStatus: string){

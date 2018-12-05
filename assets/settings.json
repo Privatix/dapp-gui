@@ -11,6 +11,11 @@
    "network": "rinkeby",
    "bugsnagKey": "9191410d7c7c4231907b20b5c72ce55a",
    "bugsnagEnable": true,
+   "bugsnag": {
+        "userid": "",
+        "key": "9191410d7c7c4231907b20b5c72ce55a",
+        "enable": true
+   },
    "release": "0.7.0",
    "logsCountPerPage": 10,
    "elementsPerPage": 10,

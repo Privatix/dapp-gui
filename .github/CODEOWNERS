@@ -13,4 +13,4 @@
 vocabulary/     @drew2a
 
 # notify devops team about changes in settings.json
-settings.json   @kelewind
+settings.json   @kelewind @drew2a
