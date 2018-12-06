@@ -72,7 +72,7 @@ class ActiveConnection extends React.Component<any, any>{
             {
                 header: t('JobStatus'),
                 key: 'jobStatus',
-                render: ([jobtype, jobStatus, jobTime]) => { return <div><JobName jobtype={jobtype} /> ({jobStatus} {jobTime})</div>;}
+                render: ([jobtype, jobStatus, jobTime]) => { return <div className='noWrap'><JobName jobtype={jobtype} /><br /> ({jobStatus} {jobTime})</div>;}
             },
             {
                 header: t('Usage'),
