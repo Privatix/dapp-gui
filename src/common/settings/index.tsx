@@ -1,26 +1,29 @@
 import * as React from 'react';
-import { withRouter } from 'react-router-dom';
-import {connect} from 'react-redux';
 
-import {State} from 'typings/state';
-import {asyncProviders} from 'redux/actions';
+import { WS, ws } from 'utils/ws';
 
 import SettingsTable from './settingsTable';
 
-class Settings extends React.Component <any, any>{
+interface IProps {
+    ws?: WS;
+}
+
+class Settings extends React.Component <IProps, any>{
+
     constructor(props:any) {
         super(props);
+        this.state = {settings: {}};
     }
 
-    componentDidMount() {
-        this.props.dispatch(asyncProviders.updateSettings());
+    async componentDidMount() {
+        const { ws } = this.props;
+        const settings = await ws.getSettings();
+        this.setState({settings});
     }
 
     render() {
-        return <SettingsTable options={this.props.settings} />;
+        return <SettingsTable options={this.state.settings} />;
     }
 }
 
-export default connect( (state: State) => {
-    return {settings: state.settings};
-})(withRouter(Settings));
+export default ws<IProps>(Settings);
