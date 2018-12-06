@@ -28,7 +28,6 @@ class Usage extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
         super(props);
-
         const { channelId, channelStatus, usage, ws } = this.props;
         this.state = { channelId, channelStatus, usage };
 
@@ -88,7 +87,7 @@ class Usage extends React.Component<IProps, IState>{
 
         return mode === 'unit'
             ? (usage
-                ? <span>{`${usage.current}&nbsp;${t('of')}&nbsp;${usage.maxUsage}&nbsp;${usage.unit}`}</span>
+                ? <span>{usage.current}&nbsp;{t('of')}&nbsp;{usage.maxUsage}&nbsp;{usage.unit}</span>
                 : <span></span>
               )
             : <span>{toFixedN({number: (usage.cost / 1e8), fixed: 8})}</span>;

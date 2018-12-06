@@ -77,7 +77,7 @@ class ChannelsTable extends React.Component<any, any> {
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: (channelId, serviceStatus) => <ChannelUsage channelId={channelId} channelStatus={serviceStatus} mode='unit'/>
+                render: (props) => <ChannelUsage channelId={props.channelId} channelStatus={props.serviceStatus} mode='unit'/>
             },
             {
                 header: t('Income'),

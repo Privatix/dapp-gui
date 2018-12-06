@@ -142,7 +142,7 @@ class Channels extends React.Component<Props, any> {
                 client: channel.client,
                 contractStatus: channel.channelStatus,
                 serviceStatus: channel.serviceStatus,
-                usage: [channel.id, channel.serviceStatus],
+                usage: {channelId: channel.id, channelStatus: channel.serviceStatus},
                 incomePRIX: toFixedN({number: (channel.receiptBalance/1e8), fixed: 8}),
                 serviceChangedTime: channel.serviceChangedTime
             };
