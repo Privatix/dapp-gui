@@ -77,7 +77,7 @@ class ActiveConnection extends React.Component<any, any>{
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: ([channelId, serviceStatus, usage]) => { return <Usage usage={usage} channelId={channelId} channelStatus={serviceStatus} mode='units' />; }
+                render: ([channelId, serviceStatus, usage]) => { return <Usage usage={usage} channelId={channelId} channelStatus={serviceStatus} mode='unit' />; }
             },
             {
                 header: t('CostPRIX'),
