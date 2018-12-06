@@ -54,7 +54,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
             closeModal();
 
         } catch (e) {
-            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('DeleteOfferingRequestProcessing')});
+            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomethingWentWrong')});
         }
     }
 
@@ -67,11 +67,8 @@ class RemoveOfferingButton extends React.Component<Props, any>{
         const offeringStatus = offering.offerStatus;
         const offeringAge = lastProcessedBlock - offering.blockNumberUpdated;
 
-        const removeInfo = t('removeInfo', {minutes: removePeriodMinutes});
         const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
         const disabled = offeringAge < removePeriod;
-
-        
 
         if(disallowDeleting){
             return <div></div>;
@@ -81,7 +78,9 @@ class RemoveOfferingButton extends React.Component<Props, any>{
             return (
                 <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                     <h5 className='card-title'>{t('WarningArea')}</h5>
-                    <p className='card-text'>{removeInfo}</p>
+                    <p className='card-text'>{t('removeInfo')}</p>
+                    <p className='card-text'>{t('removeInfoDisabled', {minutes: removePeriodMinutes, blocks: removePeriod})}</p>
+                    <p className='card-text'>{t('lastAction', {lastAction: offeringAge})}</p>
                     <p>
                         <button className='btn btn-block btnCustomDisabled disabled'>{t('Remove')}</button>
                     </p>
@@ -92,10 +91,10 @@ class RemoveOfferingButton extends React.Component<Props, any>{
         return (
             <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <h5 className='card-title'>{t('WarningArea')}</h5>
-                <p className='card-text'>{removeInfo}</p>
+                <p className='card-text'>{t('removeInfo')}</p>
                 <ConfirmPopupSwal
                     title={t('Remove')}
-                    text={<span>{removeInfo}<br />
+                    text={<span>{t('removeInfo')}<br />
                         {t('WouldYouLikeToProceed')}</span>}
                     class={'btn btn-danger btn-custom btn-block'}
                     swalType='danger'
