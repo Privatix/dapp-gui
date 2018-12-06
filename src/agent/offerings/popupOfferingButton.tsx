@@ -76,7 +76,10 @@ class PopupOfferingButton extends React.Component<Props, any>{
         if(disabled){
             return (
                 <div className='card m-b-20 card-body text-xs-center'>
-                    <p className='card-text'>{popupInfo}</p>
+                    <p className='card-text'>{t('popupInfo')}</p>
+                    <p className='card-text'>{t('popupInfoDisabled', {min: popupPeriodMinutes, blocks: popupPeriod})}</p>
+                    <p className='card-text'>{t('lastAction', {lastAction: offeringAge})}</p>
+
                     <p>
                         <button className='btn btn-block btnCustomDisabled disabled'>{t('Popup')}</button>
                     </p>
@@ -87,7 +90,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
 
         return (
             <div className='card m-b-20 card-body text-xs-center'>
-                <p className='card-text'>{popupInfo}</p>
+                <p className='card-text'>{t('popupInfo')}</p>
                 <ConfirmPopupSwal
                     done={this.popupOffering}
                     title={t('Popup')}

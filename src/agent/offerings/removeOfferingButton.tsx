@@ -69,10 +69,6 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
         const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
         const disabled = offeringAge < removePeriod;
-        const removeInfo = disabled ? t('removeInfoDisabled', {minutes: removePeriodMinutes, blocks: removePeriod, lastAction: offeringAge})
-                                    : t('removeInfo');
-
-        
 
         if(disallowDeleting){
             return <div></div>;
@@ -82,7 +78,9 @@ class RemoveOfferingButton extends React.Component<Props, any>{
             return (
                 <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                     <h5 className='card-title'>{t('WarningArea')}</h5>
-                    <p className='card-text'>{removeInfo}</p>
+                    <p className='card-text'>{t('removeInfo')}</p>
+                    <p className='card-text'>{t('removeInfoDisabled', {minutes: removePeriodMinutes, blocks: removePeriod})}</p>
+                    <p className='card-text'>{t('lastAction', {lastAction: offeringAge})}</p>
                     <p>
                         <button className='btn btn-block btnCustomDisabled disabled'>{t('Remove')}</button>
                     </p>
@@ -93,10 +91,10 @@ class RemoveOfferingButton extends React.Component<Props, any>{
         return (
             <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <h5 className='card-title'>{t('WarningArea')}</h5>
-                <p className='card-text'>{removeInfo}</p>
+                <p className='card-text'>{t('removeInfo')}</p>
                 <ConfirmPopupSwal
                     title={t('Remove')}
-                    text={<span>{removeInfo}<br />
+                    text={<span>{t('removeInfo')}<br />
                         {t('WouldYouLikeToProceed')}</span>}
                     class={'btn btn-danger btn-custom btn-block'}
                     swalType='danger'
