@@ -9,6 +9,7 @@ import {State} from 'typings/state';
 import {Offering} from 'typings/offerings';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
+import notice from 'utils/notice';
 
 interface Props {
     offering: Offering;
@@ -37,13 +38,21 @@ class PopupOfferingButton extends React.Component<Props, any>{
         this.props.dispatch(asyncProviders.updateSettings());
     }
 
-    popupOffering = () => {
+    popupOffering = async () => {
 
-        const { closeModal, ws, offering, gasPrice } = this.props;
+        const { closeModal, ws, t, offering, gasPrice } = this.props;
 
-        ws.changeOfferingStatus(offering.id, 'popup', parseInt(gasPrice, 10));
-
-        closeModal();
+        try {
+            await ws.changeOfferingStatus(offering.id, 'popup', parseInt(gasPrice, 10));
+            notice({
+                level: 'info',
+                header: t('utils/notice:Congratulations!'),
+                msg: t('popupNotice')
+            });
+            closeModal();
+        } catch (e) {
+            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomethingWentWrong')});
+        }
 
     }
 
@@ -58,7 +67,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
 
         const showPopUp = ['registered', 'popped_up'].includes(offeringStatus);
         const disabled =  offeringAge < popupPeriod;
-        const popupInfo = disabled ? t('popupInfoDisabled', {min: popupPeriodMinutes}) : t('popupInfo');
+        const popupInfo = disabled ? t('popupInfoDisabled', {min: popupPeriodMinutes, blocks: popupPeriod, lastAction: offeringAge}) : t('popupInfo');
 
         if(!showPopUp){
             return <div></div>;

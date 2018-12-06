@@ -54,7 +54,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
             closeModal();
 
         } catch (e) {
-            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('DeleteOfferingRequestProcessing')});
+            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomethingWentWrong')});
         }
     }
 
@@ -67,9 +67,10 @@ class RemoveOfferingButton extends React.Component<Props, any>{
         const offeringStatus = offering.offerStatus;
         const offeringAge = lastProcessedBlock - offering.blockNumberUpdated;
 
-        const removeInfo = t('removeInfo', {minutes: removePeriodMinutes});
         const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
         const disabled = offeringAge < removePeriod;
+        const removeInfo = disabled ? t('removeInfoDisabled', {minutes: removePeriodMinutes, blocks: removePeriod, lastAction: offeringAge})
+                                    : t('removeInfo');
 
         
 
