@@ -49,7 +49,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
 
     render(){
 
-        const { t, offering, lastProcessedBlock, removePeriod, popupPeriod, gasPrice } = this.props;
+        const { t, offering, lastProcessedBlock, popupPeriod } = this.props;
 
         const popupPeriodMinutes = Math.floor(popupPeriod/4);
 
