@@ -20,6 +20,8 @@ interface IProps {
 @translate(['accounts/accountView', 'utils/notice'])
 class AccountView extends React.Component<IProps, any> {
 
+    private handlerId =  null;
+
     constructor(props: any) {
         super(props);
         this.state = {gasPrice: 6*1e9
@@ -31,11 +33,38 @@ class AccountView extends React.Component<IProps, any> {
         };
     }
 
-    onGasPriceChanged(evt: any){
+    componentDidMount() {
+        api.settings.getLocal()
+            .then(settings => this.setState({network: settings.network}));
+        this.startRefresh();
+    }
+
+    startRefresh(){
+        this.handlerId = setTimeout(this.refresh, 2000);
+    }
+
+    stopRefresh(){
+        if (this.handlerId) {
+            clearTimeout(this.handlerId);
+            this.handlerId = null;
+        }
+    }
+
+    refresh = async () => {
+        const account = await this.props.ws.getObject('account', this.state.account.id);
+        this.setState({account});
+        this.handlerId = setTimeout(this.refresh, 2000);
+    }
+
+    componentWillUnmount(){
+        this.stopRefresh();
+    }
+
+    onGasPriceChanged(evt: any) {
         this.setState({gasPrice: Math.floor(evt.target.value*1e9)}); // Gwei = 1e9 wei
     }
 
-    onTransferAmount(evt: any){
+    onTransferAmount(evt: any) {
         let amount = parseFloat(evt.target.value);
         if(amount !== amount){
             amount = 0;
@@ -45,7 +74,7 @@ class AccountView extends React.Component<IProps, any> {
         this.setState({amount});
     }
 
-    async checkUserInput(){
+    async checkUserInput() {
         const { t } = this.props;
 
         let err = false;
@@ -95,21 +124,12 @@ class AccountView extends React.Component<IProps, any> {
 
     }
 
-    componentDidMount(){
-        api.settings.getLocal()
-           .then(settings => this.setState({network: settings.network}));
-    }
-
-    changeTransferType(evt: any){
+    changeTransferType(evt: any) {
         evt.preventDefault();
         this.setState({destination: evt.target.value === 'psc' ? 'ptc' : 'psc'});
     }
 
-
-
-
-    render(){
-
+    render() {
         const { t } = this.props;
 
         return <div className='col-lg-9 col-md-8'>

@@ -394,6 +394,7 @@ export class WS {
     getObject(type: 'channel', id: string): Promise<Channel>;
     getObject(type: 'template', id: string): Promise<Template>;
     getObject(type: 'offering', id: string): Promise<Offering>;
+    getObject(type: 'account', id: string): Promise<Account>;
     getObject(type: string, id: string){
         return this.send('ui_getObject', [type, id]);
     }
