@@ -36,6 +36,8 @@ interface IProps {
 @translate(['offerings/createOffering', 'common', 'utils/notice'])
 class CreateOffering extends React.Component<IProps, any>{
 
+    private handlerId =  null;
+
     static defaultState = {
         payload: {
             serviceName: ''
@@ -73,8 +75,32 @@ class CreateOffering extends React.Component<IProps, any>{
         this.state = this.getDefaultState();
     }
 
-    async refresh(){
+    componentDidMount(){
+        this.refresh();
+    }
 
+    startRefreshAccount(){
+        this.handlerId = setTimeout(this.refreshAccount, 2000);
+    }
+
+    stopRefreshAccount(){
+        if (this.handlerId) {
+            clearTimeout(this.handlerId);
+            this.handlerId = null;
+        }
+    }
+
+    refreshAccount = async () => {
+        const account = await this.props.ws.getObject('account', this.state.account.id);
+        this.setState({account});
+        this.handlerId = setTimeout(this.refreshAccount, 2000);
+    }
+
+    componentWillUnmount(){
+        this.stopRefreshAccount();
+    }
+
+    async refresh() {
         const { ws } = this.props;
 
         const accounts = await ws.getAccounts();
@@ -88,7 +114,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                                agent: account.id,
                                                                country: products[0].country.toUpperCase()
                                                               });
-        this.setState({products, accounts, account, payload});
+        this.setState({products, accounts, account, payload}, this.startRefreshAccount);
         const templates = await ws.getTemplate(products[0].offerTplID);
         const state = {
             payload: Object.assign({}, this.state.payload, {template: products[0].offerTplID}),
@@ -356,10 +382,6 @@ class CreateOffering extends React.Component<IProps, any>{
 
         return;
 
-    }
-
-    componentDidMount(){
-        this.refresh();
     }
 
     redirectToServers() {
