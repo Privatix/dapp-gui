@@ -78,7 +78,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
                 <div className='card m-b-20 card-body text-xs-center'>
                     <p className='card-text'>{t('popupInfo')}</p>
                     <p className='card-text'>{t('popupInfoDisabled', {min: popupPeriodMinutes, blocks: popupPeriod})}</p>
-                    <p className='card-text'>{t('lastAction', {lastAction: offeringAge})}</p>
+                    <p className='card-text'>{t('lastActionPopup', {lastAction: offeringAge})}</p>
 
                     <p>
                         <button className='btn btn-block btnCustomDisabled disabled'>{t('Popup')}</button>

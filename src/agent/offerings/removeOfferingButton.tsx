@@ -66,6 +66,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
         const offeringStatus = offering.offerStatus;
         const offeringAge = lastProcessedBlock - offering.blockNumberUpdated;
+        const offeringAgeMinutes = Math.floor(offeringAge / 4);
 
         const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
         const disabled = offeringAge < removePeriod;
@@ -80,7 +81,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
                     <h5 className='card-title'>{t('WarningArea')}</h5>
                     <p className='card-text'>{t('removeInfo')}</p>
                     <p className='card-text'>{t('removeInfoDisabled', {minutes: removePeriodMinutes, blocks: removePeriod})}</p>
-                    <p className='card-text'>{t('lastAction', {lastAction: offeringAge})}</p>
+                    <p className='card-text'>{t('lastAction', {lastAction: offeringAge, lastActionMinutes: offeringAgeMinutes})}</p>
                     <p>
                         <button className='btn btn-block btnCustomDisabled disabled'>{t('Remove')}</button>
                     </p>
