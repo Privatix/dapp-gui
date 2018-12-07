@@ -463,7 +463,7 @@ input:checked + .slider:before {
   padding-left: 10px;
 }
 
-.slimScrollDiv, 
+.slimScrollDiv,
 .sidebar-inner.slimscrollleft {
   overflow: inherit !important;
 }
@@ -702,14 +702,18 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
 }
 
 .shortTableTextTd{
-    width: 18%;
-    min-width: 190px;
+    width: 1%;
+    min-width: 200px;
 }
 
 .copyToClipboardBtn{
     float: right;
     width: 15px;
     padding: 0 5px;
+}
+
+.noWrap{
+    white-space: nowrap;
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
