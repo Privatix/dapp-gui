@@ -67,7 +67,7 @@ class IncreaseDepositView extends React.Component<any, any> {
         }
 
         if(err){
-            notice({level: 'error', header: t('utils/notice:Attention!'), msg.join(' ')});
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg: msg.join(' ')});
             return false;
         }else{
             return true;
