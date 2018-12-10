@@ -165,8 +165,8 @@ export class WS {
         });
     }
 
-    topUp(channelId: string, gasPrice: number, handler: Function){
-        return this.send('ui_topUpChannel', [channelId, gasPrice]) as Promise<any>;
+    topUp(channelId: string, deposit: number, gasPrice: number, handler: Function){
+        return this.send('ui_topUpChannel', [channelId, deposit, gasPrice]) as Promise<any>;
     }
 
 // auth

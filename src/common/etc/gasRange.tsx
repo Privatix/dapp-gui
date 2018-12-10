@@ -7,24 +7,7 @@ import { translate } from 'react-i18next';
 
 export default class GasRange extends React.Component<any, any> {
 
-    constructor(props: any){
-        super(props);
-
-        const {t} = props;
-        const extLinkText = (isString(props.extLinkText)) ? props.extLinkText : 'https://ethgasstation.info/';
-        const averageTimeText = (isString(props.averageTimeText)) ? props.averageTimeText : t('AveragePublicationTimeText');
-
-        this.state = {
-            value: props.value,
-            gasPrice: props.value*1e9,
-            averageTime: this.averageTime(props.value),
-            extLinkText,
-            averageTimeText
-        };
-    }
-
-    changeGasPrice(evt: any){
-        this.setState({value: evt.target.value, gasPrice: evt.target.value * 1e9, averageTime: this.averageTime(evt.target.value)});
+    changeGasPrice = (evt: any) => {
         if(typeof this.props.onChange === 'function'){
             this.props.onChange(evt);
         }
@@ -46,24 +29,35 @@ export default class GasRange extends React.Component<any, any> {
     }
 
     render() {
-        const {t} = this.props;
+        const { value, t, extLinkText, averageTimeText } = this.props;
+
+        const extLink = (isString(extLinkText)) ? extLinkText : 'https://ethgasstation.info/';
+        const averageTime = isString(averageTimeText) ? averageTimeText : t('AveragePublicationTimeText');
 
         return <div>
             <div className='form-group row'>
                 <label className='col-2 col-form-label'>{t('GasPrice')}</label>
                 <div className='col-md-6'>
-                    <input className='form-control' onChange={this.changeGasPrice.bind(this)} type='range' name='range' min='0' max='20' step='any' value={this.state.value}/>
+                    <input className='form-control'
+                           onChange={this.changeGasPrice}
+                           type='range'
+                           name='range'
+                           min='0'
+                           max='20'
+                           step='any'
+                           value={value}
+                    />
                 </div>
                 <div className='col-4 col-form-label'>
-                    <span>{Number(this.state.value).toFixed(2)}</span> Gwei
+                    <span>{Number(value).toFixed(2)}</span> Gwei
                 </div>
             </div>
             <div className='form-group row'>
                 <div className='col-12 col-form-label'>
-                    <strong>{this.state.averageTimeText} {this.state.averageTime} {t('AverageTime')}</strong>
+                    <strong>{averageTime} {this.averageTime(value)} {t('AverageTime')}</strong>
                 </div>
                 <div className='col-12 col-form-label'>
-                    <strong>{t('MoreInformation')}</strong> <ExternalLink href='https://ethgasstation.info/' text={this.state.extLinkText} />
+                    <strong>{t('MoreInformation')}</strong> <ExternalLink href='https://ethgasstation.info/' text={extLink} />
                 </div>
             </div>
         </div>;
