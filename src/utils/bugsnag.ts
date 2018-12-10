@@ -1,6 +1,6 @@
 import bugsnag from 'bugsnag-js';
 
-const bugsnag_handler = (window, apiKey, release, commit) => {
+const bugsnag_handler = async (window, apiKey, release, commit, userId) => {
     // if we have release tag, this is Production environment, else Development
     const commitTrimmed = commit.substring(0, 7);
     let appVersion = 'undefined (' + commitTrimmed + ')';
@@ -14,8 +14,14 @@ const bugsnag_handler = (window, apiKey, release, commit) => {
         apiKey: apiKey,
         autoNotify: false,
         appVersion,
-        releaseStage
+        releaseStage,
     });
+
+    const role = await (window as any).ws.getUserRole();
+    bugsnagClient.user = {
+        id: userId,
+        role
+    };
 
     if (window.onerror) {
         window.addEventListener('error', async function(ErrorEvent:any) {

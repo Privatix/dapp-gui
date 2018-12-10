@@ -14,8 +14,8 @@ import {LocalSettings} from 'typings/settings';
 
 (async () => {
     const settings = (await api.settings.getLocal()) as LocalSettings;
-    if (settings.bugsnagEnable) {
-        registerBugsnag(window, settings.bugsnagKey, settings.release, settings.commit);
+    if (settings.bugsnag.enable) {
+        await registerBugsnag(window, settings.bugsnag.key, settings.release, settings.commit, settings.bugsnag.userid);
     }
 })();
 

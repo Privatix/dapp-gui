@@ -11,8 +11,11 @@ export interface LocalSettings {
     wsEndpoint: string;
     gas: GasConsumption;
     network: string;
-    bugsnagKey: string;
-    bugsnagEnable: boolean;
+    bugsnag: {
+        userid: string;
+        key: string;
+        enable: boolean;
+    },
     release: string;
     commit: string;
     logsCountPerPage: number;
