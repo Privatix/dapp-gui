@@ -53,21 +53,21 @@ class IncreaseDepositView extends React.Component<any, any> {
         const { t } = this.props;
 
         let err = false;
-        let msg = '';
+        let msg = [];
         const settings = await api.settings.getLocal();
 
         if(!this.state.account || settings.gas.increaseDeposit*this.state.gasPrice > this.state.account.ethBalance) {
             err = true;
-            msg += t('ErrorNotEnoughPublishFunds');
+            msg.push(t('ErrorNotEnoughPublishFunds'));
         }
 
         if(!this.state.account || this.getDeposit() > this.state.account.pscBalance){
             err = true;
-            msg += t('ErrorNotEnoughPRIX');
+            msg.push(t('ErrorNotEnoughPRIX'));
         }
 
         if(err){
-            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg.join(' ')});
             return false;
         }else{
             return true;

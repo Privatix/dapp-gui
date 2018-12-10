@@ -560,8 +560,8 @@
         "IncreaseBtn": "Добавить",
         "SuccessMessage": "Добавление депозита успешно инициировано!",
         "SomethingWentWrong": "Что то пошло не так! Попробуйте позже!",
-        "ErrorNotEnoughPublishFunds": " Недостаточно средств для публикации транзакции.",
-        "ErrorNotEnoughPRIX": " Недостаточно PRIX для пополнения депозита."
+        "ErrorNotEnoughPublishFunds": "Недостаточно средств для публикации транзакции.",
+        "ErrorNotEnoughPRIX": "Недостаточно PRIX для пополнения депозита."
     },
     "electronMenu": {
         "File": "Файл",

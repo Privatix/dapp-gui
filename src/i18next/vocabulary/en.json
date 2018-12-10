@@ -559,8 +559,8 @@
         "IncreaseBtn": "Add",
         "SuccessMessage": "Adding deposit successfully initialized!",
         "SomethingWentWrong": "Something went wrong. Try again later!",
-        "ErrorNotEnoughPublishFunds": " Not enough funds to publish transaction.",
-        "ErrorNotEnoughPRIX": " Not enough PRIX to increase deposit."
+        "ErrorNotEnoughPublishFunds": "Not enough funds to publish transaction.",
+        "ErrorNotEnoughPRIX": "Not enough PRIX to increase deposit."
     },
     "electronMenu": {
         "File": "File",
