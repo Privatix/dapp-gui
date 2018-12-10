@@ -9,7 +9,6 @@ import {fetch} from '../../utils/fetch';
 import toFixedN from '../../utils/toFixedN';
 import SessionsTable from './sessionsTable';
 import { State } from '../../typings/state';
-import { Offering } from '../../typings/offerings';
 
 @translate(['sessions/sessionsList'])
 
@@ -34,15 +33,7 @@ class Sessions extends React.Component <any,any> {
             return usage + session.unitsUsed;
         }, 0);
 
-        const offeringsArr = sessions.map(session => {
-            return ws.getObject('channel', session.channel)
-                     .then(channel => ws.getObject('offering', channel.offering));
-        });
-        const offerings = await Promise.all(offeringsArr as Promise<Offering>[]);
-
-        const income = sessions.reduce((income, session, i) => {
-            return income + session.unitsUsed * offerings[i].unitPrice;
-        }, 0);
+        const income = await ws.getTotalIncome();
 
         const sessionsData = sessions.map((session: any) => {
             return {
