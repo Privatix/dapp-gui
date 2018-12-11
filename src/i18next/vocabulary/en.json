@@ -624,6 +624,9 @@
         "system_version_app_Name": "application version",
         "somc_transport_tor_Name": "use Tor",
         "client_somc_transports_Name": "allowed SOMC transport",
+        "psc_periods_challenge_Name": "Challenge period",
+        "psc_periods_popup_Name": "Popup period",
+        "psc_periods_remove_Name": "Remove period",
         "error_sendremote_Description": "Allow error reporting to send logs to Privatix.",
         "eth_challenge_period_Description": "Number of blocks to wait from an uncooperativeClose initiated by the Client in order to give the Agent a chance to respond with a balance proof in case the Client cheats. After the challenge period, the Client can settle and delete the channel. Number of blocks Agent will wait from registerServiceOffering or from createChannel before he can delete service offering and recieve Agent's deposit back_",
         "eth_default_gasprice_Description": "Default GAS price for transactions.",
@@ -638,6 +641,9 @@
         "offering_autopopup_Description": "Allow offerings to pop up automatically.",
         "system_version_app_Description": "Application version",
         "somc_transport_tor_Description": "Fully decentralized mode. If true use Tor for messaging between Agent and Client. Offerings and access messages will be retrieved via Tor. Messages published through centralised SOMC, will not be available.",
+        "psc_periods_challenge_Description": "Number of blocks to be mined to finish uncooperative channel close",
+        "psc_periods_popup_Description": "Number of blocks to be mined to repeatedly pop up an offering",
+        "psc_periods_remove_Description": "Number of blocks to be mined from last offering update in blockchain to remove offering"
         "client_somc_transports_Description": "Offering with what SOMC type to display."
     },
     "copyToClipboard": {
