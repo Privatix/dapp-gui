@@ -623,6 +623,7 @@
         "offering_autopopup_Name": "offering autopopup",
         "system_version_app_Name": "application version",
         "somc_transport_tor_Name": "use Tor",
+        "client_somc_transports_Name": "allowed SOMC transport",
         "psc_periods_challenge_Name": "Challenge period",
         "psc_periods_popup_Name": "Popup period",
         "psc_periods_remove_Name": "Remove period",
@@ -643,6 +644,7 @@
         "psc_periods_challenge_Description": "Number of blocks to be mined to finish uncooperative channel close",
         "psc_periods_popup_Description": "Number of blocks to be mined to repeatedly pop up an offering",
         "psc_periods_remove_Description": "Number of blocks to be mined from last offering update in blockchain to remove offering"
+        "client_somc_transports_Description": "Offering with what SOMC type to display."
     },
     "copyToClipboard": {
         "Copied": "Copied!",
