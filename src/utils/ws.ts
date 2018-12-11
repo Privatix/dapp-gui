@@ -8,7 +8,7 @@ import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
 import {Session} from 'typings/session';
-import {Channel, ClientChannel} from 'typings/channels';
+import {Channel, ClientChannel, ClientChannelUsage} from 'typings/channels';
 import {Template} from 'typings/templates';
 import { Log } from 'typings/logs';
 import { State } from 'typings/state';
@@ -165,8 +165,8 @@ export class WS {
         });
     }
 
-    topUp(channelId: string, gasPrice: number, handler: Function){
-        return this.send('ui_topUpChannel', [channelId, gasPrice]) as Promise<any>;
+    topUp(channelId: string, deposit: number, gasPrice: number, handler: Function){
+        return this.send('ui_topUpChannel', [channelId, deposit, gasPrice]) as Promise<any>;
     }
 
 // auth
@@ -381,8 +381,8 @@ export class WS {
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 
-    getChannelUsage(channelId: string): Promise<number>{
-        return this.send('ui_getChannelUsage', [channelId]) as Promise<number>;
+    getChannelUsage(channelId: string): Promise<ClientChannelUsage>{
+        return this.send('ui_getChannelUsage', [channelId]) as Promise<ClientChannelUsage>;
     }
 
     changeChannelStatus(channelId: string, channelStatus: string){
@@ -394,6 +394,7 @@ export class WS {
     getObject(type: 'channel', id: string): Promise<Channel>;
     getObject(type: 'template', id: string): Promise<Template>;
     getObject(type: 'offering', id: string): Promise<Offering>;
+    getObject(type: 'account', id: string): Promise<Account>;
     getObject(type: string, id: string){
         return this.send('ui_getObject', [type, id]);
     }

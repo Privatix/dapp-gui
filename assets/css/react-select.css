@@ -276,7 +276,7 @@
   box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
   box-sizing: border-box;
   margin-top: -1px;
-  max-height: 200px;
+  max-height: 140px;
   position: absolute;
   left: 0;
   top: 100%;
@@ -285,7 +285,7 @@
   -webkit-overflow-scrolling: touch;
 }
 .Select-menu {
-  max-height: 198px;
+  max-height: 138px;
   overflow-y: auto;
 }
 .Select-option {

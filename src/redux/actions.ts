@@ -56,7 +56,10 @@ export const asyncProviders: AsyncProviders = {
         return function(dispatch: any){
             (window as any).ws.getSettings()
                 .then(settings => {
-                    dispatch(handlers.updateSettings(settings));
+                    dispatch(handlers.updateSettings(Object.keys(settings).reduce((acc, key) => {
+                        acc[key] = settings[key].value;
+                        return acc;
+                    }, {})));
                 });
         };
     },
