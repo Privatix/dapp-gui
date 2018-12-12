@@ -20,15 +20,12 @@ interface IProps {
 @translate(['accounts/accountView', 'utils/notice'])
 class AccountView extends React.Component<IProps, any> {
 
-    private handlerId =  null;
-
     constructor(props: any) {
         super(props);
         this.state = {gasPrice: 6*1e9
                      ,amount: 0
                      ,destination: 'psc'
                      ,address: `0x${props.account.ethAddr}`
-                     ,account: props.account
                      ,network: ''
         };
     }
@@ -36,35 +33,13 @@ class AccountView extends React.Component<IProps, any> {
     componentDidMount() {
         api.settings.getLocal()
             .then(settings => this.setState({network: settings.network}));
-        this.startRefresh();
     }
 
-    startRefresh(){
-        this.handlerId = setTimeout(this.refresh, 2000);
-    }
-
-    stopRefresh(){
-        if (this.handlerId) {
-            clearTimeout(this.handlerId);
-            this.handlerId = null;
-        }
-    }
-
-    refresh = async () => {
-        const account = await this.props.ws.getObject('account', this.state.account.id);
-        this.setState({account});
-        this.handlerId = setTimeout(this.refresh, 2000);
-    }
-
-    componentWillUnmount(){
-        this.stopRefresh();
-    }
-
-    onGasPriceChanged(evt: any) {
+    onGasPriceChanged = (evt: any) => {
         this.setState({gasPrice: Math.floor(evt.target.value*1e9)}); // Gwei = 1e9 wei
     }
 
-    onTransferAmount(evt: any) {
+    onTransferAmount = (evt: any) => {
         let amount = parseFloat(evt.target.value);
         if(amount !== amount){
             amount = 0;
@@ -74,8 +49,9 @@ class AccountView extends React.Component<IProps, any> {
         this.setState({amount});
     }
 
-    async checkUserInput() {
-        const { t } = this.props;
+    checkUserInput = async () => {
+
+        const { t, account } = this.props;
 
         let err = false;
         let msg = '';
@@ -86,17 +62,17 @@ class AccountView extends React.Component<IProps, any> {
             msg += t('ErrorMoreThanZero');
         }
 
-        if(this.state.destination === 'psc' && this.state.account.ptcBalance < this.state.amount){
+        if(this.state.destination === 'psc' && account.ptcBalance < this.state.amount){
             err = true;
             msg += t('ErrorNotEnoughExchangeFunds');
         }
 
-        if(this.state.destination === 'ptc' && this.state.account.pscBalance < this.state.amount){
+        if(this.state.destination === 'ptc' && account.pscBalance < this.state.amount){
             err = true;
             msg += t('ErrorNotEnoughServiceFunds');
         }
 
-        if(settings.gas.transfer*this.state.gasPrice > this.state.account.ethBalance) {
+        if(settings.gas.transfer*this.state.gasPrice > account.ethBalance) {
             err = true;
             msg += t('ErrorNotEnoughPublishFunds');
         }
@@ -111,8 +87,8 @@ class AccountView extends React.Component<IProps, any> {
 
     transferTokens = async () => {
 
-        const { t, ws } = this.props;
-        const { account, amount, destination, gasPrice } = this.state;
+        const { t, ws, account } = this.props;
+        const { amount, destination, gasPrice } = this.state;
 
         try {
             await ws.transferTokens(account.id, destination, amount, gasPrice);
@@ -124,13 +100,15 @@ class AccountView extends React.Component<IProps, any> {
 
     }
 
-    changeTransferType(evt: any) {
+    changeTransferType = (evt: any) => {
         evt.preventDefault();
         this.setState({destination: evt.target.value === 'psc' ? 'ptc' : 'psc'});
     }
 
     render() {
-        const { t } = this.props;
+
+        const { t, account } = this.props;
+        const { destination, address, gasPrice, network } = this.state;
 
         return <div className='col-lg-9 col-md-8'>
             <div className='card m-b-20'>
@@ -139,13 +117,13 @@ class AccountView extends React.Component<IProps, any> {
                     <div className='form-group row'>
                         <label className='col-3 col-form-label'>{t('Name')}</label>
                         <div className='col-9'>
-                            <input type='text' className='form-control' value={this.state.account.name} readOnly/>
+                            <input type='text' className='form-control' value={account.name} readOnly/>
                         </div>
                     </div>
                     <div className='form-group row'>
                         <label className='col-3 col-form-label'>{t('Address')}</label>
                         <div className='col-9'>
-                            <input type='text' className='form-control' value={this.state.address} readOnly/>
+                            <input type='text' className='form-control' value={address} readOnly/>
                         </div>
                     </div>
                 </div>
@@ -157,7 +135,7 @@ class AccountView extends React.Component<IProps, any> {
                         <label className='col-3 col-form-label'>{t('ExchangeBalance')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={this.state.account.ptcBalance/1e8} readOnly/>
+                                <input type='text' className='form-control' value={account.ptcBalance/1e8} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -166,7 +144,7 @@ class AccountView extends React.Component<IProps, any> {
                         <label className='col-3 col-form-label'>{t('ServiceBalance')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={this.state.account.pscBalance/1e8} readOnly/>
+                                <input type='text' className='form-control' value={account.pscBalance/1e8} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -182,14 +160,14 @@ class AccountView extends React.Component<IProps, any> {
                             <div className='row'>
                                 <div className='col-8'>
                                     <select className='form-control'
-                                            value={this.state.destination === 'psc' ? 'ptc' : 'psc'}
-                                            onChange={this.changeTransferType.bind(this)}>
+                                            value={destination === 'psc' ? 'ptc' : 'psc'}
+                                            onChange={this.changeTransferType}>
                                         <option value='ptc' >{t('ExchangeBalanceOption')}</option>
                                         <option value='psc' >{t('ServiceBalanceOption')}</option>
                                     </select>
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    <span>{(this.state.destination === 'psc' ? this.state.account.ptcBalance : this.state.account.pscBalance)/1e8}</span> PRIX
+                                    <span>{(destination === 'psc' ? account.ptcBalance : account.pscBalance)/1e8}</span> PRIX
                                 </div>
                             </div>
                         </div>
@@ -199,7 +177,7 @@ class AccountView extends React.Component<IProps, any> {
                         <div className='col-9'>
                             <input type='text'
                                    className='form-control'
-                                   value={this.state.destination === 'psc' ? t('ServiceBalanceOption') : t('ExchangeBalanceOption')}
+                                   value={destination === 'psc' ? t('ServiceBalanceOption') : t('ExchangeBalanceOption')}
                                    readOnly/>
                         </div>
                     </div>
@@ -207,20 +185,28 @@ class AccountView extends React.Component<IProps, any> {
                         <label className='col-3 col-form-label'>{t('Amount')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' onChange={this.onTransferAmount.bind(this)} className='form-control'/>
+                                <input type='text' onChange={this.onTransferAmount} className='form-control'/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
                     </div>
-                    <GasRange onChange={this.onGasPriceChanged.bind(this)} value={this.state.gasPrice/1e9} />
+                    <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} />
                     <div className='form-group row'>
                         <div className='col-12'>
                             <ConfirmPopupSwal
-                                beforeAsking={this.checkUserInput.bind(this)}
+                                beforeAsking={this.checkUserInput}
                                 done={this.transferTokens}
                                 title={t('TransferBtn')}
-                                text={<span>{t('TransferSwalText1')} {this.state.destination === 'ptc' ? t('ServiceSwalBalanceFrom') : t('ExchangeSwalBalanceFrom')} {t('TransferSwalText2')} {this.state.destination === 'psc' ? t('ServiceSwalBalance') : t('ExchangeSwalBalance')} {t('TransferSwalText3')}<br />
-                                    {t('TransferSwalText4')}<br /><br />{t('TransferSwalText5')}</span>}
+                                text={<span>
+                                        {t('TransferSwalText1')}
+                                        {destination === 'ptc' ? t('ServiceSwalBalanceFrom') : t('ExchangeSwalBalanceFrom')}
+                                        {t('TransferSwalText2')}
+                                        {destination === 'psc' ? t('ServiceSwalBalance') : t('ExchangeSwalBalance')}
+                                        {t('TransferSwalText3')}
+                                        <br />
+                                        {t('TransferSwalText4')}<br /><br />
+                                        {t('TransferSwalText5')}
+                                      </span>}
                                 class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
                                 swalType='warning'
                                 swalConfirmBtnText={t('TransferConfirmBtn')}
@@ -230,7 +216,7 @@ class AccountView extends React.Component<IProps, any> {
                 </div>
             </div>
 
-            <Transactions accountId={this.state.account.id} network={this.state.network} />
+            <Transactions accountId={account.id} network={network} />
         </div>;
     }
 }

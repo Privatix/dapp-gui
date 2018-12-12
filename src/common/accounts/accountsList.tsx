@@ -7,15 +7,16 @@ import SortableTable from 'react-sortable-table-vilan';
 
 import ModalWindow from 'common/modalWindow';
 import Account from './accountView';
+import CopyToClipboard from 'common/copyToClipboard';
+
 import notice from 'utils/notice';
+import { WS } from 'utils/ws';
+
 import {State} from 'typings/state';
 import {Account as AccountType} from 'typings/accounts';
-import CopyToClipboard from 'common/copyToClipboard';
-import { WS } from 'utils/ws';
 
 interface Props {
     accounts: AccountType[];
-    dispatch: any;
     t: any;
     ws: WS;
 }
@@ -38,19 +39,34 @@ class Accounts extends React.Component<Props, any> {
 
     render(){
 
-        const { t } = this.props;
+        const { t, accounts } = this.props;
 
-        const accountsDataArr = this.props.accounts.map((account: any) => {
-            let isDefault = account.isDefault === true ? 'on' : 'off';
+        const accountsDataArr = accounts.map((account: any) => {
+
+            const isDefault = account.isDefault === true ? 'on' : 'off';
+
             const ethereumAddress = `0x${account.ethAddr}`;
             return {
-                name: <ModalWindow key={ethereumAddress} visible={false} customClass='' modalTitle={t('ModalTitle')} text={account.name} component={<Account account={account} />} />,
+                name: <ModalWindow key={ethereumAddress}
+                                   visible={false}
+                                   customClass=''
+                                   modalTitle={t('ModalTitle')}
+                                   text={account.name}
+                                   component={<Account account={account} />}
+                      />,
                 ethereumAddress,
                 eth: (account.ethBalance/1e18).toFixed(3),
                 exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
                 serviceBalance: (account.pscBalance/1e8).toFixed(3),
-                isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault}><i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i></span>,
-                actions: <Link to={'#'} onClick={this.onRefresh.bind(this, account.id)} className='btn btn-default btn-custom waves-effect waves-light'>{t('CheckBalanceBtn')}</Link>
+                isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault}>
+                               <i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i>
+                           </span>,
+                actions: <Link to={'#'}
+                               onClick={this.onRefresh.bind(this, account.id)}
+                               className='btn btn-default btn-custom waves-effect waves-light'
+                         >
+                             {t('CheckBalanceBtn')}
+                         </Link>
             };
 
         });
@@ -109,7 +125,9 @@ class Accounts extends React.Component<Props, any> {
                 <div className='col-sm-12 m-b-15'>
                     <h3 className='page-title'>{t('Title')}</h3>
                     <div className='m-t-15'>
-                        <Link to={'/setAccount'} className='btn btn-default btn-custom waves-effect waves-light m-r-15'>{t('CreateBtn')}</Link>
+                        <Link to={'/setAccount'} className='btn btn-default btn-custom waves-effect waves-light m-r-15'>
+                            {t('CreateBtn')}
+                        </Link>
                     </div>
                 </div>
             </div>
@@ -119,7 +137,8 @@ class Accounts extends React.Component<Props, any> {
                         <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                             <SortableTable
                                 data={accountsDataArr}
-                                columns={columns} />
+                                columns={columns}
+                            />
                         </div>
                     </div>
                 </div>

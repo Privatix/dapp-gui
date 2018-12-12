@@ -12,11 +12,11 @@ import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import ModalWindow from 'common/modalWindow';
 
 import { Product as ProductType } from 'typings/products';
-import { Offering as OfferingType} from 'typings/offerings';
+import { ResolvedOffering } from 'typings/offerings';
 
 interface IProps {
     products: ProductType[];
-    offerings: OfferingType[];
+    offerings: ResolvedOffering[];
     t?: any;
 }
 
@@ -27,21 +27,27 @@ class OfferingsListView extends React.Component<IProps, any> {
 
         const { t, products, offerings } = this.props;
 
-        const offeringsDataArr = [];
-
-        offerings.map((offering: any) => {
-            let product = products.filter((product: any) => product.id === offering.product)[0];
-            let row = {
-                hash: <ModalWindow customClass='shortTableText' modalTitle={t('Offering')} text={'0x' + offering.hash} copyToClipboard={true} component={<Offering offering={offering} />} />,
+        const offeringsDataArr = offerings.map(offering => {
+            const product = products.filter(product => product.id === offering.product)[0];
+            return {
+                hash: <ModalWindow customClass='shortTableText'
+                                   modalTitle={t('Offering')}
+                                   text={'0x' + offering.hash}
+                                   copyToClipboard={true}
+                                   component={<Offering offering={offering} />}
+                      />,
                 serviceName: offering.serviceName,
-                server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={offering.productName} component={<Product product={product} />} />,
+                server: <ModalWindow customClass=''
+                                     modalTitle={t('ServerInfo')}
+                                     text={offering.productName}
+                                     component={<Product product={product} />}
+                        />,
                 status: offering.status,
                 offerStatus: offering.offerStatus,
                 availableSupply: offering.currentSupply,
                 supply: offering.supply
             };
 
-            offeringsDataArr.push(row);
         });
 
         const columns = [

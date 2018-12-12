@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
 
 import {TemplateType} from 'typings/templates';
-import {OfferStatus, Offering} from 'typings/offerings';
+import {OfferStatus, Offering, ResolvedOffering} from 'typings/offerings';
 import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
@@ -320,7 +320,7 @@ export class WS {
         return this.getObject('offering', id) as Promise<Offering>;
     }
 
-    async fetchOfferingsAndProducts(productId: string, statuses: OfferStatus[]){
+    async fetchOfferingsAndProducts(productId: string, statuses: OfferStatus[]): Promise<{offerings: ResolvedOffering[], products: Product[]}> {
 
         let offerings = [];
         const products = await this.getProducts();

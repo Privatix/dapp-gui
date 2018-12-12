@@ -41,7 +41,7 @@ export const asyncProviders: AsyncProviders = {
             const { ws } = getState();
             ws.getAccounts()
                .then(accounts => {
-                    dispatch(handlers.updateAccounts(accounts));
+                   dispatch(handlers.updateAccounts(accounts));
                });
         };
     },
