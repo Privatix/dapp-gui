@@ -12,6 +12,7 @@ export const enum actions {
     UPDATE_PRODUCTS,
     UPDATE_SETTINGS,
     UPDATE_OFFERINGS,
+    UPDATE_TOTAL_INCOME,
     SET_CHANNEL,
     SET_WS
 }
@@ -26,6 +27,7 @@ const handlers: ReduxHandlers = {
     updateProducts             : function(products: Product[]){ return { type: actions.UPDATE_PRODUCTS, value: products };},
     updateSettings             : function(settings: Setting[]){ return { type: actions.UPDATE_SETTINGS, value: settings };},
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
+    updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     setMode                    : function(mode: Role){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};}
@@ -72,6 +74,15 @@ export const asyncProviders: AsyncProviders = {
             ws.getAgentOfferings()
                 .then(offerings => {
                     dispatch(handlers.updateOfferings(offerings.items));
+                });
+        };
+    },
+    updateTotalIncome: function(){
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+            ws.getTotalIncome()
+                .then(totalIncome => {
+                    dispatch(handlers.updateTotalIncome(totalIncome));
                 });
         };
     },

@@ -12,34 +12,11 @@ import { State } from 'typings/state';
 
 class Main extends React.Component <any,any> {
 
-    constructor(props:any) {
-        super(props);
-
-        this.state = { income: '' };
-    }
-
-    componentDidMount() {
-        this.refresh();
-    }
-
-
-    refresh() {
-        this.getTotalIncome();
-    }
-
-    async getTotalIncome() {
-
-        const { ws } = this.props;
-
-        const totalIncome = await ws.getTotalIncome();
-        const income = toFixedN({number: (totalIncome / 1e8), fixed: 8});
-        this.setState({income});
-    }
-
     render() {
 
-        const { t } = this.props;
-        const { income } = this.state;
+        const { t, totalIncome } = this.props;
+
+        const income = toFixedN({number: (totalIncome / 1e8), fixed: 8});
 
         return <div className='container-fluid'>
             <div className='row'>
@@ -67,4 +44,4 @@ class Main extends React.Component <any,any> {
     }
 }
 
-export default connect((state: State) => ({ws: state.ws}))(Main);
+export default connect((state: State) => ({totalIncome: state.totalIncome}))(Main);
