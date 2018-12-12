@@ -20,9 +20,11 @@ const refresh = function(){
         if(mode === Role.AGENT){
             storage.dispatch(asyncProviders.updateTotalIncome());
         }
-    }
 
-    setTimeout(refresh, 3000);
+        setTimeout(refresh, 3000);
+    }else{
+        setTimeout(refresh, 1000);
+    }
 };
 
 refresh();
