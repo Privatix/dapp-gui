@@ -37,24 +37,27 @@ interface AsyncProviders {
 
 export const asyncProviders: AsyncProviders = {
     updateAccounts: function(){
-        return function(dispatch: any){
-            (window as any).ws.getAccounts()
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+            ws.getAccounts()
                .then(accounts => {
                     dispatch(handlers.updateAccounts(accounts));
                });
         };
     },
     updateProducts: function(){
-        return function(dispatch: any){
-            (window as any).ws.getProducts()
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+            ws.getProducts()
                .then(products => {
                    dispatch(handlers.updateProducts(products));
                });
         };
     },
     updateSettings: function(){
-        return function(dispatch: any){
-            (window as any).ws.getSettings()
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+            ws.getSettings()
                 .then(settings => {
                     dispatch(handlers.updateSettings(Object.keys(settings).reduce((acc, key) => {
                         acc[key] = settings[key].value;
@@ -64,16 +67,18 @@ export const asyncProviders: AsyncProviders = {
         };
     },
     updateOfferings: function(){
-        return function(dispatch: any){
-            (window as any).ws.getAgentOfferings()
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+            ws.getAgentOfferings()
                 .then(offerings => {
                     dispatch(handlers.updateOfferings(offerings.items));
                 });
         };
     },
     setMode: function(mode:Role, history: any, t: any){
-        return function(dispatch: any){
-            (window as any).ws.getUserRole()
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+            ws.getUserRole()
                .then(role => {
                    // TODO check if error
                    dispatch(handlers.setMode(role));
