@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
+import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
 import {TemplateType} from 'typings/templates';
 import {OfferStatus, Offering, ResolvedOffering} from 'typings/offerings';
@@ -108,6 +109,27 @@ export class WS {
             };
             this.socket.send(JSON.stringify(req));
         }) as Promise<string>;
+    }
+
+    on(testRequest: Function, currentResult: any, handler: Function){
+
+        const state = { id: null};
+
+        const tester = async () => {
+            const result = await testRequest();
+            if(isEqual(result, currentResult)){
+                state.id = setTimeout(testRequest, 1000);
+            }else {
+                handler();
+            }
+        };
+
+        tester();
+
+        return () => {
+            clearTimeout(state.id);
+        };
+
     }
 
     unsubscribe(id: string){

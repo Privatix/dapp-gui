@@ -14,6 +14,7 @@ const refresh = function(){
 
     if(ws){
         storage.dispatch(asyncProviders.updateAccounts());
+        storage.dispatch(asyncProviders.updateProducts());
     }
 
     setTimeout(refresh, 3000);
