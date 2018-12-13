@@ -51,7 +51,7 @@ class CreateOffering extends React.Component<IProps, any>{
            ,unitType: 'units'
            ,unitPrice: ''
            ,billingType: 'prepaid'
-           ,maxBillingUnitLag: ''
+           ,maxBillingUnitLag: 70
            ,minUnits: ''
            ,maxUnit: ''
            ,maxSuspendTime: ''
@@ -381,6 +381,11 @@ class CreateOffering extends React.Component<IProps, any>{
         }
     }
 
+    openExternalLink(url: string) {
+        // TODO: mpt sure is this ok on all systems
+        require('electron').shell.openExternal(url);
+    }
+
     render(){
         const { t } = this.props;
 
@@ -533,7 +538,17 @@ class CreateOffering extends React.Component<IProps, any>{
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
-                                            <small>{t('MaximumPaymentLagInUnits')}</small>
+                                            <small>
+                                                <strong>{t('Attention') + ' '}</strong>
+                                                {t('MaximumPaymentLagInUnits') + ' '}
+                                                <Trans i18nKey='MaxBillingUnitLagHelpLink'>
+                                                    Do not change, if you do not understand
+                                                    <button
+                                                        className='btn btn-link btnLinkSmallCustom'
+                                                        onClick={() => this.openExternalLink('https://privatix.atlassian.net/wiki/spaces/BVP/pages/603848732/Max.+billing+unit+lag')}
+                                                    >how to calculate max. billing unit lag</button>
+                                                </Trans>
+                                            </small>
                                         </span>
                                     </div>
                                 </div>
