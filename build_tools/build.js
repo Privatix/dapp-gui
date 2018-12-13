@@ -1,9 +1,14 @@
 const fs = require('fs');
 const config = require('../package');
 
-const packager = config.devDependencies['electron-packager'];
-config.devDependencies = {};
-config.dependencies = {'electron-packager': packager};
+const deps = ['electron-packager', 'electron'];
+
+config.dependencies = {};
+config.devDependencies = deps.reduce((acc, name) => {
+    acc[name] = config.devDependencies[name];
+    return acc;
+}, {});
+
 config.main = './main.js';
 config.private = false;
 
