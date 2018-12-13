@@ -115,7 +115,7 @@ class Header extends React.Component<any, any>{
                     </a>
                 </ul>
 
-                <TopPanel mode={this.props.mode} rate={3000} />
+                <TopPanel />
 
                 <ul className='list-inline menu-left mb-0'>
                     <li className='float-left'>

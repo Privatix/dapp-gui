@@ -16,7 +16,10 @@ import * as ubold from 'css/index.cssx';
 // import * as styles from './index.css';
 
 import { WS } from 'utils/ws';
+
 import { State } from 'typings/state';
+import { Account } from 'typings/accounts';
+import { Product } from 'typings/products';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -31,12 +34,12 @@ interface IProps {
     closeModal?: Function;
     location?: any;
     history?: any;
+    accounts?: Account[];
+    products?: Product[];
 }
 
 @translate(['offerings/createOffering', 'common', 'utils/notice'])
 class CreateOffering extends React.Component<IProps, any>{
-
-    private handlerId =  null;
 
     static defaultState = {
         payload: {
@@ -70,7 +73,7 @@ class CreateOffering extends React.Component<IProps, any>{
         return state;
     }
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
         this.state = this.getDefaultState();
     }
@@ -79,34 +82,17 @@ class CreateOffering extends React.Component<IProps, any>{
         this.refresh();
     }
 
-    startRefreshAccount(){
-        this.handlerId = setTimeout(this.refreshAccount, 2000);
-    }
-
-    stopRefreshAccount(){
-        if (this.handlerId) {
-            clearTimeout(this.handlerId);
-            this.handlerId = null;
-        }
-    }
-
-    refreshAccount = async () => {
-        const account = await this.props.ws.getObject('account', this.state.account.id);
-        this.setState({account});
-        this.handlerId = setTimeout(this.refreshAccount, 2000);
-    }
-
-    componentWillUnmount(){
-        this.stopRefreshAccount();
+    static getDerivedStateFromProps(props: IProps, state: any){
+        const { accounts } = props;
+        return {account:  accounts.find(state.account ? (account => account.id = state.account.id) : (account => account.isDefault))
+               ,accounts
+        };
     }
 
     async refresh() {
-        const { ws } = this.props;
+        const { ws, accounts, products } = this.props;
 
-        const accounts = await ws.getAccounts();
-        const products = await ws.getProducts();
-        // TODO check products length
-        const account = accounts.find((account: any) => account.isDefault);
+        const account = accounts.find(account => account.isDefault);
 
         const payload = Object.assign({}, this.state.payload, {product: this.props.product
                                                                       ? this.props.product
@@ -114,7 +100,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                                agent: account.id,
                                                                country: products[0].country.toUpperCase()
                                                               });
-        this.setState({products, accounts, account, payload}, this.startRefreshAccount);
+        this.setState({products, accounts, account, payload});
         const templates = await ws.getTemplate(products[0].offerTplID);
         const state = {
             payload: Object.assign({}, this.state.payload, {template: products[0].offerTplID}),
@@ -136,7 +122,7 @@ class CreateOffering extends React.Component<IProps, any>{
 
     onAccountChanged(selectedAccount: any) {
 
-        const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
+        const account = this.state.accounts.find(account => account.id === selectedAccount.value);
         const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
         this.setState({account, payload});
 
@@ -145,7 +131,10 @@ class CreateOffering extends React.Component<IProps, any>{
     onUserInput(evt: any){
 
         const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value, additionalParams: {}});
-        payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0) * (payload.minUnits ? payload.minUnits : 0);
+        payload.deposit = (payload.supply ? 0 + payload.supply : 0)
+                        * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0)
+                        * (payload.minUnits ? payload.minUnits : 0)
+                        ;
         this.setState({payload});
     }
 
@@ -399,14 +388,14 @@ class CreateOffering extends React.Component<IProps, any>{
             value={this.state.payload.product}
             searchable={false}
             clearable={false}
-            options={this.state.products.map((product: any) => ({value: product.id, label: product.name})) }
+            options={this.state.products.map(product => ({value: product.id, label: product.name})) }
             onChange={this.onProductChanged.bind(this)} />;
 
         const selectAccount =  <Select className='form-control'
             value={this.state.payload.agent}
             searchable={false}
             clearable={false}
-            options={this.state.accounts.map((account:any) => ({value: account.id, label: account.name}))}
+            options={this.state.accounts.map(account => ({value: account.id, label: account.name}))}
             onChange={this.onAccountChanged.bind(this)} />;
             // {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
 
@@ -732,5 +721,5 @@ class CreateOffering extends React.Component<IProps, any>{
 
 // export default withRouter(CreateOffering);
 export default connect( (state: State, onProps: IProps) => {
-    return (Object.assign({}, {ws: state.ws}, onProps));
+    return (Object.assign({}, {ws: state.ws, accounts: state.accounts, products: state.products}, onProps));
 } )(withRouter(CreateOffering));

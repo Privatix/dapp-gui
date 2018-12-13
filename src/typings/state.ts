@@ -12,6 +12,7 @@ interface State {
     channel: string;
     mode: Role;
     ws: WS;
+    totalIncome: number;
 }
 
 const StateDefault: State = {
@@ -20,7 +21,8 @@ const StateDefault: State = {
     settings: [],
     channel: '',
     mode: Role.CLIENT,
-    ws: null
+    ws: null,
+    totalIncome: 0
 };
 
 export {
