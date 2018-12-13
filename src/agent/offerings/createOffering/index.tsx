@@ -98,7 +98,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                                       ? this.props.product
                                                                       : products[0].id,
                                                                agent: account.id,
-                                                               country: products[0].country.toUpperCase()
+                                                               country: products[0].country ? products[0].country.toUpperCase() : ''
                                                               });
         this.setState({products, accounts, account, payload});
         const templates = await ws.getTemplate(products[0].offerTplID);

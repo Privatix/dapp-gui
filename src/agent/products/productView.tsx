@@ -27,7 +27,7 @@ class ProductView extends React.Component <Props,any> {
         this.state = {
             product: props.product,
             host: props.product.serviceEndpointAddress,
-            country: props.product.country
+            country: props.product.country ? props.product.country : ''
         };
     }
 
