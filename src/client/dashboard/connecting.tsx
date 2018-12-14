@@ -174,7 +174,7 @@ class Connecting extends React.Component<any, any>{
     }
 
     pending(){
-        return this.getTransitionView('rending');
+        return this.getTransitionView('pending');
     }
 
     activating(){
