@@ -441,6 +441,7 @@
         "DepositMustBeLessOrEqualThan": "Депозит должен быть меньше или равен",
         "NotEnoughPrixForDeposit": "Недостаточно средств (PRIX) для депозита. Выберите другую учетную запись.",
         "NotEnoughToPublishTransaction": "Недостаточно средств (ETH) для публикации транзакции. Выберите другую учетную запись.",
+        "ErrorAcceptingOffering": "Что-то пошло не так. Попробуйте принять другое предложение!",
         "OfferingAccepted": "Предложение принято!",
         "VPNInfo": "Информация",
         "Country": "Страна:",

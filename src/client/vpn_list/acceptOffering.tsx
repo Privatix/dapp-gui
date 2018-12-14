@@ -24,15 +24,19 @@ interface IProps{
 @translate(['client/acceptOffering', 'utils/gasRange', 'utils/notice'])
 class AcceptOffering extends React.Component<IProps, any>{
 
+    acceptBtn = null;
+
     constructor(props:IProps){
         super(props);
 
         const { t } = props;
 
+        this.acceptBtn = React.createRef();
         const acceptOfferingBtnBl = <div className='form-group row'>
             <div className='col-md-12'>
                 <button type='submit'
                         onClick={this.onSubmit.bind(this)}
+                        ref={this.acceptBtn}
                         className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
                 >
                     {t('Accept')}
@@ -50,7 +54,6 @@ class AcceptOffering extends React.Component<IProps, any>{
     }
 
     async componentDidMount(){
-
         const accounts = await (window as any).ws.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
         this.getNotTerminatedConnections();
@@ -90,6 +93,7 @@ class AcceptOffering extends React.Component<IProps, any>{
 
     async onSubmit(evt: any){
         evt.preventDefault();
+        this.acceptBtn.current.setAttribute('disabled', 'disabled');
         let err = false;
         let msg = '';
         const settings = (await api.settings.getLocal()) as LocalSettings;
@@ -121,15 +125,24 @@ class AcceptOffering extends React.Component<IProps, any>{
 
         if(err){
             notice({level: 'error', title: t('utils/notice:Attention!'), msg});
+            this.acceptBtn.current.removeAttribute('disabled');
             return;
         }
 
-        const acceptRes = await this.props.ws.acceptOffering(this.state.account.ethAddr, this.props.offering.id, this.state.customDeposit, this.state.gasPrice);
-        if (typeof acceptRes === 'string') {
-            notice({level: 'info', title: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
-            document.body.classList.remove('modal-open');
-            this.props.history.push('/client-dashboard-connecting');
+        try {
+            const acceptRes = await this.props.ws.acceptOffering(this.state.account.ethAddr, this.props.offering.id, this.state.customDeposit, this.state.gasPrice);
+            if (typeof acceptRes === 'string') {
+                notice({level: 'info', title: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
+                this.acceptBtn.current.removeAttribute('disabled');
+                document.body.classList.remove('modal-open');
+                this.props.history.push('/client-dashboard-connecting');
+            }
+        } catch (e) {
+            msg = t('ErrorAcceptingOffering');
+            notice({level: 'error', title: t('utils/notice:Attention!'), msg});
+            this.acceptBtn.current.removeAttribute('disabled');
         }
+
 
     }
 
