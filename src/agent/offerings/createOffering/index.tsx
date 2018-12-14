@@ -11,6 +11,7 @@ import parseFloatPrix from 'utils/parseFloatPrix';
 import {LocalSettings} from 'typings/settings';
 import countries from 'utils/countries';
 import GasRange from 'common/etc/gasRange';
+import ExternalLink from 'common/etc/externalLink';
 
 import * as ubold from 'css/index.cssx';
 // import * as styles from './index.css';
@@ -381,11 +382,6 @@ class CreateOffering extends React.Component<IProps, any>{
         }
     }
 
-    openExternalLink(url: string) {
-        // TODO: mpt sure is this ok on all systems
-        require('electron').shell.openExternal(url);
-    }
-
     render(){
         const { t } = this.props;
 
@@ -543,10 +539,10 @@ class CreateOffering extends React.Component<IProps, any>{
                                                 {t('MaximumPaymentLagInUnits') + ' '}
                                                 <Trans i18nKey='MaxBillingUnitLagHelpLink'>
                                                     Do not change, if you do not understand
-                                                    <button
+                                                    <ExternalLink
                                                         className='btn btn-link btnLinkSmallCustom'
-                                                        onClick={() => this.openExternalLink('https://privatix.atlassian.net/wiki/spaces/BVP/pages/603848732/Max.+billing+unit+lag')}
-                                                    >how to calculate max. billing unit lag</button>
+                                                        href={'https://privatix.atlassian.net/wiki/spaces/BVP/pages/603848732/Max.+billing+unit+lag'}
+                                                    >how to calculate max. billing unit lag</ExternalLink>
                                                 </Trans>
                                             </small>
                                         </span>
