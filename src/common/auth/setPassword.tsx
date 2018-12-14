@@ -7,6 +7,7 @@ import * as ReactTooltip from 'react-tooltip';
 import {NextButton, PreviousButton, back} from './utils';
 import Steps from './steps';
 
+import { registerBugsnag } from 'utils/bugsnag';
 import notice from 'utils/notice';
 import * as api from 'utils/api';
 import handlers from 'redux/actions';
@@ -88,6 +89,7 @@ class SetPassword extends React.Component<any, any>{
             try {
                 await ws.setPassword(pwd);
                 (window as any).ws = ws;
+                registerBugsnag(ws);
                 this.props.dispatch(handlers.setWS(ws));
                 const role = await ws.getUserRole();
                 this.props.dispatch(handlers.setMode(role));
