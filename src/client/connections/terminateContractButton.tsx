@@ -2,6 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
+import notice from 'utils/notice';
 
 import { WS, ws } from 'utils/ws';
 
@@ -14,15 +15,20 @@ interface IProps {
     done: Function;
 }
 
-@translate('client/terminateContractBlock')
+@translate('client/terminateContractBlock', 'common', 'utils/notice')
 class TerminateContractButton extends React.Component<IProps, any>{
 
-    done = () => {
-        const { ws, channelId } = this.props;
-        ws.changeChannelStatus(channelId, 'close');
-        if(this.props.done && 'function' === typeof this.props.done){
-            this.props.done();
+    done = async () => {
+        const { t, ws, channelId } = this.props;
+        try {
+            await ws.changeChannelStatus(channelId, 'close');
+            if(this.props.done && 'function' === typeof this.props.done){
+                this.props.done();
+            }
+        } catch ( e ) {
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('common:SomethingWentWrong')});
         }
+
     }
 
     render(){

@@ -2,6 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
+import notice from 'utils/notice';
 
 import { WS, ws } from 'utils/ws';
 import { Channel } from 'typings/channels';
@@ -12,13 +13,19 @@ interface IProps {
     channel: Channel;
 }
 
-@translate('client/connections/finishServiceButton')
-
+@translate('client/connections/finishServiceButton', 'common', 'utils/notice')
 class FinishServiceButton extends React.Component<any, any>{
 
-    done = () => {
-        const { ws, channel } = this.props;
-        ws.changeChannelStatus(channel.id, 'terminate');
+    done = async () => {
+        const { t, ws, channel } = this.props;
+        try {
+            await ws.changeChannelStatus(channel.id, 'terminate');
+            if(this.props.done && 'function' === typeof this.props.done){
+                this.props.done();
+            }
+        } catch ( e ) {
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('common:SomethingWentWrong')});
+        }
     }
 
     render(){

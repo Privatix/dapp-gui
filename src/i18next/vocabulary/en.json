@@ -4,7 +4,8 @@
         "RefreshAll": "Refresh all",
         "Refresh": "Refresh",
         "Select": "Select",
-        "NoResults": "Nothing was found on your request. Please modify the filtering options!"
+        "NoResults": "Nothing was found on your request. Please modify the filtering options!",
+        "SomethingWentWrong": "Something went wrong. Try again later!"
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "Choose the language",
