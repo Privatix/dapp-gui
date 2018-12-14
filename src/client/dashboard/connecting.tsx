@@ -262,13 +262,16 @@ class Connecting extends React.Component<any, any>{
 
         const { t } = this.props;
 
+        const channelStatus = this.state.channel;
+        const deadlineStamp = Date.parse(channelStatus.lastChanged) + channelStatus.maxInactiveTime*1000 + (new Date()).getTimezoneOffset()*60*1000;
+
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
                 <div className='col-6 col-xl-5'>
                     <div className='card m-b-20 card-body'>
                         <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
                             <strong>
-                                <Countdown date={Date.parse(this.state.channel.channelStatus.lastChanged) + this.state.channel.channelStatus.maxInactiveTime*1000}
+                                <Countdown date={deadlineStamp}
                                            renderer={countdownRender}
                                            onComplete={completeRemaining}
                                 />
