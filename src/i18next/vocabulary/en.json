@@ -376,6 +376,7 @@
         "AreYouSure": "Are you sure?"
     },
     "client/dashboard/connecting": {
+        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the VPN.",
         "TheServiceHasAPendingStatus": "The service has a pending status. After the connection is ready, you can start using the VPN",
         "TheServiceHasAnActivatingStatus": "The service has an activating status. After the connection is ready, you can start using the VPN",
         "TheServiceHasASuspendingStatus": "The service has a suspending status. After connections is suspended, you can resume or terminate it.",
