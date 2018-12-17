@@ -12,8 +12,23 @@ import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import notice from 'utils/notice';
 import { State } from 'typings/state';
 
-const countdownRender = ({ minutes, seconds }) => {
-    return <span>{minutes}:{seconds}</span>;
+const countdownRender = ( { hours, minutes, seconds } ) => {
+
+    const hoursNum = parseInt(hours, 10);
+
+    const View = translate('client/dashboard/connecting')(({t}) => {
+        return (
+            <React.Fragment>
+                <strong>
+                { hoursNum ? <span>{hours}:{minutes}</span> : <span>{minutes}:{seconds}</span> }
+                </strong>
+                &nbsp;<span>{ hoursNum ? `${t('hour')}/${t('min')}` : `${t('min')}/${t('sec')}` }</span>
+            </React.Fragment>
+        );
+    });
+
+    return <View />;
+
 };
 
 const completeRemaining = translate('client/dashboard/connecting')(({t}) => {
@@ -262,7 +277,7 @@ class Connecting extends React.Component<any, any>{
 
         const { t } = this.props;
 
-        const channelStatus = this.state.channel;
+        const { channelStatus } = this.state.channel;
         const deadlineStamp = Date.parse(channelStatus.lastChanged) + channelStatus.maxInactiveTime*1000 + (new Date()).getTimezoneOffset()*60*1000;
 
         return <div className='container-fluid'>
@@ -270,12 +285,10 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-6 col-xl-5'>
                     <div className='card m-b-20 card-body'>
                         <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
-                            <strong>
-                                <Countdown date={deadlineStamp}
-                                           renderer={countdownRender}
-                                           onComplete={completeRemaining}
-                                />
-                            </strong> {t('min')}
+                            <Countdown date={deadlineStamp}
+                                       renderer={countdownRender}
+                                       onComplete={completeRemaining}
+                            />
                         </p>
                         <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
 
