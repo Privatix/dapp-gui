@@ -118,7 +118,7 @@ export class WS {
         const tester = async () => {
             const result = await testRequest();
             if(isEqual(result, currentResult)){
-                state.id = setTimeout(testRequest, 1000);
+                state.id = setTimeout(tester, 1000);
             }else {
                 handler();
             }
