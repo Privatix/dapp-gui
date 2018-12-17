@@ -1,10 +1,14 @@
 const fs = require('fs');
 const config = require('../package');
 
-const deps = ['electron-packager', 'electron'];
+const deps = ['jquery', 'popper.js'];
+const devDeps = ['electron-packager', 'electron'];
 
-config.dependencies = {};
-config.devDependencies = deps.reduce((acc, name) => {
+config.dependencies = deps.reduce((acc, name) => {
+    acc[name] = config.dependencies[name];
+    return acc;
+}, {});
+config.devDependencies = devDeps.reduce((acc, name) => {
     acc[name] = config.devDependencies[name];
     return acc;
 }, {});
