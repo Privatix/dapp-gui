@@ -62,11 +62,13 @@ class ActiveConnection extends React.Component<any, any>{
             {
                 header: t('ContractStatus'),
                 key: 'contractStatus',
+                dataProps: {className: 'text-center'},
                 render: (status) => { return <ContractStatus contractStatus={status}/>; }
             },
             {
                 header: t('ServiceStatus'),
                 key: 'serviceStatus',
+                dataProps: {className: 'text-center'},
                 render: (status) => { return <ChannelStatus serviceStatus={status}/>; }
             },
             {
