@@ -17,11 +17,13 @@ import notice from 'utils/notice';
 import toFixedN from 'utils/toFixedN';
 import * as api from 'utils/api';
 import countryByIso from 'utils/countryByIso';
+import Availability from './availability';
 
 import CopyToClipboard from 'common/copyToClipboard';
 
 import {State} from 'typings/state';
 import {LocalSettings} from 'typings/settings';
+import handlers from 'redux/actions';
 
 @translate(['client/vpnList', 'utils/notice', 'common'])
 
@@ -52,6 +54,13 @@ class VPNList extends React.Component<any,any> {
             offeringHash: '',
             defaultShowCountriesCount: 5,
             columns: [
+                {
+                    header: t('Availability'),
+                    key: 'availability',
+                    headerStyle: {textAlign: 'center'},
+                    dataProps: {className: 'text-center'},
+                    render: (availability) => { return <Availability availability={availability} />; }
+                },
                 {
                     header: t('Block'),
                     key: 'block'
@@ -173,6 +182,7 @@ class VPNList extends React.Component<any,any> {
 
         this.setState({
             spinner: false,
+            rawOfferings: clientOfferings,
             filtered: offerings,
             totalItems: clientOfferingsLimited.totalItems,
             offset,
@@ -208,7 +218,10 @@ class VPNList extends React.Component<any,any> {
         const { t } = this.props;
         const offeringHash = '0x' + offering.hash;
 
+        const availability = offering.supply > 10 ? 'unreachable': offering.supply === 10 ? 'unknown' : 'available';
+
         return {
+            availability: availability,
             block: offering.blockNumberUpdated,
             hash: <ModalWindow
                 customClass='shortTableText'
@@ -334,6 +347,26 @@ class VPNList extends React.Component<any,any> {
         }, this.getClientOfferings);
     }
 
+    async checkStatus() {
+        const offeringsIds = this.getOfferingsIds();
+        const offeringsAvailability = await this.props.ws.pingOfferings(offeringsIds);
+
+        console.log('Offerings availability', offeringsAvailability);
+
+        this.props.dispatch(handlers.setOfferingsAvailability(offeringsAvailability));
+
+        console.log('Offerings availability from Props', this.props.offeringsAvailability);
+    }
+
+    getOfferingsIds() {
+        let offeringsIds = [];
+        this.state.rawOfferings.map((offering) => {
+            offeringsIds.push(offering.id);
+        });
+
+        return offeringsIds;
+    }
+
     render() {
         const { t } = this.props;
         const createSliderWithTooltip = Slider.createSliderWithTooltip;
@@ -415,7 +448,16 @@ class VPNList extends React.Component<any,any> {
 
                 <div className='row m-t-20'>
                     <div className='col-12 m-b-20'>
-                        <button className='btn btn-default btn-custom waves-effect waves-light' onClick={this.refresh.bind(this, true, this.state.activePage)}>{t('Refresh')}</button>
+                        <button
+                            className='btn btn-default btn-custom waves-effect waves-light'
+                            onClick={this.refresh.bind(this, true, this.state.activePage)}>
+                            {t('Refresh')}
+                        </button>
+                        <button
+                            className='btn btn-default btn-custom waves-effect waves-light ml-3'
+                            onClick={this.checkStatus.bind(this)}>
+                            {t('CheckAvailability')}
+                        </button>
                     </div>
                     <div className='col-3'>
 

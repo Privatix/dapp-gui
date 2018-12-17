@@ -13,6 +13,7 @@ interface State {
     mode: Role;
     ws: WS;
     totalIncome: number;
+    offeringsAvailability: Object;
 }
 
 const StateDefault: State = {
@@ -22,7 +23,8 @@ const StateDefault: State = {
     channel: '',
     mode: Role.CLIENT,
     ws: null,
-    totalIncome: 0
+    totalIncome: 0,
+    offeringsAvailability: {}
 };
 
 export {

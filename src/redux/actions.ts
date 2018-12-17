@@ -14,7 +14,8 @@ export const enum actions {
     UPDATE_OFFERINGS,
     UPDATE_TOTAL_INCOME,
     SET_CHANNEL,
-    SET_WS
+    SET_WS,
+    SET_OFFERINGS_AVAILABILITY
 }
 
 
@@ -30,7 +31,8 @@ const handlers: ReduxHandlers = {
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     setMode                    : function(mode: Role){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
-    setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};}
+    setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
+    setOfferingsAvailability   : function(offeringsAvailability: Object){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};}
 };
 
 interface AsyncProviders {
@@ -94,6 +96,14 @@ export const asyncProviders: AsyncProviders = {
                    // TODO check if error
                    dispatch(handlers.setMode(role));
                });
+        };
+    },
+    setOfferingsAvailability: function(offeringsAvailability:Object){
+        console.log('Actions setOfferingsAvailability', offeringsAvailability);
+
+        return function(dispatch: any, getState: Function){
+            const { offeringsAvailability } = getState();
+            dispatch(handlers.setOfferingsAvailability(offeringsAvailability));
         };
     }
 };

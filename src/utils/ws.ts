@@ -379,6 +379,10 @@ export class WS {
         return this.send('ui_getClientOfferingsFilterParams');
     }
 
+    pingOfferings(offeringsIds: Array<string>) {
+        return this.send('ui_pingOfferings', [offeringsIds]);
+    }
+
 // sessions
 
     getSessions(channelId: string = ''): Promise<Session[]>{

@@ -408,6 +408,7 @@
         "ActiveOfferings": "Active offerings"
     },
     "client/vpnList": {
+        "Availability": "Availability",
         "Block": "Block",
         "Hash": "Hash",
         "Agent": "Agent",
@@ -425,6 +426,7 @@
         "TakesTimeOnFirstRun": "It takes time only on the first run.",
         "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
         "Refresh": "Refresh",
+        "CheckAvailability": "Check availability",
         "AgentAddress": "Agent address",
         "OfferingHash": "Offering hash",
         "PriceFilter": "Price (PRIX/MB):",
