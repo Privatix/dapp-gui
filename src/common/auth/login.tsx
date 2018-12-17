@@ -1,8 +1,9 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import * as api from '../../utils/api';
 import { connect } from 'react-redux';
 
+import { registerBugsnag } from 'utils/bugsnag';
+import * as api from 'utils/api';
 import { WS } from 'utils/ws';
 import notice from 'utils/notice';
 import i18n from 'i18next/init';
@@ -58,6 +59,7 @@ class Login extends React.Component<any, any> {
                     await ws.setPassword(pwd);
                     // TODO notice if server returns error (not implemented on dappctrl yet)
                     (window as any).ws = ws;
+                    registerBugsnag(ws);
                     this.props.dispatch(handlers.setWS(ws));
                     const role = await ws.getUserRole();
                     this.props.dispatch(handlers.setMode(role));
