@@ -83,6 +83,7 @@
         "Offerings": "Offerings"
     },
     "offerings/createOffering": {
+        "Attention": "Attention!",
         "Server": "Server",
         "GeneralInfo": "General info",
         "Name": "Name",
@@ -101,6 +102,7 @@
         "PricePerMB": "Price per MB",
         "MaxBillingUnitLag": "Max billing unit lag",
         "MaximumPaymentLagInUnits" : "Maximum payment lag in units after which Agent will suspend service usage.",
+        "MaxBillingUnitLagHelpLink": "Do not change, if you do not understand <1>how to calculate max. billing unit lag</1>",
         "MinUnits": "Min units",
         "UsedToCalculateMinimumDeposit": "Used to calculate minimum deposit required.",
         "MaxUnits": "Max units",

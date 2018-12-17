@@ -11,6 +11,7 @@ import parseFloatPrix from 'utils/parseFloatPrix';
 import {LocalSettings} from 'typings/settings';
 import countries from 'utils/countries';
 import GasRange from 'common/etc/gasRange';
+import ExternalLink from 'common/etc/externalLink';
 
 import * as ubold from 'css/index.cssx';
 // import * as styles from './index.css';
@@ -51,7 +52,7 @@ class CreateOffering extends React.Component<IProps, any>{
            ,unitType: 'units'
            ,unitPrice: ''
            ,billingType: 'prepaid'
-           ,maxBillingUnitLag: ''
+           ,maxBillingUnitLag: 70
            ,minUnits: ''
            ,maxUnit: ''
            ,maxSuspendTime: ''
@@ -533,7 +534,17 @@ class CreateOffering extends React.Component<IProps, any>{
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
-                                            <small>{t('MaximumPaymentLagInUnits')}</small>
+                                            <small>
+                                                <strong>{t('Attention') + ' '}</strong>
+                                                {t('MaximumPaymentLagInUnits') + ' '}
+                                                <Trans i18nKey='MaxBillingUnitLagHelpLink'>
+                                                    Do not change, if you do not understand
+                                                    <ExternalLink
+                                                        className='btn btn-link btnLinkSmallCustom'
+                                                        href={'https://privatix.atlassian.net/wiki/spaces/BVP/pages/603848732/Max.+billing+unit+lag'}
+                                                    >how to calculate max. billing unit lag</ExternalLink>
+                                                </Trans>
+                                            </small>
                                         </span>
                                     </div>
                                 </div>

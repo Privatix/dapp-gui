@@ -8,5 +8,5 @@ export default function externalLink(props: any) {
         shell.openExternal(props.href);
     };
 
-    return <a href='#' onClick={openExternalLink}>{props.text}</a>;
+    return <a href='#' onClick={openExternalLink}>{props.text || props.children}</a>;
 }
