@@ -6,7 +6,6 @@ import Offering from './offering';
 import Product from 'agent/products/product';
 
 import OfferingStatus from 'common/badges/offeringStatus';
-import MessageStatus from 'common/badges/messageStatus';
 
 import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import ModalWindow from 'common/modalWindow';
@@ -42,7 +41,6 @@ class OfferingsListView extends React.Component<IProps, any> {
                                      text={offering.productName}
                                      component={<Product product={product} />}
                         />,
-                status: offering.status,
                 offerStatus: offering.offerStatus,
                 availableSupply: offering.currentSupply,
                 supply: offering.supply
@@ -66,13 +64,6 @@ class OfferingsListView extends React.Component<IProps, any> {
                 header: t('Server'),
                 key: 'server',
                 sortable: false
-            },
-            {
-                header: t('MessageStatus'),
-                key: 'status',
-                headerStyle: {textAlign: 'center'},
-                dataProps: {className: 'text-center'},
-                render: (status) => { return <MessageStatus status={status} />; }
             },
             {
                 header: t('Status'),
