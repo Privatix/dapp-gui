@@ -396,7 +396,9 @@
         "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
         "Resume": "Resume",
         "YesResumeIt": "Yes, resume it!",
+        "hour": "hours",
         "min": "min",
+        "sec": "sec",
         "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. IP address {{ip}}",
         "CountryAlertUnknown": "The application won't be able to detect the offering's country. IP address {{ip}}"
     },
