@@ -23,8 +23,9 @@ interface IProps {
 class OfferingsListView extends React.Component<IProps, any> {
 
     render() {
-
-        const { t, products, offerings } = this.props;
+        const { t, products } = this.props;
+        const offerings = this.props.offerings
+            .filter(o => o.offerStatus !== 'removed');
 
         const offeringsDataArr = offerings.map(offering => {
             const product = products.filter(product => product.id === offering.product)[0];
