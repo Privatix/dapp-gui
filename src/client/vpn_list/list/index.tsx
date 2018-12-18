@@ -23,15 +23,19 @@ import CopyToClipboard from 'common/copyToClipboard';
 
 import {State} from 'typings/state';
 import {LocalSettings} from 'typings/settings';
-import handlers from 'redux/actions';
+import { asyncProviders } from 'redux/actions';
 
 @translate(['client/vpnList', 'utils/notice', 'common'])
 
 class VPNList extends React.Component<any,any> {
+
+    checkAvailabilityBtn = null;
+
     constructor(props:any) {
         super(props);
 
         const { t } = props;
+        this.checkAvailabilityBtn = React.createRef();
 
         this.state = {
             from: 0,
@@ -46,13 +50,14 @@ class VPNList extends React.Component<any,any> {
             filteredCountries: [],
             checkedCountries: [],
             showAllCountries: false,
-            filtered: [],
             elementsPerPage: 0,
             activePage: 1,
             totalItems: 0,
             agent: '',
             offeringHash: '',
             defaultShowCountriesCount: 5,
+            rawOfferings: [],
+            offeringsAvailability: props.offeringsAvailability,
             columns: [
                 {
                     header: t('Availability'),
@@ -110,6 +115,10 @@ class VPNList extends React.Component<any,any> {
         this.getClientOfferings();
     }
 
+    static getDerivedStateFromProps(props:any, state:any) {
+        return {offeringsAvailability: props.offeringsAvailability};
+    }
+
     async getElementsPerPage() {
         const settings = (await api.settings.getLocal()) as LocalSettings;
         this.setState({elementsPerPage: settings.elementsPerPage});
@@ -130,7 +139,8 @@ class VPNList extends React.Component<any,any> {
             || (this.state.showAllCountries !== nextState.showAllCountries)
             || (this.state.filteredCountries !== nextState.filteredCountries)
             || (this.state.offeringHash !== nextState.offeringHash)
-            || !(isEqual(nextState.filtered, this.state.filtered));
+            || !(isEqual(this.state.offeringsAvailability.statuses, nextState.offeringsAvailability.statuses))
+            || !(isEqual(nextState.rawOfferings, this.state.rawOfferings));
     }
 
     async getClientOfferings(activePage:number = 1, from:number = 0, to:number = 0) {
@@ -176,14 +186,9 @@ class VPNList extends React.Component<any,any> {
             }
         }
 
-        let offerings = clientOfferings.map(offering => {
-            return this.formFilteredDataRow(offering);
-        });
-
         this.setState({
             spinner: false,
             rawOfferings: clientOfferings,
-            filtered: offerings,
             totalItems: clientOfferingsLimited.totalItems,
             offset,
             activePage,
@@ -204,13 +209,12 @@ class VPNList extends React.Component<any,any> {
 
         try {
             const offering = await this.props.ws.getObjectByHash('offering', this.state.offeringHash.replace(/^0x/, ''));
-            const offeringRow = this.formFilteredDataRow(offering);
             this.setState({
-                filtered: [offeringRow],
+                rawOfferings: [offering],
                 totalItems: 1
             });
         } catch (e) {
-            this.setState({filtered: [], totalItems: 0});
+            this.setState({rawOfferings: [], totalItems: 0});
         }
     }
 
@@ -218,7 +222,9 @@ class VPNList extends React.Component<any,any> {
         const { t } = this.props;
         const offeringHash = '0x' + offering.hash;
 
-        const availability = offering.supply > 10 ? 'unreachable': offering.supply === 10 ? 'unknown' : 'available';
+        const availability = (offering.id in this.state.offeringsAvailability.statuses)
+            ? (this.state.offeringsAvailability.statuses[offering.id] === true ? 'available' : 'unreachable')
+            : 'unknown';
 
         return {
             availability: availability,
@@ -347,15 +353,9 @@ class VPNList extends React.Component<any,any> {
         }, this.getClientOfferings);
     }
 
-    async checkStatus() {
+    checkStatus() {
         const offeringsIds = this.getOfferingsIds();
-        const offeringsAvailability = await this.props.ws.pingOfferings(offeringsIds);
-
-        console.log('Offerings availability', offeringsAvailability);
-
-        this.props.dispatch(handlers.setOfferingsAvailability(offeringsAvailability));
-
-        console.log('Offerings availability from Props', this.props.offeringsAvailability);
+        this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
     }
 
     getOfferingsIds() {
@@ -368,6 +368,10 @@ class VPNList extends React.Component<any,any> {
     }
 
     render() {
+        let offerings = this.state.rawOfferings.map(offering => {
+            return this.formFilteredDataRow(offering);
+        });
+
         const { t } = this.props;
         const createSliderWithTooltip = Slider.createSliderWithTooltip;
         const Range = createSliderWithTooltip(Slider.Range);
@@ -409,7 +413,7 @@ class VPNList extends React.Component<any,any> {
                 />
             </div>;
 
-        const noResults = this.state.filtered.length === 0 ?
+        const noResults = offerings.length === 0 ?
             <p className='text-warning text-center m-t-20 m-b-20'>{t('common:NoResults')}</p>
             : '';
 
@@ -455,6 +459,8 @@ class VPNList extends React.Component<any,any> {
                         </button>
                         <button
                             className='btn btn-default btn-custom waves-effect waves-light ml-3'
+                            ref={this.checkAvailabilityBtn}
+                            disabled={this.state.offeringsAvailability.counter !== 0}
                             onClick={this.checkStatus.bind(this)}>
                             {t('CheckAvailability')}
                         </button>
@@ -569,7 +575,7 @@ class VPNList extends React.Component<any,any> {
                         <div className='card-box'>
                             <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                                 <SortableTable
-                                    data={this.state.filtered}
+                                    data={offerings}
                                     columns={this.state.columns}/>
 
                                 {noResults}
@@ -583,4 +589,4 @@ class VPNList extends React.Component<any,any> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws}) )(VPNList);
+export default connect( (state: State) => ({ws: state.ws, offeringsAvailability: state.offeringsAvailability}) )(VPNList);

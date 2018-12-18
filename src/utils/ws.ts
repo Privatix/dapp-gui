@@ -379,6 +379,10 @@ export class WS {
         return this.send('ui_getClientOfferingsFilterParams');
     }
 
+    getObjectByHash(type: 'offering', hash: string) : Promise<OfferingResponse> {
+        return this.send('ui_getObjectByHash', [type, hash]) as Promise<OfferingResponse>;
+    }
+
     pingOfferings(offeringsIds: Array<string>) {
         return this.send('ui_pingOfferings', [offeringsIds]);
     }

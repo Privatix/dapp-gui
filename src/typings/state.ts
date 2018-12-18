@@ -1,6 +1,7 @@
 import {Account} from './accounts';
 import {Role} from './mode';
 import {Product} from './products';
+import {OfferingAvailabilityResponse} from './offerings';
 import {DbSetting} from './settings';
 import { WS } from '../utils/ws';
 
@@ -13,7 +14,10 @@ interface State {
     mode: Role;
     ws: WS;
     totalIncome: number;
-    offeringsAvailability: Object;
+    offeringsAvailability: {
+        counter: number;
+        statuses: OfferingAvailabilityResponse;
+    };
 }
 
 const StateDefault: State = {
@@ -24,7 +28,10 @@ const StateDefault: State = {
     mode: Role.CLIENT,
     ws: null,
     totalIncome: 0,
-    offeringsAvailability: {}
+    offeringsAvailability: {
+        counter: 0,
+        statuses: {}
+    }
 };
 
 export {
