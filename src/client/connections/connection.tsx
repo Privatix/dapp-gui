@@ -50,7 +50,7 @@ class Connection extends React.Component<any, any>{
     }
 
     render(){
-        const { t } = this.props;
+        const { t, render } = this.props;
 
         if(this.state.offering && this.props.connection.offering !== this.state.offering.id){
             this.updateOffering(this.props.connection.offering);
@@ -160,7 +160,7 @@ class Connection extends React.Component<any, any>{
 
 
                 <div className='col-4'>
-                    {this.state.channel.channelStatus.serviceStatus === 'active' ? <IncreaseDepositButton channel={this.state.channel} /> : '' }
+                    {this.state.channel.channelStatus.serviceStatus === 'active' ? <IncreaseDepositButton channel={this.state.channel} render={render} /> : '' }
                     <FinishServiceButton channel={this.state.channel} />
                     <TerminateContractButton
                         status='disabled'
