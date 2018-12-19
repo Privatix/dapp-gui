@@ -50,3 +50,7 @@ export interface Offering {
 export interface ResolvedOffering extends Offering {
     productName: string;
 }
+
+export type OfferingAvailabilityResponse = {
+    [key: string]: boolean;
+};
