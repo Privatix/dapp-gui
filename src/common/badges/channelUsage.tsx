@@ -70,7 +70,7 @@ class Usage extends React.Component<IProps, IState>{
 
         return mode === 'unit'
             ? (usage
-                ? <span>{usage.current}&nbsp;{t('of')}&nbsp;{usage.maxUsage}&nbsp;{usage.unit}</span>
+                ? <span>{usage.current}&nbsp;{t('of')}&nbsp;{usage.maxUsage}&nbsp;{usage.unitName}</span>
                 : <span></span>
               )
             : <span>{toFixedN({number: (usage.cost / 1e8), fixed: 8})}</span>;

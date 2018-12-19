@@ -29,7 +29,8 @@ export interface ClientChannelStatus {
 export interface ClientChannelUsage {
     current: number;
     maxUsage: number;
-    unit: string;
+    unitName: string;
+    unitType: string;
     cost: number;
 }
 // TODO remove
