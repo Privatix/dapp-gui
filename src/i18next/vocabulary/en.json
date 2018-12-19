@@ -606,7 +606,8 @@
         "Login": "Login",
         "LoginTo": "Login to",
         "Password": "Password",
-        "AccessDenied": "access denied, possibly wrong password"
+        "AccessDenied": "access denied, possibly wrong password",
+        "TryToConnect": "connection attempt ..."
     },
     "settings": {
         "Success": "Changes has been successfully saved.",
