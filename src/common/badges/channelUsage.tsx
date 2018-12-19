@@ -17,8 +17,6 @@ interface IProps {
 
 interface IState {
     usage?: ClientChannelUsage;
-    channelStatus: ServiceStatus;
-    channelId: string;
 }
 
 @translate('client/connections/usage')
@@ -28,8 +26,8 @@ class Usage extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
         super(props);
-        const { channelId, channelStatus, usage, ws } = this.props;
-        this.state = { channelId, channelStatus, usage };
+        const { channelId, usage, ws } = this.props;
+        this.state = { usage };
 
         if(!usage){
             ws.getChannelUsage(channelId)
@@ -39,15 +37,8 @@ class Usage extends React.Component<IProps, IState>{
         }
     }
 
-    static getDerivedStateFromProps(props: IProps, state: IState){
-        const {channelId, channelStatus} = state;
-        return {channelId, channelStatus};
-    }
-
     componentDidMount(){
-        if(this.state.channelStatus === 'active'){
-            this.startRefresh();
-        }
+        this.startRefresh();
     }
 
     componentWillUnmount(){
@@ -75,15 +66,7 @@ class Usage extends React.Component<IProps, IState>{
     render(){
 
         const { t, mode } = this.props;
-        const { usage, channelStatus } = this.state;
-
-        if(channelStatus === 'active' && !this.handlerId){
-            this.startRefresh();
-        }
-
-        if(channelStatus !== 'active' && this.handlerId){
-            this.stopRefresh();
-        }
+        const { usage } = this.state;
 
         return mode === 'unit'
             ? (usage
