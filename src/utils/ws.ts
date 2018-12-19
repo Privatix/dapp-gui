@@ -39,23 +39,34 @@ export class WS {
 
     constructor(endpoint: string) {
 
+        this.reconnect(endpoint);
+
+    }
+
+    reconnect(endpoint: string) {
+
         const socket = new WebSocket(endpoint);
-        this.ready = new Promise((resolve: Function, reject: Function) => {
-            // this.reject = reject;
-            this.resolve = resolve;
-        });
+        if(!this.resolve){
+            this.ready = new Promise((resolve: Function, reject: Function) => {
+                // this.reject = reject;
+                this.resolve = resolve;
+            });
+        }
+
         socket.onopen = () => {
           console.log('Connection established.');
           this.resolve(true);
+          this.resolve = null;
         };
 
-        socket.onclose = function(event: any) {
+        socket.onclose = (event: any) => {
             if (event.wasClean) {
                 console.log('Connection closed.');
             } else {
                 console.log('Connection interrupted.');
             }
             console.log('Code: ' + event.code + ' reason: ' + event.reason);
+            this.reconnect(endpoint);
         };
 
         socket.onmessage = function(event: any) {
@@ -90,7 +101,7 @@ export class WS {
         this.socket = socket;
     }
 
-    whenReady(){
+    whenReady() {
         return this.ready;
     }
 

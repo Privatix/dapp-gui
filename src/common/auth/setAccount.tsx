@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
+
 import Steps from './steps';
 import {NextButton} from './utils';
 

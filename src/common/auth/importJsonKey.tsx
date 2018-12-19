@@ -4,9 +4,9 @@ import { translate } from 'react-i18next';
 
 import Steps from './steps';
 import { PreviousButton, NextButton, back } from './utils';
-import { fetch } from '../../utils/fetch';
-import notice from '../../utils/notice';
-import * as api from '../../utils/api';
+import { fetch } from 'utils/fetch';
+import notice from 'utils/notice';
+import * as api from 'utils/api';
 
 @translate(['auth/importJsonKey', 'auth/setAccount', 'auth/generateKey', 'utils/notice'])
 class ImportJsonKey extends React.Component<any, any>{

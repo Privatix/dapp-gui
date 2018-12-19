@@ -4,8 +4,8 @@ import { translate } from 'react-i18next';
 
 import Steps from './steps';
 import { PreviousButton, NextButton, back } from './utils';
-import notice from '../../utils/notice';
-import * as api from '../../utils/api';
+import notice from 'utils/notice';
+import * as api from 'utils/api';
 
 @translate(['auth/importHexKey', 'auth/setAccount', 'auth/generateKey', 'auth/importJsonKey', 'utils/notice'])
 class ImportHexKey extends React.Component<any, any>{

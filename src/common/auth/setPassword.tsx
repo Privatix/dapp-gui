@@ -8,7 +8,7 @@ import {NextButton, PreviousButton, back} from './utils';
 import Steps from './steps';
 
 import { registerBugsnag } from 'utils/bugsnag';
-import notice from 'utils/notice';
+import {default as notice, closeNotice } from 'utils/notice';
 import * as api from 'utils/api';
 import handlers from 'redux/actions';
 import { WS } from 'utils/ws';
@@ -84,7 +84,9 @@ class SetPassword extends React.Component<any, any>{
         await api.settings.updateLocal({firstStart:false});
         const settings = await api.settings.getLocal();
         const ws = new WS(settings.wsEndpoint);
+        notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 60*60*1000);
         const ready = await ws.whenReady();
+        closeNotice();
         if(ready){
             try {
                 await ws.setPassword(pwd);
@@ -95,7 +97,7 @@ class SetPassword extends React.Component<any, any>{
                 this.props.dispatch(handlers.setMode(role));
                 this.props.history.push('/setAccount');
             }catch(e){
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('AccessDenied')});
             }
         }else{
             // TODO
