@@ -40,7 +40,7 @@ class Usage extends React.Component<IProps, IState>{
     }
 
     static getDerivedStateFromProps(props: IProps, state: IState){
-        const {channelId, channelStatus} = state;
+        const {channelId, channelStatus} = props;
         return {channelId, channelStatus};
     }
 
