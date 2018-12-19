@@ -14,7 +14,9 @@ export const enum actions {
     UPDATE_OFFERINGS,
     UPDATE_TOTAL_INCOME,
     SET_CHANNEL,
-    SET_WS
+    SET_WS,
+    SET_OFFERINGS_AVAILABILITY,
+    INCREMENT_OFFERINGS_AVAILABILITY_COUNTER
 }
 
 
@@ -30,7 +32,9 @@ const handlers: ReduxHandlers = {
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     setMode                    : function(mode: Role){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
-    setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};}
+    setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
+    setOfferingsAvailability   : function(offeringsAvailability: Object[]){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};},
+    incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};}
 };
 
 interface AsyncProviders {
@@ -94,6 +98,21 @@ export const asyncProviders: AsyncProviders = {
                    // TODO check if error
                    dispatch(handlers.setMode(role));
                });
+        };
+    },
+    setOfferingsAvailability: function(offeringsIds:string[]){
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+
+            dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
+
+            offeringsIds.forEach((offeringId) => {
+                ws.pingOfferings([offeringId])
+                    .then(offeringsAvailability => {
+                        dispatch(handlers.setOfferingsAvailability([offeringsAvailability]));
+                    });
+            });
+
         };
     }
 };

@@ -412,6 +412,7 @@
         "ActiveOfferings": "Активные предложения"
     },
     "client/vpnList": {
+        "Availability": "Доступность",
         "Block": "Блок",
         "Hash": "Хеш",
         "Agent": "Агент",
@@ -429,6 +430,7 @@
         "TakesTimeOnFirstRun": "Это занимает время только при первом запуске.",
         "AverageTimeForDownloading": "Среднее время для загрузки 2-5 мин.",
         "Refresh": "Обновить",
+        "CheckAvailability": "Проверить доступность",
         "AgentAddress": "Адрес агента",
         "OfferingHash": "Хеш предложения",
         "PriceFilter": "Цена (PRIX/MB):",
