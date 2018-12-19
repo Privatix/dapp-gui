@@ -29,13 +29,10 @@ import { asyncProviders } from 'redux/actions';
 
 class VPNList extends React.Component<any,any> {
 
-    checkAvailabilityBtn = null;
-
     constructor(props:any) {
         super(props);
 
         const { t } = props;
-        this.checkAvailabilityBtn = React.createRef();
 
         this.state = {
             from: 0,
@@ -459,7 +456,6 @@ class VPNList extends React.Component<any,any> {
                         </button>
                         <button
                             className='btn btn-default btn-custom waves-effect waves-light ml-3'
-                            ref={this.checkAvailabilityBtn}
                             disabled={this.state.offeringsAvailability.counter !== 0}
                             onClick={this.checkStatus.bind(this)}>
                             {t('CheckAvailability')}
