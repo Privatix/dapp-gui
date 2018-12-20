@@ -5,7 +5,7 @@ import { translate } from 'react-i18next';
 import {remote} from 'electron';
 const {dialog} = remote;
 
-import {fetch} from 'utils/fetch';
+import * as api from 'utils/api';
 import toFixedN from 'utils/toFixedN';
 
 import SessionsTable from './sessionsTable';
@@ -67,7 +67,7 @@ class Sessions extends React.Component <any,any> {
                     , session.clientPort
                 ]);
                 data.unshift(headers);
-                fetch('/saveAs', {body: {fileName, data: data.map(row => row.join()).join('\n')}});
+                api.fs.saveAs(fileName, data.map(row => row.join()).join('\n'));
             }
         });
     }

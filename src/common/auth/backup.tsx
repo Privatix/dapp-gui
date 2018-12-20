@@ -3,7 +3,7 @@ import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import { remote } from 'electron';
 
-import {fetch} from 'utils/fetch';
+import * as api from 'utils/api';
 import notice from 'utils/notice';
 import Steps from './steps';
 import {NextButton} from './utils';
@@ -52,8 +52,7 @@ class Backup extends React.Component<any, any>{
         }
 
         (window as any).ws.exportAccount(this.props.accountId, (res: any) => {
-            // TODO check if error
-            fetch('/backup', {body: {pk: atob(res.result), fileName: this.state.fileName}})
+            api.fs.saveAs(this.state.fileName, atob(res.result))
                 .then((res:any) => {
                     if(res.err){
                         notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});

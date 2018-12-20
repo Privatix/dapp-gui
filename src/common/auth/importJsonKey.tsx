@@ -4,7 +4,6 @@ import { translate } from 'react-i18next';
 
 import Steps from './steps';
 import { PreviousButton, NextButton, back } from './utils';
-import { fetch } from 'utils/fetch';
 import notice from 'utils/notice';
 import * as api from 'utils/api';
 
@@ -71,8 +70,8 @@ class ImportJsonKey extends React.Component<any, any>{
             return;
         }
 
-        const res = await fetch('/readFile', {method: 'post', body: {fileName}});
-        const keyObject = JSON.parse((res as any).file);
+        const res = await api.fs.readFile(fileName);
+        const keyObject = JSON.parse(res);
 
         const payload = {
              isDefault: this.props.default === 'true'
