@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
 import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
-import {TemplateType} from 'typings/templates';
+import {Template, TemplateType} from 'typings/templates';
 import {OfferStatus, Offering, ResolvedOffering} from 'typings/offerings';
 import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
 import {Session} from 'typings/session';
 import {Channel, ClientChannel, ClientChannelUsage} from 'typings/channels';
-import {Template} from 'typings/templates';
 import { Log } from 'typings/logs';
 import { State } from 'typings/state';
 import { Role } from 'typings/mode';
@@ -304,9 +303,9 @@ export class WS {
     }
 // templates
 
-    getTemplates(templateType?: TemplateType){
+    getTemplates(templateType?: TemplateType): Promise<Template[]>{
         const type = templateType ? templateType : '';
-        return this.send('ui_getTemplates', [type]);
+        return this.send('ui_getTemplates', [type]) as Promise<Template[]>;
     }
 
     getTemplate(id: string){

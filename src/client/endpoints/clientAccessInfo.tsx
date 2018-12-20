@@ -1,23 +1,33 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
 
+import { WS, ws } from 'utils/ws';
+import {ClientChannel} from 'typings/channels';
+
+interface IProps{
+    ws?: WS;
+    t?: any;
+    channel: ClientChannel;
+}
+
 @translate('client/clientAccessInfo')
+class ClientAccessInfo extends React.Component <IProps, any> {
 
-class ClientAccessInfo extends React.Component <any, any> {
-
-    constructor(props:any) {
+    constructor(props:IProps) {
         super(props);
 
         this.state = {
-            'endpoint': []
+            endpoint: []
         };
 
         this.getData();
     }
 
     async getData() {
-        const endpoint = await (window as any).ws.getEndpoints(this.props.channel.id);
 
+        const { ws, channel } = this.props;
+
+        const endpoint = await ws.getEndpoints(channel.id);
         this.setState({endpoint});
     }
 
@@ -53,4 +63,4 @@ class ClientAccessInfo extends React.Component <any, any> {
     }
 }
 
-export default ClientAccessInfo;
+export default ws<IProps>(ClientAccessInfo);

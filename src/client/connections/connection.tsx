@@ -3,6 +3,9 @@ import { translate } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
 
+import { WS, ws } from 'utils/ws';
+import {ClientChannel} from 'typings/channels';
+
 import ChannelStatus from 'common/badges/channelStatus';
 import ContractStatus from 'common/badges/contractStatus';
 
@@ -16,9 +19,16 @@ import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
 import IncreaseDepositButton from './increaseDepositButton';
 
-@translate('client/connections/connection')
+interface IProps{
+    ws?: WS;
+    t?: any;
+    history?: any;
+    connection: ClientChannel;
+    render?: Function;
+}
 
-class Connection extends React.Component<any, any>{
+@translate('client/connections/connection')
+class Connection extends React.Component<IProps, any>{
 
     constructor(props:any) {
         super(props);
@@ -34,26 +44,29 @@ class Connection extends React.Component<any, any>{
         return {channel: props.connection};
     }
 
-    updateOffering(offeringId: string){
-        (window as any).ws.getOffering(offeringId)
-           .then(offering => {
-               if(offering){
-                   this.setState({offering});
-               }
-           });
+    async updateOffering(offeringId: string){
+
+        const{  ws } = this.props;
+
+        const offering = await ws.getOffering(offeringId);
+        if(offering){
+            this.setState({offering});
+        }
     }
 
     showOffering(evt:any){
         evt.preventDefault();
-        const { t } = this.props;
-        this.props.render(t('Offering'), <Offering mode='view' offering={this.state.offering} />);
+        const { t, render } = this.props;
+        render(t('Offering'), <Offering mode='view' offering={this.state.offering} />);
     }
 
     render(){
-        const { t, render } = this.props;
 
-        if(this.state.offering && this.props.connection.offering !== this.state.offering.id){
-            this.updateOffering(this.props.connection.offering);
+        const { t, render, connection } = this.props;
+        const { channel, offering } = this.state;
+
+        if(offering && connection.offering !== offering.id){
+            this.updateOffering(connection.offering);
         }
 
         const sessionsColumns = [
@@ -100,7 +113,7 @@ class Connection extends React.Component<any, any>{
         ];
         const sessionsData = [];
 
-        const lastUsageTime = this.state.channel.channelStatus.lastChanged;
+        const lastUsageTime = channel.channelStatus.lastChanged;
         const isValidLastUsageTime = (lastUsageTime !== '' && typeof(lastUsageTime) !== 'undefined' && lastUsageTime !== null);
 
         return <div>
@@ -114,36 +127,36 @@ class Connection extends React.Component<any, any>{
                                     <tbody>
                                         <tr>
                                             <td>{t('IdT')}</td>
-                                            <td>{this.state.channel.id}</td>
+                                            <td>{channel.id}</td>
                                         </tr>
                                         <tr>
                                             <td>{t('OfferingT')}</td>
-                                            <td>{this.state.offering
+                                            <td>{offering
                                                 ? <a href='#' onClick={this.showOffering.bind(this)}>
-                                                    {this.state.offering.hash}
+                                                    {offering.hash}
                                                   </a>
                                                 : ''}
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>{t('ContractStatusT')}</td>
-                                            <td><ContractStatus contractStatus={this.state.channel.channelStatus.channelStatus} /></td>
+                                            <td><ContractStatus contractStatus={channel.channelStatus.channelStatus} /></td>
                                         </tr>
                                         <tr>
                                             <td>{t('ServiceStatusT')}</td>
-                                            <td><ChannelStatus serviceStatus={this.state.channel.channelStatus.serviceStatus} /></td>
+                                            <td><ChannelStatus serviceStatus={channel.channelStatus.serviceStatus} /></td>
                                         </tr>
                                         <tr>
                                             <td>{t('TransferredT')}</td>
-                                            <td>{this.state.channel.usage.current} {this.state.channel.usage.unit}</td>
+                                            <td>{channel.usage.current} {channel.usage.unit}</td>
                                         </tr>
                                         <tr>
                                             <td>{t('CostT')}</td>
-                                            <td>{toFixedN({number: (this.state.channel.usage.cost / 1e8), fixed: 8})} PRIX</td>
+                                            <td>{toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>{t('DepositT')}</td>
-                                            <td>{toFixedN({number: (this.state.channel.deposit / 1e8), fixed: 8})} PRIX</td>
+                                            <td>{toFixedN({number: (channel.deposit / 1e8), fixed: 8})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>{t('LastUsageTimeT')}</td>
@@ -155,17 +168,17 @@ class Connection extends React.Component<any, any>{
                         </div>
                     </div>
 
-                    <ClientAccessInfo channel={this.state.channel} />
+                    <ClientAccessInfo channel={channel} />
                 </div>
 
 
                 <div className='col-4'>
-                    {this.state.channel.channelStatus.serviceStatus === 'active' ? <IncreaseDepositButton channel={this.state.channel} render={render} /> : '' }
-                    <FinishServiceButton channel={this.state.channel} />
+                    {channel.channelStatus.serviceStatus === 'active' ? <IncreaseDepositButton channel={channel} render={render} /> : '' }
+                    <FinishServiceButton channel={channel} />
                     <TerminateContractButton
                         status='disabled'
-                        payment={this.state.channel.usage.cost}
-                        channelId={this.state.channel.id}
+                        payment={channel.usage.cost}
+                        channelId={channel.id}
                         done={() => this.props.history.push('/client-history')}
                     />
                 </div>
@@ -191,4 +204,4 @@ class Connection extends React.Component<any, any>{
     }
 }
 
-export default withRouter(Connection);
+export default ws<IProps>(withRouter(Connection));

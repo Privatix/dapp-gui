@@ -357,7 +357,7 @@ class CreateOffering extends React.Component<IProps, any>{
                 }
                 delete payload.minUploadMbits;
             }
-            // const ws = (window as any).ws;
+
             const offeringId = await ws.createOffering(payload);
             await ws.changeOfferingStatus(offeringId, 'publish', this.state.gasPrice);
             this.setState(this.getDefaultState());

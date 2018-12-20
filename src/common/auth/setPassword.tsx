@@ -54,7 +54,7 @@ class SetPassword extends React.Component<any, any>{
         return max.substr(0, min.length) === min ? 'correct' : 'wrong';
     }
 
-    onUserInput(evt:any){
+    onUserInput = (evt:any) => {
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
     }
 
@@ -90,7 +90,6 @@ class SetPassword extends React.Component<any, any>{
         if(ready){
             try {
                 await ws.setPassword(pwd);
-                (window as any).ws = ws;
                 registerBugsnag(ws);
                 this.props.dispatch(handlers.setWS(ws));
                 const role = await ws.getUserRole();
@@ -105,12 +104,14 @@ class SetPassword extends React.Component<any, any>{
     }
 
     render(){
+
         const { t } = this.props;
+
         return <div className='card-box'>
             <div className='panel-heading'>
                 <h4 className='text-center'> {t('setThePassword')} <strong className='text-custom'>Privatix</strong></h4>
             </div>
-            <form className='form-horizontal m-t-20' action='#' onSubmit={this.onSubmit.bind(this)} >
+            <form className='form-horizontal m-t-20' action='#' onSubmit={this.onSubmit} >
                 <div className='p-20 wizard clearfix'>
                     <Steps step='2' />
                     <div className='content clearfix'>
@@ -135,7 +136,7 @@ class SetPassword extends React.Component<any, any>{
                                         data-payload-value='pwd'
                                         required={true}
                                         placeholder={t('Password')}
-                                        onChange={this.onUserInput.bind(this)}
+                                        onChange={this.onUserInput}
                                         value={this.state.pwd}
                                     />
                                 </div>
@@ -148,7 +149,7 @@ class SetPassword extends React.Component<any, any>{
                                         data-payload-value='conf'
                                         required={true}
                                         placeholder={t('Confirmation')}
-                                        onChange={this.onUserInput.bind(this)}
+                                        onChange={this.onUserInput}
                                         value={this.state.conf}
                                     />
                                 </div>

@@ -62,7 +62,6 @@ class Login extends React.Component<any, any> {
                 try {
                     await ws.setPassword(pwd);
                     // TODO notice if server returns error (not implemented on dappctrl yet)
-                    (window as any).ws = ws;
                     registerBugsnag(ws);
                     this.props.dispatch(handlers.setWS(ws));
                     const role = await ws.getUserRole();

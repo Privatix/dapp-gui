@@ -4,14 +4,25 @@ import { translate } from 'react-i18next';
 import { remote } from 'electron';
 
 import * as api from 'utils/api';
+import { WS, ws } from 'utils/ws';
+
 import notice from 'utils/notice';
 import Steps from './steps';
 import {NextButton} from './utils';
 
-@translate(['auth/backup', 'auth/setAccount', 'auth/importJsonKey', 'utils/notice'])
-class Backup extends React.Component<any, any>{
+interface IProps{
+    ws?: WS;
+    t?: any;
+    history?: any;
+    accountId: string;
+    from: string;
+    entryPoint: string;
+}
 
-    constructor(props:any){
+@translate(['auth/backup', 'auth/setAccount', 'auth/importJsonKey', 'utils/notice'])
+class Backup extends React.Component<IProps, any>{
+
+    constructor(props:IProps){
         super(props);
         this.state = {fileName: ''};
     }
@@ -32,17 +43,17 @@ class Backup extends React.Component<any, any>{
         }
     }
 
-    saveDialog(e: any){
+    saveDialog = (e: any) => {
         e.preventDefault();
 
-        let fileName=remote.dialog.showSaveDialog({});
+        let fileName = remote.dialog.showSaveDialog({});
 
         this.setState({fileName: 'string' === typeof fileName ? fileName : ''});
     }
 
     onSubmit = (evt: any) => {
 
-        const { t } = this.props;
+        const { t, ws, accountId, entryPoint } = this.props;
 
         evt.preventDefault();
 
@@ -51,13 +62,13 @@ class Backup extends React.Component<any, any>{
             return;
         }
 
-        (window as any).ws.exportAccount(this.props.accountId, (res: any) => {
+        ws.exportAccount(accountId, (res: any) => {
             api.fs.saveAs(this.state.fileName, atob(res.result))
                 .then((res:any) => {
                     if(res.err){
                         notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
                     }else{
-                        this.props.history.push(this.props.entryPoint);
+                        this.props.history.push(entryPoint);
                     }
                 });
         });
@@ -83,7 +94,7 @@ class Backup extends React.Component<any, any>{
                                     <label>{t('auth/importJsonKey:PathToJSONKeystoreFile')}:</label>
                                     <div className='row'>
                                       <div className='col-10'><input type='text' className='form-control' value={this.state.fileName} /></div>
-                                      <div className='col-2'><button onClick={this.saveDialog.bind(this)} className='btn btn-white waves-effect'>{t('Browse')}</button></div>
+                                      <div className='col-2'><button onClick={this.saveDialog} className='btn btn-white waves-effect'>{t('Browse')}</button></div>
                                     </div>
                                </div>
                            </div>
@@ -98,4 +109,4 @@ class Backup extends React.Component<any, any>{
     }
 }
 
-export default withRouter(Backup);
+export default ws<IProps>(withRouter(Backup));

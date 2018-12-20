@@ -5,14 +5,23 @@ import { translate } from 'react-i18next';
 import Steps from './steps';
 import { PreviousButton, NextButton, back } from './utils';
 import notice from 'utils/notice';
+
 import * as api from 'utils/api';
+import { WS, ws } from 'utils/ws';
+
+interface IProps{
+    ws?: WS;
+    t?: any;
+    history?: any;
+    default: string;
+}
 
 @translate(['auth/importJsonKey', 'auth/setAccount', 'auth/generateKey', 'utils/notice'])
-class ImportJsonKey extends React.Component<any, any>{
+class ImportJsonKey extends React.Component<IProps, any>{
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
-        this.state = {name: this.props.default === 'true' ? 'main' : ''
+        this.state = {name: props.default === 'true' ? 'main' : ''
                      ,fileName: ''
                      ,pwd: ''
                      };
@@ -34,12 +43,12 @@ class ImportJsonKey extends React.Component<any, any>{
         }
     }
 
-    onUserInput(evt: any){
+    onUserInput = (evt: any) => {
 
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
     }
 
-    onFileSelected(evt: any){
+    onFileSelected = (evt: any) => {
         const fileName = evt.target.files[0].path;
         this.setState({fileName});
     }
@@ -47,7 +56,7 @@ class ImportJsonKey extends React.Component<any, any>{
     onSubmit = async (evt: any) => {
         evt.preventDefault();
 
-        const { t } = this.props;
+        const { t, ws } = this.props;
         const {pwd, fileName, name} = this.state;
         let msg = '';
         let err = false;
@@ -79,7 +88,7 @@ class ImportJsonKey extends React.Component<any, any>{
             ,name
         };
 
-        (window as any).ws.importAccountFromJSON(payload, keyObject, pwd, (res: any)=>{
+        ws.importAccountFromJSON(payload, keyObject, pwd, (res: any)=>{
             if('error' in res){
                 msg = t('SomethingWentWrong');
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg});
@@ -111,14 +120,14 @@ class ImportJsonKey extends React.Component<any, any>{
                                            name='name'
                                            className='form-control'
                                            value={this.state.name}
-                                           onChange={this.onUserInput.bind(this)}
+                                           onChange={this.onUserInput}
                                     />
                                 </div>
                            </div>
                            <div className='form-group row'>
                             <div className='col-12'>
                                 <label>{t('PathToJSONKeystoreFile')}:</label>
-                                <input type='file' className='form-control' onChange={this.onFileSelected.bind(this)} />
+                                <input type='file' className='form-control' onChange={this.onFileSelected} />
                               </div>
                            </div>
                            <div className='form-group row'>
@@ -128,7 +137,7 @@ class ImportJsonKey extends React.Component<any, any>{
                                        type='password'
                                        className='form-control'
                                        value={this.state.pwd}
-                                       onChange={this.onUserInput.bind(this)}
+                                       onChange={this.onUserInput}
                                 />
                               </div>
                            </div>
@@ -145,4 +154,4 @@ class ImportJsonKey extends React.Component<any, any>{
     }
 }
 
-export default withRouter(ImportJsonKey);
+export default ws<IProps>(withRouter(ImportJsonKey));

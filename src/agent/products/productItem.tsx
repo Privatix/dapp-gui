@@ -6,17 +6,27 @@ import ModalWindow from 'common/modalWindow';
 import CreateOffering from 'agent/offerings/createOffering/';
 import Product from './product';
 
-@translate(['products/productItem', 'offerings', 'offerings/offerings'])
-class ProductItem extends React.Component<any, any>{
+import { WS, ws } from 'utils/ws';
+import {Product as ProductType} from 'typings/products';
 
-    constructor(props:any){
+interface IProps{
+    ws?: WS;
+    t?: any;
+    history?: any;
+    product: ProductType;
+}
+
+@translate(['products/productItem', 'offerings', 'offerings/offerings'])
+class ProductItem extends React.Component<IProps, any>{
+
+    constructor(props:IProps){
         super(props);
 
         this.state = {
             visible: false,
             offerings: [],
-            offerTemplate: '',
-            accessTemplate: ''
+            offerTemplate: null,
+            accessTemplate: null
         };
 
         this.getTemplates();
@@ -25,21 +35,24 @@ class ProductItem extends React.Component<any, any>{
     }
 
 
-    onOfferingCreated(){
+    onOfferingCreated = () => {
         this.props.history.push('/offerings/all');
     }
 
     async getTemplates() {
-        const templates = await (window as any).ws.getTemplates();
 
-        let offerTemplate = '', accessTemplate = '';
-        if((templates as any).length){
-            (templates as any).forEach(template => {
+        const { ws } = this.props;
+
+        const templates = await ws.getTemplates();
+
+        let offerTemplate = null, accessTemplate = null;
+        if(templates.length){
+            templates.forEach(template => {
                 if(template.kind === 'offer'){
                     offerTemplate = template;
                 }
             });
-            (templates as any).forEach(template => {
+            templates.forEach(template => {
                 if(template.kind === 'access'){
                     accessTemplate = template;
                 }
@@ -50,7 +63,10 @@ class ProductItem extends React.Component<any, any>{
     }
 
     async getOfferings() {
-        const offerings = await (window as any).ws.getAgentOfferings(this.props.product.id);
+
+        const { ws, product } = this.props;
+
+        const offerings = await ws.getAgentOfferings(product.id);
         if(offerings.items){
             this.setState({offerings: offerings.items});
         }
@@ -58,14 +74,14 @@ class ProductItem extends React.Component<any, any>{
 
     render(){
 
-        const { t } = this.props;
+        const { t, product } = this.props;
 
-        const elem = <tr key={this.props.product.id}>
+        const elem = <tr key={product.id}>
              <td>
                  { <ModalWindow customClass=''
                                 modalTitle={t('ServerInfo')}
-                                text={this.props.product.name}
-                                component={<Product product={this.props.product} />}
+                                text={product.name}
+                                component={<Product product={product} />}
                    />}
              </td>
              <td>{this.state.offerTemplate? this.state.offerTemplate.raw.schema.title : ''}</td>
@@ -76,7 +92,7 @@ class ProductItem extends React.Component<any, any>{
                                customClass='btn btn-default btn-custom waves-effect waves-light'
                                modalTitle={t('offerings/offerings:CreateOffering')}
                                text={t('offerings:CreateAnOffering')}
-                               component={<CreateOffering product={this.props.product.id} done={this.onOfferingCreated.bind(this)}/>}
+                               component={<CreateOffering product={product.id} done={this.onOfferingCreated}/>}
                   />}
              </td>
          </tr>;
@@ -84,4 +100,4 @@ class ProductItem extends React.Component<any, any>{
     }
 }
 
-export default withRouter(ProductItem);
+export default ws<IProps>(withRouter(ProductItem));
