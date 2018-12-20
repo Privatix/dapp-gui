@@ -21,7 +21,7 @@ class ImportHexKey extends React.Component<IProps, any>{
 
     constructor(props: IProps){
         super(props);
-        this.state = {name: this.props.default === 'true' ? 'main' : ''
+        this.state = {name: props.default === 'true' ? 'main' : ''
                      ,privateKey: ''
                      };
     }
@@ -80,15 +80,14 @@ class ImportHexKey extends React.Component<IProps, any>{
             ,privateKeyHex: privateKey
         };
 
-        ws.importAccountFromHex(payload, (res: any)=>{
-            if('error' in res){
-                msg = t('SomethingWentWrong');
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
-            }else{
-                api.settings.updateLocal({accountCreated:true});
-                this.props.history.push(`/backup/${res.result}/importHexKey`);
-            }
-        });
+        try {
+            const id = await ws.importAccountFromHex(payload);
+            api.settings.updateLocal({accountCreated:true});
+            this.props.history.push(`/backup/${id}/importHexKey`);
+        } catch (e) {
+            msg = t('SomethingWentWrong');
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+        }
     }
 
     render(){
@@ -111,6 +110,7 @@ class ImportHexKey extends React.Component<IProps, any>{
                                            type='text'
                                            name='name'
                                            className='form-control'
+                                           value={this.state.name}
                                            onChange={this.onUserInput}
                                     />
                                 </div>

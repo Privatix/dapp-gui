@@ -21,7 +21,7 @@ class GenerateKey extends React.Component<IProps, any>{
 
     constructor(props: IProps){
         super(props);
-        this.state = {name: this.props.default === 'true' ? 'main' : ''};
+        this.state = {name: props.default === 'true' ? 'main' : ''};
     }
 
     back = back('/setAccount').bind(this);

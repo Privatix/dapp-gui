@@ -252,18 +252,8 @@ export class WS {
         return this.send('ui_generateAccount', [payload]);
     }
 
-    importAccountFromHex(payload: any, handler: Function){
-        const uuid = uuidv4();
-        WS.handlers[uuid] = handler;
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_importAccountFromHex',
-            params: [this.pwd, payload]
-        };
-
-        this.socket.send(JSON.stringify(req));
+    importAccountFromHex(payload: any): Promise<any>{
+        return this.send('ui_importAccountFromHex', [payload]) as Promise<any>;
     }
 
     importAccountFromJSON(payload: any, key: Object, pwd: string, handler: Function){
