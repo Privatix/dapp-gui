@@ -85,9 +85,11 @@ class CreateOffering extends React.Component<IProps, any>{
 
     static getDerivedStateFromProps(props: IProps, state: any){
         const { accounts } = props;
-        return {account:  accounts.find(state.account ? (account => account.id = state.account.id) : (account => account.isDefault))
-               ,accounts
-        };
+        const account = accounts.find(state.account
+            ? account => account.id === state.account.id
+            : account => account.isDefault);
+
+        return {account, accounts};
     }
 
     async refresh() {
@@ -122,11 +124,9 @@ class CreateOffering extends React.Component<IProps, any>{
     }
 
     onAccountChanged(selectedAccount: any) {
-
         const account = this.state.accounts.find(account => account.id === selectedAccount.value);
         const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
         this.setState({account, payload});
-
     }
 
     onUserInput(evt: any){
