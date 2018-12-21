@@ -54,7 +54,6 @@ export default class ModalWindow extends React.Component<any, any> {
     }
 
     render() {
-
         const { visible, props} = this.state;
 
         if (visible === true) {

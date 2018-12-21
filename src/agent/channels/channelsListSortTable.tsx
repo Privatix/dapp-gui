@@ -32,8 +32,8 @@ class ChannelsTable extends React.Component<any, any> {
 
     render() {
 
-        const { t } = this.props;
-
+        const { t, data } = this.props;
+        const sortedData = data.sort((a, b) => Date.parse(a.serviceChangedTime) >= Date.parse(b.serviceChangedTime) ? -1 : 1);
         const columns = [
             {
                 header: 'ID',
@@ -88,7 +88,6 @@ class ChannelsTable extends React.Component<any, any> {
             {
                 header: t('ServiceChangedTime'),
                 key: 'serviceChangedTime',
-                defaultSorting: 'DESC',
                 descSortFunction: DateSorter.desc,
                 ascSortFunction: DateSorter.asc,
                 render: (serviceChangedTime) => <PgTime time={serviceChangedTime} />
@@ -97,7 +96,7 @@ class ChannelsTable extends React.Component<any, any> {
 
         return <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
             <SortableTable
-                data={this.state.tableData}
+                data={sortedData}
                 columns={columns} />
         </div>;
     }
