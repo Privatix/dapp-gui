@@ -139,7 +139,7 @@ class Channels extends React.Component<Props, any> {
                         />,
                     server: <ModalWindow customClass=''
                                          modalTitle={t('ServerInfo')}
-                                         text={product.name}
+                                         text={product ? product.name : ''}
                                          component={<Product product={product} />}
                             />,
                     client: channel.client,
