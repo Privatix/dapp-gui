@@ -135,7 +135,7 @@ class Connecting extends React.Component<any, any>{
             if(this.state.status !== 'waiting'){
                 this.props.history.push('/client-dashboard-start');
             } else {
-                this.handler = setTimeout(this.refresh.bind(this), 3000);
+                this.handler = setTimeout(this.refresh.bind(this), 1000);
                 this.setState({status: 'waiting', channel: null});
             }
 
