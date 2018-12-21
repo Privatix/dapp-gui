@@ -562,13 +562,15 @@
         "IncreaseConfirmBtn": "Yes, increase the deposit!",
         "IncreaseSwalTitle": "Increase deposit",
         "Account": "Account",
-        "AddToDeposit": "AddToDeposit:",
+        "AddToDeposit": "Add to deposit:",
         "AverageTimeToAddTheDeposit": "Average time to add the deposit:",
         "IncreaseBtn": "Add",
         "SuccessMessage": "Adding deposit successfully initialized!",
         "SomethingWentWrong": "Something went wrong. Try again later!",
         "ErrorNotEnoughPublishFunds": "Not enough funds to publish transaction.",
-        "ErrorNotEnoughPRIX": "Not enough PRIX to increase deposit."
+        "ErrorNotEnoughPRIX": "Not enough PRIX to increase deposit.",
+        "MaxUnitsHint": "Maximum for this offering are {{maxUnits}} {{unitName}}. So, you can add not more than {{maxDepositAddValue}} {{unitName}}",
+        "ErrorDepositGreaterThanMaxUnits": "You can't add to deposit more, than {{units}} {{unitName}}"
     },
     "electronMenu": {
         "File": "File",
