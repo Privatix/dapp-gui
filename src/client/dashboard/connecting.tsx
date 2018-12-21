@@ -12,28 +12,36 @@ import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import notice from 'utils/notice';
 import { State } from 'typings/state';
 
-const countdownRender = ( { hours, minutes, seconds } ) => {
+const countdownRender = ( { hours, minutes, seconds, completed } ) => {
 
-    const hoursNum = parseInt(hours, 10);
+    if(completed) {
+        const View = translate('client/dashboard/connecting')(({t}) => {
+            return <p className='card-text text-muted'>{t('WaitingTimeIsOver')}</p>;
+        });
 
-    const View = translate('client/dashboard/connecting')(({t}) => {
-        return (
-            <React.Fragment>
-                <strong>
-                { hoursNum ? <span>{hours}:{minutes}</span> : <span>{minutes}:{seconds}</span> }
-                </strong>
-                &nbsp;<span>{ hoursNum ? `${t('hour')}/${t('min')}` : `${t('min')}/${t('sec')}` }</span>
-            </React.Fragment>
-        );
-    });
+        return <View />;
+    } else {
 
-    return <View />;
+        const hoursNum = parseInt(hours, 10);
+
+        const View = translate('client/dashboard/connecting')(({t}) => {
+            return (
+                <React.Fragment>
+                    <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
+                        <strong>
+                        { hoursNum ? <span>{hours}:{minutes}</span> : <span>{minutes}:{seconds}</span> }
+                        </strong>
+                        &nbsp;<span>{ hoursNum ? `${t('hour')}/${t('min')}` : `${t('min')}/${t('sec')}` }</span>
+                    </p>
+                    <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
+                </React.Fragment>
+            );
+        });
+
+        return <View />;
+    }
 
 };
-
-const completeRemaining = translate('client/dashboard/connecting')(({t}) => {
-    return <span>{t('WaitingTimeIsOver')}</span>;
-});
 
 @translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal'])
 class Connecting extends React.Component<any, any>{
@@ -284,14 +292,9 @@ class Connecting extends React.Component<any, any>{
             <div className='row m-t-20 clientConnectionBl'>
                 <div className='col-6 col-xl-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
-                            <Countdown date={deadlineStamp}
-                                       renderer={countdownRender}
-                                       onComplete={completeRemaining}
-                            />
-                        </p>
-                        <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
-
+                        <Countdown date={deadlineStamp}
+                                   renderer={countdownRender}
+                        />
                         <button className='btn btn-primary btn-custom btn-block' onClick={this.connectHandler.bind(this)}>{t('Resume')}</button>
                     </div>
                 </div>
