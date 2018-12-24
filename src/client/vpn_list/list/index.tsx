@@ -29,10 +29,13 @@ import { asyncProviders } from 'redux/actions';
 
 class VPNList extends React.Component<any,any> {
 
+    checkAvailabilityBtn = null;
+
     constructor(props:any) {
         super(props);
 
         const { t } = props;
+        this.checkAvailabilityBtn = React.createRef();
 
         this.state = {
             from: 0,
@@ -136,7 +139,7 @@ class VPNList extends React.Component<any,any> {
             || (this.state.showAllCountries !== nextState.showAllCountries)
             || (this.state.filteredCountries !== nextState.filteredCountries)
             || (this.state.offeringHash !== nextState.offeringHash)
-            || !(isEqual(this.state.offeringsAvailability.statuses, nextState.offeringsAvailability.statuses))
+            || !(isEqual(this.state.offeringsAvailability, nextState.offeringsAvailability))
             || !(isEqual(nextState.rawOfferings, this.state.rawOfferings));
     }
 
@@ -351,6 +354,7 @@ class VPNList extends React.Component<any,any> {
     }
 
     checkStatus() {
+        this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
         const offeringsIds = this.getOfferingsIds();
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
     }
@@ -372,6 +376,12 @@ class VPNList extends React.Component<any,any> {
         const { t } = this.props;
         const createSliderWithTooltip = Slider.createSliderWithTooltip;
         const Range = createSliderWithTooltip(Slider.Range);
+
+        if (this.state.offeringsAvailability.counter === 0
+            && this.checkAvailabilityBtn.current
+            && this.checkAvailabilityBtn.current.hasAttribute('disabled')) {
+            this.checkAvailabilityBtn.current.removeAttribute('disabled');
+        }
 
         let buttonText = t('ShowAllBtn');
         let searchHtml = null;
@@ -456,7 +466,7 @@ class VPNList extends React.Component<any,any> {
                         </button>
                         <button
                             className='btn btn-default btn-custom waves-effect waves-light ml-3'
-                            disabled={this.state.offeringsAvailability.counter !== 0}
+                            ref={this.checkAvailabilityBtn}
                             onClick={this.checkStatus.bind(this)}>
                             {t('CheckAvailability')}
                         </button>
