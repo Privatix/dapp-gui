@@ -112,8 +112,7 @@ class AcceptOffering extends React.Component<IProps, any>{
             }
         }
 
-
-        if(this.state.account.pscBalance < this.state.deposit){
+        if(this.state.account.pscBalance < this.state.customDeposit){
             err=true;
             msg += ' ' + t('NotEnoughPrixForDeposit');
         }
