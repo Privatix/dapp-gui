@@ -68,7 +68,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
         const offeringAge = lastProcessedBlock - offering.blockNumberUpdated;
         const offeringAgeMinutes = Math.floor(offeringAge / 4);
 
-        const disallowDeleting = ['removing', 'popping_up', 'removed'].includes(offeringStatus);
+        const disallowDeleting = !['registered', 'popped_up'].includes(offeringStatus);
         const disabled = offeringAge < removePeriod;
 
         if(disallowDeleting){
