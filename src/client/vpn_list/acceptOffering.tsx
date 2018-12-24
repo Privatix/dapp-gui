@@ -217,7 +217,7 @@ class AcceptOffering extends React.Component<IProps, any>{
                         <label className='col-3 col-form-label'>{t('offerings/createOffering:MaxUnits')}:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={Math.ceil(offering.maxUnit)} readOnly/>
+                                <input type='text' className='form-control' value={Math.ceil(offering.maxUnit) === 0 ? t('unlimited') : Math.ceil(offering.maxUnit) } readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>{offering.unitName}</span>
                             </div>
                             <span className='help-block'>

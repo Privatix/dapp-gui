@@ -464,7 +464,8 @@
         "Balance": "Balance:",
         "Deposit": "Deposit:",
         "UnusedPrixWillBeReturnedSmallText": "After the end of using, the unused PRIX will be returned.",
-        "AcceptancePrice": "Acceptance Price:"
+        "AcceptancePrice": "Acceptance Price:",
+        "unlimited": "unlimited"
     },
     "client/history": {
         "Service": "Service",

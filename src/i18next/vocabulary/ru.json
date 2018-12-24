@@ -464,7 +464,8 @@
         "Balance": "Баланс:",
         "Deposit": "Депозит:",
         "UnusedPrixWillBeReturnedSmallText": "По окончании использования VPN будут возвращены неиспользованные PRIX.",
-        "AcceptancePrice": "Стоимость:"
+        "AcceptancePrice": "Стоимость:",
+        "unlimited": "не ограничено"
     },
     "client/history": {
         "Service": "Сервис",
