@@ -655,7 +655,7 @@
         "psc_periods_challenge_Description": "Number of blocks to be mined to finish uncooperative channel close",
         "psc_periods_popup_Description": "Number of blocks to be mined to repeatedly pop up an offering",
         "psc_periods_remove_Description": "Number of blocks to be mined from last offering update in blockchain to remove offering",
-        "client_somc_transports_Description": "Offering with what SOMC type to display."
+        "client_somc_transports_Description": "This setting defines what SOMC type should be used to display Offering"
     },
     "copyToClipboard": {
         "Copied": "Copied!",
