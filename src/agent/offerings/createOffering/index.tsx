@@ -572,6 +572,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
+                                                   placeholder={t('ie') + ' 150'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxUnit'
                                                    value={this.state.payload.maxUnit}
