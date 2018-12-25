@@ -149,7 +149,8 @@
         "cantBeEmpty": "can't be empty.",
         "cantBeEmpty_plural": "can't be empty.",
         "MaxSuspendTimeMustBeMoreOrEquals10Min": "Maximum suspend time must be equals or more than 10 min.",
-        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Maximum inactive time must be equals or more than 10 min."
+        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Maximum inactive time must be equals or more than 10 min.",
+        "unlimited": "unlimited"
     },
     "offerings/offeringTools":{
         "WarningArea": "Warning area",

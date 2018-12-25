@@ -149,7 +149,8 @@
         "cantBeEmpty": "не может быть пустым.",
         "cantBeEmpty_plural": "не могут быть пустыми.",
         "MaxSuspendTimeMustBeMoreOrEquals10Min": "Максимальное время приостановки должно быть равно или больше 10 минут.",
-        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Максимальное неактивное время должно быть равно или больше 10 минут."
+        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Максимальное неактивное время должно быть равно или больше 10 минут.",
+        "unlimited": "не ограничено"
     },
     "offerings/offeringTools": {
         "WarningArea": "Внимание!",
