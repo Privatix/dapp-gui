@@ -13,7 +13,6 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
   const announce = function(announcement: any){
       win.webContents.send('announcement', announcement);
   };
-  updateChecker.start(settings, announce);
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
@@ -46,6 +45,7 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
             settings = req.options.body;
             fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+            win.webContents.send('localSettings', settings);
         }
     }
   });
@@ -61,6 +61,8 @@ function createWindow () {
          ,icon: path.join(__dirname, 'icon_64.png')
       };
   win = new BrowserWindow(options);
+
+
 
   // and load the index.html of the app.
   win.loadURL(url.format({
@@ -82,6 +84,11 @@ function createWindow () {
     // when you should delete the corresponding element.
     win = null;
     app.quit();
+  });
+
+  win.webContents.on('dom-ready', () => {
+      win.webContents.send('localSettings', settings);
+      updateChecker.start(settings, announce);
   });
 }
 

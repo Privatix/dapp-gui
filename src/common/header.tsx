@@ -117,8 +117,8 @@ class Header extends React.Component<any, any>{
                     </a>
                 </ul>
 
-                <TopPanel />
                 <UpdateInformer />
+                <TopPanel />
                 <ul className='list-inline menu-left mb-0'>
                     <li className='float-left'>
                         <button onClick={this.openLeftBar.bind(this)} className='button-menu-mobile open-left waves-light waves-effect'>

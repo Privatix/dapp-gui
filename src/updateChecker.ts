@@ -9,7 +9,9 @@ class UpdateChecker {
     }
 
     private async checkUpdate(settings: LocalSettings, announce: Function){
+
         const res = await fetch(settings.releasesEndpoint);
+
         try{
             const releases = JSON.parse(await res.text());
             announce(releases);

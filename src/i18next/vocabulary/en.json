@@ -703,5 +703,8 @@
         "accountUpdateBalances" : "check and update account balance info",
         "decrementCurrentSupply": "decrement offering current supply",
         "incrementCurrentSupply": "increment offering current supply"
+    },
+    "updateInformer": {
+        "announcement": "<0>New version {{name}} was released.</0>"
     }
 }

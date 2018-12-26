@@ -16,6 +16,10 @@ api.on('announcement', function(event: any, data: any){
     storage.dispatch(handlers.setReleases(data));
 });
 
+api.on('localSettings', function(event: any, data: any){
+    storage.dispatch(handlers.updateLocalSettings(data));
+});
+
 const refresh = function(){
 
     const { ws, mode } = storage.getState();
