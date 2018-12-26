@@ -10,10 +10,12 @@ class UpdateChecker {
 
     private async checkUpdate(settings: LocalSettings, announce: Function){
         const res = await fetch(settings.releasesEndpoint);
-        const releases = JSON.parse(await res.text());
-        console.log(releases);
-        console.log(releases.map(release => release.tag_name));
-        announce(releases);
+        try{
+            const releases = JSON.parse(await res.text());
+            announce(releases);
+        } catch ( e ){
+            // DO NOTHING
+        }
     }
 }
 

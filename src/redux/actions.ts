@@ -16,7 +16,8 @@ export const enum actions {
     SET_CHANNEL,
     SET_WS,
     SET_OFFERINGS_AVAILABILITY,
-    INCREMENT_OFFERINGS_AVAILABILITY_COUNTER
+    INCREMENT_OFFERINGS_AVAILABILITY_COUNTER,
+    SET_RELEASES_LIST
 }
 
 
@@ -34,7 +35,8 @@ const handlers: ReduxHandlers = {
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
     setOfferingsAvailability   : function(offeringsAvailability: Object[]){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};},
-    incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};}
+    incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};},
+    setReleases                : function(releases: any[]){ return { type: actions.SET_RELEASES_LIST, value: releases };},
 };
 
 interface AsyncProviders {

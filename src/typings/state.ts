@@ -18,6 +18,7 @@ interface State {
         counter: number;
         statuses: OfferingAvailabilityResponse;
     };
+    releases: any[];
 }
 
 const StateDefault: State = {
@@ -31,7 +32,8 @@ const StateDefault: State = {
     offeringsAvailability: {
         counter: 0,
         statuses: {}
-    }
+    },
+    releases: []
 };
 
 export {

@@ -4,7 +4,7 @@ import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 
 import reducers from 'redux/reducers';
-import { asyncProviders } from 'redux/actions';
+import { asyncProviders, default as handlers } from 'redux/actions';
 
 import { Role } from 'typings/mode';
 
@@ -13,7 +13,7 @@ const storage = createStore(reducers, applyMiddleware(
   ));
 
 api.on('announcement', function(event: any, data: any){
-    console.log('ANNOUNCE!!!', data);
+    storage.dispatch(handlers.setReleases(data));
 });
 
 const refresh = function(){
