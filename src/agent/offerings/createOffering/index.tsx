@@ -327,7 +327,7 @@ class CreateOffering extends React.Component<IProps, any>{
             this.setState({errMsg: msg});
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }else{
-            payload.billingInterval = 1;
+            payload.billingInterval = 20;
             payload.billingType = 'postpaid';
             payload.additionalParams = {};
 
