@@ -109,7 +109,7 @@ export default class OfferingView extends React.Component<any, any>{
                         <label className='col-3 col-form-label'>{t('MaxUnits')}:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={props.offering.maxUnit} readOnly/>
+                                <input type='text' className='form-control' value={props.offering.maxUnit ? props.offering.maxUnit : t('unlimited')} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                             </div>
                             <span className='help-block'>
