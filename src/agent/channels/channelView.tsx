@@ -72,7 +72,7 @@ export default class ChannelView extends React.Component<any, any> {
                                     </tr>
                                     <tr><td>{t('ContractStatus')}</td><td><ContractStatus contractStatus={channel.channelStatus} /></td></tr>
                                     <tr><td>{t('ServiceStatus')}</td><td><ChannelStatus serviceStatus={channel.serviceStatus} /></td></tr>
-                                    <tr><td>{t('Usage')}</td><td><ChannelUsage channelId={this.props.channel.id} channelStatus={channel.serviceStatus} mode='unit'/></td></tr>
+                                    <tr><td>{t('Usage')}</td><td><ChannelUsage channelId={this.props.channel.id} mode='unit'/></td></tr>
                                     <tr><td>{t('Income')}</td><td>{toFixedN({number: channel.receiptBalance/1e8, fixed: 8})} PRIX</td></tr>
                                     <tr><td>{t('Deposit')}</td><td>{toFixedN({number: channel.totalDeposit/1e8, fixed: 8})} PRIX</td></tr>
                                 </tbody>

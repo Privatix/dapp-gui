@@ -21,7 +21,7 @@ interface IProps{
     mode?: string;
 }
 
-@translate(['client/acceptOffering', 'utils/gasRange', 'utils/notice'])
+@translate(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice'])
 class AcceptOffering extends React.Component<IProps, any>{
 
     acceptBtn = null;
@@ -112,8 +112,7 @@ class AcceptOffering extends React.Component<IProps, any>{
             }
         }
 
-
-        if(this.state.account.pscBalance < this.state.deposit){
+        if(this.state.account.pscBalance < this.state.customDeposit){
             err=true;
             msg += ' ' + t('NotEnoughPrixForDeposit');
         }
@@ -148,6 +147,7 @@ class AcceptOffering extends React.Component<IProps, any>{
 
 
     render(){
+
         const {t} = this.props;
         const offering = this.props.offering;
 
@@ -198,6 +198,30 @@ class AcceptOffering extends React.Component<IProps, any>{
                             </div>
                             <span className='help-block'>
                                 <small>{t('MaxTimeWithoutServiceSmallText')}</small>
+                            </span>
+                        </div>
+                    </div>
+                    <div className='form-group row'>
+                        <label className='col-3 col-form-label'>{t('offerings/createOffering:MinUnits')}:</label>
+                        <div className='col-9'>
+                            <div className='input-group bootstrap-touchspin'>
+                                <input type='text' className='form-control' value={Math.ceil(offering.minUnits)} readOnly/>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>{offering.unitName}</span>
+                            </div>
+                            <span className='help-block'>
+                                <small>{t('MinUnitsText')}</small>
+                            </span>
+                        </div>
+                    </div>
+                    <div className='form-group row'>
+                        <label className='col-3 col-form-label'>{t('offerings/createOffering:MaxUnits')}:</label>
+                        <div className='col-9'>
+                            <div className='input-group bootstrap-touchspin'>
+                                <input type='text' className='form-control' value={Math.ceil(offering.maxUnit) === 0 ? t('unlimited') : Math.ceil(offering.maxUnit) } readOnly/>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>{offering.unitName}</span>
+                            </div>
+                            <span className='help-block'>
+                                <small>{t('MaxUnitsText')}</small>
                             </span>
                         </div>
                     </div>

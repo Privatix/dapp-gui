@@ -2,7 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import { WS, ws } from 'utils/ws';
-import { ClientChannelUsage, ServiceStatus } from 'typings/channels';
+import { ClientChannelUsage } from 'typings/channels';
 
 import toFixedN from 'utils/toFixedN';
 
@@ -10,7 +10,6 @@ interface IProps {
     t?: any;
     ws?: WS;
     usage?: ClientChannelUsage;
-    channelStatus: ServiceStatus;
     channelId: string;
     mode: string;
 }
@@ -46,7 +45,7 @@ class Usage extends React.Component<IProps, IState>{
     }
 
     startRefresh(){
-        this.handlerId = setTimeout(this.refresh, 1000);
+        this.handlerId = setTimeout(this.refresh, 2000);
     }
 
     stopRefresh(){
@@ -60,7 +59,7 @@ class Usage extends React.Component<IProps, IState>{
         const { ws, channelId } = this.props;
         const usage = await ws.getChannelUsage(channelId);
         this.setState({usage});
-        this.handlerId = setTimeout(this.refresh, 1000);
+        this.handlerId = setTimeout(this.refresh, 2000);
     }
 
     render(){

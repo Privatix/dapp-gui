@@ -100,6 +100,8 @@ class Connection extends React.Component<any, any>{
         ];
         const sessionsData = [];
 
+        const serviceStatus = this.state.channel.channelStatus.serviceStatus;
+
         const lastUsageTime = this.state.channel.channelStatus.lastChanged;
         const isValidLastUsageTime = (lastUsageTime !== '' && typeof(lastUsageTime) !== 'undefined' && lastUsageTime !== null);
 
@@ -131,7 +133,7 @@ class Connection extends React.Component<any, any>{
                                         </tr>
                                         <tr>
                                             <td>{t('ServiceStatusT')}</td>
-                                            <td><ChannelStatus serviceStatus={this.state.channel.channelStatus.serviceStatus} /></td>
+                                            <td><ChannelStatus serviceStatus={serviceStatus} /></td>
                                         </tr>
                                         <tr>
                                             <td>{t('TransferredT')}</td>
@@ -160,8 +162,8 @@ class Connection extends React.Component<any, any>{
 
 
                 <div className='col-4'>
-                    {this.state.channel.channelStatus.serviceStatus === 'active' ? <IncreaseDepositButton channel={this.state.channel} render={render} /> : '' }
-                    <FinishServiceButton channel={this.state.channel} />
+                    {serviceStatus === 'active' ? <IncreaseDepositButton channel={this.state.channel} render={render} /> : '' }
+                    { !['terminating', 'terminated'].includes(serviceStatus) ? <FinishServiceButton channel={this.state.channel} /> : ''}
                     <TerminateContractButton
                         status='disabled'
                         payment={this.state.channel.usage.cost}

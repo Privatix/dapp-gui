@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
@@ -7,6 +6,7 @@ import ContractStatus from 'common/badges/contractStatus';
 import ChannelStatus from 'common/badges/channelStatus';
 import JobStatus from 'common/badges/jobStatus';
 import JobName from 'common/badges/jobName';
+import Usage from 'common/badges/channelUsage';
 
 import ServiceView from './serviceView';
 
@@ -16,16 +16,21 @@ import DateSorter from 'common/sorters/sortingDate';
 import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import CopyToClipboard from 'common/copyToClipboard';
 
-import { State } from 'typings/state';
 import { ClientChannel } from 'typings/channels';
 
-@translate(['client/history', 'utils/notice'])
+import { ws, WS } from 'utils/ws';
 
-class ClientHistory extends React.Component<any,any> {
+interface IProps {
+    t?: any;
+    ws?: WS;
+}
+
+@translate(['client/history', 'utils/notice'])
+class ClientHistory extends React.Component<IProps, any> {
 
     subscribeId = null;
 
-    constructor(props:any) {
+    constructor(props:IProps) {
 
         super(props);
 
@@ -80,7 +85,7 @@ class ClientHistory extends React.Component<any,any> {
             if (channel.channelStatus.channelStatus !== 'active') {
                 return true;
             }
-        }).map((channel) => {
+        }).map(channel => {
             return {
                 id: <ModalWindow
                     customClass='shortTableText'
@@ -91,8 +96,8 @@ class ClientHistory extends React.Component<any,any> {
                 />,
                 agent: channel.agent,
                 contractStatus: channel.channelStatus.channelStatus,
-                usage: channel.usage.current + ' ' + channel.usage.unit,
-                cost: channel.usage.cost / 1e8,
+                usage: [channel.id, channel.usage],
+                cost: [channel.id, channel.usage],
                 lastUsed: channel.channelStatus.lastChanged
             };
         });
@@ -124,8 +129,8 @@ class ClientHistory extends React.Component<any,any> {
                 contractStatus: channel.channelStatus.channelStatus,
                 serviceStatus: channel.channelStatus.serviceStatus,
                 jobStatus: <span><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</span>,
-                usage: channel.usage.current + ' ' + channel.usage.unit + ' ' + t('of') + ' ' + channel.usage.maxUsage + ' ' + channel.usage.unit,
-                cost: channel.usage.cost / 1e8
+                usage: [channel.id, channel.usage],
+                cost: [channel.id, channel.usage],
             };
         });
 
@@ -176,11 +181,13 @@ class ClientHistory extends React.Component<any,any> {
             },
             {
                 header: t('Usage'),
-                key: 'usage'
+                key: 'usage',
+                render: ([channelId, usage]) => <Usage usage={usage} channelId={channelId} mode='unit' />
             },
             {
                 header: t('CostPRIX'),
-                key: 'cost'
+                key: 'cost',
+                render: ([channelId, usage]) => <Usage usage={usage} channelId={channelId} mode='prix' />
             }
         ];
 
@@ -212,11 +219,13 @@ class ClientHistory extends React.Component<any,any> {
             },
             {
                 header: t('Usage'),
-                key: 'usage'
+                key: 'usage',
+                render: ([channelId, usage]) => <Usage usage={usage} channelId={channelId} mode='unit' />
             },
             {
                 header: t('CostPRIX'),
-                key: 'cost'
+                key: 'cost',
+                render: ([channelId, usage]) => <Usage usage={usage} channelId={channelId} mode='prix' />
             },
             {
                 header: t('LastUsed'),
@@ -254,4 +263,4 @@ class ClientHistory extends React.Component<any,any> {
     }
 }
 
-export default connect((state: State) => ({ws: state.ws}))(ClientHistory);
+export default ws<IProps>(ClientHistory);

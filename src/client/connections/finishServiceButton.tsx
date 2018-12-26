@@ -16,9 +16,9 @@ interface IProps {
 
 class FinishServiceButton extends React.Component<any, any>{
 
-    done = () => {
+    done = async () => {
         const { ws, channel } = this.props;
-        ws.changeChannelStatus(channel.id, 'terminate');
+        await ws.changeChannelStatus(channel.id, 'terminate');
     }
 
     render(){
@@ -49,6 +49,8 @@ class FinishServiceButton extends React.Component<any, any>{
                 swalType='warning'
                 swalConfirmBtnText={t('YesFinishIt')}
                 swalTitle={t('AreYouSure')}
+                disabledBtn={true}
+                awaitForDone={true}
             />
         </div>;
     }

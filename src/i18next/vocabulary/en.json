@@ -149,7 +149,8 @@
         "cantBeEmpty": "can't be empty.",
         "cantBeEmpty_plural": "can't be empty.",
         "MaxSuspendTimeMustBeMoreOrEquals10Min": "Maximum suspend time must be equals or more than 10 min.",
-        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Maximum inactive time must be equals or more than 10 min."
+        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Maximum inactive time must be equals or more than 10 min.",
+        "unlimited": "unlimited"
     },
     "offerings/offeringTools":{
         "WarningArea": "Warning area",
@@ -396,9 +397,6 @@
         "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
         "Resume": "Resume",
         "YesResumeIt": "Yes, resume it!",
-        "hour": "hours",
-        "min": "min",
-        "sec": "sec",
         "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. IP address {{ip}}",
         "CountryAlertUnknown": "The application won't be able to detect the offering's country. IP address {{ip}}"
     },
@@ -456,13 +454,16 @@
         "MaxInactiveTime": "Max inactive time:",
         "sec": "sec",
         "min": "min",
+        "MinUnitsText": "Agent expects to sell at least this amount of service.",
+        "MaxUnitsText": "Agent will sell at most this amount of service.",
         "MaxTimeWithoutServiceSmallText": "Maximum time without service usage. Agent will consider that Client will not use service and stop providing it. Period is specified in minutes.",
         "PayInfo": "Pay info:",
         "Account": "Account:",
         "Balance": "Balance:",
         "Deposit": "Deposit:",
         "UnusedPrixWillBeReturnedSmallText": "After the end of using, the unused PRIX will be returned.",
-        "AcceptancePrice": "Acceptance Price:"
+        "AcceptancePrice": "Acceptance Price:",
+        "unlimited": "unlimited"
     },
     "client/history": {
         "Service": "Service",
@@ -654,7 +655,7 @@
         "psc_periods_challenge_Description": "Number of blocks to be mined to finish uncooperative channel close",
         "psc_periods_popup_Description": "Number of blocks to be mined to repeatedly pop up an offering",
         "psc_periods_remove_Description": "Number of blocks to be mined from last offering update in blockchain to remove offering",
-        "client_somc_transports_Description": "Offering with what SOMC type to display."
+        "client_somc_transports_Description": "This setting defines what SOMC type should be used to display Offering"
     },
     "copyToClipboard": {
         "Copied": "Copied!",

@@ -85,9 +85,11 @@ class CreateOffering extends React.Component<IProps, any>{
 
     static getDerivedStateFromProps(props: IProps, state: any){
         const { accounts } = props;
-        return {account:  accounts.find(state.account ? (account => account.id = state.account.id) : (account => account.isDefault))
-               ,accounts
-        };
+        const account = accounts.find(state.account
+            ? account => account.id === state.account.id
+            : account => account.isDefault);
+
+        return {account, accounts};
     }
 
     async refresh() {
@@ -122,11 +124,9 @@ class CreateOffering extends React.Component<IProps, any>{
     }
 
     onAccountChanged(selectedAccount: any) {
-
         const account = this.state.accounts.find(account => account.id === selectedAccount.value);
         const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
         this.setState({account, payload});
-
     }
 
     onUserInput(evt: any){
@@ -327,7 +327,7 @@ class CreateOffering extends React.Component<IProps, any>{
             this.setState({errMsg: msg});
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }else{
-            payload.billingInterval = 1;
+            payload.billingInterval = 20;
             payload.billingType = 'postpaid';
             payload.additionalParams = {};
 
@@ -572,6 +572,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
+                                                   placeholder={t('unlimited')}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxUnit'
                                                    value={this.state.payload.maxUnit}
