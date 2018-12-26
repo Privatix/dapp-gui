@@ -22,16 +22,13 @@ const countdownRender = ( { hours, minutes, seconds, completed } ) => {
         return <View />;
     } else {
 
-        const hoursNum = parseInt(hours, 10);
-
         const View = translate('client/dashboard/connecting')(({t}) => {
             return (
                 <React.Fragment>
                     <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
                         <strong>
-                        { hoursNum ? <span>{hours}:{minutes}</span> : <span>{minutes}:{seconds}</span> }
+                            <span>{hours}:{minutes}:{seconds}</span>
                         </strong>
-                        &nbsp;<span>{ hoursNum ? `${t('hour')}/${t('min')}` : `${t('min')}/${t('sec')}` }</span>
                     </p>
                     <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
                 </React.Fragment>
