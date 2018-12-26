@@ -1,3 +1,5 @@
+import * as api from './api';
+
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 
@@ -9,6 +11,10 @@ import { Role } from 'typings/mode';
 const storage = createStore(reducers, applyMiddleware(
     thunkMiddleware, // lets us dispatch() functions
   ));
+
+api.on('announcement', function(event: any, data: any){
+    console.log('ANNOUNCE!!!', data);
+});
 
 const refresh = function(){
 

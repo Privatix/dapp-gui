@@ -5,7 +5,15 @@ import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
 
+import { updateChecker } from './updateChecker';
+
+let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
+
+  const announce = function(announcement: any){
+      win.webContents.send('announcement', announcement);
+  };
+  updateChecker.start(settings, announce);
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
@@ -44,7 +52,6 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win:BrowserWindow = null;
 
 function createWindow () {
   // Create the browser window.

@@ -21,6 +21,8 @@ export interface LocalSettings {
     logsCountPerPage: number;
     elementsPerPage: number;
     lang: string;
+    releasesEndpoint: string;
+    updateCheckFreq: number;
 }
 
 export interface DbSetting {
