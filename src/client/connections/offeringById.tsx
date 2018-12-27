@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import {State} from '../../typings/state';
-import Offering from '../vpn_list/acceptOffering';
+import {State} from 'typings/state';
+import Offering from 'client/vpn_list/acceptOffering';
 
 class OfferingById extends React.Component<any, any>{
 

@@ -5,14 +5,23 @@ import { translate } from 'react-i18next';
 import Steps from './steps';
 import { PreviousButton, NextButton, back } from './utils';
 import notice from 'utils/notice';
+
 import * as api from 'utils/api';
+import { WS, ws } from 'utils/ws';
+
+interface IProps{
+    ws?: WS;
+    t?: any;
+    history?: any;
+    default: string;
+}
 
 @translate(['auth/importHexKey', 'auth/setAccount', 'auth/generateKey', 'auth/importJsonKey', 'utils/notice'])
-class ImportHexKey extends React.Component<any, any>{
+class ImportHexKey extends React.Component<IProps, any>{
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
-        this.state = {name: this.props.default === 'true' ? 'main' : ''
+        this.state = {name: props.default === 'true' ? 'main' : ''
                      ,privateKey: ''
                      };
     }
@@ -33,7 +42,7 @@ class ImportHexKey extends React.Component<any, any>{
         }
     }
 
-    onUserInput(evt: any){
+    onUserInput = (evt: any) => {
 
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
     }
@@ -42,7 +51,7 @@ class ImportHexKey extends React.Component<any, any>{
 
         evt.preventDefault();
 
-        const { t } = this.props;
+        const { t, ws } = this.props;
         let {privateKey, name} = this.state;
         let msg = '';
         let err = false;
@@ -71,15 +80,14 @@ class ImportHexKey extends React.Component<any, any>{
             ,privateKeyHex: privateKey
         };
 
-        (window as any).ws.importAccountFromHex(payload, (res: any)=>{
-            if('error' in res){
-                msg = t('SomethingWentWrong');
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
-            }else{
-                api.settings.updateLocal({accountCreated:true});
-                this.props.history.push(`/backup/${res.result}/importHexKey`);
-            }
-        });
+        try {
+            const id = await ws.importAccountFromHex(payload);
+            api.settings.updateLocal({accountCreated:true});
+            this.props.history.push(`/backup/${id}/importHexKey`);
+        } catch (e) {
+            msg = t('SomethingWentWrong');
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+        }
     }
 
     render(){
@@ -102,7 +110,8 @@ class ImportHexKey extends React.Component<any, any>{
                                            type='text'
                                            name='name'
                                            className='form-control'
-                                           onChange={this.onUserInput.bind(this)}
+                                           value={this.state.name}
+                                           onChange={this.onUserInput}
                                     />
                                 </div>
                            </div>
@@ -110,7 +119,7 @@ class ImportHexKey extends React.Component<any, any>{
                            <div className='form-group row'>
                             <div className='col-12'>
                                 <label>{t('PrivateKey')}:</label>
-                                <textarea data-payload-value='privateKey' className='form-control' onChange={this.onUserInput.bind(this)} ></textarea>
+                                <textarea data-payload-value='privateKey' className='form-control' onChange={this.onUserInput} ></textarea>
                               </div>
                            </div>
                            <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('auth/importJsonKey:MoreInformation')}</a>
@@ -126,4 +135,4 @@ class ImportHexKey extends React.Component<any, any>{
     }
 }
 
-export default withRouter(ImportHexKey);
+export default ws<IProps>(withRouter(ImportHexKey));

@@ -15,26 +15,73 @@ import ModalWindow from 'common/modalWindow';
 import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import notice from 'utils/notice';
 import toFixedN from 'utils/toFixedN';
-import * as api from 'utils/api';
 import countryByIso from 'utils/countryByIso';
 import Availability from './availability';
 
 import CopyToClipboard from 'common/copyToClipboard';
 
 import {State} from 'typings/state';
-import {LocalSettings} from 'typings/settings';
 import { asyncProviders } from 'redux/actions';
 
 @translate(['client/vpnList', 'utils/notice', 'common'])
-
 class VPNList extends React.Component<any,any> {
 
     checkAvailabilityBtn = null;
+    get columns(){
+        const { t } = this.props;
+        return [
+            {
+                header: t('Availability'),
+                key: 'availability',
+                headerStyle: {textAlign: 'center'},
+                dataProps: {className: 'text-center'},
+                render: (availability) => { return <Availability availability={availability} />; }
+            },
+            {
+                header: t('Block'),
+                key: 'block'
+            },
+            {
+                header: t('Hash'),
+                key: 'hash',
+                dataProps: { className: 'shortTableTextTd' },
+                descSortFunction: ModalPropTextSorter.desc,
+                ascSortFunction: ModalPropTextSorter.asc
+            },
+            {
+                header: t('Agent'),
+                key: 'agent',
+                dataProps: { className: 'shortTableTextTd' },
+                render: (agent) => {
+                    const agentText = '0x' + agent;
+                    return <div>
+                        <span className='shortTableText' title={agentText}>{agentText}</span>
+                        <CopyToClipboard text={agentText} />
+                    </div>;
+                }
+            },
+            {
+                header: t('Country'),
+                key: 'country'
+            },
+            {
+                header: t('Price'),
+                key: 'price'
+            },
+            {
+                header: t('AvailableSupply'),
+                key: 'availableSupply'
+            },
+            {
+                header: t('SupplyTotal'),
+                key: 'supply'
+            }
+        ];
+    }
 
     constructor(props:any) {
         super(props);
 
-        const { t } = props;
         this.checkAvailabilityBtn = React.createRef();
 
         this.state = {
@@ -50,7 +97,6 @@ class VPNList extends React.Component<any,any> {
             filteredCountries: [],
             checkedCountries: [],
             showAllCountries: false,
-            elementsPerPage: 0,
             activePage: 1,
             totalItems: 0,
             agent: '',
@@ -58,60 +104,11 @@ class VPNList extends React.Component<any,any> {
             defaultShowCountriesCount: 5,
             rawOfferings: [],
             offeringsAvailability: props.offeringsAvailability,
-            columns: [
-                {
-                    header: t('Availability'),
-                    key: 'availability',
-                    headerStyle: {textAlign: 'center'},
-                    dataProps: {className: 'text-center'},
-                    render: (availability) => { return <Availability availability={availability} />; }
-                },
-                {
-                    header: t('Block'),
-                    key: 'block'
-                },
-                {
-                    header: t('Hash'),
-                    key: 'hash',
-                    dataProps: { className: 'shortTableTextTd' },
-                    descSortFunction: ModalPropTextSorter.desc,
-                    ascSortFunction: ModalPropTextSorter.asc
-                },
-                {
-                    header: t('Agent'),
-                    key: 'agent',
-                    dataProps: { className: 'shortTableTextTd' },
-                    render: (agent) => {
-                        const agentText = '0x' + agent;
-                        return <div>
-                            <span className='shortTableText' title={agentText}>{agentText}</span>
-                            <CopyToClipboard text={agentText} />
-                        </div>;
-                    }
-                },
-                {
-                    header: t('Country'),
-                    key: 'country'
-                },
-                {
-                    header: t('Price'),
-                    key: 'price'
-                },
-                {
-                    header: t('AvailableSupply'),
-                    key: 'availableSupply'
-                },
-                {
-                    header: t('SupplyTotal'),
-                    key: 'supply'
-                }
-            ]
         };
 
     }
 
     async componentDidMount() {
-        await this.getElementsPerPage();
         this.getClientOfferings();
     }
 
@@ -123,11 +120,6 @@ class VPNList extends React.Component<any,any> {
 
     static getDerivedStateFromProps(props:any, state:any) {
         return {offeringsAvailability: props.offeringsAvailability};
-    }
-
-    async getElementsPerPage() {
-        const settings = (await api.settings.getLocal()) as LocalSettings;
-        this.setState({elementsPerPage: settings.elementsPerPage});
     }
 
     async refresh(clicked?: boolean, activePage:number = 1) {
@@ -150,14 +142,16 @@ class VPNList extends React.Component<any,any> {
     }
 
     async getClientOfferings(activePage:number = 1, from:number = 0, to:number = 0) {
+
+        const { t, localSettings } = this.props;
+
         // If not empty filter input Offering hash - search only by Offering hash
         if (this.state.offeringHash !== '') {
-            const { t } = this.props;
             notice({level: 'warning', title: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
             return;
         }
 
-        const limit = this.state.elementsPerPage;
+        const limit = localSettings.elementsPerPage;
         const offset = activePage > 1 ? (activePage - 1) * limit : 0;
 
         const checkedCountries = this.state.checkedCountries;
@@ -379,7 +373,7 @@ class VPNList extends React.Component<any,any> {
             return this.formFilteredDataRow(offering);
         });
 
-        const { t } = this.props;
+        const { t, localSettings } = this.props;
         const createSliderWithTooltip = Slider.createSliderWithTooltip;
         const Range = createSliderWithTooltip(Slider.Range);
 
@@ -413,11 +407,11 @@ class VPNList extends React.Component<any,any> {
                 </div>
             : '';
 
-        const pagination = this.state.totalItems <= this.state.elementsPerPage ? '' :
+        const pagination = this.state.totalItems <= localSettings.elementsPerPage ? '' :
             <div>
                 <Pagination
                     activePage={this.state.activePage}
-                    itemsCountPerPage={this.state.elementsPerPage}
+                    itemsCountPerPage={localSettings.elementsPerPage}
                     totalItemsCount={this.state.totalItems}
                     pageRangeDisplayed={10}
                     onChange={this.handlePageChange.bind(this)}
@@ -588,7 +582,7 @@ class VPNList extends React.Component<any,any> {
                             <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                                 <SortableTable
                                     data={offerings}
-                                    columns={this.state.columns}/>
+                                    columns={this.columns}/>
 
                                 {noResults}
                             </div>
@@ -601,4 +595,4 @@ class VPNList extends React.Component<any,any> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, offeringsAvailability: state.offeringsAvailability}) )(VPNList);
+export default connect( (state: State) => ({ws: state.ws, offeringsAvailability: state.offeringsAvailability, localSettings: state.localSettings}) )(VPNList);
