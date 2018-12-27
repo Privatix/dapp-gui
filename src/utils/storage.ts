@@ -24,7 +24,7 @@ const refresh = function(){
 
     const { ws, mode } = storage.getState();
 
-    if(ws){
+    if(ws && ws.authorized){
         storage.dispatch(asyncProviders.updateAccounts());
         storage.dispatch(asyncProviders.updateProducts());
         if(mode === Role.AGENT){

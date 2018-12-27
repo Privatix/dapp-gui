@@ -35,6 +35,7 @@ export class WS {
     private pwd: string;
     private token: string;
     private ready: Promise<boolean>;
+    authorized: boolean = false;
 //    private reject: Function = null;
     private resolve: Function = null;
 
@@ -246,6 +247,7 @@ export class WS {
                     .then(token => {
                         if(token){
                             this.token = token as any;
+                            this.authorized = true;
                             resolve(true);
                         }else{
                             reject(false);

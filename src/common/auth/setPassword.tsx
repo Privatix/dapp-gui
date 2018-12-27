@@ -16,6 +16,8 @@ import { WS } from 'utils/ws';
 @translate(['auth/setPassword', 'utils/notice'])
 class SetPassword extends React.Component<any, any>{
 
+    private submitted = false;
+
     constructor(props:any){
         super(props);
         this.state = {pwd: '', conf: ''};
@@ -32,7 +34,7 @@ class SetPassword extends React.Component<any, any>{
     }
 
     handleKeyDown = (evt: any) => {
-        if (evt.keyCode === 13) {
+        if (evt.keyCode === 13 && !this.submitted) {
             this.onSubmit(evt);
         }
     }
@@ -59,6 +61,7 @@ class SetPassword extends React.Component<any, any>{
     }
 
     onSubmit = async (evt: any) => {
+        this.submitted = true;
         const { t } = this.props;
         evt.preventDefault();
 
@@ -78,6 +81,7 @@ class SetPassword extends React.Component<any, any>{
 
         if(err){
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            this.submitted = false;
             return;
         }
 
@@ -98,6 +102,7 @@ class SetPassword extends React.Component<any, any>{
                 this.props.history.push('/setAccount');
             }catch(e){
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('AccessDenied')});
+                this.submitted = false;
             }
         }else{
             // TODO
