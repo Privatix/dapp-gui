@@ -266,7 +266,6 @@
         "SwitchToAgent": "Switch to Agent",
         "Settings": "Settings",
         "Logs": "Logs",
-        "user": "user",
         "SomethingWentWrong": "Something went wrong!",
         "UserWasSwitchedToAGENT": "User mode was successfully switched to AGENT",
         "UserWasSwitchedToCLIENT": "User mode was successfully switched to CLIENT"

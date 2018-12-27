@@ -74,6 +74,14 @@ class Header extends React.Component<any, any>{
 
         const { t } = this.props;
 
+        const style = {
+            padding: '5px',
+            color: 'rgb(12, 102, 121)',
+            backgroundColor: 'rgb(255, 255, 255)',
+            fontSize: '33px',
+            verticalAlign: 'middle',
+            lineHeight: '0.9'
+        };
         return <div className='topbar'>
 
             <div className='topbar-left'>
@@ -94,7 +102,7 @@ class Header extends React.Component<any, any>{
                         <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
                            href='#' role='button'
                            aria-haspopup='false' aria-expanded='false'>
-                            <img src='images/PrivatixIcon.jpg' alt={t('user')} className='rounded-circle' />
+                            <i className='fa fa-gear rounded-circle' style={style}></i>
                         </a>
                             <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
                                 <NavLink to='/accounts' className='dropdown-item notify-item'>
