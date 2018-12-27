@@ -30,6 +30,7 @@ class UpdateInformer extends React.Component<any, any>{
         }
 
         const release = releases.find(release => release.tag_name === max);
+        const version = release.name ? release.name : release.tag_name;
 
         const styles = {
             backgroundColor: 'rgb(255, 255, 255)',
@@ -49,8 +50,8 @@ class UpdateInformer extends React.Component<any, any>{
                     </a>
                     <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
                         <ExternalLink href={release.html_url}>
-                            <Trans i18nKey='announcement' values={{name: release.name}}>
-                                <div style={ {margin: '10px'} } >New version {{name: release.name}} was released.</div>
+                            <Trans i18nKey='announcement' values={{name: version}}>
+                                <div style={ {margin: '10px'} } >New version {{name: version}} was released.</div>
                             </Trans>
                         </ExternalLink>
                     </div>
