@@ -693,5 +693,8 @@
         "accountUpdateBalances" : "проверка и обновление информации аккаунта",
         "decrementCurrentSupply": "уменьшение числа свободных сервисов",
         "incrementCurrentSupply": "увеличение числа свободных сервисов"
+    },
+    "updateInformer": {
+        "announcement": "<0>Доступна новая версия: {{name}}.</0>"
     }
 }

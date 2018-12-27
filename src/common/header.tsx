@@ -2,10 +2,12 @@ import * as React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
-
 import { NavLink } from 'react-router-dom';
+
 import TopPanel from './topPanel';
-import {State} from '../typings/state';
+import UpdateInformer from './updateInformer';
+
+import {State} from 'typings/state';
 
 declare var window: any;
 
@@ -115,8 +117,8 @@ class Header extends React.Component<any, any>{
                     </a>
                 </ul>
 
+                <UpdateInformer />
                 <TopPanel />
-
                 <ul className='list-inline menu-left mb-0'>
                     <li className='float-left'>
                         <button onClick={this.openLeftBar.bind(this)} className='button-menu-mobile open-left waves-light waves-effect'>
