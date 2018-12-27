@@ -3,7 +3,8 @@
     "common": {
         "RefreshAll": "Rafraîchir tout",
         "Refresh": "Rafraîchir",
-        "Select": "Sélectionner"
+        "Select": "Sélectionner",
+        "NoResults": "Votre demande n'a rien donné. Veuillez modifier les options de filtrage !"
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "Choisir la langue",
@@ -89,8 +90,7 @@
         "Description": "Description",
         "description": "description",
         "Country": "Pays",
-        "ChangeCountryHelpTextPart1": "Pour changer de pays, vous devez vous rendre sur la",
-        "ChangeCountryHelpTextPart2": "page",
+        "ChangeCountryHelpText": "Pour modifier le pays, vous devez aller sur la page <1>Serveurs</1>",
         "ChangeCountryHelpTextServers": "Serveurs",
         "Supply": "Quantité",
         "ie": "p. ex.",
@@ -153,9 +153,14 @@
         "WarningArea": "Zone d'avertissement",
         "Popup": "Popup",
         "Remove": "Retirer",
+        "SomethingWentWrong": "Quelque chose s'est mal passé. Réessayez plus tard !",
         "popupInfo": "Cette opération informera les clients que votre offre est réelle, augmentant ainsi vos chances d'arriver à une transaction.",
-        "popupInfoDisabled": "Tant que la période d'attente n’est pas terminée, vous ne pourrez pas afficher l’offre en popup. La durée de la période d'attente est d'environ {{min}} min.",
-        "removeInfo": "Cette opération supprimera l'offre définitivement. Vous recevrez votre dépôt en retour. Les clients ne pourront plus l'accepter. Une offre ne peut être supprimée que si elle est inactive depuis {{minutes}} minutes.",
+        "popupInfoDisabled": "Tant que la période d'attente n’est pas terminée, vous ne pouvez pas afficher l’offre en popup. La durée de la période d'attente est d'environ {{min}} min. ({{blocks}} blocs).",
+        "popupNotice": "Votre demande d'offre contextuelle a été programmée. Une fois la transaction approuvée, la demande d'offre sera traitée.",
+        "removeInfo": "Cette opération supprimera définitivement l'offre. Vous recevrez votre dépôt en retour. Les clients ne pourront plus l'accepter.",
+        "removeInfoDisabled": "Une offre peut uniquement être supprimée si {{blocks}} blocs (~ {{minutes}} minutes) se sont écoulés depuis sa création ou son apparition.",
+        "lastAction": "La dernière action a été effectuée il y a {{lastAction}} block (~ {{lastActionMinutes}} minutes).",
+        "lastActionPopup": "La dernière action a été effectuée il y a {{lastAction}} blocs.",
         "YesPopUpIt": "Oui, popup !",
         "YesRemoveIt": "Oui, retirer !",
         "WouldYouLikeToProceed": "Voulez-vous continuer ?",
@@ -166,8 +171,10 @@
     "offerings/offeringsList": {
         "Offering": "Offre",
         "ServerInfo": "Informations du serveur",
+        "Hash": "Hash",
         "ServiceName": "Nom du service",
         "Server": "Serveur",
+        "MessageStatus": "Statut du message",
         "Status": "Statut",
         "AvailableSupply": "Quantité disponible",
         "Supply": "Quantité"
@@ -286,6 +293,27 @@
         "Attention!": "Attention !",
         "Congratulations!": "Félicitations !"
     },
+    "logs/logsList": {
+        "LogsHeader": "Liste des journaux",
+        "ExportBtn": "Exporter vers un fichier",
+        "LogsFilterFrom": "De :",
+        "LogsFilterTo": "À :",
+        "LogsFilterTime": "heure",
+        "LogsSearchPlaceholder": "par ex. : échec",
+        "NowBtn": "Maintenant",
+        "Level": "Niveau",
+        "Date": "Date",
+        "Message": "Message",
+        "Context": "Contexte",
+        "Stack": "Pile",
+        "ShowBtn": "afficher",
+        "StackTrace": "État de la pile :",
+        "WarningDateMessage": "Veuillez ne pas sélectionner les journaux de plus de 5 jours. Cela peut prendre beaucoup de temps !"
+    },
+    "logs/logsContext": {
+        "Key": "Clé",
+        "Value": "Valeur"
+    },
     "accounts/accountsList": {
         "Title": "Comptes",
         "CreateBtn": "Créer un compte",
@@ -348,9 +376,12 @@
         "AreYouSure": "Êtes-vous sûr ?"
     },
     "client/dashboard/connecting": {
+        "TheServiceHasAPendingStatus": "Le service a un statut en attente. Une fois la connexion prête, vous pouvez utiliser le VPN",
+        "TheServiceHasAnActivatingStatus": "Le service a un statut en activation. Une fois la connexion prête, vous pouvez utiliser le VPN",
+        "TheServiceHasASuspendingStatus": "Le service a un statut en suspension. Une fois la connexion suspendue, vous pouvez la reprendre ou la terminer.",
+        "TheServiceHasATerminatingStatus": "Le service a un statut en fermeture. Une fois la connexion fermée, le contrat peut également être résilié.",
         "WaitingTimeIsOver": "Le temps d'attente est terminé. La procédure de résiliation sera activée automatiquement.",
         "FailedToAcceptOffering": "Impossible d'accepter l'offre. Veuillez en essayer une autre.",
-        "AfterTheConnectionIsReady": "Une fois la connexion établie, vous pouvez commencer à utiliser le VPN.",
         "Synchronizing": "Synchronisation",
         "YouCanStartUsingVPN": "Vous pouvez commencer à utiliser le VPN",
         "Connect": "Connecter",
@@ -379,6 +410,7 @@
     "client/vpnList": {
         "Block": "Bloc",
         "Hash": "Hash",
+        "Agent": "Agent",
         "Country": "Pays",
         "Price": "Prix ​​(PRIX/MB)",
         "SupplyTotal": "Quantité (total)",
@@ -394,9 +426,12 @@
         "AverageTimeForDownloading": "La durée moyenne du téléchargement est environ de 2-5 min.",
         "Refresh": "Rafraîchir",
         "AgentAddress": "Adresse de l'agent",
+        "OfferingHash": "Hash d'offre",
         "PriceFilter": "Prix ​​(PRIX/MB) :",
         "From": "de",
-        "To": "à"
+        "To": "à",
+        "ClearOfferingHashToUseOtherFilters": "Vous devez effacer le champ hash d'offre pour utiliser les autres filtres",
+        "ResetFilters": "Réinitialiser le filtre"
     },
     "client/acceptOffering": {
         "Accept": "Accepter",
@@ -423,7 +458,6 @@
         "AcceptancePrice": "Prix ​​d'acceptation :"
     },
     "client/history": {
-        "SuccessfullyRefreshed": "La page a été rafraîchie correctement !",
         "Service": "Service",
         "of": "de",
         "Id": "ID",
@@ -434,7 +468,6 @@
         "Usage": "Utilisation",
         "CostPRIX": "Coût (PRIX)",
         "LastUsed": "Dernière utilisation",
-        "Refresh": "Rafraîchir",
         "AwaitForTerminate": "Attendre pour résilier",
         "History": "Historique"
     },
@@ -527,7 +560,8 @@
         "IncreaseBtn": "Ajouter",
         "SuccessMessage": "L'ajout du dépôt a été initialisé correctement !",
         "SomethingWentWrong": "Quelque chose s'est mal passé. Réessayez plus tard !",
-        "ErrorNotEnoughPublishFunds": " Pas assez de fonds pour publier la transaction."
+        "ErrorNotEnoughPublishFunds": " Pas assez de fonds pour publier la transaction.",
+        "ErrorNotEnoughPRIX": "PRIX insuffisants pour augmenter le dépôt."
     },
     "electronMenu": {
         "File": "Fichier",
@@ -568,6 +602,9 @@
         "AccessDenied": "accès refusé, le mot de passe est peut-être incorrect"
     },
     "settings": {
+        "Success": "Les modifications ont bien été enregistrées.",
+        "Error": "Une erreur est survenue lors de l'enregistrement. Veuillez vérifier les données saisies.",
+        "Save": "Enregistrer",
         "Settings": "Paramètres",
         "Name": "Nom",
         "Value": "Valeur",
@@ -585,6 +622,11 @@
         "eth_event_lastProcessedBlock_Name": "dernier bloc traité",
         "offering_autopopup_Name": "affichage popup automatique de l'offre",
         "system_version_app_Name": "version de l'application",
+        "somc_transport_tor_Name": "utiliser Tor",
+        "client_somc_transports_Name": "a autorisé le transport SOMC",
+        "psc_periods_challenge_Name": "Période d'attente",
+        "psc_periods_popup_Name": "Période du popup",
+        "psc_periods_remove_Name": "Supprimer la période",
         "error_sendremote_Description": "Autoriser les rapports d'erreurs à envoyer les logs à Privatix.",
         "eth_challenge_period_Description": "Nombre de blocs à attendre d'un uncooperativeClose initié par le Client pour donner la possibilité à l'Agent de répondre avec une preuve du solde si le Client essaie de tricher. Après la période d'attente, le Client peut liquider et supprimer le canal. Nombre de blocs que l'Agent attendra de registerServiceOffering ou de createChannel avant de pouvoir supprimer une offre de service et récupérer son dépôt.",
         "eth_default_gasprice_Description": "Prix ​​GAZ par défaut pour les transactions.",
@@ -597,10 +639,58 @@
         "user_isagent_Description": "Spécifie le rôle d'utilisateur. \"vrai\" - agent. \"faux\" - client.",
         "eth_event_lastProcessedBlock_Description": "Le dernier numéro de bloc dans la blockchain contient le dernier bloc traité.",
         "offering_autopopup_Description": "Autoriser l'affichage popup automatique de l'offre.",
-        "system_version_app_Description": "Version de l'application"
+        "system_version_app_Description": "Version de l'application",
+        "somc_transport_tor_Description": "Mode décentralisation intégrale. Si vrai, utilisez Tor pour véhiculer les messages entre l'Agent et le Client. Les offres et les messages d'accès seront récupérés par Tor. Les messages publiés via SOMC centralisé ne seront pas disponibles.",
+        "psc_periods_challenge_Description": "Nombre de blocs à miner pour finaliser la fermeture de canal non coopératif",
+        "psc_periods_popup_Description": "Nombre de blocs à miner pour faire apparaître plusieurs fois une offre",
+        "psc_periods_remove_Description": "Nombre de blocs à miner de la dernière mise à jour d'une offre dans blockchain pour supprimer l'offre",
+        "client_somc_transports_Description": "Type de SOMC à utiliser pour afficher l'offre."
     },
     "copyToClipboard": {
         "Copied": "Copié !",
         "Copy": "Copier"
+    },
+    "jobName": {
+        "clientPreChannelCreate": "placer un dépôt de service",
+        "clientAfterChannelCreate": "mettre à jour les données du service",
+        "clientPreChannelTopUp": "augmenter le dépôt",
+        "clientAfterChannelTopUp": "mettre à jour un dépôt",
+        "clientPreUncooperativeCloseRequest": "envoyer une demande de litige de contrat ouvert",
+        "clientAfterUncooperativeCloseRequest": "litige de contrat ouvert",
+        "clientPreUncooperativeClose": "récupérer le dépôt après une période d'attente",
+        "clientAfterUnCooperativeClose": "finaliser le litige et la fermeture du contrat",
+        "clientAfterCooperativeClose": "finaliser la fermeture du contrat",
+        "clientPreServiceSuspend": "suspendre le service",
+        "clientPreServiceUnsuspend": "annuler la suspension de service",
+        "clientPreServiceTerminate": "arrêter définitivement l'utilisation du service",
+        "clientEndpointRestore": "obtenir un accès au service",
+        "clientAfterOfferingMsgBCPublish": "obtenir les données de l'offre",
+        "clientAfterOfferingPopUp": "mettre à jour la position de l'offre",
+        "clientAfterOfferingDelete": "supprimer l'offre",
+        "completeServiceTransition": "finaliser la transition du service",
+        "agentAfterChannelCreate": "créer une entrée de service",
+        "agentAfterUncooperativeCloseRequest": "réagir à un litige de contrat",
+        "agentAfterCooperativeClose": "finaliser la fermeture du contrat",
+        "agentPreServiceSuspend": "suspendre le service",
+        "agentPreServiceUnsuspend": "annuler la suspension de service",
+        "agentPreServiceTerminate": "fermer le service et demander un retrait du paiement",
+        "agentPreEndpointMsgCreate": "préparer l'accès de service",
+        "agentPreEndpointMsgSOMCPublish": "publier le message de l'accès au service",
+        "agentAfterEndpointMsgSOMCPublish": "activer le service",
+        "agentPreOfferingMsgBCPublish": "envoyer un dépôt d'offre",
+        "agentAfterOfferingMsgBCPublish": "dépôt d'offre placé",
+        "agentPreOfferingMsgSOMCPublish": "publier un message d'offre",
+        "agentPreOfferingDelete": "demander la suppression de l'offre et la restitution du dépôt",
+        "agentPreOfferingPopUp": "demander un popup d'offre",
+        "agentAfterOfferingPopUp": "finaliser le popup d'offre",
+        "agentAfterOfferingDelete": "finaliser la suppression de l'offre",
+        "preAccountAddBalanceApprove": "approbation du transfert de jeton vers le compte du service",
+        "preAccountAddBalance": "ajouter du solde au compte du service",
+        "afterAccountAddBalance": "mettre à jour le solde sur le compte du service",
+        "preAccountReturnBalance": "demander un transfert de jeton vers un compte ERC20",
+        "afterAccountReturnBalance": "mettre à jour le solde sur le compte ERC20",
+        "accountUpdateBalances": "vérifier et mettre à jour les informations sur le solde du compte",
+        "decrementCurrentSupply": "décrémenter l'approvisionnement actuel de l'offre",
+        "incrementCurrentSupply": "incrémenter l'approvisionnement actuel de l'offre"
     }
 }

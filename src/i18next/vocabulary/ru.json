@@ -266,7 +266,6 @@
         "SwitchToAgent": "В режим Агент",
         "Settings": "Настройки",
         "Logs": "Логи",
-        "user": "пользователь",
         "SomethingWentWrong": "Что-то пошло не так!",
         "UserWasSwitchedToAGENT": "Успешно переключено в режим Агент",
         "UserWasSwitchedToCLIENT": "Успешно переключено в режим Клиент"
@@ -693,5 +692,8 @@
         "accountUpdateBalances" : "проверка и обновление информации аккаунта",
         "decrementCurrentSupply": "уменьшение числа свободных сервисов",
         "incrementCurrentSupply": "увеличение числа свободных сервисов"
+    },
+    "updateInformer": {
+        "announcement": "<0>Доступна новая версия: {{name}}.</0>"
     }
 }

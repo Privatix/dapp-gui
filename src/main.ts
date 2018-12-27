@@ -5,7 +5,14 @@ import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
 
+import { updateChecker } from './updateChecker';
+
+let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
+
+  const announce = function(announcement: any){
+      win.webContents.send('announcement', announcement);
+  };
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
       app.disableHardwareAcceleration();
@@ -38,13 +45,13 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
             settings = req.options.body;
             fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
+            win.webContents.send('localSettings', settings);
         }
     }
   });
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
-let win:BrowserWindow = null;
 
 function createWindow () {
   // Create the browser window.
@@ -54,6 +61,8 @@ function createWindow () {
          ,icon: path.join(__dirname, 'icon_64.png')
       };
   win = new BrowserWindow(options);
+
+
 
   // and load the index.html of the app.
   win.loadURL(url.format({
@@ -75,6 +84,11 @@ function createWindow () {
     // when you should delete the corresponding element.
     win = null;
     app.quit();
+  });
+
+  win.webContents.on('dom-ready', () => {
+      win.webContents.send('localSettings', settings);
+      updateChecker.start(settings, announce);
   });
 }
 

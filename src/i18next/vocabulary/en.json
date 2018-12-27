@@ -266,7 +266,6 @@
         "SwitchToAgent": "Switch to Agent",
         "Settings": "Settings",
         "Logs": "Logs",
-        "user": "user",
         "SomethingWentWrong": "Something went wrong!",
         "UserWasSwitchedToAGENT": "User mode was successfully switched to AGENT",
         "UserWasSwitchedToCLIENT": "User mode was successfully switched to CLIENT"
@@ -703,5 +702,8 @@
         "accountUpdateBalances" : "check and update account balance info",
         "decrementCurrentSupply": "decrement offering current supply",
         "incrementCurrentSupply": "increment offering current supply"
+    },
+    "updateInformer": {
+        "announcement": "<0>New version {{name}} was released.</0>"
     }
 }

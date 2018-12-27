@@ -2,7 +2,7 @@ import {Account} from './accounts';
 import {Role} from './mode';
 import {Product} from './products';
 import {OfferingAvailabilityResponse} from './offerings';
-import {DbSetting} from './settings';
+import {DbSetting, LocalSettings} from './settings';
 import { WS } from '../utils/ws';
 
 interface State {
@@ -10,6 +10,7 @@ interface State {
     accounts: Account[];
     products: Product[];
     settings: DbSetting[];
+    localSettings: LocalSettings;
     channel: string;
     mode: Role;
     ws: WS;
@@ -18,12 +19,14 @@ interface State {
         counter: number;
         statuses: OfferingAvailabilityResponse;
     };
+    releases: any[];
 }
 
 const StateDefault: State = {
     accounts: [],
     products: [],
     settings: [],
+    localSettings: null,
     channel: '',
     mode: Role.CLIENT,
     ws: null,
@@ -31,7 +34,8 @@ const StateDefault: State = {
     offeringsAvailability: {
         counter: 0,
         statuses: {}
-    }
+    },
+    releases: []
 };
 
 export {

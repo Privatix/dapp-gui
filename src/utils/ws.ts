@@ -33,7 +33,9 @@ export class WS {
 
     private socket: WebSocket;
     private pwd: string;
+    private token: string;
     private ready: Promise<boolean>;
+    authorized: boolean = false;
 //    private reject: Function = null;
     private resolve: Function = null;
 
@@ -112,7 +114,7 @@ export class WS {
                 jsonrpc: '2.0',
                 id: uuid,
                 method: 'ui_subscribe',
-                params: ['objectChange', this.pwd, entityType, ids]
+                params: ['objectChange', this.token, entityType, ids]
             };
             WS.subscriptions[uuid] = () => {
                 WS.listeners[uuid] = handler;
@@ -176,7 +178,7 @@ export class WS {
     send(method: string, params: any[] = []){
 
         const uuid = uuidv4();
-        params.unshift(this.pwd);
+        params.unshift(this.token);
         const req = {
             jsonrpc: '2.0',
             id: uuid,
@@ -204,6 +206,29 @@ export class WS {
 
 // auth
 
+    getToken(){
+        const uuid = uuidv4();
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getToken',
+            params: [this.pwd]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const handler = function(res: any){
+                if('error' in res){
+                    reject(res.error);
+                }else{
+                    resolve(res.result);
+                }
+            };
+
+            WS.handlers[uuid] = handler;
+            this.socket.send(JSON.stringify(req));
+        });
+    }
+
     setPassword(pwd: string){
         const uuid = uuidv4();
 
@@ -217,30 +242,31 @@ export class WS {
         this.pwd = pwd;
 
         return new Promise((resolve: Function, reject: Function) => {
+            const updateToken = () => {
+                this.getToken()
+                    .then(token => {
+                        if(token){
+                            this.token = token as any;
+                            this.authorized = true;
+                            resolve(true);
+                        }else{
+                            reject(false);
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            };
             const handler = (res: any) => {
-                if('error' in res){
-                    if(res.error.message.indexOf('password exists') === -1){
-                        reject(res.error);
-                    }else{
-                        this.getProducts()
-                            .then(products => {
-                                resolve(true);
-                            })
-                            .catch(err => {
-                                reject(err);
-                            });
-                    }
+                if('error' in res && res.error.message.indexOf('password exists') === -1){
+                    reject(res.error);
                 }else{
-                    resolve(res.result);
+                    updateToken();
                 }
             };
             WS.handlers[uuid] = handler;
             this.socket.send(JSON.stringify(req));
         });
-    }
-
-    updatePassword(pwd: string){
-        return this.send('ui_setPassword', [pwd]);
     }
 
 // accounts
@@ -261,7 +287,7 @@ export class WS {
             jsonrpc: '2.0',
             id: uuid,
             method: 'ui_importAccountFromHex',
-            params: [this.pwd, payload]
+            params: [this.token, payload]
         };
 
         this.socket.send(JSON.stringify(req));
@@ -275,7 +301,7 @@ export class WS {
             jsonrpc: '2.0',
             id: uuid,
             method: 'ui_importAccountFromJSON',
-            params: [this.pwd, payload, key, pwd]
+            params: [this.token, payload, key, pwd]
         };
 
         this.socket.send(JSON.stringify(req));
@@ -289,7 +315,7 @@ export class WS {
             jsonrpc: '2.0',
             id: uuid,
             method: 'ui_exportPrivateKey',
-            params: [this.pwd, accountId]
+            params: [this.token, accountId]
         };
 
         this.socket.send(JSON.stringify(req));

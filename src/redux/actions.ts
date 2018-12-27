@@ -2,7 +2,7 @@ import { WS } from 'utils/ws';
 
 import {Account} from 'typings/accounts';
 import {Product} from 'typings/products';
-import {DbSetting as Setting} from 'typings/settings';
+import {DbSetting as Setting, LocalSettings} from 'typings/settings';
 import {Offering} from 'typings/offerings';
 import { Role } from 'typings/mode';
 
@@ -11,12 +11,14 @@ export const enum actions {
     SET_MODE,
     UPDATE_PRODUCTS,
     UPDATE_SETTINGS,
+    UPDATE_LOCAL_SETTINGS,
     UPDATE_OFFERINGS,
     UPDATE_TOTAL_INCOME,
     SET_CHANNEL,
     SET_WS,
     SET_OFFERINGS_AVAILABILITY,
-    INCREMENT_OFFERINGS_AVAILABILITY_COUNTER
+    INCREMENT_OFFERINGS_AVAILABILITY_COUNTER,
+    SET_RELEASES_LIST
 }
 
 
@@ -28,13 +30,15 @@ const handlers: ReduxHandlers = {
     updateAccounts             : function(accounts: Account[]){ return { type: actions.REFRESH_ACCOUNTS, value: accounts };},
     updateProducts             : function(products: Product[]){ return { type: actions.UPDATE_PRODUCTS, value: products };},
     updateSettings             : function(settings: Setting[]){ return { type: actions.UPDATE_SETTINGS, value: settings };},
+    updateLocalSettings        : function(settings: LocalSettings){ return { type: actions.UPDATE_LOCAL_SETTINGS, value: settings };},
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     setMode                    : function(mode: Role){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
     setOfferingsAvailability   : function(offeringsAvailability: Object[]){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};},
-    incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};}
+    incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};},
+    setReleases                : function(releases: any[]){ return { type: actions.SET_RELEASES_LIST, value: releases };},
 };
 
 interface AsyncProviders {

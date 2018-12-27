@@ -115,6 +115,12 @@ class VPNList extends React.Component<any,any> {
         this.getClientOfferings();
     }
 
+    componentWillUnmount(){
+        if (this.state.handler !== null) {
+            clearTimeout(this.state.handler);
+        }
+    }
+
     static getDerivedStateFromProps(props:any, state:any) {
         return {offeringsAvailability: props.offeringsAvailability};
     }

@@ -19,6 +19,8 @@ interface Props {
 @translate('login', 'utils/notice')
 class Login extends React.Component<any, any> {
 
+    private submitted = false;
+
     constructor(props: any) {
         super(props);
 
@@ -33,14 +35,18 @@ class Login extends React.Component<any, any> {
     }
 
     async handleKeyPress(evt: any) {
-        if (evt.keyCode === 13) {
+        if (evt.keyCode === 13 && !this.submitted) {
+            this.submitted = true;
             await this.login();
         }
     }
 
     async onSubmit(evt: any){
         evt.preventDefault();
-        await this.login();
+        if(!this.submitted){
+            this.submitted = true;
+            await this.login();
+        }
     }
 
     pwdIsCorrect(pwd: string){
@@ -70,6 +76,7 @@ class Login extends React.Component<any, any> {
                     this.props.history.push(this.props.entryPoint);
                 } catch(e) {
                     notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
+                    this.submitted = false;
                 }
             } else {
                 // TODO
