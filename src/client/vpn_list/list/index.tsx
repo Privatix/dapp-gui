@@ -7,18 +7,16 @@ import Slider from 'rc-slider';
 import './list.css';
 import 'rc-slider/assets/index.css';
 
-import SortableTable from 'react-sortable-table-vilan';
 import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
 import AcceptOffering from '../acceptOffering';
 import ModalWindow from 'common/modalWindow';
-import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
+
 import notice from 'utils/notice';
 import toFixedN from 'utils/toFixedN';
 import countryByIso from 'utils/countryByIso';
-import Availability from './availability';
 
-import CopyToClipboard from 'common/copyToClipboard';
+import VPNListTable from './table';
 
 import {State} from 'typings/state';
 import { asyncProviders } from 'redux/actions';
@@ -27,57 +25,6 @@ import { asyncProviders } from 'redux/actions';
 class VPNList extends React.Component<any,any> {
 
     checkAvailabilityBtn = null;
-    get columns(){
-        const { t } = this.props;
-        return [
-            {
-                header: t('Availability'),
-                key: 'availability',
-                headerStyle: {textAlign: 'center'},
-                dataProps: {className: 'text-center'},
-                render: (availability) => { return <Availability availability={availability} />; }
-            },
-            {
-                header: t('Block'),
-                key: 'block'
-            },
-            {
-                header: t('Hash'),
-                key: 'hash',
-                dataProps: { className: 'shortTableTextTd' },
-                descSortFunction: ModalPropTextSorter.desc,
-                ascSortFunction: ModalPropTextSorter.asc
-            },
-            {
-                header: t('Agent'),
-                key: 'agent',
-                dataProps: { className: 'shortTableTextTd' },
-                render: (agent) => {
-                    const agentText = '0x' + agent;
-                    return <div>
-                        <span className='shortTableText' title={agentText}>{agentText}</span>
-                        <CopyToClipboard text={agentText} />
-                    </div>;
-                }
-            },
-            {
-                header: t('Country'),
-                key: 'country'
-            },
-            {
-                header: t('Price'),
-                key: 'price'
-            },
-            {
-                header: t('AvailableSupply'),
-                key: 'availableSupply'
-            },
-            {
-                header: t('SupplyTotal'),
-                key: 'supply'
-            }
-        ];
-    }
 
     constructor(props:any) {
         super(props);
@@ -420,10 +367,6 @@ class VPNList extends React.Component<any,any> {
                 />
             </div>;
 
-        const noResults = offerings.length === 0 ?
-            <p className='text-warning text-center m-t-20 m-b-20'>{t('common:NoResults')}</p>
-            : '';
-
         const resetFilters = this.state.agent !== ''
             || this.state.offeringHash !== ''
             || this.state.min !== this.state.from
@@ -579,14 +522,7 @@ class VPNList extends React.Component<any,any> {
                     </div>
                     <div className='col-9'>
                         <div className='card-box'>
-                            <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
-                                <SortableTable
-                                    data={offerings}
-                                    columns={this.columns}/>
-
-                                {noResults}
-                            </div>
-
+                            <VPNListTable offerings={offerings} />
                             {pagination}
                         </div>
                     </div>
