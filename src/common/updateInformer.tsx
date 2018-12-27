@@ -31,13 +31,21 @@ class UpdateInformer extends React.Component<any, any>{
 
         const release = releases.find(release => release.tag_name === max);
 
+        const styles = {
+            backgroundColor: 'rgb(255, 255, 255)',
+            color: 'rgb(12, 102, 121)',
+            padding: '5px',
+            fontSize: '28px',
+            verticalAlign: 'middle'
+        };
+
         return (
             <ul className='list-inline float-right mb-0'>
                 <li className='list-inline-item dropdown notification-list'>
                     <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
                        href='#' role='button'
                        aria-haspopup='false' aria-expanded='false'>
-                        <i className='fa fa-download rounded-circle' />
+                        <i className='fa fa-download rounded-circle' style={styles} />
                     </a>
                     <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
                         <ExternalLink href={release.html_url}>
