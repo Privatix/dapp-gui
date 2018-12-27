@@ -2,15 +2,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-import { Product } from '../../typings/products';
 import ProductItem from './productItem';
-import { State } from '../../typings/state';
-import {asyncProviders} from '../../redux/actions';
+
+import { Product } from 'typings/products';
+import { State } from 'typings/state';
 
 interface Props {
     products: Product[];
     dispatch: any;
-    showCreateOfferingModal: string;
     productId: string;
     t: any;
 }
@@ -22,14 +21,10 @@ class Products extends React.Component<Props, any>{
         super(props);
     }
 
-    componentDidMount() {
-        this.props.dispatch(asyncProviders.updateProducts());
-    }
-
     render() {
 
-        const { t } = this.props;
-        const list = this.props.products.map((product:Product) => <ProductItem key={product.id} product={product} {...this.props} /> );
+        const { t, products } = this.props;
+        const list = products.map((product:Product) => <ProductItem key={product.id} product={product} {...this.props} /> );
 
         return (
             <div className='container-fluid'>

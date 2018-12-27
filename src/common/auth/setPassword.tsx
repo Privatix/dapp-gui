@@ -7,13 +7,16 @@ import * as ReactTooltip from 'react-tooltip';
 import {NextButton, PreviousButton, back} from './utils';
 import Steps from './steps';
 
-import notice from 'utils/notice';
+import { registerBugsnag } from 'utils/bugsnag';
+import {default as notice, closeNotice } from 'utils/notice';
 import * as api from 'utils/api';
 import handlers from 'redux/actions';
 import { WS } from 'utils/ws';
 
 @translate(['auth/setPassword', 'utils/notice'])
 class SetPassword extends React.Component<any, any>{
+
+    private submitted = false;
 
     constructor(props:any){
         super(props);
@@ -31,7 +34,7 @@ class SetPassword extends React.Component<any, any>{
     }
 
     handleKeyDown = (evt: any) => {
-        if (evt.keyCode === 13) {
+        if (evt.keyCode === 13 && !this.submitted) {
             this.onSubmit(evt);
         }
     }
@@ -58,6 +61,7 @@ class SetPassword extends React.Component<any, any>{
     }
 
     onSubmit = async (evt: any) => {
+        this.submitted = true;
         const { t } = this.props;
         evt.preventDefault();
 
@@ -77,23 +81,28 @@ class SetPassword extends React.Component<any, any>{
 
         if(err){
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            this.submitted = false;
             return;
         }
 
         await api.settings.updateLocal({firstStart:false});
         const settings = await api.settings.getLocal();
         const ws = new WS(settings.wsEndpoint);
+        notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 60*60*1000);
         const ready = await ws.whenReady();
+        closeNotice();
         if(ready){
             try {
                 await ws.setPassword(pwd);
                 (window as any).ws = ws;
+                registerBugsnag(ws);
                 this.props.dispatch(handlers.setWS(ws));
                 const role = await ws.getUserRole();
                 this.props.dispatch(handlers.setMode(role));
                 this.props.history.push('/setAccount');
             }catch(e){
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('AccessDenied')});
+                this.submitted = false;
             }
         }else{
             // TODO

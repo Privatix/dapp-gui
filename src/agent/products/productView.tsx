@@ -2,18 +2,20 @@ import * as React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
-import countries from '../../utils/countries';
 import Select from 'react-select';
 
-import notice from '../../utils/notice';
-import {asyncProviders} from '../../redux/actions';
-import { Product } from '../../typings/products';
-import { State } from '../../typings/state';
+import countries from 'utils/countries';
+import notice from 'utils/notice';
+import { WS } from 'utils/ws';
+
+import { Product } from 'typings/products';
+import { State } from 'typings/state';
 
 interface Props {
     product: Product;
     dispatch: any;
     t?: any;
+    ws?: WS;
 }
 
 @translate(['products/productView', 'utils/notice', 'common'])
@@ -25,19 +27,19 @@ class ProductView extends React.Component <Props,any> {
         this.state = {
             product: props.product,
             host: props.product.serviceEndpointAddress,
-            country: props.product.country
+            country: props.product.country ? props.product.country : ''
         };
     }
 
-    handleHostChange(evt:any) {
+    handleHostChange = (evt:any) => {
         this.setState({host: evt.target.value});
     }
 
-    async saveHost(evt:any) {
+    saveHost = async (evt:any) => {
 
         evt.preventDefault();
 
-        const { t } = this.props;
+        const { t, ws } = this.props;
 
         if ( (/^(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])$/.test(this.state.host)) // IP
             || (/^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\-]*[A-Za-z0-9])$/.test(this.state.host)) ) /* DNS */ {
@@ -45,9 +47,8 @@ class ProductView extends React.Component <Props,any> {
             const product = Object.assign({}, this.state.product, {serviceEndpointAddress: this.state.host, country: this.state.country});
 
             try {
-                await (window as any).ws.updateProduct(product);
+                await ws.updateProduct(product);
                 notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('HostWasSuccessfullyUpdated')});
-                this.props.dispatch(asyncProviders.updateProducts());
             } catch (err) {
                 notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
             }
@@ -56,26 +57,26 @@ class ProductView extends React.Component <Props,any> {
         }
     }
 
-    handleCountryChange(selectedCountry: any) {
+    handleCountryChange = (selectedCountry: any) => {
         this.setState({country: selectedCountry.value});
     }
 
     render() {
 
         const { t } = this.props;
-        const product = this.state.product;
+        const { product, country, host } = this.state;
 
         const selectCountry = <Select className='zIndex100'
-            value={this.state.country.toUpperCase()}
+            value={country.toUpperCase()}
             searchable={false}
             clearable={false}
             options={countries.map((country:any) => ({value: country.id, label: country.name}))}
-            onChange={this.handleCountryChange.bind(this)}
+            onChange={this.handleCountryChange}
             placeholder={t('common:Select')}
             />;
 
         return <div>
-            <form onSubmit={this.saveHost.bind(this)}>
+            <form onSubmit={this.saveHost}>
                 <table className='table table-striped'>
                     <tbody>
                     <tr>
@@ -84,8 +85,13 @@ class ProductView extends React.Component <Props,any> {
                     </tr>
                     <tr>
                         <td>{t('Host')}:</td>
-                        <td><input type='text' className='form-control'
-                               value={this.state.host} onChange={this.handleHostChange.bind(this)} /></td>
+                        <td>
+                            <input type='text'
+                                   className='form-control'
+                                   value={host}
+                                   onChange={this.handleHostChange}
+                            />
+                        </td>
                     </tr>
                     <tr>
                         <td>{t('Country')}:</td>
@@ -102,5 +108,5 @@ class ProductView extends React.Component <Props,any> {
 }
 
 export default connect( (state: State, onProps: Props) => {
-    return (onProps);
+    return Object.assign({}, {ws: state.ws}, onProps);
 } )(withRouter(ProductView));

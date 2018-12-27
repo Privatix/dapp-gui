@@ -1,9 +1,10 @@
 import * as React from 'react';
-import Steps from './steps';
-import { withRouter } from 'react-router-dom';
-import {NextButton} from './utils';
 import { translate } from 'react-i18next';
-import SelectLanguage from '../../i18next/selectLanguage';
+import { withRouter } from 'react-router-dom';
+
+import Steps from './steps';
+import {NextButton} from './utils';
+import SelectLanguage from 'i18next/selectLanguage';
 
 @translate(['auth/setLanguage'])
 class SetLanguage extends React.Component<any, any>{

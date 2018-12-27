@@ -5,10 +5,12 @@ import { translate } from 'react-i18next';
 import {remote} from 'electron';
 const {dialog} = remote;
 
-import {fetch} from '../../utils/fetch';
-import toFixedN from '../../utils/toFixedN';
+import {fetch} from 'utils/fetch';
+import toFixedN from 'utils/toFixedN';
+
 import SessionsTable from './sessionsTable';
-import { State } from '../../typings/state';
+
+import { State } from 'typings/state';
 
 @translate(['sessions/sessionsList'])
 
@@ -20,20 +22,17 @@ class Sessions extends React.Component <any,any> {
         this.state = {
             sessions: [],
             usage: 0,
-            income: 0,
             sessionsData: []
         };
     }
 
     async componentDidMount() {
-        const { ws } = this.props;
-        const sessions = await ws.getSessions(this.props.channel === 'all' ? '' : this.props.channel);
+        const { ws, channel } = this.props;
+        const sessions = await ws.getSessions(channel === 'all' ? '' : channel);
 
         const usage = sessions.reduce((usage, session) => {
             return usage + session.unitsUsed;
         }, 0);
-
-        const income = await ws.getTotalIncome();
 
         const sessionsData = sessions.map((session: any) => {
             return {
@@ -46,7 +45,7 @@ class Sessions extends React.Component <any,any> {
             };
         });
 
-        this.setState({sessions, usage, income, sessionsData});
+        this.setState({sessions, usage, sessionsData});
     }
 
     exportToFile() {
@@ -75,7 +74,7 @@ class Sessions extends React.Component <any,any> {
 
     render() {
 
-        const { t } = this.props;
+        const { t, income } = this.props;
 
         return <div className='container-fluid'>
 
@@ -93,11 +92,11 @@ class Sessions extends React.Component <any,any> {
                                     </tr>
                                     <tr key='income'>
                                         <td>{t('TotalIncome')}:</td>
-                                        <td>{toFixedN({number: this.state.income / 1e8, fixed: 8})} PRIX</td>
+                                        <td>{toFixedN({number: income / 1e8, fixed: 8})} PRIX</td>
                                     </tr>
                                     <tr key='sessionsCount'>
                                         <td>{t('SessionsCount')}:</td>
-                                        <td>{(this.state.sessions as any).length}</td>
+                                        <td>{this.state.sessions.length}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -127,4 +126,4 @@ class Sessions extends React.Component <any,any> {
     }
 }
 
-export default connect((state: State) => ({ws: state.ws}))(Sessions);
+export default connect((state: State) => ({income: state.totalIncome, ws: state.ws}))(Sessions);

@@ -2,8 +2,9 @@ import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import { remote } from 'electron';
-import {fetch} from '../../utils/fetch';
-import notice from '../../utils/notice';
+
+import {fetch} from 'utils/fetch';
+import notice from 'utils/notice';
 import Steps from './steps';
 import {NextButton} from './utils';
 

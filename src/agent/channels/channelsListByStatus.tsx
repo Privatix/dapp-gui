@@ -3,8 +3,6 @@ import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import ChannelsListSortTable from './channelsListSortTable';
 
-import {asyncProviders} from 'redux/actions';
-
 import Channel from './channel';
 import ModalWindow from 'common/modalWindow';
 import Product from 'agent/products/product';
@@ -12,17 +10,17 @@ import Product from 'agent/products/product';
 import toFixedN from 'utils/toFixedN';
 import { WS } from 'utils/ws';
 
-import {Product as ProductType} from 'typings/products';
-import {State} from 'typings/state';
-import {Channel as ChannelType, ServiceStatus} from 'typings/channels';
+import { Product as ProductType } from 'typings/products';
+import { Offering } from 'typings/offerings';
+import { State } from 'typings/state';
+import { ServiceStatus } from 'typings/channels';
 
 interface IProps{
-    status: ServiceStatus;
-    registerRefresh?: Function;
+    status?: ServiceStatus;
 }
+
 interface Props {
-    status: ServiceStatus;
-    registerRefresh?: Function;
+    status?: ServiceStatus;
     products: ProductType[];
     dispatch: any;
     t?: any;
@@ -30,10 +28,10 @@ interface Props {
 }
 
 @translate(['channels/channelsList'])
-
 class Channels extends React.Component<Props, any> {
 
-    subscription: string;
+    private subscription: string;
+    private stopPolling: Function;
 
     constructor(props: Props) {
         super(props);
@@ -43,12 +41,7 @@ class Channels extends React.Component<Props, any> {
             lastUpdatedStatus: null,
             productsByChannels: [],
             channels: [],
-            handler: null
         };
-
-        if ('function' === typeof props.registerRefresh) {
-            props.registerRefresh(this.refresh);
-        }
 
     }
 
@@ -57,47 +50,60 @@ class Channels extends React.Component<Props, any> {
             return;
         }
 
-        this.refresh(true);
+        this.refresh();
     }
 
     componentDidMount(){
-        // TODO remove this when storage will subscribe to the products
-        this.props.dispatch(asyncProviders.updateProducts());
         this.refresh();
     }
 
     componentWillUnmount() {
-        const { ws } = this.props;
+        this.stop();
+    }
 
-        this.clearTimeoutHandler();
+    stop() {
+
+        const { ws } = this.props;
 
         if (this.subscription) {
             ws.unsubscribe(this.subscription);
             this.subscription = undefined;
         }
+
+        if(this.stopPolling){
+            this.stopPolling();
+            this.stopPolling = null;
+        }
+
     }
 
-    refresh = async (once?: boolean) => {
+    refresh = async () => {
+
+        this.stop();
 
         const status = this.state.status;
-        let statusArr = [status];
         const { ws } = this.props;
+        let statusArr;
 
         if (status === 'active') {
             statusArr = ['pending', 'activating', 'active', 'suspending', 'suspended', 'terminating'];
+        }else{
+            statusArr = status ? [status] : [];
         }
 
-        const channels = await ws.getAgentChannels([], statusArr, 0, 100);
+        const getActiveChannels = ws.getAgentChannels.bind(ws, [], statusArr, 0, 0);
+        const channels = await getActiveChannels();
 
-        if (!this.subscription) {
-            const channelsIds = channels.items.map(channel => channel.id);
-            if(channelsIds.length){
-                this.subscription = await ws.subscribe('channel', channelsIds, this.refresh);
-            }
+
+        const channelsIds = channels.items.map(channel => channel.id);
+        if(channelsIds.length){
+            this.subscription = await ws.subscribe('channel', channelsIds, this.refresh);
         }
 
-        const channelsOfferings = channels.items.map((channel: ChannelType) => ws.getOffering(channel.offering));
-        const offerings = await Promise.all(channelsOfferings);
+        this.stopPolling = ws.on(getActiveChannels, channels, this.refresh);
+
+        const channelsOfferings: Promise<Offering>[] = channels.items.map(channel => ws.getOffering(channel.offering));
+        const offerings = (await Promise.all(channelsOfferings)) as Offering[];
         const productsByChannels = offerings.map(offering => offering.product);
 
         this.setState({
@@ -106,20 +112,6 @@ class Channels extends React.Component<Props, any> {
             channels: channels.items,
         });
 
-        if (!once) {
-            this.clearTimeoutHandler();
-
-            const handler = setTimeout(() => {
-                this.refresh();
-            }, 5000);
-            this.setState({handler});
-        }
-    }
-
-    clearTimeoutHandler() {
-        if (this.state.handler !== null) {
-            clearInterval(this.state.handler);
-        }
     }
 
     static getDerivedStateFromProps(props: any, state: any){
@@ -128,25 +120,36 @@ class Channels extends React.Component<Props, any> {
 
     render (){
 
+        // Bad idea! It shouldn't be here!
         this.refreshIfStatusChanged();
 
-        const { t } = this.props;
+        const { t, products } = this.props;
+        const { productsByChannels, channels } = this.state;
 
-        const channelsDataArr = this.state.productsByChannels
-            .map((productId) => this.props.products.find(product => productId === product.id))
+        const channelsDataArr = productsByChannels
+            .map((productId) => products.find(product => productId === product.id))
             .map((product, index) => {
-            const channel = this.state.channels[index];
-            return {
-                id: <ModalWindow customClass='shortTableText' modalTitle={t('Service')} text={channel.id} copyToClipboard={true} component={<Channel channel={channel} />} />,
-                server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={product.name} component={<Product product={product} />} />,
-                client: channel.client,
-                contractStatus: channel.channelStatus,
-                serviceStatus: channel.serviceStatus,
-                usage: {channelId: channel.id, channelStatus: channel.serviceStatus},
-                incomePRIX: toFixedN({number: (channel.receiptBalance/1e8), fixed: 8}),
-                serviceChangedTime: channel.serviceChangedTime
-            };
-        });
+                const channel = channels[index];
+                return {
+                    id: <ModalWindow customClass='shortTableText'
+                                     modalTitle={t('Service')}
+                                     text={channel.id}
+                                     copyToClipboard={true}
+                                     component={<Channel channel={channel} />}
+                        />,
+                    server: <ModalWindow customClass=''
+                                         modalTitle={t('ServerInfo')}
+                                         text={product ? product.name : ''}
+                                         component={<Product product={product} />}
+                            />,
+                    client: channel.client,
+                    contractStatus: channel.channelStatus,
+                    serviceStatus: channel.serviceStatus,
+                    usage: {channelId: channel.id, channelStatus: channel.serviceStatus},
+                    incomePRIX: toFixedN({number: (channel.receiptBalance/1e8), fixed: 8}),
+                    serviceChangedTime: channel.serviceChangedTime
+                };
+            });
 
         return <div className='row'>
             <div className='col-12'>

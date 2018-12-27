@@ -2,7 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import { WS, ws } from 'utils/ws';
-import { ClientChannelUsage, ServiceStatus } from 'typings/channels';
+import { ClientChannelUsage } from 'typings/channels';
 
 import toFixedN from 'utils/toFixedN';
 
@@ -10,15 +10,12 @@ interface IProps {
     t?: any;
     ws?: WS;
     usage?: ClientChannelUsage;
-    channelStatus: ServiceStatus;
     channelId: string;
     mode: string;
 }
 
 interface IState {
     usage?: ClientChannelUsage;
-    channelStatus: ServiceStatus;
-    channelId: string;
 }
 
 @translate('client/connections/usage')
@@ -28,8 +25,8 @@ class Usage extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
         super(props);
-        const { channelId, channelStatus, usage, ws } = this.props;
-        this.state = { channelId, channelStatus, usage };
+        const { channelId, usage, ws } = this.props;
+        this.state = { usage };
 
         if(!usage){
             ws.getChannelUsage(channelId)
@@ -39,15 +36,8 @@ class Usage extends React.Component<IProps, IState>{
         }
     }
 
-    static getDerivedStateFromProps(props: IProps, state: IState){
-        const {channelId, channelStatus} = state;
-        return {channelId, channelStatus};
-    }
-
     componentDidMount(){
-        if(this.state.channelStatus === 'active'){
-            this.startRefresh();
-        }
+        this.startRefresh();
     }
 
     componentWillUnmount(){
@@ -55,7 +45,7 @@ class Usage extends React.Component<IProps, IState>{
     }
 
     startRefresh(){
-        this.handlerId = setTimeout(this.refresh, 1000);
+        this.handlerId = setTimeout(this.refresh, 2000);
     }
 
     stopRefresh(){
@@ -69,25 +59,17 @@ class Usage extends React.Component<IProps, IState>{
         const { ws, channelId } = this.props;
         const usage = await ws.getChannelUsage(channelId);
         this.setState({usage});
-        this.handlerId = setTimeout(this.refresh, 1000);
+        this.handlerId = setTimeout(this.refresh, 2000);
     }
 
     render(){
 
         const { t, mode } = this.props;
-        const { usage, channelStatus } = this.state;
-
-        if(channelStatus === 'active' && !this.handlerId){
-            this.startRefresh();
-        }
-
-        if(channelStatus !== 'active' && this.handlerId){
-            this.stopRefresh();
-        }
+        const { usage } = this.state;
 
         return mode === 'unit'
             ? (usage
-                ? <span>{usage.current}&nbsp;{t('of')}&nbsp;{usage.maxUsage}&nbsp;{usage.unit}</span>
+                ? <span>{usage.current}&nbsp;{t('of')}&nbsp;{usage.maxUsage}&nbsp;{usage.unitName}</span>
                 : <span></span>
               )
             : <span>{toFixedN({number: (usage.cost / 1e8), fixed: 8})}</span>;

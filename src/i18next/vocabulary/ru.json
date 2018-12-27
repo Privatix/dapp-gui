@@ -84,6 +84,7 @@
         "Offerings": "Предложения"
     },
     "offerings/createOffering": {
+        "Attention": "Внимание!",
         "Server": "Сервер",
         "GeneralInfo": "Общая информация",
         "Name": "Имя",
@@ -101,6 +102,7 @@
         "PricePerMB": "Цена за 1 MB",
         "MaxBillingUnitLag": "Максимальная отсрочка платежа",
         "MaximumPaymentLagInUnits": "Максимальное число неоплаченных юнитов (в единицах измерения), после которого Агент прекратит предоставлять услуги.",
+        "MaxBillingUnitLagHelpLink": "Не изменяйте, если вы не понимаете <1>как считается максимальная отсрочка платежа</1>",
         "MinUnits": "Минимальное число юнитов",
         "UsedToCalculateMinimumDeposit": "Используется для вычисления минимально необходимого депозита.",
         "MaxUnits": "Максимальное число юнитов",
@@ -147,7 +149,8 @@
         "cantBeEmpty": "не может быть пустым.",
         "cantBeEmpty_plural": "не могут быть пустыми.",
         "MaxSuspendTimeMustBeMoreOrEquals10Min": "Максимальное время приостановки должно быть равно или больше 10 минут.",
-        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Максимальное неактивное время должно быть равно или больше 10 минут."
+        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Максимальное неактивное время должно быть равно или больше 10 минут.",
+        "unlimited": "не ограничено"
     },
     "offerings/offeringTools": {
         "WarningArea": "Внимание!",
@@ -174,7 +177,6 @@
         "Hash": "Хеш",
         "ServiceName": "Название сервиса",
         "Server": "Сервер",
-        "MessageStatus": "Статус сообщения",
         "Status": "Статус",
         "AvailableSupply": "Доступно слотов",
         "Supply": "Слотов"
@@ -264,7 +266,6 @@
         "SwitchToAgent": "В режим Агент",
         "Settings": "Настройки",
         "Logs": "Логи",
-        "user": "пользователь",
         "SomethingWentWrong": "Что-то пошло не так!",
         "UserWasSwitchedToAGENT": "Успешно переключено в режим Агент",
         "UserWasSwitchedToCLIENT": "Успешно переключено в режим Клиент"
@@ -395,7 +396,6 @@
         "AfterMaxInactivityTimeHasBeenReached": "По истечении срока максимальной неактивности процедура завершения будет вызвана автоматически.",
         "Resume": "Восстановить",
         "YesResumeIt": "Да, восстановить соединение!",
-        "min": "мин",
         "CountryAlertInvalid": "Страна в предложении не соответствует стране, которая была обнаружена на основе IP-адреса. IP адрес {{ip}}",
         "CountryAlertUnknown": "Приложение не смогло определить страну предложения. IP адрес {{ip}}"
     },
@@ -409,6 +409,7 @@
         "ActiveOfferings": "Активные предложения"
     },
     "client/vpnList": {
+        "Availability": "Доступность",
         "Block": "Блок",
         "Hash": "Хеш",
         "Agent": "Агент",
@@ -426,6 +427,7 @@
         "TakesTimeOnFirstRun": "Это занимает время только при первом запуске.",
         "AverageTimeForDownloading": "Среднее время для загрузки 2-5 мин.",
         "Refresh": "Обновить",
+        "CheckAvailability": "Проверить доступность",
         "AgentAddress": "Адрес агента",
         "OfferingHash": "Хеш предложения",
         "PriceFilter": "Цена (PRIX/MB):",
@@ -441,6 +443,7 @@
         "DepositMustBeLessOrEqualThan": "Депозит должен быть меньше или равен",
         "NotEnoughPrixForDeposit": "Недостаточно средств (PRIX) для депозита. Выберите другую учетную запись.",
         "NotEnoughToPublishTransaction": "Недостаточно средств (ETH) для публикации транзакции. Выберите другую учетную запись.",
+        "ErrorAcceptingOffering": "Что-то пошло не так. Попробуйте принять другое предложение!",
         "OfferingAccepted": "Предложение принято!",
         "VPNInfo": "Информация",
         "Country": "Страна:",
@@ -450,13 +453,16 @@
         "MaxInactiveTime": "Максимальное время бездействия:",
         "sec": "сек",
         "min": "мин",
+        "MinUnitsText": "Агент рассчитывает продать не менее этого количества услуг.",
+        "MaxUnitsText": "Агент готов предоставить не более этого количества услуг.",
         "MaxTimeWithoutServiceSmallText": "Максимальное время без использования сервиса. После его истечения, агент будет считать, что Клиент не использует сервис и завершит соединение. Период указывается в минутах.",
         "PayInfo": "Информация о платеже:",
         "Account": "Аккаунт:",
         "Balance": "Баланс:",
         "Deposit": "Депозит:",
         "UnusedPrixWillBeReturnedSmallText": "По окончании использования VPN будут возвращены неиспользованные PRIX.",
-        "AcceptancePrice": "Стоимость:"
+        "AcceptancePrice": "Стоимость:",
+        "unlimited": "не ограничено"
     },
     "client/history": {
         "Service": "Сервис",
@@ -600,7 +606,8 @@
         "Login": "Войти",
         "LoginTo": "Войти в",
         "Password": "Пароль",
-        "AccessDenied": "доступ запрещен, возможно, неправильный пароль"
+        "AccessDenied": "доступ запрещен, возможно, неправильный пароль",
+        "TryToConnect": "попытка подключения ..."
     },
     "settings": {
         "Success": "Изменения были успешно сохранены.",
@@ -685,5 +692,8 @@
         "accountUpdateBalances" : "проверка и обновление информации аккаунта",
         "decrementCurrentSupply": "уменьшение числа свободных сервисов",
         "incrementCurrentSupply": "увеличение числа свободных сервисов"
+    },
+    "updateInformer": {
+        "announcement": "<0>Доступна новая версия: {{name}}.</0>"
     }
 }

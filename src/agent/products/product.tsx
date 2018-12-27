@@ -12,10 +12,10 @@ class Product extends React.Component <any, any> {
         super(props);
     }
 
-    openModal(evt:any) {
+    openModal = (evt:any) => {
         evt.preventDefault();
-        const { t } = this.props;
-        this.props.render(t('offerings/offerings:CreateOffering'), <CreateOffering product={this.props.product.id} />);
+        const { t, render, product } = this.props;
+        render(t('offerings/offerings:CreateOffering'), <CreateOffering product={product.id} />);
     }
 
     render () {
@@ -27,7 +27,7 @@ class Product extends React.Component <any, any> {
                 <div className='row'>
                     <div className='col-sm-12 m-b-20'>
                         <div className='btn-group'>
-                            <button onClick={this.openModal.bind(this)}
+                            <button onClick={this.openModal}
                                   className='btn btn-default btn-custom waves-effect waves-light'>{t('offerings:CreateAnOffering')}</button>
                         </div>
                     </div>

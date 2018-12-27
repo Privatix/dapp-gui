@@ -1,9 +1,10 @@
 {
-    "lang": "日本人",
+    "lang": "日本語",
     "common": {
         "RefreshAll": "すべて再読み込み",
         "Refresh": "再読み込み",
-        "Select": "選択"
+        "Select": "選択",
+        "NoResults": "あなたのリクエストでは何も見つかりませんでした。フィルターのオプションを変更してください！"
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "言語を選択してください",
@@ -89,8 +90,7 @@
         "Description": "Description",
         "description": "説明",
         "Country": "国",
-        "ChangeCountryHelpTextPart1": "国を変更するには次へ移動する必要があります：",
-        "ChangeCountryHelpTextPart2": "ページ",
+        "ChangeCountryHelpText": "国を変更するには、<1>サーバー</1>ページに移動する必要があります。",
         "ChangeCountryHelpTextServers": "サーバー",
         "Supply": "供給量",
         "ie": "例：",
@@ -153,9 +153,14 @@
         "WarningArea": "警告エリア",
         "Popup": "現れる",
         "Remove": "削除",
+        "SomethingWentWrong": "不明なエラーが発生しました。あとでもう一度お試しください！",
         "popupInfo": "この操作を行うとあなたのオファーが有効であることがクライアントに通知され、取引のチャンスを増えます。",
-        "popupInfoDisabled": "チャレンジ期間が経過するまでオファーをポップアップすることはできません。チャレンジ期間は約 {{min}} 分です。",
-        "removeInfo": "この操作を行うと、オファーは永久に削除されます。保証金は返金されます。クライアントは保証金を受け取ることができなくなります。オファーは過去 {{minutes}} 分間有効でなかった場合にのみ削除できます。",
+        "popupInfoDisabled": "チャレンジ期間が経過するまでオファーをポップアップすることはできません。チャレンジ期間は約 {{min}} 分です。（{{blocks}} ブロック）。",
+        "popupNotice": "ポップアップオファー要求がスケジュールされています。取引が承認された後にオファー要求は処理されます。",
+        "removeInfo": "この操作を行うとオファーが恒久的に削除されます。あなたの保証金は返金されます。クライアントはもうこのオファーを受け取ることができなくなります。",
+        "removeInfoDisabled": "オファーは作成後、またはポップアップ後に {{blocks}} ブロック（約 {{minutes}} 分）が経過した場合にのみ削除できます。",
+        "lastAction": "最後の操作は {{lastAction}} ブロック（約 {{lastActionMinutes}} 分）前に実行されました。",
+        "lastActionPopup": "最後の操作は {{lastAction}} ブロック前に実行されました。",
         "YesPopUpIt": "はい、ポップアップします！",
         "YesRemoveIt": "はい、削除します！",
         "WouldYouLikeToProceed": "続行しますか？",
@@ -166,6 +171,7 @@
     "offerings/offeringsList": {
         "Offering": "オファー",
         "ServerInfo": "サーバー情報",
+        "Hash": "ハッシュ",
         "ServiceName": "サービス名",
         "Server": "サーバー",
         "MessageStatus": "メッセージの状態",
@@ -287,6 +293,27 @@
         "Attention!": "注意！",
         "Congratulations!": "おめでとうございます！"
     },
+    "logs/logsList": {
+        "LogsHeader": "ログ一覧",
+        "ExportBtn": "ファイルにエクスポート",
+        "LogsFilterFrom": "開始：",
+        "LogsFilterTo": "終了：",
+        "LogsFilterTime": "時刻",
+        "LogsSearchPlaceholder": "例：失敗",
+        "NowBtn": "現在",
+        "Level": "レベル",
+        "Date": "日付",
+        "Message": "メッセージ",
+        "Context": "説明",
+        "Stack": "スタック",
+        "ShowBtn": "表示",
+        "StackTrace": "スタックトレース",
+        "WarningDateMessage": "5日以上の範囲のログを選択しないでください。長時間かかる可能性があります！"
+    },
+    "logs/logsContext": {
+        "Key": "キー",
+        "Value": "値"
+    },
     "accounts/accountsList": {
         "Title": "アカウント",
         "CreateBtn": "アカウントを作成",
@@ -349,9 +376,12 @@
         "AreYouSure": "よろしいですか？"
     },
     "client/dashboard/connecting": {
+        "TheServiceHasAPendingStatus": "このサービスは保留状態です。接続準備ができたら、VPNを使い始めることができます。",
+        "TheServiceHasAnActivatingStatus": "このサービスは有効化状態です。接続準備ができたら、VPNを使い始めることができます。",
+        "TheServiceHasASuspendingStatus": "このサービスは中断状態です。接続を中断した後、接続を再開または終了できます。",
+        "TheServiceHasATerminatingStatus": "このサービスは終了状態です。接続を終了した後、コントラクトも終了できます。",
         "WaitingTimeIsOver": "待機時間を経過しました。完了手続きが自動的に呼び出されます。",
         "FailedToAcceptOffering": "オファーを承認できませんでした。別のオファーをお試しください。",
-        "AfterTheConnectionIsReady": "接続準備ができたら、VPN を使用できるようになります。",
         "Synchronizing": "同期中",
         "YouCanStartUsingVPN": "VPN を使用できるようになりました",
         "Connect": "接続",
@@ -380,6 +410,7 @@
     "client/vpnList": {
         "Block": "ブロック",
         "Hash": "ハッシュ",
+        "Agent": "エージェント",
         "Country": "国",
         "Price": "価格 (PRIX/MB)",
         "SupplyTotal": "供給量 (合計)",
@@ -395,9 +426,12 @@
         "AverageTimeForDownloading": "平均ダウンロード時間は約2～5分です。",
         "Refresh": "再読み込み",
         "AgentAddress": "エージェントのアドレス",
+        "OfferingHash": "オファーハッシュ",
         "PriceFilter": "価格 (PRIX/MB)：",
         "From": "最低",
-        "To": "最高"
+        "To": "最高",
+        "ClearOfferingHashToUseOtherFilters": "他のフィルターを使用するには、オファーハッシュフィールドをクリアする必要があります。",
+        "ResetFilters": "フィルターをリセット"
     },
     "client/acceptOffering": {
         "Accept": "承認",
@@ -424,7 +458,6 @@
         "AcceptancePrice": "受け入れ価格："
     },
     "client/history": {
-        "SuccessfullyRefreshed": "ページを再読み込みしました！",
         "Service": "サービス",
         "of": "/",
         "Id": "Id",
@@ -435,7 +468,6 @@
         "Usage": "使用量",
         "CostPRIX": "コスト (PRIX)",
         "LastUsed": "最終使用日時",
-        "Refresh": "再読み込み",
         "AwaitForTerminate": "終了を待っています",
         "History": "履歴"
     },
@@ -528,7 +560,8 @@
         "IncreaseBtn": "追加",
         "SuccessMessage": "保証金の追加を正常に初期化しました！",
         "SomethingWentWrong": "不明なエラーが発生しました。あとでもう一度お試しください！",
-        "ErrorNotEnoughPublishFunds": " 取引を公開するための資金が不足しています。"
+        "ErrorNotEnoughPublishFunds": " 取引を公開するための資金が不足しています。",
+        "ErrorNotEnoughPRIX": "保証金を増やすためのPRIXが不足しています。"
     },
     "electronMenu": {
         "File": "ファイル",
@@ -569,6 +602,9 @@
         "AccessDenied": "アクセスが拒否されました。パスワードが間違っている可能性があります。"
     },
     "settings": {
+        "Success": "変更が保存されました。",
+        "Error": "保存中にエラーが発生しました。入力したデータを確認してください。",
+        "Save": "保存",
         "Settings": "設定",
         "Name": "Name",
         "Value": "値",
@@ -586,6 +622,11 @@
         "eth_event_lastProcessedBlock_Name": "最後に処理されたブロック",
         "offering_autopopup_Name": "オファーの自動ポップアップ",
         "system_version_app_Name": "アプリケーションのバージョン",
+        "somc_transport_tor_Name": "Torを使用",
+        "client_somc_transports_Name": "許可されたSOMC転送",
+        "psc_periods_challenge_Name": "チャレンジ期間",
+        "psc_periods_popup_Name": "ポップアップ期間",
+        "psc_periods_remove_Name": "期間を削除",
         "error_sendremote_Description": "エラー報告による Privatix へのログ送信を許可します。",
         "eth_challenge_period_Description": "クライアントが不正行為を行った場合に備えて、エージェントが残高証明付きで応答できるようにするため、クライアントが開始した uncooperativeClose を待つブロックの数です。チャレンジ期間が終了すると、クライアントはチャネルを確立して削除できるようになります。エージェントのブロック数は、エージェントがサービス提供を削除してエージェントの保証金を受け取れるようになるまで registerServiceOffering か createChannel を待ちます。",
         "eth_default_gasprice_Description": "取引のデフォルトのガス代です。",
@@ -598,10 +639,58 @@
         "user_isagent_Description": "ユーザーの役割を指定します。「true」はエージェント。「false」はクライアントを表します。",
         "eth_event_lastProcessedBlock_Description": "ブロックチェーンの最後のブロック番号には、最後に処理されたブロックが格納されています。",
         "offering_autopopup_Description": "オファーを自動的にポップアップするようにします。",
-        "system_version_app_Description": "アプリケーションのバージョン"
+        "system_version_app_Description": "アプリケーションのバージョン",
+        "somc_transport_tor_Description": "完全分散モード。true が設定された場合、エージェントとクライアントのメッセージ交換にTorが使用されます。オファーやアクセス用のメッセージはTorを介して取得されます。集中型のSOMCを介して公開されたメッセージにはアクセスできなくなります。",
+        "psc_periods_challenge_Description": "非協力的なチャネルを閉じるためにマイニングされるブロックの数",
+        "psc_periods_popup_Description": "オファーを繰り返しポップアップするためにマイニングされるブロックの数",
+        "psc_periods_remove_Description": "ブロックチェーン内の最後のオファー更新からオファーを削除するためにマイニングされるブロックの数",
+        "client_somc_transports_Description": "オファーの表示に使用するSOMCタイプを設定します。"
     },
     "copyToClipboard": {
         "Copied": "コピーしました！",
         "Copy": "コピー"
+    },
+    "jobName": {
+        "clientPreChannelCreate": "サービス保証金の割り当て",
+        "clientAfterChannelCreate": "サービスデータの更新",
+        "clientPreChannelTopUp": "保証金の増加",
+        "clientAfterChannelTopUp": "保証金の更新",
+        "clientPreUncooperativeCloseRequest": "コントラクトの議論の公開要求の送信",
+        "clientAfterUncooperativeCloseRequest": "コントラクトの議論の公開",
+        "clientPreUncooperativeClose": "チャレンジ期間終了後の保証金の返金",
+        "clientAfterUnCooperativeClose": "議論の完了とコントラクトの終了",
+        "clientAfterCooperativeClose": "契約終了の完了",
+        "clientPreServiceSuspend": "サービスの中断",
+        "clientPreServiceUnsuspend": "サービスの中断解除",
+        "clientPreServiceTerminate": "恒久的なサービスの停止",
+        "clientEndpointRestore": "サービスアクセスの取得",
+        "clientAfterOfferingMsgBCPublish": "オファーデータの取得",
+        "clientAfterOfferingPopUp": "オファーポジションの更新",
+        "clientAfterOfferingDelete": "オファーの削除",
+        "completeServiceTransition": "サービスの変更完了",
+        "agentAfterChannelCreate": "サービスエントリの作成",
+        "agentAfterUncooperativeCloseRequest": "コントラクトの議論への反応",
+        "agentAfterCooperativeClose": "契約終了の完了",
+        "agentPreServiceSuspend": "サービスの中断",
+        "agentPreServiceUnsuspend": "サービスの中断解除",
+        "agentPreServiceTerminate": "サービスの終了と支払いの出金要求",
+        "agentPreEndpointMsgCreate": "サービスアクセスの準備",
+        "agentPreEndpointMsgSOMCPublish": "サービスアクセスメッセージの公開",
+        "agentAfterEndpointMsgSOMCPublish": "サービスの有効化",
+        "agentPreOfferingMsgBCPublish": "オファーの保証金の送金",
+        "agentAfterOfferingMsgBCPublish": "オファー保証金の割り当て",
+        "agentPreOfferingMsgSOMCPublish": "オファーメッセージの公開",
+        "agentPreOfferingDelete": "オファー削除要求と保証金の返金",
+        "agentPreOfferingPopUp": "オファーのポップアップ要求",
+        "agentAfterOfferingPopUp": "オファーのポップアップ完了",
+        "agentAfterOfferingDelete": "オファーの削除完了",
+        "preAccountAddBalanceApprove": "サービスアカウントへのトークン転送の確認",
+        "preAccountAddBalance": "サービスアカウントへの残高追加",
+        "afterAccountAddBalance": "サービスアカウントの残高更新",
+        "preAccountReturnBalance": "ERC20アカウントへのトークン転送要求",
+        "afterAccountReturnBalance": "ERC20アカウントの残高更新",
+        "accountUpdateBalances": "アカウントの残高情報の確認と更新",
+        "decrementCurrentSupply": "オファーの現在の供給量の削減",
+        "incrementCurrentSupply": "オファーの現在の供給量の増加"
     }
 }

@@ -11,7 +11,7 @@ import TerminateContractButton from 'client/connections/terminateContractButton'
 
 import notice from 'utils/notice';
 
-import { Product } from 'typings/products';
+// import { Product } from 'typings/products';
 import { State } from 'typings/state';
 
 @translate(['client/serviceView', 'utils/notice'])
@@ -42,6 +42,7 @@ class ServiceView extends React.Component <any,any> {
     }
 
     async getSessions() {
+        /*
         const { ws } = this.props;
         const service = this.state.service;
         const sessionsRaw = await ws.getSessions(service.id);
@@ -71,6 +72,7 @@ class ServiceView extends React.Component <any,any> {
         });
 
         this.setState({sessions});
+       */
     }
 
     async componentDidMount(){

@@ -21,18 +21,22 @@ interface IProps{
     mode?: string;
 }
 
-@translate(['client/acceptOffering', 'utils/gasRange', 'utils/notice'])
+@translate(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice'])
 class AcceptOffering extends React.Component<IProps, any>{
+
+    acceptBtn = null;
 
     constructor(props:IProps){
         super(props);
 
         const { t } = props;
 
+        this.acceptBtn = React.createRef();
         const acceptOfferingBtnBl = <div className='form-group row'>
             <div className='col-md-12'>
                 <button type='submit'
                         onClick={this.onSubmit.bind(this)}
+                        ref={this.acceptBtn}
                         className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
                 >
                     {t('Accept')}
@@ -50,7 +54,6 @@ class AcceptOffering extends React.Component<IProps, any>{
     }
 
     async componentDidMount(){
-
         const accounts = await (window as any).ws.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
         this.getNotTerminatedConnections();
@@ -90,6 +93,7 @@ class AcceptOffering extends React.Component<IProps, any>{
 
     async onSubmit(evt: any){
         evt.preventDefault();
+        this.acceptBtn.current.setAttribute('disabled', 'disabled');
         let err = false;
         let msg = '';
         const settings = (await api.settings.getLocal()) as LocalSettings;
@@ -108,8 +112,7 @@ class AcceptOffering extends React.Component<IProps, any>{
             }
         }
 
-
-        if(this.state.account.pscBalance < this.state.deposit){
+        if(this.state.account.pscBalance < this.state.customDeposit){
             err=true;
             msg += ' ' + t('NotEnoughPrixForDeposit');
         }
@@ -121,20 +124,30 @@ class AcceptOffering extends React.Component<IProps, any>{
 
         if(err){
             notice({level: 'error', title: t('utils/notice:Attention!'), msg});
+            this.acceptBtn.current.removeAttribute('disabled');
             return;
         }
 
-        const acceptRes = await this.props.ws.acceptOffering(this.state.account.ethAddr, this.props.offering.id, this.state.customDeposit, this.state.gasPrice);
-        if (typeof acceptRes === 'string') {
-            notice({level: 'info', title: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
-            document.body.classList.remove('modal-open');
-            this.props.history.push('/client-dashboard-connecting');
+        try {
+            const acceptRes = await this.props.ws.acceptOffering(this.state.account.ethAddr, this.props.offering.id, this.state.customDeposit, this.state.gasPrice);
+            if (typeof acceptRes === 'string') {
+                notice({level: 'info', title: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
+                this.acceptBtn.current.removeAttribute('disabled');
+                document.body.classList.remove('modal-open');
+                this.props.history.push('/client-dashboard-connecting');
+            }
+        } catch (e) {
+            msg = t('ErrorAcceptingOffering');
+            notice({level: 'error', title: t('utils/notice:Attention!'), msg});
+            this.acceptBtn.current.removeAttribute('disabled');
         }
+
 
     }
 
 
     render(){
+
         const {t} = this.props;
         const offering = this.props.offering;
 
@@ -185,6 +198,30 @@ class AcceptOffering extends React.Component<IProps, any>{
                             </div>
                             <span className='help-block'>
                                 <small>{t('MaxTimeWithoutServiceSmallText')}</small>
+                            </span>
+                        </div>
+                    </div>
+                    <div className='form-group row'>
+                        <label className='col-3 col-form-label'>{t('offerings/createOffering:MinUnits')}:</label>
+                        <div className='col-9'>
+                            <div className='input-group bootstrap-touchspin'>
+                                <input type='text' className='form-control' value={Math.ceil(offering.minUnits)} readOnly/>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>{offering.unitName}</span>
+                            </div>
+                            <span className='help-block'>
+                                <small>{t('MinUnitsText')}</small>
+                            </span>
+                        </div>
+                    </div>
+                    <div className='form-group row'>
+                        <label className='col-3 col-form-label'>{t('offerings/createOffering:MaxUnits')}:</label>
+                        <div className='col-9'>
+                            <div className='input-group bootstrap-touchspin'>
+                                <input type='text' className='form-control' value={Math.ceil(offering.maxUnit) === 0 ? t('unlimited') : Math.ceil(offering.maxUnit) } readOnly/>
+                                <span className='input-group-addon bootstrap-touchspin-postfix'>{offering.unitName}</span>
+                            </div>
+                            <span className='help-block'>
+                                <small>{t('MaxUnitsText')}</small>
                             </span>
                         </div>
                     </div>

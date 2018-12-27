@@ -12,13 +12,33 @@ import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import notice from 'utils/notice';
 import { State } from 'typings/state';
 
-const countdownRender = ({ minutes, seconds }) => {
-    return <span>{minutes}:{seconds}</span>;
-};
+const countdownRender = ( { hours, minutes, seconds, completed } ) => {
 
-const completeRemaining = translate('client/dashboard/connecting')(({t}) => {
-    return <span>{t('WaitingTimeIsOver')}</span>;
-});
+    if(completed) {
+        const View = translate('client/dashboard/connecting')(({t}) => {
+            return <p className='card-text text-muted'>{t('WaitingTimeIsOver')}</p>;
+        });
+
+        return <View />;
+    } else {
+
+        const View = translate('client/dashboard/connecting')(({t}) => {
+            return (
+                <React.Fragment>
+                    <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
+                        <strong>
+                            <span>{hours}:{minutes}:{seconds}</span>
+                        </strong>
+                    </p>
+                    <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
+                </React.Fragment>
+            );
+        });
+
+        return <View />;
+    }
+
+};
 
 @translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal'])
 class Connecting extends React.Component<any, any>{
@@ -120,7 +140,7 @@ class Connecting extends React.Component<any, any>{
             if(this.state.status !== 'waiting'){
                 this.props.history.push('/client-dashboard-start');
             } else {
-                this.handler = setTimeout(this.refresh.bind(this), 3000);
+                this.handler = setTimeout(this.refresh.bind(this), 1000);
                 this.setState({status: 'waiting', channel: null});
             }
 
@@ -174,7 +194,7 @@ class Connecting extends React.Component<any, any>{
     }
 
     pending(){
-        return this.getTransitionView('rending');
+        return this.getTransitionView('pending');
     }
 
     activating(){
@@ -262,20 +282,16 @@ class Connecting extends React.Component<any, any>{
 
         const { t } = this.props;
 
+        const { channelStatus } = this.state.channel;
+        const deadlineStamp = Date.parse(channelStatus.lastChanged) + channelStatus.maxInactiveTime*1000 + (new Date()).getTimezoneOffset()*60*1000;
+
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
                 <div className='col-6 col-xl-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
-                            <strong>
-                                <Countdown date={Date.parse(this.state.channel.channelStatus.lastChanged) + this.state.channel.channelStatus.maxInactiveTime*1000}
-                                           renderer={countdownRender}
-                                           onComplete={completeRemaining}
-                                />
-                            </strong> {t('min')}
-                        </p>
-                        <p className='card-text text-muted'>{t('AfterMaxInactivityTimeHasBeenReached')}</p>
-
+                        <Countdown date={deadlineStamp}
+                                   renderer={countdownRender}
+                        />
                         <button className='btn btn-primary btn-custom btn-block' onClick={this.connectHandler.bind(this)}>{t('Resume')}</button>
                     </div>
                 </div>

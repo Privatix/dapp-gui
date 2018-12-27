@@ -16,31 +16,41 @@ export enum UnitType {
 }
 
 export interface Offering {
-    additionalParams: string;
-    agent: string;
-    billingInterval: number;
-    billingType: BillType;
-    blockNumberUpdated: number;
-    country: string;
-    description: string;
-    freeUnits: number;
-    hash: string;
     id: string;
-    is_local: boolean;
-    maxBillingUnitLag: number;
-    maxInactiveTimeSec: number;
-    maxSuspendTime: number;
-    maxUnit: number;
-    minUnits: number;
-    offerStatus: OfferStatus;
+    isLocal: boolean;
+    template: string;
     product: string;
+    hash: string;
+    status: MsgStatus;
+    offerStatus: OfferStatus;
+    blockNumberUpdated: number;
+    agent: string;
     rawMsg: string;
     serviceName: string;
-    setupPrice: number;
-    status: MsgStatus;
+    description: string;
+    country: string;
     supply: number;
-    template: string;
+    currentSupply: number;
     unitName: string;
-    unitPrice: number;
     unitType: UnitType;
+    billingType: BillType;
+    setupPrice: number;
+    unitPrice: number;
+    minUnits: number;
+    maxUnit: number;
+    billingInterval: number;
+    maxBillingUnitLag: number;
+    maxSuspendTime: number;
+    maxInactiveTimeSec: number;
+    freeUnits: number;
+    additionalParams: string;
+    autoPopUp: boolean;
 }
+
+export interface ResolvedOffering extends Offering {
+    productName: string;
+}
+
+export type OfferingAvailabilityResponse = {
+    [key: string]: boolean;
+};

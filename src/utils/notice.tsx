@@ -36,8 +36,16 @@ export default function(notice: any, delay?: number){
     </div>;
 
     ReactDOM.render(noticeEl, target);
-    setTimeout(() => {
-        ReactDOM.unmountComponentAtNode(target);
-    }, delay ? delay : 3000);
-    // $.notify('Sample Notification');
+    if(delay !== 0){
+        setTimeout(() => {
+            ReactDOM.unmountComponentAtNode(target);
+        }, delay ? delay : 3000);
+    }
 }
+
+export const closeNotice = function(){
+
+    const target = document.getElementById('noticeHolder');
+    ReactDOM.unmountComponentAtNode(target);
+
+};

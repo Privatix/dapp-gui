@@ -2,10 +2,12 @@ import * as React from 'react';
 import { withRouter } from 'react-router';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
-
 import { NavLink } from 'react-router-dom';
+
 import TopPanel from './topPanel';
-import {State} from '../typings/state';
+import UpdateInformer from './updateInformer';
+
+import {State} from 'typings/state';
 
 declare var window: any;
 
@@ -72,6 +74,14 @@ class Header extends React.Component<any, any>{
 
         const { t } = this.props;
 
+        const style = {
+            padding: '5px',
+            color: 'rgb(12, 102, 121)',
+            backgroundColor: 'rgb(255, 255, 255)',
+            fontSize: '33px',
+            verticalAlign: 'middle',
+            lineHeight: '0.9'
+        };
         return <div className='topbar'>
 
             <div className='topbar-left'>
@@ -92,7 +102,7 @@ class Header extends React.Component<any, any>{
                         <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
                            href='#' role='button'
                            aria-haspopup='false' aria-expanded='false'>
-                            <img src='images/PrivatixIcon.jpg' alt={t('user')} className='rounded-circle' />
+                            <i className='fa fa-gear rounded-circle' style={style}></i>
                         </a>
                             <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
                                 <NavLink to='/accounts' className='dropdown-item notify-item'>
@@ -115,8 +125,8 @@ class Header extends React.Component<any, any>{
                     </a>
                 </ul>
 
-                <TopPanel mode={this.props.mode} rate={3000} />
-
+                <UpdateInformer />
+                <TopPanel />
                 <ul className='list-inline menu-left mb-0'>
                     <li className='float-left'>
                         <button onClick={this.openLeftBar.bind(this)} className='button-menu-mobile open-left waves-light waves-effect'>

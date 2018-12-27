@@ -1,9 +1,19 @@
 const fs = require('fs');
 const config = require('../package');
-config.devDependencies = {};
+
+const deps = ['jquery', 'popper.js'];
+const devDeps = ['electron-packager', 'electron'];
+
+config.dependencies = deps.reduce((acc, name) => {
+    acc[name] = config.dependencies[name];
+    return acc;
+}, {});
+config.devDependencies = devDeps.reduce((acc, name) => {
+    acc[name] = config.devDependencies[name];
+    return acc;
+}, {});
+
 config.main = './main.js';
-const start = config.scripts.start;
-config.scripts = {start};
 config.private = false;
 
 const p = [];

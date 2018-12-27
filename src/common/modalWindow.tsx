@@ -11,21 +11,24 @@ export default class ModalWindow extends React.Component<any, any> {
             visible: props.visible,
             props,
             modalTitle: props.modalTitle,
-            component: props.component
+            component: props.component,
+            contentChanged: false
         };
     }
 
-    closeModal(event: any) {
+    closeModal = (event: any) => {
 
         if(event){
             event.preventDefault();
         }
 
         document.body.classList.remove('modal-open');
+
+        const { component, modalTitle } = this.props;
         this.setState({
             visible: false,
-            component: this.props.component,
-            modalTitle: this.props.modalTitle
+            component,
+            modalTitle
         });
     }
 
@@ -33,48 +36,48 @@ export default class ModalWindow extends React.Component<any, any> {
         document.body.classList.remove('modal-open');
     }
 
-    changeContent(modalTitle: string, component: any){
+    changeContent = (modalTitle: string, component: any) => {
         const props = Object.assign({}, this.state.props, {modalTitle, component});
-        this.setState({props, component, modalTitle});
+        this.setState({props, component, modalTitle, contentChanged: true});
     }
 
     static getDerivedStateFromProps(props: any, state: any){
-        if (state.component !== props.component && state.visible) {
-            return {props};
-        } else {
+        if(!state.contentChanged){
             return {props, modalTitle: props.modalTitle, component: props.component};
         }
+        return null;
     }
 
-    showModal(event: any) {
+    showModal = (event: any) => {
         event.preventDefault();
         this.setState({visible: true});
     }
 
     render() {
+        const { visible, props} = this.state;
 
-        if (this.state.visible === true) {
+        if (visible === true) {
             document.body.classList.add('modal-open');
         }
 
-        const content = this.state.visible
+        const content = visible
             ? <div className='modalWrap'>
                   <Modal
-                      visible={this.state.visible}
+                      visible={visible}
                       width='90%'
                       effect='fadeInUp'
-                      onClickAway={this.closeModal.bind(this)}
+                      onClickAway={this.closeModal}
                   >
                       <div className='modal-content'>
                           <div className='modal-header'>
                               <h4 className='modal-title'>{this.state.modalTitle}</h4>
-                              <button type='button' className='close' onClick={this.closeModal.bind(this)}>×</button>
+                              <button type='button' className='close' onClick={this.closeModal}>×</button>
                           </div>
                           <div className='modal-body'>
-                              {React.cloneElement(this.state.component, {closeModal: this.closeModal.bind(this)
-                                                                              ,render: this.changeContent.bind(this)
-                                                                              ,visible: this.state.visible
-                                                                              }
+                              {React.cloneElement(this.state.component, {closeModal: this.closeModal
+                                                                        ,render: this.changeContent
+                                                                        ,visible
+                                                                        }
                               )}
                           </div>
                       </div>
@@ -82,12 +85,12 @@ export default class ModalWindow extends React.Component<any, any> {
               </div>
             : <div></div>;
 
-        const copyToClipboard = !this.state.props.copyToClipboard ? '' :
-            <CopyToClipboard text={this.state.props.text} />;
+        const copyToClipboard = !props.copyToClipboard ? '' :
+            <CopyToClipboard text={props.text} />;
 
         return (
             <div>
-                <a href='#' onClick={this.showModal.bind(this)} className={this.state.props.customClass} title={this.state.props.text}>{this.state.props.text}</a>
+                <a href='#' onClick={this.showModal} className={props.customClass} title={props.text}>{props.text}</a>
                 {copyToClipboard}
                 {content}
             </div>

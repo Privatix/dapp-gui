@@ -62,11 +62,13 @@ class ActiveConnection extends React.Component<any, any>{
             {
                 header: t('ContractStatus'),
                 key: 'contractStatus',
+                dataProps: {className: 'text-center'},
                 render: (status) => { return <ContractStatus contractStatus={status}/>; }
             },
             {
                 header: t('ServiceStatus'),
                 key: 'serviceStatus',
+                dataProps: {className: 'text-center'},
                 render: (status) => { return <ChannelStatus serviceStatus={status}/>; }
             },
             {
@@ -77,12 +79,12 @@ class ActiveConnection extends React.Component<any, any>{
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: ([channelId, serviceStatus, usage]) => { return <Usage usage={usage} channelId={channelId} channelStatus={serviceStatus} mode='unit' />; }
+                render: ([channelId, usage]) => { return <Usage usage={usage} channelId={channelId} mode='unit' />; }
             },
             {
                 header: t('CostPRIX'),
                 key: 'costPRIX',
-                render: ([channelId, serviceStatus, usage]) => { return <Usage usage={usage} channelId={channelId} channelStatus={serviceStatus} mode='prix' />; }
+                render: ([channelId, usage]) => { return <Usage usage={usage} channelId={channelId} mode='prix' />; }
             }
         ];
     }
@@ -118,8 +120,8 @@ class ActiveConnection extends React.Component<any, any>{
                 contractStatus: channel.channelStatus.channelStatus,
                 serviceStatus: channel.channelStatus.serviceStatus,
                 jobStatus: [channel.job.jobtype, jobStatus, jobTime],
-                usage: [channel.id, channel.channelStatus.serviceStatus, channel.usage],
-                costPRIX: [channel.id, channel.channelStatus.serviceStatus, channel.usage],
+                usage: [channel.id, channel.usage],
+                costPRIX: [channel.id, channel.usage],
                 // costPRIX: toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})
             };
         });

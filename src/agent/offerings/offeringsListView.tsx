@@ -6,17 +6,16 @@ import Offering from './offering';
 import Product from 'agent/products/product';
 
 import OfferingStatus from 'common/badges/offeringStatus';
-import MessageStatus from 'common/badges/messageStatus';
 
 import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import ModalWindow from 'common/modalWindow';
 
 import { Product as ProductType } from 'typings/products';
-import { Offering as OfferingType} from 'typings/offerings';
+import { ResolvedOffering } from 'typings/offerings';
 
 interface IProps {
     products: ProductType[];
-    offerings: OfferingType[];
+    offerings: ResolvedOffering[];
     t?: any;
 }
 
@@ -24,24 +23,30 @@ interface IProps {
 class OfferingsListView extends React.Component<IProps, any> {
 
     render() {
+        const { t, products } = this.props;
+        const offerings = this.props.offerings
+            .filter(o => o.offerStatus !== 'removed');
 
-        const { t, products, offerings } = this.props;
-
-        const offeringsDataArr = [];
-
-        offerings.map((offering: any) => {
-            let product = products.filter((product: any) => product.id === offering.product)[0];
-            let row = {
-                hash: <ModalWindow customClass='shortTableText' modalTitle={t('Offering')} text={'0x' + offering.hash} copyToClipboard={true} component={<Offering offering={offering} />} />,
+        const offeringsDataArr = offerings.map(offering => {
+            const product = products.filter(product => product.id === offering.product)[0];
+            return {
+                hash: <ModalWindow customClass='shortTableText'
+                                   modalTitle={t('Offering')}
+                                   text={'0x' + offering.hash}
+                                   copyToClipboard={true}
+                                   component={<Offering offering={offering} />}
+                      />,
                 serviceName: offering.serviceName,
-                server: <ModalWindow customClass='' modalTitle={t('ServerInfo')} text={offering.productName} component={<Product product={product} />} />,
-                status: offering.status,
+                server: <ModalWindow customClass=''
+                                     modalTitle={t('ServerInfo')}
+                                     text={offering.productName}
+                                     component={<Product product={product} />}
+                        />,
                 offerStatus: offering.offerStatus,
                 availableSupply: offering.currentSupply,
                 supply: offering.supply
             };
 
-            offeringsDataArr.push(row);
         });
 
         const columns = [
@@ -60,13 +65,6 @@ class OfferingsListView extends React.Component<IProps, any> {
                 header: t('Server'),
                 key: 'server',
                 sortable: false
-            },
-            {
-                header: t('MessageStatus'),
-                key: 'status',
-                headerStyle: {textAlign: 'center'},
-                dataProps: {className: 'text-center'},
-                render: (status) => { return <MessageStatus status={status} />; }
             },
             {
                 header: t('Status'),

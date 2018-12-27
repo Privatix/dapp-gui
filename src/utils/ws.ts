@@ -1,9 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
+import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
 import {TemplateType} from 'typings/templates';
-import {OfferStatus, Offering} from 'typings/offerings';
+import {OfferStatus, Offering, ResolvedOffering} from 'typings/offerings';
 import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
@@ -32,29 +33,42 @@ export class WS {
 
     private socket: WebSocket;
     private pwd: string;
+    private token: string;
     private ready: Promise<boolean>;
+    authorized: boolean = false;
 //    private reject: Function = null;
     private resolve: Function = null;
 
     constructor(endpoint: string) {
 
+        this.reconnect(endpoint);
+
+    }
+
+    reconnect(endpoint: string) {
+
         const socket = new WebSocket(endpoint);
-        this.ready = new Promise((resolve: Function, reject: Function) => {
-            // this.reject = reject;
-            this.resolve = resolve;
-        });
+        if(!this.resolve){
+            this.ready = new Promise((resolve: Function, reject: Function) => {
+                // this.reject = reject;
+                this.resolve = resolve;
+            });
+        }
+
         socket.onopen = () => {
           console.log('Connection established.');
           this.resolve(true);
+          this.resolve = null;
         };
 
-        socket.onclose = function(event: any) {
+        socket.onclose = (event: any) => {
             if (event.wasClean) {
                 console.log('Connection closed.');
             } else {
                 console.log('Connection interrupted.');
             }
             console.log('Code: ' + event.code + ' reason: ' + event.reason);
+            this.reconnect(endpoint);
         };
 
         socket.onmessage = function(event: any) {
@@ -89,7 +103,7 @@ export class WS {
         this.socket = socket;
     }
 
-    whenReady(){
+    whenReady() {
         return this.ready;
     }
 
@@ -100,7 +114,7 @@ export class WS {
                 jsonrpc: '2.0',
                 id: uuid,
                 method: 'ui_subscribe',
-                params: ['objectChange', this.pwd, entityType, ids]
+                params: ['objectChange', this.token, entityType, ids]
             };
             WS.subscriptions[uuid] = () => {
                 WS.listeners[uuid] = handler;
@@ -108,6 +122,27 @@ export class WS {
             };
             this.socket.send(JSON.stringify(req));
         }) as Promise<string>;
+    }
+
+    on(testRequest: Function, currentResult: any, handler: Function){
+
+        const state = { id: null};
+
+        const tester = async () => {
+            const result = await testRequest();
+            if(isEqual(result, currentResult)){
+                state.id = setTimeout(tester, 1000);
+            }else {
+                handler();
+            }
+        };
+
+        tester();
+
+        return () => {
+            clearTimeout(state.id);
+        };
+
     }
 
     unsubscribe(id: string){
@@ -143,7 +178,7 @@ export class WS {
     send(method: string, params: any[] = []){
 
         const uuid = uuidv4();
-        params.unshift(this.pwd);
+        params.unshift(this.token);
         const req = {
             jsonrpc: '2.0',
             id: uuid,
@@ -171,6 +206,29 @@ export class WS {
 
 // auth
 
+    getToken(){
+        const uuid = uuidv4();
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_getToken',
+            params: [this.pwd]
+        };
+
+        return new Promise((resolve: Function, reject: Function) => {
+            const handler = function(res: any){
+                if('error' in res){
+                    reject(res.error);
+                }else{
+                    resolve(res.result);
+                }
+            };
+
+            WS.handlers[uuid] = handler;
+            this.socket.send(JSON.stringify(req));
+        });
+    }
+
     setPassword(pwd: string){
         const uuid = uuidv4();
 
@@ -184,30 +242,31 @@ export class WS {
         this.pwd = pwd;
 
         return new Promise((resolve: Function, reject: Function) => {
+            const updateToken = () => {
+                this.getToken()
+                    .then(token => {
+                        if(token){
+                            this.token = token as any;
+                            this.authorized = true;
+                            resolve(true);
+                        }else{
+                            reject(false);
+                        }
+                    })
+                    .catch(err => {
+                        reject(err);
+                    });
+            };
             const handler = (res: any) => {
-                if('error' in res){
-                    if(res.error.message.indexOf('password exists') === -1){
-                        reject(res.error);
-                    }else{
-                        this.getProducts()
-                            .then(products => {
-                                resolve(true);
-                            })
-                            .catch(err => {
-                                reject(err);
-                            });
-                    }
+                if('error' in res && res.error.message.indexOf('password exists') === -1){
+                    reject(res.error);
                 }else{
-                    resolve(res.result);
+                    updateToken();
                 }
             };
             WS.handlers[uuid] = handler;
             this.socket.send(JSON.stringify(req));
         });
-    }
-
-    updatePassword(pwd: string){
-        return this.send('ui_setPassword', [pwd]);
     }
 
 // accounts
@@ -228,7 +287,7 @@ export class WS {
             jsonrpc: '2.0',
             id: uuid,
             method: 'ui_importAccountFromHex',
-            params: [this.pwd, payload]
+            params: [this.token, payload]
         };
 
         this.socket.send(JSON.stringify(req));
@@ -242,7 +301,7 @@ export class WS {
             jsonrpc: '2.0',
             id: uuid,
             method: 'ui_importAccountFromJSON',
-            params: [this.pwd, payload, key, pwd]
+            params: [this.token, payload, key, pwd]
         };
 
         this.socket.send(JSON.stringify(req));
@@ -256,7 +315,7 @@ export class WS {
             jsonrpc: '2.0',
             id: uuid,
             method: 'ui_exportPrivateKey',
-            params: [this.pwd, accountId]
+            params: [this.token, accountId]
         };
 
         this.socket.send(JSON.stringify(req));
@@ -320,7 +379,7 @@ export class WS {
         return this.getObject('offering', id) as Promise<Offering>;
     }
 
-    async fetchOfferingsAndProducts(productId: string, statuses: OfferStatus[]){
+    async fetchOfferingsAndProducts(productId: string, statuses: OfferStatus[]): Promise<{offerings: ResolvedOffering[], products: Product[]}> {
 
         let offerings = [];
         const products = await this.getProducts();
@@ -355,6 +414,14 @@ export class WS {
 
     getClientOfferingsFilterParams() {
         return this.send('ui_getClientOfferingsFilterParams');
+    }
+
+    getObjectByHash(type: 'offering', hash: string) : Promise<OfferingResponse> {
+        return this.send('ui_getObjectByHash', [type, hash]) as Promise<OfferingResponse>;
+    }
+
+    pingOfferings(offeringsIds: Array<string>) {
+        return this.send('ui_pingOfferings', [offeringsIds]);
     }
 
 // sessions

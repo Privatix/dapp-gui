@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
+
 import Steps from './steps';
 import {PreviousButton, NextButton, back} from './utils';
-import notice from '../../utils/notice';
-import * as api from '../../utils/api';
+import notice from 'utils/notice';
+import * as api from 'utils/api';
 
 @translate(['auth/generateKey', 'auth/setAccount', 'utils/notice'])
 class GenerateKey extends React.Component<any, any>{

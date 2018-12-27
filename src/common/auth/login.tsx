@@ -1,11 +1,12 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import * as api from '../../utils/api';
 import { connect } from 'react-redux';
 
+import { registerBugsnag } from 'utils/bugsnag';
+import * as api from 'utils/api';
 import { WS } from 'utils/ws';
-import notice from 'utils/notice';
-import i18n from 'i18next/init';
+import {default as notice, closeNotice } from 'utils/notice';
+import { translate } from 'react-i18next';
 import handlers from 'redux/actions';
 import {State} from 'typings/state';
 
@@ -15,7 +16,10 @@ interface Props {
     t?: any;
 }
 
+@translate('login', 'utils/notice')
 class Login extends React.Component<any, any> {
+
+    private submitted = false;
 
     constructor(props: any) {
         super(props);
@@ -31,14 +35,18 @@ class Login extends React.Component<any, any> {
     }
 
     async handleKeyPress(evt: any) {
-        if (evt.keyCode === 13) {
+        if (evt.keyCode === 13 && !this.submitted) {
+            this.submitted = true;
             await this.login();
         }
     }
 
     async onSubmit(evt: any){
         evt.preventDefault();
-        await this.login();
+        if(!this.submitted){
+            this.submitted = true;
+            await this.login();
+        }
     }
 
     pwdIsCorrect(pwd: string){
@@ -46,24 +54,29 @@ class Login extends React.Component<any, any> {
     }
 
     async login() {
+
         const pwd = this.state.password.trim();
+        const { t } = this.props;
 
         if (this.pwdIsCorrect(pwd)) {
             const settings = await api.settings.getLocal();
             const ws = new WS(settings.wsEndpoint);
+            notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 0);
             const ready = await ws.whenReady();
-
+            closeNotice();
             if (ready) {
                 try {
                     await ws.setPassword(pwd);
                     // TODO notice if server returns error (not implemented on dappctrl yet)
                     (window as any).ws = ws;
+                    registerBugsnag(ws);
                     this.props.dispatch(handlers.setWS(ws));
                     const role = await ws.getUserRole();
                     this.props.dispatch(handlers.setMode(role));
                     this.props.history.push(this.props.entryPoint);
                 } catch(e) {
-                    notice({level: 'error', header: i18n.t('utils/notice:Attention!'), msg: i18n.t('login:AccessDenied')});
+                    notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
+                    this.submitted = false;
                 }
             } else {
                 // TODO
@@ -80,6 +93,8 @@ class Login extends React.Component<any, any> {
 
     render(){
 
+        const { t } = this.props;
+
         const LoginButton = () => <button
             className='btn btn-pink btn-block text-uppercase waves-effect waves-light'
             type='button'
@@ -90,12 +105,12 @@ class Login extends React.Component<any, any> {
               }
             }
           >
-            {i18n.t('login:Login')}
+            {t('Login')}
           </button>;
 
         return <div className='card-box'>
             <div className='panel-heading'>
-                <h4 className='text-center'> {i18n.t('login:LoginTo')} <strong className='text-custom'>Privatix</strong></h4>
+                <h4 className='text-center'> {t('LoginTo')} <strong className='text-custom'>Privatix</strong></h4>
             </div>
             <div className='p-20'>
                 <form className='form-horizontal m-t-20' onSubmit={this.onSubmit.bind(this)}>
@@ -105,7 +120,7 @@ class Login extends React.Component<any, any> {
                                    type='password'
                                    id='pwd'
                                    required={true}
-                                   placeholder={i18n.t('login:Password')}
+                                   placeholder={t('Password')}
                                    onChange={this.changePwd.bind(this)} />
                         </div>
                     </div>

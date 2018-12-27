@@ -11,12 +11,16 @@ import parseFloatPrix from 'utils/parseFloatPrix';
 import {LocalSettings} from 'typings/settings';
 import countries from 'utils/countries';
 import GasRange from 'common/etc/gasRange';
+import ExternalLink from 'common/etc/externalLink';
 
 import * as ubold from 'css/index.cssx';
 // import * as styles from './index.css';
 
 import { WS } from 'utils/ws';
+
 import { State } from 'typings/state';
+import { Account } from 'typings/accounts';
+import { Product } from 'typings/products';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -31,12 +35,12 @@ interface IProps {
     closeModal?: Function;
     location?: any;
     history?: any;
+    accounts?: Account[];
+    products?: Product[];
 }
 
 @translate(['offerings/createOffering', 'common', 'utils/notice'])
 class CreateOffering extends React.Component<IProps, any>{
-
-    private handlerId =  null;
 
     static defaultState = {
         payload: {
@@ -48,7 +52,7 @@ class CreateOffering extends React.Component<IProps, any>{
            ,unitType: 'units'
            ,unitPrice: ''
            ,billingType: 'prepaid'
-           ,maxBillingUnitLag: ''
+           ,maxBillingUnitLag: 70
            ,minUnits: ''
            ,maxUnit: ''
            ,maxSuspendTime: ''
@@ -70,7 +74,7 @@ class CreateOffering extends React.Component<IProps, any>{
         return state;
     }
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
         this.state = this.getDefaultState();
     }
@@ -79,42 +83,27 @@ class CreateOffering extends React.Component<IProps, any>{
         this.refresh();
     }
 
-    startRefreshAccount(){
-        this.handlerId = setTimeout(this.refreshAccount, 2000);
-    }
+    static getDerivedStateFromProps(props: IProps, state: any){
+        const { accounts } = props;
+        const account = accounts.find(state.account
+            ? account => account.id === state.account.id
+            : account => account.isDefault);
 
-    stopRefreshAccount(){
-        if (this.handlerId) {
-            clearTimeout(this.handlerId);
-            this.handlerId = null;
-        }
-    }
-
-    refreshAccount = async () => {
-        const account = await this.props.ws.getObject('account', this.state.account.id);
-        this.setState({account});
-        this.handlerId = setTimeout(this.refreshAccount, 2000);
-    }
-
-    componentWillUnmount(){
-        this.stopRefreshAccount();
+        return {account, accounts};
     }
 
     async refresh() {
-        const { ws } = this.props;
+        const { ws, accounts, products } = this.props;
 
-        const accounts = await ws.getAccounts();
-        const products = await ws.getProducts();
-        // TODO check products length
-        const account = accounts.find((account: any) => account.isDefault);
+        const account = accounts.find(account => account.isDefault);
 
         const payload = Object.assign({}, this.state.payload, {product: this.props.product
                                                                       ? this.props.product
                                                                       : products[0].id,
                                                                agent: account.id,
-                                                               country: products[0].country.toUpperCase()
+                                                               country: products[0].country ? products[0].country.toUpperCase() : ''
                                                               });
-        this.setState({products, accounts, account, payload}, this.startRefreshAccount);
+        this.setState({products, accounts, account, payload});
         const templates = await ws.getTemplate(products[0].offerTplID);
         const state = {
             payload: Object.assign({}, this.state.payload, {template: products[0].offerTplID}),
@@ -135,17 +124,18 @@ class CreateOffering extends React.Component<IProps, any>{
     }
 
     onAccountChanged(selectedAccount: any) {
-
-        const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
+        const account = this.state.accounts.find(account => account.id === selectedAccount.value);
         const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
         this.setState({account, payload});
-
     }
 
     onUserInput(evt: any){
 
         const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value, additionalParams: {}});
-        payload.deposit = (payload.supply ? 0 + payload.supply : 0) * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0) * (payload.minUnits ? payload.minUnits : 0);
+        payload.deposit = (payload.supply ? 0 + payload.supply : 0)
+                        * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0)
+                        * (payload.minUnits ? payload.minUnits : 0)
+                        ;
         this.setState({payload});
     }
 
@@ -337,7 +327,7 @@ class CreateOffering extends React.Component<IProps, any>{
             this.setState({errMsg: msg});
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }else{
-            payload.billingInterval = 1;
+            payload.billingInterval = 20;
             payload.billingType = 'postpaid';
             payload.additionalParams = {};
 
@@ -399,14 +389,14 @@ class CreateOffering extends React.Component<IProps, any>{
             value={this.state.payload.product}
             searchable={false}
             clearable={false}
-            options={this.state.products.map((product: any) => ({value: product.id, label: product.name})) }
+            options={this.state.products.map(product => ({value: product.id, label: product.name})) }
             onChange={this.onProductChanged.bind(this)} />;
 
         const selectAccount =  <Select className='form-control'
             value={this.state.payload.agent}
             searchable={false}
             clearable={false}
-            options={this.state.accounts.map((account:any) => ({value: account.id, label: account.name}))}
+            options={this.state.accounts.map(account => ({value: account.id, label: account.name}))}
             onChange={this.onAccountChanged.bind(this)} />;
             // {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
 
@@ -544,7 +534,17 @@ class CreateOffering extends React.Component<IProps, any>{
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
                                         <span className='help-block'>
-                                            <small>{t('MaximumPaymentLagInUnits')}</small>
+                                            <small>
+                                                <strong>{t('Attention') + ' '}</strong>
+                                                {t('MaximumPaymentLagInUnits') + ' '}
+                                                <Trans i18nKey='MaxBillingUnitLagHelpLink'>
+                                                    Do not change, if you do not understand
+                                                    <ExternalLink
+                                                        className='btn btn-link btnLinkSmallCustom'
+                                                        href={'https://privatix.atlassian.net/wiki/spaces/BVP/pages/603848732/Max.+billing+unit+lag'}
+                                                    >how to calculate max. billing unit lag</ExternalLink>
+                                                </Trans>
+                                            </small>
                                         </span>
                                     </div>
                                 </div>
@@ -572,6 +572,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
+                                                   placeholder={t('unlimited')}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxUnit'
                                                    value={this.state.payload.maxUnit}
@@ -732,5 +733,5 @@ class CreateOffering extends React.Component<IProps, any>{
 
 // export default withRouter(CreateOffering);
 export default connect( (state: State, onProps: IProps) => {
-    return (Object.assign({}, {ws: state.ws}, onProps));
+    return (Object.assign({}, {ws: state.ws, accounts: state.accounts, products: state.products}, onProps));
 } )(withRouter(CreateOffering));

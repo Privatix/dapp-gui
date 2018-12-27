@@ -35,9 +35,11 @@ class AgentAccessInfo extends React.Component <any, any> {
     }
 
     render() {
-        const { t } = this.props;
 
-        if (!this.state.offering || !this.state.product) {
+        const { t } = this.props;
+        const { offering, product } = this.state;
+
+        if (!offering || !product) {
             return <div></div>;
         }
 
@@ -46,11 +48,11 @@ class AgentAccessInfo extends React.Component <any, any> {
                 <tbody>
                 <tr>
                     <td>{t('Country')}</td>
-                    <td><img src={`images/country/${this.state.offering.country.toLowerCase()}.png`} width='30px'/></td>
+                    <td><img src={`images/country/${offering.country.toLowerCase()}.png`} width='30px'/></td>
                 </tr>
                 <tr>
                     <td>{t('Hostname')}</td>
-                    <td>{this.state.product.serviceEndpointAddress ? this.state.product.serviceEndpointAddress : ''}</td>
+                    <td>{product.serviceEndpointAddress ? product.serviceEndpointAddress : ''}</td>
                 </tr>
                 </tbody>
             </table>

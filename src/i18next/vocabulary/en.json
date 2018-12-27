@@ -83,6 +83,7 @@
         "Offerings": "Offerings"
     },
     "offerings/createOffering": {
+        "Attention": "Attention!",
         "Server": "Server",
         "GeneralInfo": "General info",
         "Name": "Name",
@@ -101,6 +102,7 @@
         "PricePerMB": "Price per MB",
         "MaxBillingUnitLag": "Max billing unit lag",
         "MaximumPaymentLagInUnits" : "Maximum payment lag in units after which Agent will suspend service usage.",
+        "MaxBillingUnitLagHelpLink": "Do not change, if you do not understand <1>how to calculate max. billing unit lag</1>",
         "MinUnits": "Min units",
         "UsedToCalculateMinimumDeposit": "Used to calculate minimum deposit required.",
         "MaxUnits": "Max units",
@@ -147,7 +149,8 @@
         "cantBeEmpty": "can't be empty.",
         "cantBeEmpty_plural": "can't be empty.",
         "MaxSuspendTimeMustBeMoreOrEquals10Min": "Maximum suspend time must be equals or more than 10 min.",
-        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Maximum inactive time must be equals or more than 10 min."
+        "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Maximum inactive time must be equals or more than 10 min.",
+        "unlimited": "unlimited"
     },
     "offerings/offeringTools":{
         "WarningArea": "Warning area",
@@ -174,7 +177,6 @@
         "Hash": "Hash",
         "ServiceName": "Service name",
         "Server": "Server",
-        "MessageStatus": "Message status",
         "Status": "Status",
         "AvailableSupply": "Available supply",
         "Supply": "Supply"
@@ -264,7 +266,6 @@
         "SwitchToAgent": "Switch to Agent",
         "Settings": "Settings",
         "Logs": "Logs",
-        "user": "user",
         "SomethingWentWrong": "Something went wrong!",
         "UserWasSwitchedToAGENT": "User mode was successfully switched to AGENT",
         "UserWasSwitchedToCLIENT": "User mode was successfully switched to CLIENT"
@@ -376,6 +377,7 @@
         "AreYouSure": "Are you sure?"
     },
     "client/dashboard/connecting": {
+        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the VPN.",
         "TheServiceHasAPendingStatus": "The service has a pending status. After the connection is ready, you can start using the VPN",
         "TheServiceHasAnActivatingStatus": "The service has an activating status. After the connection is ready, you can start using the VPN",
         "TheServiceHasASuspendingStatus": "The service has a suspending status. After connections is suspended, you can resume or terminate it.",
@@ -394,7 +396,6 @@
         "AfterMaxInactivityTimeHasBeenReached": "After max. inactivity time has been reached, \"Finish procedure\" will be called automatically.",
         "Resume": "Resume",
         "YesResumeIt": "Yes, resume it!",
-        "min": "min",
         "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. IP address {{ip}}",
         "CountryAlertUnknown": "The application won't be able to detect the offering's country. IP address {{ip}}"
     },
@@ -408,6 +409,7 @@
         "ActiveOfferings": "Active offerings"
     },
     "client/vpnList": {
+        "Availability": "Availability",
         "Block": "Block",
         "Hash": "Hash",
         "Agent": "Agent",
@@ -425,6 +427,7 @@
         "TakesTimeOnFirstRun": "It takes time only on the first run.",
         "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
         "Refresh": "Refresh",
+        "CheckAvailability": "Check availability",
         "AgentAddress": "Agent address",
         "OfferingHash": "Offering hash",
         "PriceFilter": "Price (PRIX/MB):",
@@ -440,6 +443,7 @@
         "DepositMustBeLessOrEqualThan": "The deposit must be less or equal than",
         "NotEnoughPrixForDeposit": "Not enough PRIXes for deposit. Please, select another account.",
         "NotEnoughToPublishTransaction": "Not enough funds for publish transaction. Please, select another account.",
+        "ErrorAcceptingOffering": "Something went wrong. Try to accept another offering!",
         "OfferingAccepted": "Offering accepted!",
         "VPNInfo": "VPN info",
         "Country": "Country:",
@@ -449,13 +453,16 @@
         "MaxInactiveTime": "Max inactive time:",
         "sec": "sec",
         "min": "min",
+        "MinUnitsText": "Agent expects to sell at least this amount of service.",
+        "MaxUnitsText": "Agent will sell at most this amount of service.",
         "MaxTimeWithoutServiceSmallText": "Maximum time without service usage. Agent will consider that Client will not use service and stop providing it. Period is specified in minutes.",
         "PayInfo": "Pay info:",
         "Account": "Account:",
         "Balance": "Balance:",
         "Deposit": "Deposit:",
         "UnusedPrixWillBeReturnedSmallText": "After the end of using, the unused PRIX will be returned.",
-        "AcceptancePrice": "Acceptance Price:"
+        "AcceptancePrice": "Acceptance Price:",
+        "unlimited": "unlimited"
     },
     "client/history": {
         "Service": "Service",
@@ -599,7 +606,8 @@
         "Login": "Login",
         "LoginTo": "Login to",
         "Password": "Password",
-        "AccessDenied": "access denied, possibly wrong password"
+        "AccessDenied": "access denied, possibly wrong password",
+        "TryToConnect": "connection attempt ..."
     },
     "settings": {
         "Success": "Changes has been successfully saved.",
@@ -644,7 +652,7 @@
         "psc_periods_challenge_Description": "Number of blocks to be mined to finish uncooperative channel close",
         "psc_periods_popup_Description": "Number of blocks to be mined to repeatedly pop up an offering",
         "psc_periods_remove_Description": "Number of blocks to be mined from last offering update in blockchain to remove offering",
-        "client_somc_transports_Description": "Offering with what SOMC type to display."
+        "client_somc_transports_Description": "This setting defines what SOMC type should be used to display Offering"
     },
     "copyToClipboard": {
         "Copied": "Copied!",
@@ -692,5 +700,8 @@
         "accountUpdateBalances" : "check and update account balance info",
         "decrementCurrentSupply": "decrement offering current supply",
         "incrementCurrentSupply": "increment offering current supply"
+    },
+    "updateInformer": {
+        "announcement": "<0>New version {{name}} was released.</0>"
     }
 }

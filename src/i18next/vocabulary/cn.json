@@ -3,7 +3,8 @@
     "common": {
         "RefreshAll": "全部刷新",
         "Refresh": "刷新",
-        "Select": "选择"
+        "Select": "选择",
+        "NoResults": "未找到符合您的请求的任何内容。请修改筛选选项！"
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "选择语言",
@@ -89,8 +90,7 @@
         "Description": "描述",
         "description": "描述",
         "Country": "国家/地区",
-        "ChangeCountryHelpTextPart1": "要更改国家/地区，必须转到",
-        "ChangeCountryHelpTextPart2": "页面",
+        "ChangeCountryHelpText": "要更改国家/地区，您必须转到<1>服务器</1>页面",
         "ChangeCountryHelpTextServers": "服务器",
         "Supply": "供应",
         "ie": "例如",
@@ -100,16 +100,16 @@
         "UnitType": "单位类型",
         "PricePerMB": "价格/MB",
         "MaxBillingUnitLag": "最大计费单位延迟",
-        "MaximumPaymentLagInUnits": "单位的最大付款延迟，超出此值后代理将暂停服务使用。",
+        "MaximumPaymentLagInUnits": "单位的最大付款延迟，超出此值后代理将挂起服务使用。",
         "MinUnits": "最小单位数",
         "UsedToCalculateMinimumDeposit": "用于计算所需的最低押金。",
         "MaxUnits": "最大单位数",
         "UsedToSpecifyMaximumUnits": "用于指定将供应的最大服务单位数。可以为空。",
         "ConnectionInfo": "连接信息",
-        "MaxSuspendTime": "最长暂停时间",
+        "MaxSuspendTime": "最长挂起时间",
         "sec": "秒",
         "min": "分钟",
-        "MaximumTimeServiceCan": "因付款延迟服务可处于暂停状态的最长时间。",
+        "MaximumTimeServiceCan": "因付款延迟服务可处于挂起状态的最长时间。",
         "AfterThisTimePeriodService": "如果未收到足额付款，该期限过后服务将被终止。",
         "PeriodIsSpecifiedInMinutes": "以分钟为单位指定期限。最短期限 - 10 分钟。",
         "MaxInactiveTime": "最长非活动时间",
@@ -146,16 +146,21 @@
         "haveNegativeValue_plural": "的值为负。",
         "cantBeEmpty": "不能为空。",
         "cantBeEmpty_plural": "不能为空。",
-        "MaxSuspendTimeMustBeMoreOrEquals10Min": "最长暂停时间必须大于或等于 10 分钟。",
+        "MaxSuspendTimeMustBeMoreOrEquals10Min": "最长挂起时间必须大于或等于 10 分钟。",
         "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "最长非活动时间必须大于或等于 10 分钟。"
     },
     "offerings/offeringTools": {
         "WarningArea": "警告区域",
         "Popup": "弹出",
         "Remove": "移除",
+        "SomethingWentWrong": "出现错误。请稍后再试！",
         "popupInfo": "此操作将告知客户端您的产品真实存在，从而增加成交机会。",
-        "popupInfoDisabled": "在质疑期满前，您将无法弹出产品。质疑期的持续时间约为 {{min}} 分钟。",
-        "removeInfo": "此操作将永久移除产品。系统将退还您的押金。客户端将无法再接受该产品。只有当产品在过去 {{minutes}} 分钟内处于非活动状态时才可以将其移除。",
+        "popupInfoDisabled": "在质疑期满前，您将无法弹出产品。质疑期的持续时间约为 {{min}} 分钟（{{blocks}} 个区块）。",
+        "popupNotice": "您的弹出产品请求已预定。在交易获得批准后，系统将处理该产品请求。",
+        "removeInfo": "此操作将永久移除产品。您将收到自己的押金。客户端将无法再接受该产品。",
+        "removeInfoDisabled": "只有在创建或弹出后经过 {{blocks}} 个区块（约 {{minutes}} 分钟），才能移除该产品。",
+        "lastAction": "最后一个操作已在 {{lastAction}} 个区块（约 {{lastActionMinutes}} 分钟）之前执行。",
+        "lastActionPopup": "最后一个操作已在 {{lastAction}} 个区块之前执行。",
         "YesPopUpIt": "是的，弹出！",
         "YesRemoveIt": "是的，移除！",
         "WouldYouLikeToProceed": "是否继续？",
@@ -166,6 +171,7 @@
     "offerings/offeringsList": {
         "Offering": "产品",
         "ServerInfo": "服务器信息",
+        "Hash": "哈希",
         "ServiceName": "服务名称",
         "Server": "服务器",
         "MessageStatus": "消息状态",
@@ -287,6 +293,27 @@
         "Attention!": "注意！",
         "Congratulations!": "祝贺您！"
     },
+    "logs/logsList": {
+        "LogsHeader": "日志列表",
+        "ExportBtn": "导出到文件",
+        "LogsFilterFrom": "开始日期：",
+        "LogsFilterTo": "结束日期：",
+        "LogsFilterTime": "时间",
+        "LogsSearchPlaceholder": "例如失败",
+        "NowBtn": "现在",
+        "Level": "级别",
+        "Date": "日期",
+        "Message": "消息",
+        "Context": "上下文",
+        "Stack": "堆栈",
+        "ShowBtn": "显示",
+        "StackTrace": "堆栈跟踪：",
+        "WarningDateMessage": "请勿选择 5 天以上日志。这可能需要很长时间！"
+    },
+    "logs/logsContext": {
+        "Key": "键",
+        "Value": "值"
+    },
     "accounts/accountsList": {
         "Title": "帐户",
         "CreateBtn": "创建帐户",
@@ -349,16 +376,19 @@
         "AreYouSure": "是否确定？"
     },
     "client/dashboard/connecting": {
+        "TheServiceHasAPendingStatus": "该服务处于待定状态。在连接准备就绪后，即可开始使用 VPN",
+        "TheServiceHasAnActivatingStatus": "该服务处于激活状态。在连接准备就绪后，即可开始使用 VPN",
+        "TheServiceHasASuspendingStatus": "该服务处于挂起状态。在连接挂起后，您可以恢复或终止连接。",
+        "TheServiceHasATerminatingStatus": "该服务处于终止状态。在连接终止后，合同也可以终止。",
         "WaitingTimeIsOver": "等待时间结束。将自动调用完成过程。",
         "FailedToAcceptOffering": "无法接受该产品，请尝试其他产品。",
-        "AfterTheConnectionIsReady": "连接准备就绪后，即可开始使用 VPN。",
         "Synchronizing": "正在同步",
         "YouCanStartUsingVPN": "您可以开始使用 VPN",
         "Connect": "连接",
         "YesConnectIt": "是的，连接！",
         "Pause": "暂停",
         "ThisOperationWillPauseVPNUsage": "此操作将暂停 VPN 使用。",
-        "ForThisContractMaxSuspendTimeIs": "此合同的最大暂停时间为 {{minutes}} 分钟。",
+        "ForThisContractMaxSuspendTimeIs": "此合同的最大挂起时间为 {{minutes}} 分钟。",
         "YesPauseIt": "是的，暂停！",
         "Remaining": "剩余",
         "AfterMaxInactivityTimeHasBeenReached": "达到最长非活动时间后，将自动调用“完成程序”。",
@@ -380,6 +410,7 @@
     "client/vpnList": {
         "Block": "区块",
         "Hash": "哈希",
+        "Agent": "代理",
         "Country": "国家/地区",
         "Price": "价格 (PRIX/MB)",
         "SupplyTotal": "供应（总计）",
@@ -395,9 +426,12 @@
         "AverageTimeForDownloading": "平均下载时间约为 2-5 分钟。",
         "Refresh": "刷新",
         "AgentAddress": "代理地址",
+        "OfferingHash": "产品哈希",
         "PriceFilter": "价格 (PRIX/MB)：",
         "From": "从",
-        "To": "到"
+        "To": "到",
+        "ClearOfferingHashToUseOtherFilters": "您必须清除产品哈希字段才能使用其他筛选器",
+        "ResetFilters": "重置筛选"
     },
     "client/acceptOffering": {
         "Accept": "接受",
@@ -424,7 +458,6 @@
         "AcceptancePrice": "接受价格："
     },
     "client/history": {
-        "SuccessfullyRefreshed": "页面已成功刷新！",
         "Service": "服务",
         "of": "/",
         "Id": "ID",
@@ -435,7 +468,6 @@
         "Usage": "使用量",
         "CostPRIX": "成本 (PRIX)",
         "LastUsed": "上次使用",
-        "Refresh": "刷新",
         "AwaitForTerminate": "等待终止",
         "History": "历史记录"
     },
@@ -528,7 +560,8 @@
         "IncreaseBtn": "增加",
         "SuccessMessage": "增加押金已成功初始化！",
         "SomethingWentWrong": "出现错误。请稍后再试！",
-        "ErrorNotEnoughPublishFunds": "资金不足，无法发布交易。"
+        "ErrorNotEnoughPublishFunds": "资金不足，无法发布交易。",
+        "ErrorNotEnoughPRIX": "没有足够的 PRIX 来增加押金。"
     },
     "electronMenu": {
         "File": "文件",
@@ -569,6 +602,9 @@
         "AccessDenied": "访问被拒绝，密码可能错误"
     },
     "settings": {
+        "Success": "更改已成功保存。",
+        "Error": "保存时出错。请检查输入的数据。",
+        "Save": "保存",
         "Settings": "设置",
         "Name": "名称",
         "Value": "值",
@@ -586,6 +622,11 @@
         "eth_event_lastProcessedBlock_Name": "最后处理的区块",
         "offering_autopopup_Name": "自动弹出产品",
         "system_version_app_Name": "应用程序版本",
+        "somc_transport_tor_Name": "使用 Tor",
+        "client_somc_transports_Name": "允许的 SOMC 传输",
+        "psc_periods_challenge_Name": "质疑期",
+        "psc_periods_popup_Name": "弹出期",
+        "psc_periods_remove_Name": "移除期",
         "error_sendremote_Description": "允许错误报告向 Privatix 发送日志。",
         "eth_challenge_period_Description": "在客户端作弊时为让代理有机会回复余额证明而在客户端发起 uncooperativeClose 后等待的区块数。质疑期过后，客户端可以结算并删除该通道。代理在删除服务产品和接收押金退款前要等待的 registerServiceOffering 或 createChannel 的区块数。",
         "eth_default_gasprice_Description": "交易的默认 GAS 价格。",
@@ -598,10 +639,58 @@
         "user_isagent_Description": "指定用户角色。 “true” - 代理。 “false” - 客户端。",
         "eth_event_lastProcessedBlock_Description": "区块链中的最后一个区块编号，用于存储最后处理的区块。",
         "offering_autopopup_Description": "允许产品自动弹出。",
-        "system_version_app_Description": "应用程序版本"
+        "system_version_app_Description": "应用程序版本",
+        "somc_transport_tor_Description": "完全去中心化的模式。如果为真，则在代理与客户端之间使用 Tor。将通过 Tor 检索产品和访问消息。通过中心化 SOMC 发布的消息将不可用。",
+        "psc_periods_challenge_Description": "要开采以完成非合作通道的区块数",
+        "psc_periods_popup_Description": "要开采以重复弹出产品的区块数",
+        "psc_periods_remove_Description": "自区块链中上次产品更新以来要开采以移除产品的区块数",
+        "client_somc_transports_Description": "具有要显示的 SOMC 类型的产品。"
     },
     "copyToClipboard": {
         "Copied": "已复制！",
         "Copy": "复制"
+    },
+    "jobName": {
+        "clientPreChannelCreate": "存入服务押金",
+        "clientAfterChannelCreate": "更新服务数据",
+        "clientPreChannelTopUp": "增加押金",
+        "clientAfterChannelTopUp": "更新押金",
+        "clientPreUncooperativeCloseRequest": "发送未结合同争议请求",
+        "clientAfterUncooperativeCloseRequest": "未结合同争议",
+        "clientPreUncooperativeClose": "在质疑期后拿回押金",
+        "clientAfterUnCooperativeClose": "完成争议与合同",
+        "clientAfterCooperativeClose": "完成合同",
+        "clientPreServiceSuspend": "挂起服务",
+        "clientPreServiceUnsuspend": "取消挂起服务",
+        "clientPreServiceTerminate": "永久停止使用服务",
+        "clientEndpointRestore": "获取服务访问",
+        "clientAfterOfferingMsgBCPublish": "获取产品数据",
+        "clientAfterOfferingPopUp": "更新产品位置",
+        "clientAfterOfferingDelete": "移除产品",
+        "completeServiceTransition": "完成服务转移",
+        "agentAfterChannelCreate": "创建服务条目",
+        "agentAfterUncooperativeCloseRequest": "对合同争议做出反应",
+        "agentAfterCooperativeClose": "完成合同",
+        "agentPreServiceSuspend": "挂起服务",
+        "agentPreServiceUnsuspend": "取消挂起服务",
+        "agentPreServiceTerminate": "关闭服务并请求提款",
+        "agentPreEndpointMsgCreate": "准备服务访问",
+        "agentPreEndpointMsgSOMCPublish": "发布服务访问消息",
+        "agentAfterEndpointMsgSOMCPublish": "激活服务",
+        "agentPreOfferingMsgBCPublish": "发送产品押金",
+        "agentAfterOfferingMsgBCPublish": "已存入产品押金",
+        "agentPreOfferingMsgSOMCPublish": "发布产品消息",
+        "agentPreOfferingDelete": "请求产品移除和退还押金",
+        "agentPreOfferingPopUp": "请求产品弹出",
+        "agentAfterOfferingPopUp": "完成产品弹出",
+        "agentAfterOfferingDelete": "完成产品移除",
+        "preAccountAddBalanceApprove": "批准将代币转移到服务帐户",
+        "preAccountAddBalance": "将余额添加到服务帐户",
+        "afterAccountAddBalance": "更新服务帐户上的余额",
+        "preAccountReturnBalance": "请求将代币转移到 ERC20 帐户",
+        "afterAccountReturnBalance": "更新 ERC20 帐户上的余额",
+        "accountUpdateBalances": "检查并更新帐户余额信息",
+        "decrementCurrentSupply": "递减产品当前供应",
+        "incrementCurrentSupply": "递增产品当前供应"
     }
 }

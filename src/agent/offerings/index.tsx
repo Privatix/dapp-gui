@@ -23,6 +23,7 @@ interface IProps {
 class Offerings extends React.Component<IProps, any>{
 
     private subscribes = [];
+    private stopPolling = null;
 
     constructor(props: IProps){
         super(props);
@@ -44,6 +45,10 @@ class Offerings extends React.Component<IProps, any>{
         await Promise.all(this.subscribes.map(subscribeId => ws.unsubscribe(subscribeId)));
         this.subscribes = [];
 
+        if(this.stopPolling){
+            this.stopPolling();
+            this.stopPolling = null;
+        }
     }
 
     refresh = async () => {
@@ -52,11 +57,14 @@ class Offerings extends React.Component<IProps, any>{
 
         await this.unsubscribe();
 
-        const {offerings, products} = await ws.fetchOfferingsAndProducts(product === 'all' ? '' : product, statuses);
+        const request = ws.fetchOfferingsAndProducts.bind(ws, product === 'all' ? '' : product, statuses);
+        const {offerings, products} = await request();
 
         this.subscribes = await Promise.all([/* ws.subscribe('product', products.map(product => product.id), this.refresh), */
                                              ws.subscribe('offering', offerings.map(offering => offering.id), this.refresh)
                                             ]);
+        this.stopPolling = ws.on(request, {offerings, products}, this.refresh);
+
         this.setState({offerings, products});
 
     }
