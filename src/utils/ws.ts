@@ -240,13 +240,10 @@ export class WS {
 
         this.pwd = pwd;
 
-
-
         return new Promise((resolve: Function, reject: Function) => {
             const updateToken = () => {
                 this.getToken()
                     .then(token => {
-                        console.log('TOKEN!!!', token);
                         if(token){
                             this.token = token as any;
                             resolve(true);
