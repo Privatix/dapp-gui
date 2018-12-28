@@ -80,7 +80,9 @@
     },
     "offerings/offerings": {
         "CreateOffering": "Create offering",
-        "Offerings": "Offerings"
+        "Offerings": "Offerings",
+        "ActiveOfferings": "Active offerings",
+        "HistoryOfferings": "History"
     },
     "offerings/createOffering": {
         "Attention": "Attention!",
