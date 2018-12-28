@@ -403,10 +403,6 @@ input:checked + .slider:before {
   color: #5fbeaa !important;
 }
 
-#sidebar-menu li[aria-current="page"] .sub_menu {
-  height: 114px;
-}
-
 .side-menu-sm #sidebar-menu > ul > li > div > a > i {
   display: block;
   font-size: 18px;
