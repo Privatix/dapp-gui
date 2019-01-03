@@ -2,7 +2,6 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 import { connect } from 'react-redux';
 import Pagination from 'react-js-pagination';
-import Slider from 'rc-slider';
 
 import './list.css';
 import 'rc-slider/assets/index.css';
@@ -18,6 +17,7 @@ import countryByIso from 'utils/countryByIso';
 
 import VPNListTable from './table';
 import SelectCountry from './selectCountry';
+import SelectByPrice from './selectByPrice';
 
 import {State} from 'typings/state';
 import { asyncProviders } from 'redux/actions';
@@ -189,7 +189,7 @@ class VPNList extends React.Component<any,any> {
         };
     }
 
-    changeMinPriceInput(evt:any) {
+    onChangeMinPrice = (evt:any): void => {
         let priceFrom = evt.target.value;
         if (priceFrom === '' || Number.isNaN(priceFrom) || (typeof priceFrom === 'undefined')) {
             priceFrom = this.state.from;
@@ -202,10 +202,10 @@ class VPNList extends React.Component<any,any> {
         }
         const priceTo = (document.getElementById('priceTo') as HTMLInputElement).value;
 
-        this.changeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
+        this.onChangeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
     }
 
-    changeMaxPriceInput(evt:any) {
+    onChangeMaxPrice = (evt:any):void => {
         let priceTo = evt.target.value;
         if (priceTo === '' || Number.isNaN(priceTo) || (typeof priceTo === 'undefined')) {
             priceTo = this.state.to;
@@ -217,10 +217,10 @@ class VPNList extends React.Component<any,any> {
         }
         const priceFrom = (document.getElementById('priceFrom') as HTMLInputElement).value;
 
-        this.changeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
+        this.onChangeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
     }
 
-    changeRange(value:any) {
+    onChangeRange = (value:any): void => {
         let from = value[0];
         let to = value[1];
         (document.getElementById('priceFrom') as HTMLInputElement).value = from;
@@ -310,8 +310,6 @@ class VPNList extends React.Component<any,any> {
         });
 
         const { t, localSettings } = this.props;
-        const createSliderWithTooltip = Slider.createSliderWithTooltip;
-        const Range = createSliderWithTooltip(Slider.Range);
 
         if (this.state.offeringsAvailability.counter === 0
             && this.checkAvailabilityBtn.current
@@ -423,37 +421,16 @@ class VPNList extends React.Component<any,any> {
                             </div>
                         </div>
 
-                        <div className='card m-b-20'>
-                            <div className='card-body'>
-                                <h6 className='card-title'>{t('PriceFilter')}</h6>
-                                <div className='form-group row'>
-                                    <div className='col-6 priceMinMaxInputBl'>
-                                        <div className='input-group'>
-                                            <div className='input-group-prepend'>
-                                                <span className='input-group-text' id='priceFromLabel'>{t('From')}</span>
-                                            </div>
-                                            <input type='number' min={this.state.min} max={this.state.max - this.state.step} step={this.state.step} className='form-control' placeholder={this.state.min}
-                                                   id='priceFrom' value={toFixedN({number: this.state.from, fixed: 8})} onChange={(e) => this.changeMinPriceInput(e)} />
-                                        </div>
-                                    </div>
-                                    <div className='col-6 priceMinMaxInputBl'>
-                                        <div className='input-group'>
-                                            <div className='input-group-prepend'>
-                                                <span className='input-group-text' id='priceToLabel'>{t('To')}</span>
-                                            </div>
-                                            <input type='number' min={this.state.min + this.state.step} max={this.state.max} step={this.state.step} className='form-control' placeholder={this.state.max}
-                                                   id='priceTo' value={toFixedN({number: this.state.to, fixed: 8})} onChange={(e) => this.changeMaxPriceInput(e)} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='row m-t-30'>
-                                    <div className='col-12'>
-                                        <Range defaultValue={[this.state.from, this.state.to]} min={this.state.min} max={this.state.max} step={this.state.step}
-                                               onChange={this.changeRange.bind(this)} allowCross={false}/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <SelectByPrice
+                            onChangeMinPrice={this.onChangeMinPrice}
+                            onChangeMaxPrice={this.onChangeMaxPrice}
+                            onChangeRange={this.onChangeRange}
+                            min={this.state.min}
+                            max={this.state.max}
+                            step={this.state.step}
+                            start={this.state.from}
+                            end={this.state.to}
+                        />
 
                         <SelectCountry
                             selectedCountries={this.state.checkedCountries}
