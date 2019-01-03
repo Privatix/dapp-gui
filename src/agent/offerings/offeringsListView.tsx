@@ -25,7 +25,7 @@ class OfferingsListView extends React.Component<IProps, any> {
     render() {
         const { t, products } = this.props;
         const offerings = this.props.offerings
-            .filter(o => o.offerStatus !== 'removed');
+            .filter(o => o.status !== 'removed');
 
         const offeringsDataArr = offerings.map(offering => {
             const product = products.filter(product => product.id === offering.product)[0];
@@ -42,7 +42,7 @@ class OfferingsListView extends React.Component<IProps, any> {
                                      text={offering.productName}
                                      component={<Product product={product} />}
                         />,
-                offerStatus: offering.offerStatus,
+                offerStatus: offering.status,
                 availableSupply: offering.currentSupply,
                 supply: offering.supply
             };
