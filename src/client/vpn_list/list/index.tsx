@@ -17,6 +17,7 @@ import toFixedN from 'utils/toFixedN';
 import countryByIso from 'utils/countryByIso';
 
 import VPNListTable from './table';
+import SelectCountry from './selectCountry';
 
 import {State} from 'typings/state';
 import { asyncProviders } from 'redux/actions';
@@ -43,12 +44,10 @@ class VPNList extends React.Component<any,any> {
             countries: [],
             filteredCountries: [],
             checkedCountries: [],
-            showAllCountries: false,
             activePage: 1,
             totalItems: 0,
             agent: '',
             offeringHash: '',
-            defaultShowCountriesCount: 5,
             rawOfferings: [],
             offeringsAvailability: props.offeringsAvailability,
         };
@@ -81,7 +80,6 @@ class VPNList extends React.Component<any,any> {
 
     shouldComponentUpdate(nextProps:any, nextState:any) {
         return (this.state.spinner !== nextState.spinner)
-            || (this.state.showAllCountries !== nextState.showAllCountries)
             || (this.state.filteredCountries !== nextState.filteredCountries)
             || (this.state.offeringHash !== nextState.offeringHash)
             || !(isEqual(this.state.offeringsAvailability, nextState.offeringsAvailability))
@@ -239,16 +237,7 @@ class VPNList extends React.Component<any,any> {
         this.setState({handler, from, to});
     }
 
-    showCountriesHandler() {
-        this.setState({filteredCountries: this.state.countries});
-        if (this.state.showAllCountries) {
-            this.setState({showAllCountries: false});
-        } else {
-            this.setState({showAllCountries: true});
-        }
-    }
-
-    filterCountries(e:any) {
+    filterCountries = (e:any): void => {
         const searchText = e.target.value;
         let patt = new RegExp(searchText, 'i');
         let filteredCountries = this.state.countries.filter((item) => {
@@ -273,8 +262,8 @@ class VPNList extends React.Component<any,any> {
         this.setState({offeringHash}, this.getClientOfferingsByOfferingHash);
     }
 
-    filterByCountryHandler(e:any) {
-        let checkedCountries = this.state.checkedCountries;
+    filterByCountryHandler = (e:any): void => {
+        let checkedCountries = this.state.checkedCountries.slice();
         const country = e.target.value;
 
         if (e.target.checked && checkedCountries.indexOf(country) === -1) {
@@ -329,30 +318,6 @@ class VPNList extends React.Component<any,any> {
             && this.checkAvailabilityBtn.current.hasAttribute('disabled')) {
             this.checkAvailabilityBtn.current.removeAttribute('disabled');
         }
-
-        let buttonText = t('ShowAllBtn');
-        let searchHtml = null;
-        if (this.state.showAllCountries) {
-            buttonText = t('HideBtn');
-            searchHtml = <div className='form-group row'>
-                <div className='col-md-12 m-t-10 m-b-10'>
-                    <div className='input-group searchInputGroup'>
-                        <div className='input-group-prepend'>
-                            <span className='input-group-text'><i className='fa fa-search'></i></span>
-                        </div>
-                        <input className='form-control' type='search' name='search' placeholder={t('Search')}
-                               onChange={this.filterCountries.bind(this)} />
-                    </div>
-                </div>
-            </div>;
-        }
-
-        const showHideCountriesBtn = this.state.filteredCountries.length > this.state.defaultShowCountriesCount
-            ? <div className='text-center'>
-                    <button type='button' className='btn btn-link waves-effect'
-                            onClick={this.showCountriesHandler.bind(this)}>{buttonText}</button>
-                </div>
-            : '';
 
         const pagination = this.state.totalItems <= localSettings.elementsPerPage ? '' :
             <div>
@@ -490,33 +455,12 @@ class VPNList extends React.Component<any,any> {
                             </div>
                         </div>
 
-                        <div className='card m-t-15 m-b-20 vpnListCountryFilterBl'>
-                            <h5 className='card-header'>{t('Country')}</h5>
-                            <div className='card-body'>
-                                {searchHtml}
-
-                                {this.state.filteredCountries.map((country, key) => {
-                                    let countryCheckboxHtml = <div className='checkbox checkbox-custom' key={country}>
-                                        <input id={country}
-                                               type='checkbox'
-                                               name='checkboxCountry'
-                                               value={country}
-                                               checked={this.state.checkedCountries.indexOf(country) !== -1}
-                                               onChange={this.filterByCountryHandler.bind(this)} />
-                                        <label htmlFor={country}>{countryByIso(country)}</label>
-                                    </div>;
-                                    if (!this.state.showAllCountries) {
-                                        if (key < this.state.defaultShowCountriesCount) {
-                                            return countryCheckboxHtml;
-                                        }
-                                    } else {
-                                        return countryCheckboxHtml;
-                                    }
-                                })}
-
-                                {showHideCountriesBtn}
-                            </div>
-                        </div>
+                        <SelectCountry
+                            selectedCountries={this.state.checkedCountries}
+                            allCountries={this.state.filteredCountries}
+                            onChange={this.filterByCountryHandler}
+                            onSearch={this.filterCountries}
+                        />
 
                         {resetFilters}
                     </div>

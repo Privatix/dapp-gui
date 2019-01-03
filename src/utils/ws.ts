@@ -13,7 +13,7 @@ import {Channel, ClientChannel, ClientChannelUsage} from 'typings/channels';
 import { Log } from 'typings/logs';
 import { State } from 'typings/state';
 import { Role } from 'typings/mode';
-import { PaginatedResponse} from 'typings/paginatedResponse';
+import { PaginatedResponse, GetClientOfferingsFilterParamsResponse } from 'typings/paginatedResponse';
 
 type OfferingResponse = PaginatedResponse<Offering[]>;
 type ChannelResponse  = PaginatedResponse<Channel[]>;
@@ -401,8 +401,8 @@ export class WS {
         return this.send('ui_acceptOffering', [ethAddress, offeringId, deposit, gasPrice]);
     }
 
-    getClientOfferingsFilterParams() {
-        return this.send('ui_getClientOfferingsFilterParams');
+    getClientOfferingsFilterParams(): Promise<GetClientOfferingsFilterParamsResponse> {
+        return this.send('ui_getClientOfferingsFilterParams') as Promise<GetClientOfferingsFilterParamsResponse>;
     }
 
     getObjectByHash(type: 'offering', hash: string) : Promise<OfferingResponse> {
