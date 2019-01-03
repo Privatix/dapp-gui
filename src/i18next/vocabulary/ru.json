@@ -350,15 +350,10 @@
         "Amount": "Сумма:",
         "TransferConfirmBtn": "Да, перевести!",
         "TransferSwalTitle": "Вы уверены?",
-        "ServiceSwalBalanceFrom": "баланса сервиса",
-        "ExchangeSwalBalanceFrom": "баланса контракта",
-        "ServiceSwalBalance": "баланс сервиса",
-        "ExchangeSwalBalance": "баланс контракта",
-        "TransferSwalText1": "Это действие переведет ваши токены из",
-        "TransferSwalText2": "на",
-        "TransferSwalText3": ".",
-        "TransferSwalText4": "Эта операция требует времени и газа.",
-        "TransferSwalText5": "Вы можете контролировать статус транзакции в журнале транзакций."
+        "TransferSwalTextFromPtcToPsc": "Это действие переведет ваши токены из баланса контракта на баланс сервиса.",
+        "TransferSwalTextFromPscToPtc": "Это действие переведет ваши токены из баланса сервиса на баланс контракта.",
+        "TransferSwalTextPart2": "Эта операция требует времени и газа.",
+        "TransferSwalTextPart3": "Вы можете контролировать статус транзакции в журнале транзакций."
     },
     "utils/gasRange": {
         "GasPrice": "Цена газа",
