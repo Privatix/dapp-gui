@@ -3,7 +3,8 @@
     "common": {
         "RefreshAll": "تحديث الكل",
         "Refresh": "تحديث",
-        "Select": "تحديد"
+        "Select": "تحديد",
+        "NoResults": "لم يتم العثور على شيء من طلبك. يرجى تعديل خيارات التصفية!"
     },
     "auth/setLanguage": {
         "chooseTheLanguage": "اختر اللغة",
@@ -89,8 +90,7 @@
         "Description": "الوصف",
         "description": "الوصف",
         "Country": "الدولة",
-        "ChangeCountryHelpTextPart1": "لتغيير الدولة يجب أن تذهب إلى",
-        "ChangeCountryHelpTextPart2": "صفحة",
+        "ChangeCountryHelpText": "لتغيير البلد يجب أن تذهب إلى صفحة <1> الخوادم </1>",
         "ChangeCountryHelpTextServers": "الخوادم",
         "Supply": "الإمداد",
         "ie": "مثل",
@@ -153,9 +153,14 @@
         "WarningArea": "منطقة تحذير",
         "Popup": "منبثق",
         "Remove": "إزالة",
+        "SomethingWentWrong": "حدث خطأ ما. حاول مرة أخرى في وقت لاحق!",
         "popupInfo": "ستقوم هذه العملية بإخطار العملاء بأن العرض الخاص بك حقيقي، مما يحسن فرصك في إبرام صفقة.",
-        "popupInfoDisabled": "وإلى أن تنتهي فترة التحدي، لن تتمكن من بث العرض. مدة فترة التحدي {{min}} دقيقة تقريبًا.",
-        "removeInfo": "ستؤدي هذه العملية إلى إزالة العرض بشكل دائم. سوف تتلقى الإيداع الخاص بك مرة أخرى. لن يتمكن العملاء من قبوله بعد الآن. يمكن فقط إزالة العرض، إذا كان غير نشط لمدة {{minutes}} دقيقة.",
+        "popupInfoDisabled": "إلى أن تنتهي فترة التحدي، لن تتمكن من عمل انبثاق العرض. مدة فترة التحدي {{min}} دقيقة تقريبًا.{{blocks}} كتلة).",
+        "popupNotice": "لقد تمت جدولة طلب العرض المنبثق الخاص بك. بعد الموافقة على المعاملة، ستتم معالجة طلب العرض.",
+        "removeInfo": "ستؤدي هذه العملية إلى إزالة العرض بشكل دائم. سوف تسترد الإيداع الخاص بك مرة أخرى. لن يتمكن العملاء من قبوله بعد الآن.",
+        "removeInfoDisabled": "يمكن إزالة العرض فقط، عند مرور {{blocks}} كتلة (~ {{minutes}} دقيقة) بعد إنشائه أو انبثاقه.",
+        "lastAction": "تم تنفيذ الإجراء الأخير {{lastAction}} كتلة منذ (~ {{lastActionMinutes}} دقيقة).",
+        "lastActionPopup": "تم تنفيذ الإجراء الأخير منذ {{lastAction}} كتلة.",
         "YesPopUpIt": "نعم ، اجعله منبثقًا!",
         "YesRemoveIt": "نعم، قم بإزالته!",
         "WouldYouLikeToProceed": "هل ترغب في المتابعة؟",
@@ -166,8 +171,10 @@
     "offerings/offeringsList": {
         "Offering": "عرض",
         "ServerInfo": "معلومات الخادم",
+        "Hash": "دالة التجزئة",
         "ServiceName": "اسم الخدمة",
         "Server": "الخادم",
+        "MessageStatus": "حالة الرسالة",
         "Status": "الحالة",
         "AvailableSupply": "الإمدادات المتاحة",
         "Supply": "الإمداد"
@@ -286,6 +293,27 @@
         "Attention!": "انتباه!",
         "Congratulations!": "تهانينا!"
     },
+    "logs/logsList": {
+        "LogsHeader": "قائمة السجلات",
+        "ExportBtn": "تصدير إلى ملف",
+        "LogsFilterFrom": "من:",
+        "LogsFilterTo": "إلى:",
+        "LogsFilterTime": "الوقت",
+        "LogsSearchPlaceholder": "مثال: فشل",
+        "NowBtn": "الآن",
+        "Level": "مستوى",
+        "Date": "التاريخ",
+        "Message": "رسالة",
+        "Context": "السياق",
+        "Stack": "حزمة",
+        "ShowBtn": "إظهار",
+        "StackTrace": "أثر الحزمة:",
+        "WarningDateMessage": "من فضلك، لا تحدد سجلات لأكثر من 5 أيام. يمكن أن يستغرق الأمر الكثير من الوقت!"
+    },
+    "logs/logsContext": {
+        "Key": "مفتاح",
+        "Value": "القيمة"
+    },
     "accounts/accountsList": {
         "Title": "الحسابات",
         "CreateBtn": "إنشاء حساب",
@@ -348,9 +376,12 @@
         "AreYouSure": "هل أنت متأكد؟"
     },
     "client/dashboard/connecting": {
+        "TheServiceHasAPendingStatus": "الخدمة لديها حالة في وضع الانتظار. عندما يكون الاتصال جاهزًا، يمكنك البدء في استخدام VPN",
+        "TheServiceHasAnActivatingStatus": "الخدمة لديها حالة تنشيط. عندما يكون الاتصال جاهزًا، يمكنك البدء في استخدام VPN",
+        "TheServiceHasASuspendingStatus": "الخدمة لديها حالة تعليق. بعد تعليق الاتصالات، يمكنك استئنافها أو إنهاؤها.",
+        "TheServiceHasATerminatingStatus": "الخدمة لديها حالة إنهاء. بعد إنهاء الاتصال، يمكن أيضًا إنهاء العقد.",
         "WaitingTimeIsOver": "انتهى وقت الانتظار. سيتم استدعاء الإجراء النهائي تلقائيًا.",
         "FailedToAcceptOffering": "فشل قبول العرض. من فضلك، حاول فبول عرض آخر.",
-        "AfterTheConnectionIsReady": "بعد أن يكون الاتصال جاهزًا ، يمكنك البدء في استخدام VPN.",
         "Synchronizing": "جار المزامنة",
         "YouCanStartUsingVPN": "يمكنك البدء في استخدام VPN",
         "Connect": "توصيل",
@@ -379,6 +410,7 @@
     "client/vpnList": {
         "Block": "كتلة",
         "Hash": "التجزئة",
+        "Agent": "الوكيل",
         "Country": "الدولة",
         "Price": "السعر (PRIX/ميغابايت)",
         "SupplyTotal": "الإمدادات (الإجمالي)",
@@ -394,9 +426,12 @@
         "AverageTimeForDownloading": "متوسط ​​وقت تنزيل التطبيق 2-5 دقائق.",
         "Refresh": "تحديث",
         "AgentAddress": "عنوان الوكيل",
+        "OfferingHash": "دالة تجزئة العرض",
         "PriceFilter": "السعر (PRIX/ميغابايت):",
         "From": "من",
-        "To": "إلى"
+        "To": "إلى",
+        "ClearOfferingHashToUseOtherFilters": "يجب عليك مسح حقل دالة تجزئة العرض لاستخدام تصفيات أخرى",
+        "ResetFilters": "إعادة تعيين التصفية"
     },
     "client/acceptOffering": {
         "Accept": "قبول",
@@ -423,7 +458,6 @@
         "AcceptancePrice": "سعر القبول:"
     },
     "client/history": {
-        "SuccessfullyRefreshed": "تم تحديث الصفحة بنجاح!",
         "Service": "الخدمة",
         "of": "من",
         "Id": "المُعرف",
@@ -434,7 +468,6 @@
         "Usage": "الاستخدام",
         "CostPRIX": "التكلفة (PRIX)",
         "LastUsed": "آخر أستخدام",
-        "Refresh": "تحديث",
         "AwaitForTerminate": "في انتظار الإنهاء",
         "History": "المحفوظات"
     },
@@ -527,7 +560,8 @@
         "IncreaseBtn": "إضافة",
         "SuccessMessage": "تم بدء إضافة الإيداع بنجاح!",
         "SomethingWentWrong": "حدث خطأ ما. حاول مرة أخرى في وقت لاحق!",
-        "ErrorNotEnoughPublishFunds": " لا توجد أموال كافية لنشر المعاملة."
+        "ErrorNotEnoughPublishFunds": " لا توجد أموال كافية لنشر المعاملة.",
+        "ErrorNotEnoughPRIX": "عملات PRIX غير كافية للإيداع."
     },
     "electronMenu": {
         "File": "ملف",
@@ -568,6 +602,9 @@
         "AccessDenied": "تم رفض الوصول، ربما تكون كلمة المرور خاطئة"
     },
     "settings": {
+        "Success": "تم حفظ التغييرات بنجاح.",
+        "Error": "حدث خطأ أثناء الحفظ. يرجى التحقق من البيانات التي تم إدخالها.",
+        "Save": "حفظ",
         "Settings": "الإعدادات",
         "Name": "الاسم",
         "Value": "القيمة",
@@ -585,6 +622,11 @@
         "eth_event_lastProcessedBlock_Name": "آخر كتلة تمت معالجتها",
         "offering_autopopup_Name": "انبثاق العرض بشكل تلقائي",
         "system_version_app_Name": "إصدار التطبيق",
+        "somc_transport_tor_Name": "استخدام Tor",
+        "client_somc_transports_Name": "تم السماح لنقل SOMC",
+        "psc_periods_challenge_Name": "فترة التحدي",
+        "psc_periods_popup_Name": "فترة الانبثاق",
+        "psc_periods_remove_Name": "فترة الإزالة",
         "error_sendremote_Description": "السماح للإبلاغ عن الخطأ بإرسال السجلات إلى Privatix.",
         "eth_challenge_period_Description": "عدد الكتل التي تنتظر من uncooperativeClose التي بدأها العميل من أجل منح الوكيل فرصة للرد مع إثبات الرصيد في حالة خداع العميل. بعد فترة التحدي، يمكن للعميل تسوية وحذف القناة. سوق تنتظر عدد كتل الوكيل من registerServiceOffering أو من createChannel قبل أن يتمكن من حذف عرض الخدمة واسترداد إيداع الوكيل_",
         "eth_default_gasprice_Description": "سعر الغاز الافتراضي للمعاملات.",
@@ -597,10 +639,58 @@
         "user_isagent_Description": "يحدد دور المستخدم. \"صحيح\" - وكيل. \"كاذب\" - العميل.",
         "eth_event_lastProcessedBlock_Description": "يقوم رقم آخر كتلة في blockchain بتخزين آخر كتلة تمت معالجتها.",
         "offering_autopopup_Description": "السماح للعروض المنبثقة تلقائيًا.",
-        "system_version_app_Description": "إصدار التطبيق"
+        "system_version_app_Description": "إصدار التطبيق",
+        "somc_transport_tor_Description": "وضع اللامركزية كامل. إذا كان استخدام Tor للرسائل بين الوكيل والعميل بشكل صحيح. سيتم استرداد العروض ورسائل الوصول عبر Tor. لن تكون الرسائل التي يتم نشرها من خلال مركز SOMC المركزي متاحة.",
+        "psc_periods_challenge_Description": "عدد الكتل المراد استخراجها لإنهاء إغلاق القناة غير المتعاونة",
+        "psc_periods_popup_Description": "عدد الكتل المراد استخراجها لانبثاق العرض بشكل متكرر",
+        "psc_periods_remove_Description": "عدد الكتل المراد استخراجها من آخر تحديث للعرض في blockchain لإزالة العرض",
+        "client_somc_transports_Description": "عرض مع نوع SOMC المطلوب عرضه."
     },
     "copyToClipboard": {
         "Copied": "تم النسخ!",
         "Copy": "نسخ"
+    },
+    "jobName": {
+        "clientPreChannelCreate": "إرسال إيداع الخدمة",
+        "clientAfterChannelCreate": "تحديث بيانات الخدمة",
+        "clientPreChannelTopUp": "زيادة الإيداع",
+        "clientAfterChannelTopUp": "تحديث الإيداع",
+        "clientPreUncooperativeCloseRequest": "إرسال طلب نزاع عقد مفتوح",
+        "clientAfterUncooperativeCloseRequest": "فتح نزاع العقد",
+        "clientPreUncooperativeClose": "استرداد الإيداع بعد فترة التحدي",
+        "clientAfterUnCooperativeClose": "وضع الصيغة النهائية لوثيقة العقد وإغلاقه",
+        "clientAfterCooperativeClose": "وضع الصيغة النهائية لوثيقة العقد",
+        "clientPreServiceSuspend": "تعليق الخدمة",
+        "clientPreServiceUnsuspend": "إلغاء تعليق الخدمة",
+        "clientPreServiceTerminate": "التوقف عن استخدام الخدمة بشكل دائم",
+        "clientEndpointRestore": "الحصول على وصول الخدمة",
+        "clientAfterOfferingMsgBCPublish": "الحصول على بيانات العرض",
+        "clientAfterOfferingPopUp": "تحديث وضع العرض",
+        "clientAfterOfferingDelete": "إزالة العرض",
+        "completeServiceTransition": "انتقال الخدمة الكاملة",
+        "agentAfterChannelCreate": "إنشاء إدخال الخدمة",
+        "agentAfterUncooperativeCloseRequest": "رد على نزاع العقد",
+        "agentAfterCooperativeClose": "وضع الصيغة النهائية لوثيقة العقد",
+        "agentPreServiceSuspend": "تعليق الخدمة",
+        "agentPreServiceUnsuspend": "إلغاء تعليق الخدمة",
+        "agentPreServiceTerminate": "إغلاق الخدمة وطلب سحب الدفع",
+        "agentPreEndpointMsgCreate": "إعداد وصول الخدمة",
+        "agentPreEndpointMsgSOMCPublish": "نشر رسالة الوصول إلى الخدمة",
+        "agentAfterEndpointMsgSOMCPublish": "تنشيط الخدمة",
+        "agentPreOfferingMsgBCPublish": "إرسال إيداع العرض",
+        "agentAfterOfferingMsgBCPublish": "تم إرسال إيداع العرض",
+        "agentPreOfferingMsgSOMCPublish": "نشر رسالة العرض",
+        "agentPreOfferingDelete": "طلب إزالة العرض ورد الإيداع",
+        "agentPreOfferingPopUp": "طلب انبثاق العرض",
+        "agentAfterOfferingPopUp": "إنهاء انبثاق العرض",
+        "agentAfterOfferingDelete": "إنهاء إزالة العرض",
+        "preAccountAddBalanceApprove": "الموافقة على تحويل الرموز إلى حساب الخدمة",
+        "preAccountAddBalance": "إضافة رصيد لحساب الخدمة",
+        "afterAccountAddBalance": "تحديث الرصيد في حساب الخدمة",
+        "preAccountReturnBalance": "طلب تحويل الرموز إلى حساب ERC20",
+        "afterAccountReturnBalance": "تحديث رصيد حساب ERC20",
+        "accountUpdateBalances": "تحقق من معلومات رصيد الحساب وتحديثها",
+        "decrementCurrentSupply": "خفض إمداد العرض الحالي",
+        "incrementCurrentSupply": "زيادة إمداد العرض الحالي"
     }
 }

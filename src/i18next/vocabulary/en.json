@@ -350,15 +350,10 @@
         "Amount": "Amount:",
         "TransferConfirmBtn": "Yes, transfer!",
         "TransferSwalTitle": "Are you sure?",
-        "ServiceSwalBalanceFrom": "Service balance",
-        "ExchangeSwalBalanceFrom": "Exchange balance",
-        "ServiceSwalBalance": "Service balance",
-        "ExchangeSwalBalance": "Exchange balance",
-        "TransferSwalText1": "This action will transfer your tokens from",
-        "TransferSwalText2": "to",
-        "TransferSwalText3": ".",
-        "TransferSwalText4": "This operation takes time and gas.",
-        "TransferSwalText5": "You can monitor transaction status in the Transaction log."
+        "TransferSwalTextFromPtcToPsc": "This action will transfer your tokens from Exchange balance to Service balance.",
+        "TransferSwalTextFromPscToPtc": "This action will transfer your tokens from Service balance to Exchange balance.",
+        "TransferSwalTextPart2": "This operation takes time and gas.",
+        "TransferSwalTextPart3": "You can monitor transaction status in the Transaction log."
     },
     "utils/gasRange": {
         "GasPrice": "Gas price",
@@ -562,13 +557,15 @@
         "IncreaseConfirmBtn": "Yes, increase the deposit!",
         "IncreaseSwalTitle": "Increase deposit",
         "Account": "Account",
-        "AddToDeposit": "AddToDeposit:",
+        "AddToDeposit": "Add to deposit:",
         "AverageTimeToAddTheDeposit": "Average time to add the deposit:",
         "IncreaseBtn": "Add",
         "SuccessMessage": "Adding deposit successfully initialized!",
         "SomethingWentWrong": "Something went wrong. Try again later!",
         "ErrorNotEnoughPublishFunds": "Not enough funds to publish transaction.",
-        "ErrorNotEnoughPRIX": "Not enough PRIX to increase deposit."
+        "ErrorNotEnoughPRIX": "Not enough PRIX to increase deposit.",
+        "MaxUnitsHint": "Maximum for this offering are {{maxUnits}} {{unitName}}. So, you can add not more than {{maxDepositAddValue}} {{unitName}}",
+        "ErrorDepositGreaterThanMaxUnits": "You can't add to deposit more, than {{units}} {{unitName}}"
     },
     "electronMenu": {
         "File": "File",
