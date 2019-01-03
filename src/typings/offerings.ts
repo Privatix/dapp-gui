@@ -4,13 +4,6 @@ export enum BillType {
 
 export type OfferStatus = '' | 'registering' | 'registered' | 'popping_up' | 'popped_up' | 'removing' | 'removed';
 
-export enum MsgStatus {
-    unpublished = 'unpublished'
-   ,bchainPublishing = 'bchain_publishing'
-   ,bchainPublished = 'bchain_published'
-   ,msg_channelPublished = 'msg_channel_published'
-}
-
 export enum UnitType {
     units = 'units', seconds = 'seconds'
 }
@@ -21,8 +14,7 @@ export interface Offering {
     template: string;
     product: string;
     hash: string;
-    status: MsgStatus;
-    offerStatus: OfferStatus;
+    status: OfferStatus;
     blockNumberUpdated: number;
     agent: string;
     rawMsg: string;
