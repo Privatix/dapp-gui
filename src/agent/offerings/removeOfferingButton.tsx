@@ -64,7 +64,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
         const removePeriodMinutes = Math.floor(removePeriod/4);
 
-        const offeringStatus = offering.offerStatus;
+        const offeringStatus = offering.status;
         const offeringAge = lastProcessedBlock - offering.blockNumberUpdated;
         const offeringAgeMinutes = Math.floor(offeringAge / 4);
 
