@@ -17,6 +17,7 @@ import countryByIso from 'utils/countryByIso';
 
 import Spinner from './spinner';
 import VPNListTable from './table';
+import SelectByAgent from './selectByAgent';
 import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
 
@@ -246,7 +247,7 @@ class VPNList extends React.Component<any,any> {
         });
     }
 
-    filterByAgent(e: any){
+    onAgentChanged = (e: any): void => {
         let agent = e.target.value.toLowerCase().trim();
 
         this.setState({agent}, this.getClientOfferings);
@@ -352,24 +353,8 @@ class VPNList extends React.Component<any,any> {
 
                         <div className='card m-b-20'>
                             <div className='card-body'>
-                                <div className='form-group row'>
-                                    <div className='col-12'>
-                                        <label className='control-label'>{t('AgentAddress')}</label>
-                                    </div>
-                                    <div className='col-md-12'>
-                                        <div className='input-group searchInputGroup searchInputGroupVPNList'>
-                                            <div className='input-group-prepend'>
-                                                <span className='input-group-text'><i className='fa fa-search'></i></span>
-                                            </div>
-                                            <input className='form-control'
-                                                   type='search'
-                                                   name='agent'
-                                                   placeholder='0x354B10B5c4A96b81b5e4F12F90cd0b7Ae5e05eE6'
-                                                   value={this.state.agent}
-                                                   onChange={this.filterByAgent.bind(this)} />
-                                        </div>
-                                    </div>
-                                </div>
+                                <SelectByAgent agentHash={this.state.agent} onChange={this.onAgentChanged} />
+
 
                                 <div className='form-group row'>
                                     <div className='col-12'>
