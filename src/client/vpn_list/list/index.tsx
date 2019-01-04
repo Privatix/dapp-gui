@@ -49,7 +49,6 @@ class VPNList extends React.Component<any,any> {
             agent: '',
             offeringHash: '',
             rawOfferings: [],
-            offeringsAvailability: props.offeringsAvailability,
         };
 
     }
@@ -62,10 +61,6 @@ class VPNList extends React.Component<any,any> {
         if (this.state.handler !== null) {
             clearTimeout(this.state.handler);
         }
-    }
-
-    static getDerivedStateFromProps(props:any, state:any) {
-        return {offeringsAvailability: props.offeringsAvailability};
     }
 
     async refresh(clicked?: boolean, activePage:number = 1) {
@@ -82,7 +77,7 @@ class VPNList extends React.Component<any,any> {
         return (this.state.spinner !== nextState.spinner)
             || (this.state.filteredCountries !== nextState.filteredCountries)
             || (this.state.offeringHash !== nextState.offeringHash)
-            || !(isEqual(this.state.offeringsAvailability, nextState.offeringsAvailability))
+            || !(isEqual(this.props.offeringsAvailability, nextProps.offeringsAvailability))
             || !(isEqual(nextState.rawOfferings, this.state.rawOfferings));
     }
 
@@ -164,11 +159,11 @@ class VPNList extends React.Component<any,any> {
     }
 
     formFilteredDataRow(offering: any) {
-        const { t } = this.props;
+        const { t, offeringsAvailability } = this.props;
         const offeringHash = '0x' + offering.hash;
 
-        const availability = (offering.id in this.state.offeringsAvailability.statuses)
-            ? (this.state.offeringsAvailability.statuses[offering.id] === true ? 'available' : 'unreachable')
+        const availability = (offering.id in offeringsAvailability.statuses)
+            ? (offeringsAvailability.statuses[offering.id] === true ? 'available' : 'unreachable')
             : 'unknown';
 
         return {
@@ -309,9 +304,9 @@ class VPNList extends React.Component<any,any> {
             return this.formFilteredDataRow(offering);
         });
 
-        const { t, localSettings } = this.props;
+        const { t, localSettings, offeringsAvailability } = this.props;
 
-        if (this.state.offeringsAvailability.counter === 0
+        if (offeringsAvailability.counter === 0
             && this.checkAvailabilityBtn.current
             && this.checkAvailabilityBtn.current.hasAttribute('disabled')) {
             this.checkAvailabilityBtn.current.removeAttribute('disabled');
