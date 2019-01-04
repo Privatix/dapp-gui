@@ -286,17 +286,8 @@ class VPNList extends React.Component<any,any> {
 
     checkStatus() {
         this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
-        const offeringsIds = this.getOfferingsIds();
+        const offeringsIds = this.state.rawOfferings.map(offering => offering.id);
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
-    }
-
-    getOfferingsIds() {
-        let offeringsIds = [];
-        this.state.rawOfferings.map((offering) => {
-            offeringsIds.push(offering.id);
-        });
-
-        return offeringsIds;
     }
 
     render() {
