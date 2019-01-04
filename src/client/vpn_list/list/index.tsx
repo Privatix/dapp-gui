@@ -15,6 +15,7 @@ import notice from 'utils/notice';
 import toFixedN from 'utils/toFixedN';
 import countryByIso from 'utils/countryByIso';
 
+import Spinner from './spinner';
 import VPNListTable from './table';
 import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
@@ -328,27 +329,7 @@ class VPNList extends React.Component<any,any> {
                 : '';
 
         if(this.state.spinner){
-            return (
-                <div className='container-fluid'>
-                    <div className='row m-t-20'>
-                        <div className='col-12'>
-                            <div className='card'>
-                                <div className='col-4 m-b-20'>
-                                    <div className='card-body'>
-                                        <p className='font-25'>{t('WaitForDownloading')}</p>
-                                        <div className='text-center m-t-15 m-b-15'>
-                                            <div className='lds-dual-ring'></div>
-                                        </div>
-                                        <p className='m-b-0'>{t('CurrentlyWeAreDownloading')}</p>
-                                        <p>{t('TakesTimeOnFirstRun')}</p>
-                                        <p className='m-t-15'>{t('AverageTimeForDownloading')}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            );
+            return <Spinner />;
         }
 
         return (
