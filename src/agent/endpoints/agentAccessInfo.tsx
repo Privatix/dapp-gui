@@ -1,19 +1,25 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 
-import {State} from '../../typings/state';
 import { translate } from 'react-i18next';
 
-@translate('channels/channelView')
+import { WS, ws } from 'utils/ws';
+import {Channel} from 'typings/channels';
 
-class AgentAccessInfo extends React.Component <any, any> {
+interface IProps{
+    ws?: WS;
+    t?: any;
+    channel: Channel;
+}
+
+@translate('channels/channelView')
+class AgentAccessInfo extends React.Component <IProps, any> {
 
     constructor(props:any) {
         super(props);
 
         this.state = {
-            'offering': null,
-            'product': null
+            offering: null,
+            product: null
         };
 
         this.getData();
@@ -21,9 +27,9 @@ class AgentAccessInfo extends React.Component <any, any> {
 
     async getData() {
 
-        const { ws } = this.props;
+        const { ws, channel } = this.props;
 
-        const offering = await ws.getOffering(this.props.channel.offering);
+        const offering = await ws.getOffering(channel.offering);
 
         if (!offering) {
             return;
@@ -60,6 +66,4 @@ class AgentAccessInfo extends React.Component <any, any> {
     }
 }
 
-export default connect( (state: State) =>
-    ({ws: state.ws})
-)(AgentAccessInfo);
+export default ws<IProps>(AgentAccessInfo);
