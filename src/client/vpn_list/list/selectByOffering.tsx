@@ -3,16 +3,16 @@ import { translate } from 'react-i18next';
 
 const translated = translate(['client/vpnList']);
 
-class SelectByAgent extends React.Component<any,any> {
+class SelectByOffering extends React.Component<any,any> {
 
     render() {
 
-        const { t, agentHash, onChange } = this.props;
+        const { t, offeringHash, onChange } = this.props;
 
         return (
             <div className='form-group row'>
                 <div className='col-12'>
-                    <label className='control-label'>{t('AgentAddress')}</label>
+                    <label className='control-label'>{t('OfferingHash')}</label>
                 </div>
                 <div className='col-md-12'>
                     <div className='input-group searchInputGroup searchInputGroupVPNList'>
@@ -21,9 +21,9 @@ class SelectByAgent extends React.Component<any,any> {
                         </div>
                         <input className='form-control'
                                type='search'
-                               name='agent'
-                               placeholder='0x354B10B5c4A96b81b5e4F12F90cd0b7Ae5e05eE6'
-                               value={agentHash}
+                               name='offeringHash'
+                               placeholder='0x74c96979ae4fbb11a7122a71e90161f1feee7523472cea74f8b9f3ca8481fb37'
+                               value={offeringHash}
                                onChange={onChange} />
                     </div>
                 </div>
@@ -32,4 +32,4 @@ class SelectByAgent extends React.Component<any,any> {
     }
 }
 
-export default translated(SelectByAgent);
+export default translated(SelectByOffering);

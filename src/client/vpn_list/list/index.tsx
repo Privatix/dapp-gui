@@ -18,6 +18,7 @@ import countryByIso from 'utils/countryByIso';
 import Spinner from './spinner';
 import VPNListTable from './table';
 import SelectByAgent from './selectByAgent';
+import SelectByOffering from './selectByOffering';
 import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
 
@@ -253,7 +254,7 @@ class VPNList extends React.Component<any,any> {
         this.setState({agent}, this.getClientOfferings);
     }
 
-    filterByOfferingHash(e: any){
+    onOfferingHashChanged = (e: any): void => {
         let offeringHash = e.target.value.toLowerCase().trim();
 
         this.setState({offeringHash}, this.getClientOfferingsByOfferingHash);
@@ -354,26 +355,7 @@ class VPNList extends React.Component<any,any> {
                         <div className='card m-b-20'>
                             <div className='card-body'>
                                 <SelectByAgent agentHash={this.state.agent} onChange={this.onAgentChanged} />
-
-
-                                <div className='form-group row'>
-                                    <div className='col-12'>
-                                        <label className='control-label'>{t('OfferingHash')}</label>
-                                    </div>
-                                    <div className='col-md-12'>
-                                        <div className='input-group searchInputGroup searchInputGroupVPNList'>
-                                            <div className='input-group-prepend'>
-                                                <span className='input-group-text'><i className='fa fa-search'></i></span>
-                                            </div>
-                                            <input className='form-control'
-                                                   type='search'
-                                                   name='offeringHash'
-                                                   placeholder='0x74c96979ae4fbb11a7122a71e90161f1feee7523472cea74f8b9f3ca8481fb37'
-                                                   value={this.state.offeringHash}
-                                                   onChange={this.filterByOfferingHash.bind(this)} />
-                                        </div>
-                                    </div>
-                                </div>
+                                <SelectByOffering offeringHash={this.state.offeringHash} onChange={this.onOfferingHashChanged} />
                             </div>
                         </div>
 
