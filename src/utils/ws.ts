@@ -3,14 +3,13 @@ import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
 import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
-import {TemplateType} from 'typings/templates';
+import {Template, TemplateType} from 'typings/templates';
 import {OfferStatus, Offering, ResolvedOffering} from 'typings/offerings';
 import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
 import {Session} from 'typings/session';
 import {Channel, ClientChannel, ClientChannelUsage} from 'typings/channels';
-import {Template} from 'typings/templates';
 import { Log } from 'typings/logs';
 import { State } from 'typings/state';
 import { Role } from 'typings/mode';
@@ -279,18 +278,9 @@ export class WS {
         return this.send('ui_generateAccount', [payload]);
     }
 
-    importAccountFromHex(payload: any, handler: Function){
-        const uuid = uuidv4();
-        WS.handlers[uuid] = handler;
 
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_importAccountFromHex',
-            params: [this.token, payload]
-        };
-
-        this.socket.send(JSON.stringify(req));
+    importAccountFromHex(payload: any): Promise<any>{
+        return this.send('ui_importAccountFromHex', [payload]) as Promise<any>;
     }
 
     importAccountFromJSON(payload: any, key: Object, pwd: string, handler: Function){
@@ -330,9 +320,9 @@ export class WS {
     }
 // templates
 
-    getTemplates(templateType?: TemplateType){
+    getTemplates(templateType?: TemplateType): Promise<Template[]>{
         const type = templateType ? templateType : '';
-        return this.send('ui_getTemplates', [type]);
+        return this.send('ui_getTemplates', [type]) as Promise<Template[]>;
     }
 
     getTemplate(id: string){
