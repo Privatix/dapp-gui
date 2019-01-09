@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom';
 import ModalWindow from 'common/modalWindow';
 import CreateOffering from './createOffering';
 import OfferingsListView from './offeringsListView';
+import OfferingsListByStatus from './offeringsListByStatus';
 
 import { State } from 'typings/state';
 import { OfferStatus } from 'typings/offerings';
@@ -17,6 +18,7 @@ interface IProps {
     ws?: WS;
     t?: any;
     onlyTable?: boolean;
+    page?: string;
 }
 
 @translate(['offerings/offerings', 'offerings'])
@@ -27,11 +29,20 @@ class Offerings extends React.Component<IProps, any>{
 
     constructor(props: IProps){
         super(props);
-        this.state = {offerings: [], products: []};
+        this.state = {
+            offerings: [],
+            products: []
+        };
     }
 
     componentDidMount(){
         this.refresh();
+    }
+
+    componentDidUpdate(prevProps:any, prevState:any) {
+        if (this.props.statuses !== prevProps.statuses) {
+            this.refresh();
+        }
     }
 
     componentWillUnmount(){
@@ -71,10 +82,14 @@ class Offerings extends React.Component<IProps, any>{
 
     render() {
 
-        const { t, onlyTable } = this.props;
+        const { t, onlyTable, page } = this.props;
 
         if(onlyTable){
             return <OfferingsListView products={this.state.products} offerings={this.state.offerings} />;
+        }
+
+        if (page) {
+            return <OfferingsListByStatus page={page} products={this.state.products} offerings={this.state.offerings} />;
         }
 
         return <div className='container-fluid'>

@@ -2,10 +2,11 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
-import {Role} from '../typings/mode';
-import {State} from '../typings/state';
+import {Role} from '../../typings/mode';
+import {State} from '../../typings/state';
+import Submenu from './submenu';
 
-// declare var window: any;
+import './navigation.css';
 
 interface Props {
     mode: Role;
@@ -17,8 +18,47 @@ class Navigation extends React.Component<Props, any> {
 
     constructor(props: Props) {
         super(props);
+
+        const { t } = props;
+
         this.state = {
             submenu: false,
+            channelsSubmenuData: {
+                mainLink: {
+                    link: '/channels',
+                    text: t('Services')
+                },
+                sublinks: [
+                    {
+                        link: '/channelsByStatus/active',
+                        text: t('Active')
+                    },
+                    {
+                        link: '/channelsByStatus/terminated',
+                        text: t('History')
+                    },
+                    {
+                        link: '/sessions/all',
+                        text: t('Sessions')
+                    }
+                ]
+            },
+            offeringsSubmenuData: {
+                mainLink: {
+                    link: '/offerings/all',
+                    text: t('Offerings')
+                },
+                sublinks: [
+                    {
+                        link: '/offeringsByStatus/active',
+                        text: t('Active')
+                    },
+                    {
+                        link: '/offeringsByStatus/history',
+                        text: t('History')
+                    }
+                ]
+            }
         };
     }
 
@@ -36,52 +76,28 @@ class Navigation extends React.Component<Props, any> {
         this.setState({submenu: false});
     }
 
-    render(){
-
+    render() {
         const { t } = this.props;
 
         return this.props.mode === Role.AGENT ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
-
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/' activeClassName='active' className='waves-effect'>
                                 <i className='ti-home'></i><span> {t('Dashboard')} </span>
                             </NavLink>
                         </li>
 
-                        <li className='has_sub' aria-current={this.state.submenu ? 'page' : null}>
-                            <div onClick={this.handleClick.bind(this)}>
-                                <NavLink to='/channels' activeClassName='active' className='waves-effect'>
-                                    <i className='fa fa-tasks'></i> <span> {t('Services')} </span> <span className='menu-arrow'></span>
-                                </NavLink>
-                            </div>
-                            <ul className='list-unstyled sub_menu'>
-                                <li onClick={this.handleClickTrue.bind(this)}>
-                                    <NavLink activeClassName='active_sub' exact to='/channelsByStatus/active' className='waves-effect'>{t('Active')}</NavLink>
-                                </li>
-                                <li onClick={this.handleClickTrue.bind(this)}>
-                                    <NavLink activeClassName='active_sub' exact to='/channelsByStatus/terminated' className='waves-effect'>{t('History')}</NavLink>
-                                </li>
-                                <li onClick={this.handleClickTrue.bind(this)}>
-                                    <NavLink activeClassName='active_sub' exact to='/sessions/all' className='waves-effect'>{t('Sessions')}</NavLink>
-                                </li>
-                            </ul>
-                        </li>
+                        <Submenu submenuData={this.state.channelsSubmenuData} />
 
-                        <li onClick={this.handleClickFalse.bind(this)} className=''>
-                            <NavLink exact to='/offerings/all' activeClassName='active' className='waves-effect'>
-                                <i className='ion-network'></i><span> {t('Offerings')} </span>
-                            </NavLink>
-                        </li>
+                        <Submenu submenuData={this.state.offeringsSubmenuData} />
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
                                 <i className='fa fa-server'></i><span> {t('Servers')} </span>
                             </NavLink>
                         </li>
-
                     </ul>
                     <div className='clearfix'></div>
                 </div>
@@ -103,11 +119,6 @@ class Navigation extends React.Component<Props, any> {
                                 <i className='md md-toc'></i><span> {t('VPNList')} </span>
                             </NavLink>
                         </li>
-                        {/*<li className=''>*/}
-                            {/*<NavLink exact to='/vpn-history' activeClassName='active' className='waves-effect'>*/}
-                                {/*<i className='md md-toc'></i><span> Connection offering </span>*/}
-                            {/*</NavLink>*/}
-                        {/*</li>*/}
                         <li className=''>
                             <NavLink exact to='/client-history' activeClassName='active' className='waves-effect'>
                                 <i className='fa fa-history'></i><span> {t('History')} </span>
