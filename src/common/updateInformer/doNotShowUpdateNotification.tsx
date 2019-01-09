@@ -15,7 +15,6 @@ class DoNotShowUpdateNotification extends React.Component<IProps, any>{
     onSkip = (evt: any) => {
         const { ws, version } = this.props;
         evt.preventDefault();
-        console.log(this.props.version);
         ws.updateSettings({updateDismissVersion: version});
     }
 
