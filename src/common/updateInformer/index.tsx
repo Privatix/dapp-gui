@@ -14,7 +14,6 @@ class UpdateInformer extends React.Component<any, any>{
     render(){
 
         const { localSettings, dbSettings } = this.props;
-        console.log('DB SETTINGS!!!', dbSettings);
         const { release: releaseVersion, target, releases } = localSettings;
 
         if(!valid(releaseVersion)){
@@ -77,7 +76,7 @@ class UpdateInformer extends React.Component<any, any>{
                     </a>
                     <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
                         <Trans i18nKey='announcement' values={{name: version}}>
-                            <div style={ {margin: '10px'} } >New version {{name: version}} was released.</div>
+                            <div style={ {margin: '10px'} } >New version <b>{{name: version}}</b> was released.</div>
                         </Trans>
                         <GoToUpdateButton href={release.html_url} />
                         <DoNotShowUpdateNotificationButton version={max} />
