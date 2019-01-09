@@ -81,7 +81,9 @@
     },
     "offerings/offerings": {
         "CreateOffering": "Создать предложение",
-        "Offerings": "Предложения"
+        "Offerings": "Предложения",
+        "ActiveOfferings": "Активные предложения",
+        "HistoryOfferings": "История"
     },
     "offerings/createOffering": {
         "Attention": "Внимание!",
