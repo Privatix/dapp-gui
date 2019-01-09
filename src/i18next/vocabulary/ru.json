@@ -689,6 +689,8 @@
         "incrementCurrentSupply": "увеличение числа свободных сервисов"
     },
     "updateInformer": {
-        "announcement": "<0>Доступна новая версия: {{name}}.</0>"
+        "announcement": "<0>Доступна новая версия: {{name}}.</0>",
+        "GoToUpdate": "Перейти к обновлению",
+        "DoNotShow": "Не показывать"
     }
 }

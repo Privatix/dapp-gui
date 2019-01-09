@@ -699,6 +699,8 @@
         "incrementCurrentSupply": "increment offering current supply"
     },
     "updateInformer": {
-        "announcement": "<0>New version {{name}} was released.</0>"
+        "announcement": "<0>New version {{name}} was released.</0>",
+        "GoToUpdate": "Go to update",
+        "DoNotShow": "Do not show"
     }
 }

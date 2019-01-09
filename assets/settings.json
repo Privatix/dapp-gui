@@ -14,10 +14,13 @@
         "key": "9191410d7c7c4231907b20b5c72ce55a",
         "enable": true
    },
-   "release": "0.7.0",
+   "release": "0.18.0",
+   "target": "",
    "logsCountPerPage": 10,
    "elementsPerPage": 10,
    "lang": "en",
    "releasesEndpoint": "https://api.github.com/repos/Privatix/privatix/releases",
+   "platformsEndpoint": "https://raw.githubusercontent.com/Privatix/dapp-gui/release/${version}/package.json",
+   "releases": {},
    "updateCheckFreq": 480
 }

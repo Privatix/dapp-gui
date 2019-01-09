@@ -16,12 +16,14 @@ export interface LocalSettings {
         key: string;
         enable: boolean;
     },
-    release: string;
     commit: string;
     logsCountPerPage: number;
     elementsPerPage: number;
     lang: string;
+    release: string;
     releasesEndpoint: string;
+    platformsEndpoint: string;
+    releases: {[key:string]: any};
     updateCheckFreq: number;
 }
 
