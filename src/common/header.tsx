@@ -5,7 +5,7 @@ import { translate } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
 import TopPanel from './topPanel';
-import UpdateInformer from './updateInformer';
+import UpdateInformer from './updateInformer/';
 
 import {State} from 'typings/state';
 

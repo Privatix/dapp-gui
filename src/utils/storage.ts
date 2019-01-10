@@ -12,9 +12,6 @@ const storage = createStore(reducers, applyMiddleware(
     thunkMiddleware, // lets us dispatch() functions
   ));
 
-api.on('announcement', function(event: any, data: any){
-    storage.dispatch(handlers.setReleases(data));
-});
 
 api.on('localSettings', function(event: any, data: any){
     storage.dispatch(handlers.updateLocalSettings(data));
@@ -25,8 +22,11 @@ const refresh = function(){
     const { ws, mode } = storage.getState();
 
     if(ws && ws.authorized){
+
         storage.dispatch(asyncProviders.updateAccounts());
         storage.dispatch(asyncProviders.updateProducts());
+        storage.dispatch(asyncProviders.updateSettings());
+
         if(mode === Role.AGENT){
             storage.dispatch(asyncProviders.updateTotalIncome());
         }
