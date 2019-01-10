@@ -177,6 +177,7 @@ class Connection extends React.Component<IProps, any>{
                 <div className='col-4'>
                     {serviceStatus === 'active' ? <IncreaseDepositButton channel={channel} render={render} /> : '' }
                     { !['terminating', 'terminated'].includes(serviceStatus) ? <FinishServiceButton channel={channel} /> : ''}
+
                     <TerminateContractButton
                         status='disabled'
                         payment={channel.usage.cost}
