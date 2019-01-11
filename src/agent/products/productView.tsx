@@ -52,12 +52,12 @@ class ProductView extends React.Component <IProps, IState> {
 
             try {
                 await ws.updateProduct(product);
-                notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('HostWasSuccessfullyUpdated')});
+                notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('HostWasSuccessfullyUpdated')});
             } catch (err) {
-                notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
             }
         } else {
-            notice({level: 'error', title: t('utils.notice/Attention!'), msg: t('PleaseInsertIPorDNS')});
+            notice({level: 'error', header: t('utils.notice/Attention!'), msg: t('PleaseInsertIPorDNS')});
         }
     }
 

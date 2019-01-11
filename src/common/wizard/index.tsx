@@ -9,6 +9,7 @@ import GenerateKey from './generateKey';
 import ImportHexKey from './importHexKey';
 import ImportJsonKey from './importJsonKey';
 import Backup from './backup';
+import GetPrix from './getPrix';
 
 import Login from 'common/auth/login';
 
@@ -40,10 +41,19 @@ export default class Wizard extends React.Component<IProps, IState> {
                         <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                         <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
                         <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-                        <Route path='/backup/:accountId/:from' render={(props: any) => <Backup entryPoint={'/app'}
-                                                                                                accountId={props.match.params.accountId}
-                                                                                                from={props.match.params.from}/>}
-                                                                                        />
+                        <Route path='/backup/:accountId/:from'
+                               render={(props: any) => <Backup entryPoint={'/app'}
+                                                               accountId={props.match.params.accountId}
+                                                               from={props.match.params.from}
+                                                       />
+                                      }
+                        />
+                        <Route path='/getPrix/:accountId'
+                               render={(props: any) => <GetPrix entryPoint={'/app'}
+                                                                accountId={props.match.params.accountId}
+                                                       />
+                                      }
+                        />
                         <Route path='/login' component={Login} />
                         <Route path='/app' component={app} />
                     </Switch>
@@ -60,10 +70,19 @@ export default class Wizard extends React.Component<IProps, IState> {
                         <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                         <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
                         <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-                        <Route path='/backup/:accountId/:from' render={(props: any) => <Backup entryPoint={'/app'}
-                                                                                               accountId={props.match.params.accountId}
-                                                                                               from={props.match.params.from}/>}
-                                                                                        />
+                        <Route path='/backup/:accountId/:from'
+                               render={(props: any) => <Backup entryPoint={'/app'}
+                                                               accountId={props.match.params.accountId}
+                                                               from={props.match.params.from}
+                                                       />
+                                      }
+                        />
+                        <Route path='/getPrix/:accountId'
+                               render={(props: any) => <GetPrix entryPoint={'/app'}
+                                                                accountId={props.match.params.accountId}
+                                                       />
+                                      }
+                        />
                         <Route path='/app' component={app} />
                     </Switch>
                 </Router>
@@ -78,10 +97,19 @@ export default class Wizard extends React.Component<IProps, IState> {
                         <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                         <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
                         <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-                        <Route path='/backup/:accountId/:from' render={(props: any) => <Backup entryPoint={'/app'}
-                                                                                               accountId={props.match.params.accountId}
-                                                                                               from={props.match.params.from}/>}
-                                                                                        />
+                        <Route path='/backup/:accountId/:from'
+                               render={(props: any) => <Backup entryPoint={'/app'}
+                                                               accountId={props.match.params.accountId}
+                                                               from={props.match.params.from}
+                                                       />
+                                      }
+                        />
+                        <Route path='/getPrix/:accountId'
+                               render={(props: any) => <GetPrix entryPoint={'/app'}
+                                                                accountId={props.match.params.accountId}
+                                                       />
+                                      }
+                        />
                         <Route path='/app' component={app} />
                     </Switch>
                 </Router>

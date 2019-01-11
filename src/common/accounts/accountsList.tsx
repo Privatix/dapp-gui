@@ -34,7 +34,7 @@ class Accounts extends React.Component<Props, any> {
         evt.preventDefault();
         const { t, ws } = this.props;
         await ws.updateBalance(accountId);
-        notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
+        notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
     }
 
     render(){

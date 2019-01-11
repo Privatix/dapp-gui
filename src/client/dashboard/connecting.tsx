@@ -129,7 +129,7 @@ class Connecting extends React.Component<any, any>{
 
                     if (pendingTimeCounter >= 100) {
                         clearTimeout(this.state.handler);
-                        notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
+                        notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
                         this.props.history.push('/client-dashboard-start');
                         return;
                     }

@@ -270,6 +270,10 @@ export class WS {
 
 // accounts
 
+    getAccount(id: string): Promise<Account> {
+        return this.getObject('account', id);
+    }
+
     getAccounts(): Promise<Account[]> {
         return this.send('ui_getAccounts') as Promise<Account[]>;
     }

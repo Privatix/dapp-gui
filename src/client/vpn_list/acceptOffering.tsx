@@ -126,7 +126,7 @@ class AcceptOffering extends React.Component<IProps, any>{
         }
 
         if(err){
-            notice({level: 'error', title: t('utils/notice:Attention!'), msg});
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             this.acceptBtn.current.removeAttribute('disabled');
             return;
         }
@@ -134,14 +134,14 @@ class AcceptOffering extends React.Component<IProps, any>{
         try {
             const acceptRes = await this.props.ws.acceptOffering(this.state.account.ethAddr, this.props.offering.id, this.state.customDeposit, this.state.gasPrice);
             if (typeof acceptRes === 'string') {
-                notice({level: 'info', title: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
+                notice({level: 'info', header: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
                 this.acceptBtn.current.removeAttribute('disabled');
                 document.body.classList.remove('modal-open');
                 this.props.history.push('/client-dashboard-connecting');
             }
         } catch (e) {
             msg = t('ErrorAcceptingOffering');
-            notice({level: 'error', title: t('utils/notice:Attention!'), msg});
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             this.acceptBtn.current.removeAttribute('disabled');
         }
 

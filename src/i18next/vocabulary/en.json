@@ -64,6 +64,16 @@
         "NoteWeEncryptThisFile": "Note: We encrypt this file using your application access password. Don't forget it!",
         "Browse": "Browse"
     },
+    "auth/getPrix":{
+        "WeAreCurrentlyOnTestnet": "We are currently on testnet.",
+        "YouShouldGetPRIXandETH": "You should get PRIX and ETH from privatix bot.",
+        "CopyTheAddress": "Copy the address below to the clipboard",
+        "PostIntoBot": "<0>Post it into <1>Privatix's bot chat</1>.</0>",
+        "PressButton": "Press button \"I did it\".",
+        "IdidIt": "I did it",
+        "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
+        "AllDonePressFinish": "All done. Press Finish"
+    },
     "auth/steps": {
         "Language": "Language",
         "Password": "Password",
@@ -73,7 +83,8 @@
     },
     "auth/utils": {
         "Next": "Next",
-        "Previous": "Previous"
+        "Previous": "Previous",
+        "Finish": "Finish"
     },
     "offerings": {
         "CreateAnOffering": "Create an offering"
