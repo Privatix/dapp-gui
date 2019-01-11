@@ -118,7 +118,7 @@ class SetPassword extends React.Component<any, any>{
             </div>
             <form className='form-horizontal m-t-20' action='#' onSubmit={this.onSubmit} >
                 <div className='p-20 wizard clearfix'>
-                    <Steps step='2' />
+                    <Steps step={2} />
                     <div className='content clearfix'>
                         <section className='setPasswordsBl'>
                             <p> {t('ThePasswordMustBeStrong')}</p>

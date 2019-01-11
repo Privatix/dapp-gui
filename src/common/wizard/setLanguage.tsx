@@ -37,7 +37,7 @@ class SetLanguage extends React.Component<any, any>{
             </div>
 
             <div className='p-20 wizard clearfix'>
-                <Steps step='1' />
+                <Steps step={1} />
                 <div className='content clearfix text-center'>
                     <div className='col-6 selectLangStep'>
                         <span className='col-4 col-form-label'>{t('PleaseSelectLanguage')}</span>

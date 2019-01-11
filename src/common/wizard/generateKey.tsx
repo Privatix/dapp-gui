@@ -89,7 +89,7 @@ class GenerateKey extends React.Component<IProps, any>{
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step='4' />
+                    <Steps step={4} prix={true} />
                     <div className='content clearfix'>
                         <section>
                            <div className='form-group row'>

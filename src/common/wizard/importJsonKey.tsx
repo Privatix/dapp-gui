@@ -16,13 +16,14 @@ interface IProps{
     default: string;
 }
 
-@translate(['auth/importHexKey', 'auth/setAccount', 'auth/generateKey', 'auth/importJsonKey', 'utils/notice'])
-class ImportHexKey extends React.Component<IProps, any>{
+@translate(['auth/importJsonKey', 'auth/setAccount', 'auth/generateKey', 'utils/notice'])
+class ImportJsonKey extends React.Component<IProps, any>{
 
     constructor(props: IProps){
         super(props);
         this.state = {name: props.default === 'true' ? 'main' : ''
-                     ,privateKey: ''
+                     ,fileName: ''
+                     ,pwd: ''
                      };
     }
 
@@ -47,24 +48,29 @@ class ImportHexKey extends React.Component<IProps, any>{
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
     }
 
-    onSubmit = async (evt: any) => {
+    onFileSelected = (evt: any) => {
+        const fileName = evt.target.files[0].path;
+        this.setState({fileName});
+    }
 
+    onSubmit = async (evt: any) => {
         evt.preventDefault();
 
         const { t, ws } = this.props;
-        let {privateKey, name} = this.state;
+        const {pwd, fileName, name} = this.state;
         let msg = '';
         let err = false;
 
-        if(privateKey.substr(0,2) === '0x'){
-            privateKey = privateKey.substr(2);
-        }
-        if(!/^[0-9a-z]{64}$/i.test(privateKey)){
-            msg += ' ' + t('PrivateKeyMustHave');
-            err = true;
-        }
         if(name === ''){
             msg += ' ' + t('auth/generateKey:AccountsNameCantBeEmpty');
+            err = true;
+        }
+        if(fileName === ''){
+            msg += ' ' + t('NoFileChosen');
+            err = true;
+        }
+        if(pwd === ''){
+            msg += ' ' + t('PleaseSetThePassword');
             err = true;
         }
 
@@ -73,21 +79,24 @@ class ImportHexKey extends React.Component<IProps, any>{
             return;
         }
 
+        const res = await api.fs.readFile(fileName);
+        const keyObject = JSON.parse(res);
+
         const payload = {
              isDefault: this.props.default === 'true'
             ,inUse: true
             ,name
-            ,privateKeyHex: privateKey
         };
 
-        try {
-            const id = await ws.importAccountFromHex(payload);
-            api.settings.updateLocal({accountCreated:true});
-            this.props.history.push(`/backup/${id}/importHexKey`);
-        } catch (e) {
-            msg = t('SomethingWentWrong');
-            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
-        }
+        ws.importAccountFromJSON(payload, keyObject, pwd, (res: any)=>{
+            if('error' in res){
+                msg = t('SomethingWentWrong');
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            }else{
+                api.settings.updateLocal({accountCreated:true});
+                this.props.history.push(`/backup/${res.result}/importJsonKey`);
+            }
+        });
     }
 
     render(){
@@ -100,7 +109,7 @@ class ImportHexKey extends React.Component<IProps, any>{
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step='4' />
+                    <Steps step={4} />
                     <div className='content clearfix'>
                         <section>
                            <div className='form-group row'>
@@ -115,18 +124,28 @@ class ImportHexKey extends React.Component<IProps, any>{
                                     />
                                 </div>
                            </div>
-                           <p>{t('PleaseInputHexRepresentation')}</p>
                            <div className='form-group row'>
                             <div className='col-12'>
-                                <label>{t('PrivateKey')}:</label>
-                                <textarea data-payload-value='privateKey' className='form-control' onChange={this.onUserInput} ></textarea>
+                                <label>{t('PathToJSONKeystoreFile')}:</label>
+                                <input type='file' className='form-control' onChange={this.onFileSelected} />
                               </div>
                            </div>
-                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('auth/importJsonKey:MoreInformation')}</a>
+                           <div className='form-group row'>
+                            <div className='col-12'>
+                                <label>{t('PasswordWillBeUsed')}</label>
+                                <input data-payload-value='pwd'
+                                       type='password'
+                                       className='form-control'
+                                       value={this.state.pwd}
+                                       onChange={this.onUserInput}
+                                />
+                              </div>
+                           </div>
+                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('MoreInformation')}</a>
                            <div className='form-group text-right m-t-40'>
                                 <PreviousButton onSubmit={this.back} />
                                 <NextButton onSubmit={this.onSubmit} />
-                           </div>
+                            </div>
                         </section>
                     </div>
                 </div>
@@ -135,4 +154,4 @@ class ImportHexKey extends React.Component<IProps, any>{
     }
 }
 
-export default ws<IProps>(withRouter(ImportHexKey));
+export default ws<IProps>(withRouter(ImportJsonKey));

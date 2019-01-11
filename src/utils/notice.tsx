@@ -2,7 +2,13 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 // declare var $: any;
 
-export default function(notice: any, delay?: number){
+interface Notice {
+    level: 'info' | 'warning' | 'error';
+    header?: string;
+    msg: string;
+}
+
+export default function(notice: Notice, delay?: number){
 
     const target = document.getElementById('noticeHolder');
 

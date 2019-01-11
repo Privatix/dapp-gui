@@ -1,27 +1,31 @@
 import * as React from 'react';
-import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
+import { withRouter, RouteComponentProps } from 'react-router';
 import { translate } from 'react-i18next';
 import Select from 'react-select';
 
 import countries from 'utils/countries';
 import notice from 'utils/notice';
-import { WS } from 'utils/ws';
+import { ws, WS } from 'utils/ws';
 
 import { Product } from 'typings/products';
-import { State } from 'typings/state';
 
-interface Props {
+type IProps = RouteComponentProps<{}> & {
     product: Product;
     dispatch: any;
     t?: any;
     ws?: WS;
+};
+
+interface IState {
+    product: Product;
+    host: string;
+    country: string;
 }
 
 @translate(['products/productView', 'utils/notice', 'common'])
-class ProductView extends React.Component <Props,any> {
+class ProductView extends React.Component <IProps, IState> {
 
-    constructor(props:Props) {
+    constructor(props:IProps) {
         super(props);
 
         this.state = {
@@ -31,11 +35,11 @@ class ProductView extends React.Component <Props,any> {
         };
     }
 
-    handleHostChange = (evt:any) => {
+    handleHostChange = (evt: any) => {
         this.setState({host: evt.target.value});
     }
 
-    saveHost = async (evt:any) => {
+    saveHost = async (evt: React.SyntheticEvent<EventTarget>) => {
 
         evt.preventDefault();
 
@@ -48,12 +52,12 @@ class ProductView extends React.Component <Props,any> {
 
             try {
                 await ws.updateProduct(product);
-                notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('HostWasSuccessfullyUpdated')});
+                notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('HostWasSuccessfullyUpdated')});
             } catch (err) {
-                notice({level: 'error', title: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('SomethingWentWrong')});
             }
         } else {
-            notice({level: 'error', title: t('utils.notice/Attention!'), msg: t('PleaseInsertIPorDNS')});
+            notice({level: 'error', header: t('utils.notice/Attention!'), msg: t('PleaseInsertIPorDNS')});
         }
     }
 
@@ -107,6 +111,4 @@ class ProductView extends React.Component <Props,any> {
     }
 }
 
-export default connect( (state: State, onProps: Props) => {
-    return Object.assign({}, {ws: state.ws}, onProps);
-} )(withRouter(ProductView));
+export default withRouter<IProps>(ws<IProps>(ProductView));

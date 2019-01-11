@@ -64,6 +64,16 @@
         "NoteWeEncryptThisFile": "Внимание: Мы зашифруем этот файл используя Ваш пароль для приложения.",
         "Browse": "Выбрать"
     },
+    "auth/getPrix":{
+        "WeAreCurrentlyOnTestnet": "На данный момент мы работаем в тестовой сети Ethereum.",
+        "YouShouldGetPRIXandETH": "Вас нужно получить PRIX и ETH у бота privatix.",
+        "CopyTheAddress": "Скопируйте адрес ниже в буфер обмена",
+        "PostIntoBot": "<0>Отправьте его <1>чат боту Privatix</1>.</0>",
+        "PressButton": "Нажмите на кнопку \"Я это сделал(а)\".",
+        "IdidIt": "Я это сделал(a)",
+        "PleaseWait": "Пожалуйста подождите. Идет отправка PRIX и ETH на Ваш аккаунт.",
+        "AllDonePressFinish": "Все готово. Нажмите кнопку Завершить"
+    },
     "auth/steps": {
         "Language": "Язык",
         "Password": "Пароль",
@@ -74,7 +84,8 @@
     },
     "auth/utils": {
         "Next": "Далее",
-        "Previous": "Назад"
+        "Previous": "Назад",
+        "Finish": "Завершить"
     },
     "offerings": {
         "CreateAnOffering": "Создать предложение"

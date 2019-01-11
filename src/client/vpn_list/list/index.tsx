@@ -71,7 +71,7 @@ class VPNList extends React.Component<any,any> {
 
         this.getClientOfferings(activePage).then(() => {
             if (clicked === true) {
-                notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('SuccessUpdateMsg')});
+                notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('SuccessUpdateMsg')});
             }
         });
     }
@@ -90,7 +90,7 @@ class VPNList extends React.Component<any,any> {
 
         // If not empty filter input Offering hash - search only by Offering hash
         if (this.state.offeringHash !== '') {
-            notice({level: 'warning', title: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
+            notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
             return;
         }
 

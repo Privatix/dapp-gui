@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Link } from 'react-router-dom';
 import { translate } from 'react-i18next';
 
-export default translate('auth/steps')(({step, t}) => (
+export default translate('auth/steps')(({step, t, prix}) => (
 
 	<div className='steps clearfix'>
         <ul role='tablist'>
@@ -32,12 +32,22 @@ export default translate('auth/steps')(({step, t}) => (
                     {t('Account')}
                 </a>
             </li>
-            <li role='tab' className={ step === '5' ? 'current' : 'disabled' } style={{width:'auto'}}>
+            <li role='tab' className={ step >= 5 ? (step > 5 ? 'done' : 'current') : 'disabled'} style={{width:'auto'}}>
                 <a id='steps-uid-0-t-3' href='#'>
                     <span className='number'>5.</span>
                     {t('Backup')}
                 </a>
             </li>
+            {/* this step is only relevant for test net */ }
+            {prix ?
+                <li role='tab' className={ step >= 6 ? (step > 6 ? 'done' : 'current') : 'disabled'} style={{width:'auto'}}>
+                    <a id='steps-uid-0-t-4' href='#'>
+                        <span className='number'>6.</span>
+                        {'PRIX'}
+                    </a>
+                </li>
+               : null
+            }
         </ul>
     </div>
 ));

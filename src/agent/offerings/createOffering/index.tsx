@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { withRouter } from 'react-router';
+import { withRouter, RouteComponentProps } from 'react-router';
 import { translate, Trans } from 'react-i18next';
 import Select from 'react-select';
 
@@ -27,17 +27,15 @@ import { Product } from 'typings/products';
 };
 
 
-interface IProps {
+type IProps = RouteComponentProps<any> & {
     product?: string;
     ws?: WS;
     t?: any;
     done?: Function;
     closeModal?: Function;
-    location?: any;
-    history?: any;
     accounts?: Account[];
     products?: Product[];
-}
+};
 
 @translate(['offerings/createOffering', 'common', 'utils/notice'])
 class CreateOffering extends React.Component<IProps, any>{
@@ -732,6 +730,6 @@ class CreateOffering extends React.Component<IProps, any>{
 }
 
 // export default withRouter(CreateOffering);
-export default connect( (state: State, onProps: IProps) => {
+export default withRouter(connect( (state: State, onProps: IProps) => {
     return (Object.assign({}, {ws: state.ws, accounts: state.accounts, products: state.products}, onProps));
-} )(withRouter(CreateOffering));
+} )(CreateOffering));
