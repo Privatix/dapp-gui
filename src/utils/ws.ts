@@ -54,8 +54,12 @@ export class WS {
             });
         }
 
-        socket.onopen = () => {
+        socket.onopen = async () => {
           console.log('Connection established.');
+          if(this.pwd){
+              const token = await this.getToken();
+              this.token = token;
+          }
           this.resolve(true);
           this.resolve = null;
         };
@@ -205,7 +209,7 @@ export class WS {
 
 // auth
 
-    getToken(){
+    getToken(): Promise<string>{
         const uuid = uuidv4();
         const req = {
             jsonrpc: '2.0',
@@ -225,7 +229,7 @@ export class WS {
 
             WS.handlers[uuid] = handler;
             this.socket.send(JSON.stringify(req));
-        });
+        }) as Promise<string>;
     }
 
     setPassword(pwd: string){
@@ -245,7 +249,7 @@ export class WS {
                 this.getToken()
                     .then(token => {
                         if(token){
-                            this.token = token as any;
+                            this.token = token;
                             this.authorized = true;
                             resolve(true);
                         }else{
