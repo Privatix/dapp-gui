@@ -34,7 +34,7 @@ class OfferingsListByStatus extends React.Component<any, any>{
                     <h3 className='page-title'>{title}</h3>
                 </div>
             </div>
-            <OfferingsListView products={this.state.products} offerings={this.state.offerings} />
+            <OfferingsListView products={this.state.products} offerings={this.state.offerings} showRemoved={true} />
         </div>;
     }
 }
