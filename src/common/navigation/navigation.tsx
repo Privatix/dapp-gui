@@ -23,6 +23,7 @@ class Navigation extends React.Component<Props, any> {
 
         this.state = {
             submenu: false,
+            activeSub: null,
             channelsSubmenuData: {
                 mainLink: {
                     link: '/channels',
@@ -62,18 +63,13 @@ class Navigation extends React.Component<Props, any> {
         };
     }
 
-    handleClick() {
-        this.setState((oldState) => {
-            return {submenu: !oldState.submenu};
-        });
+    changeActive = (activeSub: any)=>{
+        this.setState({activeSub});
     }
 
-    handleClickTrue() {
-        this.setState({submenu: true});
-    }
 
     handleClickFalse() {
-        this.setState({submenu: false});
+        this.setState({submenu: false, activeSub: null});
     }
 
     render() {
@@ -89,9 +85,9 @@ class Navigation extends React.Component<Props, any> {
                             </NavLink>
                         </li>
 
-                        <Submenu submenuData={this.state.channelsSubmenuData} />
+                        <Submenu submenuData={this.state.channelsSubmenuData} active={this.state.activeSub} onClick={this.changeActive}/>
 
-                        <Submenu submenuData={this.state.offeringsSubmenuData} />
+                        <Submenu submenuData={this.state.offeringsSubmenuData} active={this.state.activeSub} onClick={this.changeActive} />
 
                         <li onClick={this.handleClickFalse.bind(this)} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
