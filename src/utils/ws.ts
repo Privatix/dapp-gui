@@ -121,28 +121,7 @@ export class WS {
             this.socket.send(JSON.stringify(req));
         }) as Promise<string>;
     }
-/*
-    on(testRequest: Function, currentResult: any, handler: Function){
 
-        const state = { id: null};
-
-        const tester = async () => {
-            const result = await testRequest();
-            if(isEqual(result, currentResult)){
-                state.id = setTimeout(tester, 1000);
-            }else {
-                handler();
-            }
-        };
-
-        tester();
-
-        return () => {
-            clearTimeout(state.id);
-        };
-
-    }
-*/
     unsubscribe(id: string){
 
         const uuid = uuidv4();
