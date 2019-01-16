@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
 
+import { WS, ws } from 'utils/ws';
+import {Channel} from 'typings/channels';
+
 import AgentAccessInfo from 'agent/endpoints/agentAccessInfo';
 import ProductNameByOffering from 'agent/products/productNameByOffering';
 
@@ -11,23 +14,30 @@ import ContractStatus from 'common/badges/contractStatus';
 import toFixedN from 'utils/toFixedN';
 import Offering from 'agent/offerings/offeringView';
 
-@translate('channels/channelView')
-export default class ChannelView extends React.Component<any, any> {
+interface IProps{
+    ws?: WS;
+    t?: any;
+    render?: Function;
+    channel: Channel;
+}
 
-    constructor(props:any){
+@translate('channels/channelView')
+class ChannelView extends React.Component<IProps, any> {
+
+    constructor(props: IProps){
         super(props);
         this.state = {offering: null};
         this.updateOffering(props.channel.offering);
     }
 
-    updateOffering(offeringId: string){
+    async updateOffering(offeringId: string){
 
-        (window as any).ws.getOffering(offeringId)
-           .then(offering => {
-               if(offering){
-                   this.setState({offering});
-               }
-           });
+        const { ws } = this.props;
+
+        const offering = await ws.getOffering(offeringId);
+        if(offering){
+            this.setState({offering});
+        }
     }
 
     showOffering = (evt:any) => {
@@ -93,3 +103,5 @@ export default class ChannelView extends React.Component<any, any> {
         </div>;
     }
 }
+
+export default ws<IProps>(ChannelView);

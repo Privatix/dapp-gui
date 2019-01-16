@@ -5,14 +5,23 @@ import { translate } from 'react-i18next';
 import Steps from './steps';
 import {PreviousButton, NextButton, back} from './utils';
 import notice from 'utils/notice';
+
 import * as api from 'utils/api';
+import { WS, ws } from 'utils/ws';
+
+interface IProps{
+    ws?: WS;
+    t?: any;
+    history?: any;
+    default: string;
+}
 
 @translate(['auth/generateKey', 'auth/setAccount', 'utils/notice'])
-class GenerateKey extends React.Component<any, any>{
+class GenerateKey extends React.Component<IProps, any>{
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
-        this.state = {name: this.props.default === 'true' ? 'main' : ''};
+        this.state = {name: props.default === 'true' ? 'main' : ''};
     }
 
     back = back('/setAccount').bind(this);
@@ -31,15 +40,15 @@ class GenerateKey extends React.Component<any, any>{
         }
     }
 
-    onUserInput(evt:any){
+    onUserInput = (evt:any) => {
         this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
     }
 
     onSubmit = async (evt: any) => {
         evt.preventDefault();
 
-        const { t } = this.props;
-        const name = this.state.name;
+        const { t, ws } = this.props;
+        const { name } = this.state;
 
         let msg = '';
         let err = false;
@@ -61,7 +70,7 @@ class GenerateKey extends React.Component<any, any>{
         };
 
         try {
-            const accountId = await (window as any).ws.generateAccount(payload);
+            const accountId = await ws.generateAccount(payload);
             api.settings.updateLocal({accountCreated:true});
             this.props.history.push(`/backup/${accountId}/generateKey`);
         } catch (e){
@@ -90,7 +99,7 @@ class GenerateKey extends React.Component<any, any>{
                                            type='text'
                                            name='name'
                                            className='form-control'
-                                           onChange={this.onUserInput.bind(this)}
+                                           onChange={this.onUserInput}
                                            value={this.state.name}
                                     />
                                 </div>
@@ -109,4 +118,4 @@ class GenerateKey extends React.Component<any, any>{
     }
 }
 
-export default withRouter(GenerateKey);
+export default ws<IProps>(withRouter(GenerateKey));

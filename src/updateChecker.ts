@@ -14,7 +14,24 @@ class UpdateChecker {
 
         try{
             const releases = JSON.parse(await res.text());
-            announce(releases);
+            const versions = releases.map(release => release.tag_name);
+
+            versions.forEach(async (version) => {
+                if(version in settings.releases && 'platforms' in settings.releases[version]){
+                    return;
+                }
+
+                const endpoint = settings.platformsEndpoint.replace(/\$\{([a-zA-Z]+)\}/, ((subs, newSub, name) => {
+                    return name in subs ? subs[name] : '';
+                }).bind(null, {version}));
+                const res = await fetch(endpoint);
+                if(res.status !== 200){
+                   return;
+                }
+                const desc = JSON.parse(await (res as any).text());
+                announce({[version]: Object.assign({}, releases.find(release => release.tag_name === version), {'platforms': desc})});
+            });
+
         } catch ( e ){
             // DO NOTHING
         }

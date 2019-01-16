@@ -198,14 +198,9 @@ class AccountView extends React.Component<IProps, any> {
                                 done={this.transferTokens}
                                 title={t('TransferBtn')}
                                 text={<span>
-                                        {t('TransferSwalText1')}
-                                        {destination === 'ptc' ? t('ServiceSwalBalanceFrom') : t('ExchangeSwalBalanceFrom')}
-                                        {t('TransferSwalText2')}
-                                        {destination === 'psc' ? t('ServiceSwalBalance') : t('ExchangeSwalBalance')}
-                                        {t('TransferSwalText3')}
-                                        <br />
-                                        {t('TransferSwalText4')}<br /><br />
-                                        {t('TransferSwalText5')}
+                                        {destination === 'ptc' ? t('TransferSwalTextFromPscToPtc') : t('TransferSwalTextFromPtcToPsc')}
+                                        <br />{t('TransferSwalTextPart2')}
+                                        <br /><br />{t('TransferSwalTextPart3')}
                                       </span>}
                                 class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
                                 swalType='warning'

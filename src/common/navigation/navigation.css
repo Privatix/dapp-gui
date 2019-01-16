@@ -1,0 +1,9 @@
+#sidebar-menu li[aria-current="page"] .sub_menu_1 {
+    height: 38px;
+}
+#sidebar-menu li[aria-current="page"] .sub_menu_2 {
+    height: 76px;
+}
+#sidebar-menu li[aria-current="page"] .sub_menu_3 {
+    height: 114px;
+}

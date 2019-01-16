@@ -9,7 +9,6 @@ const {dialog} = remote;
 import SortableTable from 'react-sortable-table-vilan';
 
 import * as api from 'utils/api';
-import {fetch} from 'utils/fetch';
 import notice from 'utils/notice';
 
 import ModalWindow from 'common/modalWindow';
@@ -222,7 +221,7 @@ class Logs extends React.Component <any,any> {
                 const headers = ['time', 'level', 'message', 'context', 'stack'];
                 const data = this.getLogsDataExport();
                 data.unshift(headers);
-                fetch('/saveAs', {body: {fileName, data: data.map(row => row.join(',')).join('\n')}});
+                api.fs.saveAs(fileName, data.map(row => row.join(',')).join('\n'));
             }
         });
     }

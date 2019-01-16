@@ -54,7 +54,10 @@ class AcceptOffering extends React.Component<IProps, any>{
     }
 
     async componentDidMount(){
-        const accounts = await (window as any).ws.getAccounts();
+
+        const { ws } = this.props;
+
+        const accounts = await ws.getAccounts();
         const account = accounts.find((account: any) => account.isDefault);
         this.getNotTerminatedConnections();
         this.setState({accounts, account});
@@ -285,5 +288,4 @@ class AcceptOffering extends React.Component<IProps, any>{
     }
 }
 
-// export default connect( (state: State, ownProps: IProps) => Object.assign({}, {ws: state.ws}, ownProps) )(withRouter(AcceptOffering));
 export default ws<IProps>(withRouter(AcceptOffering));

@@ -2,31 +2,30 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 import { connect } from 'react-redux';
 import Pagination from 'react-js-pagination';
-import Slider from 'rc-slider';
 
 import './list.css';
 import 'rc-slider/assets/index.css';
 
-import SortableTable from 'react-sortable-table-vilan';
 import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
 import AcceptOffering from '../acceptOffering';
 import ModalWindow from 'common/modalWindow';
-import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
+
 import notice from 'utils/notice';
 import toFixedN from 'utils/toFixedN';
-import * as api from 'utils/api';
 import countryByIso from 'utils/countryByIso';
-import Availability from './availability';
 
-import CopyToClipboard from 'common/copyToClipboard';
+import Spinner from './spinner';
+import VPNListTable from './table';
+import SelectByAgent from './selectByAgent';
+import SelectByOffering from './selectByOffering';
+import SelectCountry from './selectCountry';
+import SelectByPrice from './selectByPrice';
 
 import {State} from 'typings/state';
-import {LocalSettings} from 'typings/settings';
 import { asyncProviders } from 'redux/actions';
 
 @translate(['client/vpnList', 'utils/notice', 'common'])
-
 class VPNList extends React.Component<any,any> {
 
     checkAvailabilityBtn = null;
@@ -34,7 +33,6 @@ class VPNList extends React.Component<any,any> {
     constructor(props:any) {
         super(props);
 
-        const { t } = props;
         this.checkAvailabilityBtn = React.createRef();
 
         this.state = {
@@ -49,69 +47,16 @@ class VPNList extends React.Component<any,any> {
             countries: [],
             filteredCountries: [],
             checkedCountries: [],
-            showAllCountries: false,
-            elementsPerPage: 0,
             activePage: 1,
             totalItems: 0,
             agent: '',
             offeringHash: '',
-            defaultShowCountriesCount: 5,
             rawOfferings: [],
-            offeringsAvailability: props.offeringsAvailability,
-            columns: [
-                {
-                    header: t('Availability'),
-                    key: 'availability',
-                    headerStyle: {textAlign: 'center'},
-                    dataProps: {className: 'text-center'},
-                    render: (availability) => { return <Availability availability={availability} />; }
-                },
-                {
-                    header: t('Block'),
-                    key: 'block'
-                },
-                {
-                    header: t('Hash'),
-                    key: 'hash',
-                    dataProps: { className: 'shortTableTextTd' },
-                    descSortFunction: ModalPropTextSorter.desc,
-                    ascSortFunction: ModalPropTextSorter.asc
-                },
-                {
-                    header: t('Agent'),
-                    key: 'agent',
-                    dataProps: { className: 'shortTableTextTd' },
-                    render: (agent) => {
-                        const agentText = '0x' + agent;
-                        return <div>
-                            <span className='shortTableText' title={agentText}>{agentText}</span>
-                            <CopyToClipboard text={agentText} />
-                        </div>;
-                    }
-                },
-                {
-                    header: t('Country'),
-                    key: 'country'
-                },
-                {
-                    header: t('Price'),
-                    key: 'price'
-                },
-                {
-                    header: t('AvailableSupply'),
-                    key: 'availableSupply'
-                },
-                {
-                    header: t('SupplyTotal'),
-                    key: 'supply'
-                }
-            ]
         };
 
     }
 
     async componentDidMount() {
-        await this.getElementsPerPage();
         this.getClientOfferings();
     }
 
@@ -119,15 +64,6 @@ class VPNList extends React.Component<any,any> {
         if (this.state.handler !== null) {
             clearTimeout(this.state.handler);
         }
-    }
-
-    static getDerivedStateFromProps(props:any, state:any) {
-        return {offeringsAvailability: props.offeringsAvailability};
-    }
-
-    async getElementsPerPage() {
-        const settings = (await api.settings.getLocal()) as LocalSettings;
-        this.setState({elementsPerPage: settings.elementsPerPage});
     }
 
     async refresh(clicked?: boolean, activePage:number = 1) {
@@ -142,22 +78,23 @@ class VPNList extends React.Component<any,any> {
 
     shouldComponentUpdate(nextProps:any, nextState:any) {
         return (this.state.spinner !== nextState.spinner)
-            || (this.state.showAllCountries !== nextState.showAllCountries)
             || (this.state.filteredCountries !== nextState.filteredCountries)
             || (this.state.offeringHash !== nextState.offeringHash)
-            || !(isEqual(this.state.offeringsAvailability, nextState.offeringsAvailability))
+            || !(isEqual(this.props.offeringsAvailability, nextProps.offeringsAvailability))
             || !(isEqual(nextState.rawOfferings, this.state.rawOfferings));
     }
 
     async getClientOfferings(activePage:number = 1, from:number = 0, to:number = 0) {
+
+        const { t, localSettings } = this.props;
+
         // If not empty filter input Offering hash - search only by Offering hash
         if (this.state.offeringHash !== '') {
-            const { t } = this.props;
             notice({level: 'warning', title: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
             return;
         }
 
-        const limit = this.state.elementsPerPage;
+        const limit = localSettings.elementsPerPage;
         const offset = activePage > 1 ? (activePage - 1) * limit : 0;
 
         const checkedCountries = this.state.checkedCountries;
@@ -225,11 +162,11 @@ class VPNList extends React.Component<any,any> {
     }
 
     formFilteredDataRow(offering: any) {
-        const { t } = this.props;
+        const { t, offeringsAvailability } = this.props;
         const offeringHash = '0x' + offering.hash;
 
-        const availability = (offering.id in this.state.offeringsAvailability.statuses)
-            ? (this.state.offeringsAvailability.statuses[offering.id] === true ? 'available' : 'unreachable')
+        const availability = (offering.id in offeringsAvailability.statuses)
+            ? (offeringsAvailability.statuses[offering.id] === true ? 'available' : 'unreachable')
             : 'unknown';
 
         return {
@@ -250,7 +187,7 @@ class VPNList extends React.Component<any,any> {
         };
     }
 
-    changeMinPriceInput(evt:any) {
+    onChangeMinPrice = (evt:any): void => {
         let priceFrom = evt.target.value;
         if (priceFrom === '' || Number.isNaN(priceFrom) || (typeof priceFrom === 'undefined')) {
             priceFrom = this.state.from;
@@ -263,10 +200,10 @@ class VPNList extends React.Component<any,any> {
         }
         const priceTo = (document.getElementById('priceTo') as HTMLInputElement).value;
 
-        this.changeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
+        this.onChangeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
     }
 
-    changeMaxPriceInput(evt:any) {
+    onChangeMaxPrice = (evt:any):void => {
         let priceTo = evt.target.value;
         if (priceTo === '' || Number.isNaN(priceTo) || (typeof priceTo === 'undefined')) {
             priceTo = this.state.to;
@@ -278,10 +215,10 @@ class VPNList extends React.Component<any,any> {
         }
         const priceFrom = (document.getElementById('priceFrom') as HTMLInputElement).value;
 
-        this.changeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
+        this.onChangeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
     }
 
-    changeRange(value:any) {
+    onChangeRange = (value:any): void => {
         let from = value[0];
         let to = value[1];
         (document.getElementById('priceFrom') as HTMLInputElement).value = from;
@@ -298,16 +235,7 @@ class VPNList extends React.Component<any,any> {
         this.setState({handler, from, to});
     }
 
-    showCountriesHandler() {
-        this.setState({filteredCountries: this.state.countries});
-        if (this.state.showAllCountries) {
-            this.setState({showAllCountries: false});
-        } else {
-            this.setState({showAllCountries: true});
-        }
-    }
-
-    filterCountries(e:any) {
+    filterCountries = (e:any): void => {
         const searchText = e.target.value;
         let patt = new RegExp(searchText, 'i');
         let filteredCountries = this.state.countries.filter((item) => {
@@ -320,20 +248,20 @@ class VPNList extends React.Component<any,any> {
         });
     }
 
-    filterByAgent(e: any){
+    onAgentChanged = (e: any): void => {
         let agent = e.target.value.toLowerCase().trim();
 
         this.setState({agent}, this.getClientOfferings);
     }
 
-    filterByOfferingHash(e: any){
+    onOfferingHashChanged = (e: any): void => {
         let offeringHash = e.target.value.toLowerCase().trim();
 
         this.setState({offeringHash}, this.getClientOfferingsByOfferingHash);
     }
 
-    filterByCountryHandler(e:any) {
-        let checkedCountries = this.state.checkedCountries;
+    filterByCountryHandler = (e:any): void => {
+        let checkedCountries = this.state.checkedCountries.slice();
         const country = e.target.value;
 
         if (e.target.checked && checkedCountries.indexOf(country) === -1) {
@@ -361,17 +289,8 @@ class VPNList extends React.Component<any,any> {
 
     checkStatus() {
         this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
-        const offeringsIds = this.getOfferingsIds();
+        const offeringsIds = this.state.rawOfferings.map(offering => offering.id);
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
-    }
-
-    getOfferingsIds() {
-        let offeringsIds = [];
-        this.state.rawOfferings.map((offering) => {
-            offeringsIds.push(offering.id);
-        });
-
-        return offeringsIds;
     }
 
     render() {
@@ -379,45 +298,19 @@ class VPNList extends React.Component<any,any> {
             return this.formFilteredDataRow(offering);
         });
 
-        const { t } = this.props;
-        const createSliderWithTooltip = Slider.createSliderWithTooltip;
-        const Range = createSliderWithTooltip(Slider.Range);
+        const { t, localSettings, offeringsAvailability } = this.props;
 
-        if (this.state.offeringsAvailability.counter === 0
+        if (offeringsAvailability.counter === 0
             && this.checkAvailabilityBtn.current
             && this.checkAvailabilityBtn.current.hasAttribute('disabled')) {
             this.checkAvailabilityBtn.current.removeAttribute('disabled');
         }
 
-        let buttonText = t('ShowAllBtn');
-        let searchHtml = null;
-        if (this.state.showAllCountries) {
-            buttonText = t('HideBtn');
-            searchHtml = <div className='form-group row'>
-                <div className='col-md-12 m-t-10 m-b-10'>
-                    <div className='input-group searchInputGroup'>
-                        <div className='input-group-prepend'>
-                            <span className='input-group-text'><i className='fa fa-search'></i></span>
-                        </div>
-                        <input className='form-control' type='search' name='search' placeholder={t('Search')}
-                               onChange={this.filterCountries.bind(this)} />
-                    </div>
-                </div>
-            </div>;
-        }
-
-        const showHideCountriesBtn = this.state.filteredCountries.length > this.state.defaultShowCountriesCount
-            ? <div className='text-center'>
-                    <button type='button' className='btn btn-link waves-effect'
-                            onClick={this.showCountriesHandler.bind(this)}>{buttonText}</button>
-                </div>
-            : '';
-
-        const pagination = this.state.totalItems <= this.state.elementsPerPage ? '' :
+        const pagination = this.state.totalItems <= localSettings.elementsPerPage ? '' :
             <div>
                 <Pagination
                     activePage={this.state.activePage}
-                    itemsCountPerPage={this.state.elementsPerPage}
+                    itemsCountPerPage={localSettings.elementsPerPage}
                     totalItemsCount={this.state.totalItems}
                     pageRangeDisplayed={10}
                     onChange={this.handlePageChange.bind(this)}
@@ -425,10 +318,6 @@ class VPNList extends React.Component<any,any> {
                     nextPageText='›'
                 />
             </div>;
-
-        const noResults = offerings.length === 0 ?
-            <p className='text-warning text-center m-t-20 m-b-20'>{t('common:NoResults')}</p>
-            : '';
 
         const resetFilters = this.state.agent !== ''
             || this.state.offeringHash !== ''
@@ -441,28 +330,12 @@ class VPNList extends React.Component<any,any> {
                 </div>
                 : '';
 
-        return this.state.spinner ? <div className='container-fluid'>
-                <div className='row m-t-20'>
-                    <div className='col-12'>
-                        <div className='card'>
-                            <div className='col-4 m-b-20'>
-                                <div className='card-body'>
-                                    <p className='font-25'>{t('WaitForDownloading')}</p>
-                                    <div className='text-center m-t-15 m-b-15'>
-                                        <div className='lds-dual-ring'></div>
-                                    </div>
-                                    <p className='m-b-0'>{t('CurrentlyWeAreDownloading')}</p>
-                                    <p>{t('TakesTimeOnFirstRun')}</p>
-                                    <p className='m-t-15'>{t('AverageTimeForDownloading')}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            :
-            <div className='container-fluid'>
+        if(this.state.spinner){
+            return <Spinner />;
+        }
 
+        return (
+            <div className='container-fluid'>
                 <div className='row m-t-20'>
                     <div className='col-12 m-b-20'>
                         <button
@@ -481,124 +354,41 @@ class VPNList extends React.Component<any,any> {
 
                         <div className='card m-b-20'>
                             <div className='card-body'>
-                                <div className='form-group row'>
-                                    <div className='col-12'>
-                                        <label className='control-label'>{t('AgentAddress')}</label>
-                                    </div>
-                                    <div className='col-md-12'>
-                                        <div className='input-group searchInputGroup searchInputGroupVPNList'>
-                                            <div className='input-group-prepend'>
-                                                <span className='input-group-text'><i className='fa fa-search'></i></span>
-                                            </div>
-                                            <input className='form-control'
-                                                   type='search'
-                                                   name='agent'
-                                                   placeholder='0x354B10B5c4A96b81b5e4F12F90cd0b7Ae5e05eE6'
-                                                   value={this.state.agent}
-                                                   onChange={this.filterByAgent.bind(this)} />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className='form-group row'>
-                                    <div className='col-12'>
-                                        <label className='control-label'>{t('OfferingHash')}</label>
-                                    </div>
-                                    <div className='col-md-12'>
-                                        <div className='input-group searchInputGroup searchInputGroupVPNList'>
-                                            <div className='input-group-prepend'>
-                                                <span className='input-group-text'><i className='fa fa-search'></i></span>
-                                            </div>
-                                            <input className='form-control'
-                                                   type='search'
-                                                   name='offeringHash'
-                                                   placeholder='0x74c96979ae4fbb11a7122a71e90161f1feee7523472cea74f8b9f3ca8481fb37'
-                                                   value={this.state.offeringHash}
-                                                   onChange={this.filterByOfferingHash.bind(this)} />
-                                        </div>
-                                    </div>
-                                </div>
+                                <SelectByAgent agentHash={this.state.agent} onChange={this.onAgentChanged} />
+                                <SelectByOffering offeringHash={this.state.offeringHash} onChange={this.onOfferingHashChanged} />
                             </div>
                         </div>
 
-                        <div className='card m-b-20'>
-                            <div className='card-body'>
-                                <h6 className='card-title'>{t('PriceFilter')}</h6>
-                                <div className='form-group row'>
-                                    <div className='col-6 priceMinMaxInputBl'>
-                                        <div className='input-group'>
-                                            <div className='input-group-prepend'>
-                                                <span className='input-group-text' id='priceFromLabel'>{t('From')}</span>
-                                            </div>
-                                            <input type='number' min={this.state.min} max={this.state.max - this.state.step} step={this.state.step} className='form-control' placeholder={this.state.min}
-                                                   id='priceFrom' value={toFixedN({number: this.state.from, fixed: 8})} onChange={(e) => this.changeMinPriceInput(e)} />
-                                        </div>
-                                    </div>
-                                    <div className='col-6 priceMinMaxInputBl'>
-                                        <div className='input-group'>
-                                            <div className='input-group-prepend'>
-                                                <span className='input-group-text' id='priceToLabel'>{t('To')}</span>
-                                            </div>
-                                            <input type='number' min={this.state.min + this.state.step} max={this.state.max} step={this.state.step} className='form-control' placeholder={this.state.max}
-                                                   id='priceTo' value={toFixedN({number: this.state.to, fixed: 8})} onChange={(e) => this.changeMaxPriceInput(e)} />
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='row m-t-30'>
-                                    <div className='col-12'>
-                                        <Range defaultValue={[this.state.from, this.state.to]} min={this.state.min} max={this.state.max} step={this.state.step}
-                                               onChange={this.changeRange.bind(this)} allowCross={false}/>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        <SelectByPrice
+                            onChangeMinPrice={this.onChangeMinPrice}
+                            onChangeMaxPrice={this.onChangeMaxPrice}
+                            onChangeRange={this.onChangeRange}
+                            min={this.state.min}
+                            max={this.state.max}
+                            step={this.state.step}
+                            start={this.state.from}
+                            end={this.state.to}
+                        />
 
-                        <div className='card m-t-15 m-b-20 vpnListCountryFilterBl'>
-                            <h5 className='card-header'>{t('Country')}</h5>
-                            <div className='card-body'>
-                                {searchHtml}
-
-                                {this.state.filteredCountries.map((country, key) => {
-                                    let countryCheckboxHtml = <div className='checkbox checkbox-custom' key={country}>
-                                        <input id={country}
-                                               type='checkbox'
-                                               name='checkboxCountry'
-                                               value={country}
-                                               checked={this.state.checkedCountries.indexOf(country) !== -1}
-                                               onChange={this.filterByCountryHandler.bind(this)} />
-                                        <label htmlFor={country}>{countryByIso(country)}</label>
-                                    </div>;
-                                    if (!this.state.showAllCountries) {
-                                        if (key < this.state.defaultShowCountriesCount) {
-                                            return countryCheckboxHtml;
-                                        }
-                                    } else {
-                                        return countryCheckboxHtml;
-                                    }
-                                })}
-
-                                {showHideCountriesBtn}
-                            </div>
-                        </div>
+                        <SelectCountry
+                            selectedCountries={this.state.checkedCountries}
+                            allCountries={this.state.filteredCountries}
+                            onChange={this.filterByCountryHandler}
+                            onSearch={this.filterCountries}
+                        />
 
                         {resetFilters}
                     </div>
                     <div className='col-9'>
                         <div className='card-box'>
-                            <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
-                                <SortableTable
-                                    data={offerings}
-                                    columns={this.state.columns}/>
-
-                                {noResults}
-                            </div>
-
+                            <VPNListTable offerings={offerings} />
                             {pagination}
                         </div>
                     </div>
                 </div>
-            </div>;
+            </div>
+        );
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, offeringsAvailability: state.offeringsAvailability}) )(VPNList);
+export default connect( (state: State) => ({ws: state.ws, offeringsAvailability: state.offeringsAvailability, localSettings: state.localSettings}) )(VPNList);

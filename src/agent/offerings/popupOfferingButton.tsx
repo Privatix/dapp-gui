@@ -62,7 +62,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
 
         const popupPeriodMinutes = Math.floor(popupPeriod/4);
 
-        const offeringStatus = offering.offerStatus;
+        const offeringStatus = offering.status;
         const offeringAge = lastProcessedBlock - offering.blockNumberUpdated;
 
         const showPopUp = ['registered', 'popped_up'].includes(offeringStatus);

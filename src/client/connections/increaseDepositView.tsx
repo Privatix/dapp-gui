@@ -23,25 +23,29 @@ class IncreaseDepositView extends React.Component<any, any> {
             gasPrice: props.gasPrice ? props.gasPrice : 0,
             account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase()),
             deposit: props.channel.deposit,
+            offering: null,
             channelDeposit: props.channel.deposit,
             inputStr: ''
         };
-
-        props.ws.getOffering(props.channel.offering)
-            .then(offering => {
-                const depositTrafic = toFixedN({number: this.state.deposit/offering.unitPrice, fixed: 2});
-                const depositMB = `${depositTrafic} ${offering.unitName}`;
-                const inputStr = `${toFixedN({number: (this.state.deposit/1e8), fixed: 8})} / ${depositMB}`;
-                this.setState({offering, inputStr});
-            });
     }
 
-    componentDidMount(){
+    async componentDidMount(){
+        await this.getOffering(this.props.channel.offering );
+
         this.props.dispatch(asyncProviders.updateSettings());
     }
 
     static getDerivedStateFromProps(props: any, state: any) {
         return state.gasPrice === 0 && props.gasPrice ? {gasPrice: props.gasPrice} : null;
+    }
+
+    async getOffering(id: string) {
+        const offering = await this.props.ws.getOffering(id);
+
+        const depositTrafic = toFixedN({number: this.state.deposit/offering.unitPrice, fixed: 2});
+        const depositMB = `${depositTrafic} ${offering.unitName}`;
+        const inputStr = `${toFixedN({number: (this.state.deposit/1e8), fixed: 8})} / ${depositMB}`;
+        this.setState({offering, inputStr});
     }
 
     onGasPriceChanged = (evt: any) => {
@@ -55,15 +59,23 @@ class IncreaseDepositView extends React.Component<any, any> {
         let err = false;
         let msg = [];
         const settings = await api.settings.getLocal();
+        const deposit = this.getDeposit();
 
         if(!this.state.account || settings.gas.increaseDeposit*this.state.gasPrice > this.state.account.ethBalance) {
             err = true;
             msg.push(t('ErrorNotEnoughPublishFunds'));
         }
 
-        if(!this.state.account || this.getDeposit() > this.state.account.pscBalance){
+        if(!this.state.account || deposit > this.state.account.pscBalance){
             err = true;
             msg.push(t('ErrorNotEnoughPRIX'));
+        }
+
+        const maxDepositAddValue = this.state.offering.maxUnit - this.props.channel.deposit / this.state.offering.unitPrice;
+        const depositInUnits = deposit / this.state.offering.unitPrice;
+        if (this.state.offering.maxUnit && (depositInUnits > maxDepositAddValue)) {
+            err = true;
+            msg.push(t('ErrorDepositGreaterThanMaxUnits', {units: maxDepositAddValue, unitName: this.state.offering.unitName}));
         }
 
         if(err){
@@ -160,6 +172,13 @@ class IncreaseDepositView extends React.Component<any, any> {
                                        options={this.props.accounts.map((account:any) => ({value: account.id, label: account.name}))}
         />;
 
+        let maxUnitsHint = '';
+        if (this.state.offering && this.state.offering.maxUnit !== null) {
+            const maxUnits = this.state.offering.maxUnit;
+            const maxDepositAddValue = maxUnits - this.props.channel.deposit / this.state.offering.unitPrice;
+            maxUnitsHint = t('MaxUnitsHint', {maxUnits, maxDepositAddValue, unitName: this.state.offering.unitName});
+        }
+
         const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
         const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8})) : 0;
 
@@ -197,6 +216,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                                 <input type='text' className='form-control' ref='input' onChange={this.depositChanged} value={ this.state.inputStr } />
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
+                            <span className='help-block'><small>{maxUnitsHint}</small></span>
                         </div>
                     </div>
                     <GasRange onChange={this.onGasPriceChanged} value={this.state.gasPrice/1e9} averageTimeText={t('AverageTimeToAddTheDeposit')} />

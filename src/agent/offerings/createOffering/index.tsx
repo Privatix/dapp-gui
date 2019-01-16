@@ -62,6 +62,7 @@ class CreateOffering extends React.Component<IProps, any>{
            ,product: ''
            ,minDownloadMbits: ''
            ,minUploadMbits: ''
+           ,blocked: false
         },
         products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9
     };
@@ -357,7 +358,8 @@ class CreateOffering extends React.Component<IProps, any>{
                 }
                 delete payload.minUploadMbits;
             }
-            // const ws = (window as any).ws;
+
+            this.setState({blocked: true});
             const offeringId = await ws.createOffering(payload);
             await ws.changeOfferingStatus(offeringId, 'publish', this.state.gasPrice);
             this.setState(this.getDefaultState());
@@ -717,12 +719,15 @@ class CreateOffering extends React.Component<IProps, any>{
                         </div>
                         <div className='form-group row'>
                             <div className='col-md-8'>
-                                <button type='submit'
-                                        onClick={this.onSubmit.bind(this)}
-                                        className='btn btn-default btn-custom btn-block waves-effect waves-light'
-                                >
-                                {t('CreateAndPublish')}
-                                </button>
+                                {this.state.blocked
+                                    ? <div className='btn btnCustomDisabled disabled btn-block' >{t('CreateAndPublish')}</div>
+                                    : <button type='submit'
+                                              onClick={this.onSubmit.bind(this)}
+                                              className='btn btn-default btn-custom btn-block waves-effect waves-light'
+                                      >
+                                          {t('CreateAndPublish')}
+                                      </button>
+                                }
                             </div>
                         </div>
                 </div>

@@ -11,7 +11,9 @@ let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
 
   const announce = function(announcement: any){
-      win.webContents.send('announcement', announcement);
+      settings = Object.assign({}, settings, {'releases': Object.assign({}, settings.releases, announcement)});
+      fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
+      win.webContents.send('localSettings', settings);
   };
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
@@ -27,16 +29,12 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         req.options.method = 'get';
     }
 
-    if(req.endpoint === '/backup'){
-        fs.writeFile(req.options.body.fileName, req.options.body.pk, {encoding: 'utf8'}, (err:any) => {
-            event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
-        });
-    }else if(req.endpoint === '/readFile'){
+    if(req.endpoint === '/readFile'){
         const file = fs.readFileSync(req.options.body.fileName, {encoding: 'utf8'});
-        event.sender.send('api-reply', JSON.stringify({req: msg, res: {file}}));
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: file}));
     }else if(req.endpoint === '/saveAs'){
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
-            // TODO handling
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
     }else if(req.endpoint === '/localSettings'){
         if (req.options.method === 'get'){
