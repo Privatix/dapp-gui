@@ -17,6 +17,7 @@ interface IProps {
     products: ProductType[];
     offerings: ResolvedOffering[];
     t?: any;
+    showRemoved?: boolean;
 }
 
 @translate(['offerings/offeringsList'])
@@ -24,8 +25,9 @@ class OfferingsListView extends React.Component<IProps, any> {
 
     render() {
         const { t, products } = this.props;
-        const offerings = this.props.offerings
-            .filter(o => o.status !== 'removed');
+        const offerings = this.props.showRemoved
+            ? this.props.offerings
+            : this.props.offerings.filter(o => o.status !== 'removed');
 
         const offeringsDataArr = offerings.map(offering => {
             const product = products.filter(product => product.id === offering.product)[0];
