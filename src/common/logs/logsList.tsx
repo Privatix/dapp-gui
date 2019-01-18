@@ -6,25 +6,22 @@ import Pagination from 'react-js-pagination';
 import {remote} from 'electron';
 const {dialog} = remote;
 
-import SortableTable from 'react-sortable-table-vilan';
-
 import * as api from 'utils/api';
 import notice from 'utils/notice';
 
 import ModalWindow from 'common/modalWindow';
-import DateSorter from 'common/sorters/sortingDate';
 
-import DatePicker from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
-
-import LogsTime from 'common/etc/logsTime';
 import LogsStack from './logsStack';
 import LogsContext from './logsContext';
 
 import {LocalSettings} from 'typings/settings';
 import {State} from 'typings/state';
 
-import ExportLogsBtns from './exportLogsBtns';
+import ExportBtns from './blocks/exportBtns';
+import Search from './blocks/search';
+import LevelsFilter from './blocks/levelsFilter';
+import TimeFilter from './blocks/timeFilter';
+import LogsTable from './blocks/table';
 
 @translate(['logs/logsList', 'common'])
 
@@ -53,16 +50,6 @@ class Logs extends React.Component <any,any> {
     componentDidMount() {
         this.getLogsData();
         this.getActiveLang();
-    }
-
-    get labelClasses() {
-        return {
-            debug: 'primary',
-            info: 'success',
-            warning: 'warning',
-            error: 'pink',
-            fatal: 'danger'
-        };
     }
 
     async getSettings() {
@@ -241,40 +228,6 @@ class Logs extends React.Component <any,any> {
     render() {
         const { t } = this.props;
 
-        const columns = [
-            {
-                header: t('Level'),
-                key: 'level',
-                render: (level) => {
-                    return <span className={`label label-table label-${this.labelClasses[level]}`}>{level}</span>;
-                }
-            },
-            {
-                header: t('Date'),
-                key: 'date',
-                dataProps: {className: 'minWidth160'},
-                descSortFunction: DateSorter.desc,
-                ascSortFunction: DateSorter.asc,
-                render: (date) => <LogsTime time={date} lang={this.state.lang} />
-            },
-            {
-                header: t('Message'),
-                key: 'message',
-                sortable: false
-            },
-            {
-                header: t('Context'),
-                key: 'context',
-                sortable: false
-            },
-            {
-                header: t('Stack'),
-                key: 'stack',
-                sortable: false
-
-            }
-        ];
-
         const pagination = this.state.totalItems <= this.state.logsPerPage ? '' :
             <Pagination
                 activePage={this.state.activePage}
@@ -285,10 +238,6 @@ class Logs extends React.Component <any,any> {
                 prevPageText='‹'
                 nextPageText='›'
             />;
-
-        const noResults = this.state.totalItems === 0 ?
-            <p className='text-warning text-center m-t-20 m-b-20'>{t('common:NoResults')}</p>
-            : '';
 
         return (
             <div className='container-fluid'>
@@ -301,106 +250,42 @@ class Logs extends React.Component <any,any> {
                     <div className='col-12'>
                         <div className='card-box'>
 
-                            <ExportLogsBtns exportToFile={this.exportToFile} />
+                            <ExportBtns exportToFile={this.exportToFile} />
 
-                            <div className='form-group row'>
-                                <div className='col-md-12 m-t-10 m-b-10'>
-                                    <div className='input-group searchInputGroup'>
-                                        <div className='input-group-prepend'>
-                                            <span className='input-group-text'><i className='fa fa-search'></i></span>
-                                        </div>
-                                        <input className='form-control logsSearchInput' type='search' name='query'
-                                               placeholder={t('LogsSearchPlaceholder')} value={this.state.searchText}
-                                               onKeyPress={this.handleSearch}
-                                               onChange={this.handleChangeSearch} />
-                                        <div className={'searchClear' + (this.state.searchText === '' ? ' hidden' : '')}>
-                                            <button className='btn btn-icon waves-effect waves-light btn-danger'
-                                                    onClick={this.handleClearSearch}>
-                                                <i className='fa fa-remove'></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
+                            <Search
+                                searchText={this.state.searchText}
+                                handleSearch={this.handleSearch}
+                                handleChangeSearch={this.handleChangeSearch}
+                                handleClearSearch={this.handleClearSearch}
+                            />
+
                             <div className='row m-b-20'>
-                                <div className='col-xl-5 col-lg-12 col-md-12 col-sm-12 col-xs-12 button-list m-b-10 logsLevelFilterBl'>
-                                    <button className={'btn btn-primary btn-rounded waves-effect waves-light w-xs' +
-                                        (this.state.levels.length > 0 && this.state.levels.indexOf('debug') === -1 ? ' btn-custom btn-custom-rounded' : '')}
-                                            onClick={this.handleChangeLevel} data-level='debug'>debug</button>
-                                    <button className={'btn btn-success btn-rounded waves-effect waves-light w-xs' +
-                                        (this.state.levels.length > 0 && this.state.levels.indexOf('info') === -1 ? ' btn-custom btn-custom-rounded' : '')}
-                                            onClick={this.handleChangeLevel} data-level='info'>info</button>
-                                    <button className={'btn btn-warning btn-rounded waves-effect waves-light w-xs' +
-                                        (this.state.levels.length > 0 && this.state.levels.indexOf('warning') === -1 ? ' btn-custom btn-custom-rounded' : '')}
-                                            onClick={this.handleChangeLevel} data-level='warning'>warning</button>
-                                    <button className={'btn btn-pink btn-rounded waves-effect waves-light w-xs' +
-                                        (this.state.levels.length > 0 && this.state.levels.indexOf('error') === -1 ? ' btn-custom btn-custom-rounded' : '')}
-                                            onClick={this.handleChangeLevel} data-level='error'>error</button>
-                                    <button className={'btn btn-danger btn-rounded waves-effect waves-light w-xs' +
-                                        (this.state.levels.length > 0 && this.state.levels.indexOf('fatal') === -1 ? ' btn-custom btn-custom-rounded' : '')}
-                                            onClick={this.handleChangeLevel} data-level='fatal'>fatal</button>
-                                </div>
-                                <div className='col-xl-3 col-lg-12 col-md-6 col-sm-12 col-xs-12 col-12 logsTimeFilterFromBl'>
-                                    <div className='form-group row'>
-                                        <label className='col-md-2 col-2 col-form-label text-right'>{t('LogsFilterFrom')}</label>
-                                        <div className='col-md-10 col-10'>
-                                            <div className='input-group'>
-                                                <DatePicker
-                                                    id={'dateFrom'}
-                                                    selected={this.state.dateFrom}
-                                                    showTimeSelect
-                                                    timeFormat='HH:mm'
-                                                    timeIntervals={10}
-                                                    dateFormat='h:mm A DD-MMM-YY'
-                                                    timeCaption={t('LogsFilterTime')}
-                                                    className='form-control form-control-datepicker'
-                                                    onChange={this.handleChangeDateFrom.bind(this)}
-                                                    locale={this.state.lang}
-                                                />
-                                                <label className='input-group-append input-group-append-label' htmlFor='dateFrom'>
-                                                    <span className='input-group-text input-group-text-bordered'><i className='md md-event-note'></i></span>
-                                                </label>
 
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className='col-xl-4 col-lg-12 col-md-6 col-sm-12 col-xs-12 col-12 logsTimeFilterToBl'>
-                                    <div className='form-group row'>
-                                        <label className='col-md-2 col-2 col-form-label text-right'>{t('LogsFilterTo')}</label>
-                                        <div className='col-md-10 col-10'>
-                                            <div className='input-group'>
-                                                <DatePicker
-                                                    id={'dateTo'}
-                                                    selected={this.state.dateTo}
-                                                    showTimeSelect
-                                                    timeFormat='HH:mm'
-                                                    timeIntervals={10}
-                                                    dateFormat='h:mm A DD-MMM-YY'
-                                                    timeCaption={t('LogsFilterTime')}
-                                                    className='form-control form-control-datepicker'
-                                                    onChange={this.handleChangeDateTo.bind(this)}
-                                                    locale={this.state.lang}
-                                                />
+                                <LevelsFilter levels={this.state.levels} handleChangeLevel={this.handleChangeLevel} />
 
-                                                <label className='input-group-append input-group-append-label' htmlFor='dateTo'>
-                                                    <span className='input-group-text input-group-text-bordered'><i className='md md-event-note'></i></span>
-                                                </label>
+                                <TimeFilter
+                                    blockClass='logsTimeFilterFromBl'
+                                    label={t('LogsFilterFrom')}
+                                    id='dateFrom'
+                                    selected={this.state.dateFrom}
+                                    lang={this.state.lang}
+                                    handleChangeDate={this.handleChangeDateFrom.bind(this)}
+                                />
 
-                                                <button className='btn btn-white waves-effect m-l-15 p-t-7 p-b-8' onClick={this.handleNow.bind(this)}>{t('NowBtn')}</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                                <TimeFilter
+                                    blockClass='logsTimeFilterToBl'
+                                    label={t('LogsFilterTo')}
+                                    id='dateTo'
+                                    selected={this.state.dateTo}
+                                    lang={this.state.lang}
+                                    handleChangeDate={this.handleChangeDateTo.bind(this)}
+                                    showNowBtn={true}
+                                    handleNow={this.handleNow.bind(this)}
+                                />
+
                             </div>
 
-                            <div className='bootstrap-table bootstrap-table-sortable m-b-30'>
-                                <SortableTable
-                                    data={this.state.logsDataArr}
-                                    columns={columns}/>
-
-                                {noResults}
-                            </div>
+                            <LogsTable lang={this.state.lang} logsDataArr={this.state.logsDataArr} />
 
                             <div>{pagination}</div>
 
