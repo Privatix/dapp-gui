@@ -309,7 +309,8 @@
     },
     "logs/logsList": {
         "LogsHeader": "Список логов",
-        "ExportBtn": "Экспорт в файл",
+        "ExportControllerLogsBtn": "Экспорт логов контроллера в файл",
+        "ExportAllLogsBtn": "Экспорт всех логов в файл",
         "LogsFilterFrom": "От:",
         "LogsFilterTo": "До:",
         "LogsFilterTime": "время",

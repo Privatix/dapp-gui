@@ -309,7 +309,8 @@
     },
     "logs/logsList": {
         "LogsHeader": "Logs list",
-        "ExportBtn": "Export to a file",
+        "ExportControllerLogsBtn": "Export controller's logs to a file",
+        "ExportAllLogsBtn": "Export all logs to a file",
         "LogsFilterFrom": "From:",
         "LogsFilterTo": "To:",
         "LogsFilterTime": "time",

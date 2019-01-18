@@ -24,6 +24,8 @@ import LogsContext from './logsContext';
 import {LocalSettings} from 'typings/settings';
 import {State} from 'typings/state';
 
+import ExportLogsBtns from './exportLogsBtns';
+
 @translate(['logs/logsList', 'common'])
 
 class Logs extends React.Component <any,any> {
@@ -298,10 +300,9 @@ class Logs extends React.Component <any,any> {
                 <div className='row'>
                     <div className='col-12'>
                         <div className='card-box'>
-                            <div>
-                                <button className='btn btn-default btn-custom waves-effect waves-light m-b-30'
-                                    onClick={this.exportToFile}>{t('ExportBtn')}</button>
-                            </div>
+
+                            <ExportLogsBtns exportToFile={this.exportToFile} />
+
                             <div className='form-group row'>
                                 <div className='col-md-12 m-t-10 m-b-10'>
                                     <div className='input-group searchInputGroup'>

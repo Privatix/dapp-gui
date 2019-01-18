@@ -55,7 +55,7 @@ class Header extends React.Component<any, any>{
         } else if(!$('#wrapper').hasClass('enlarged') && $('body').hasClass('fixed-left-void')) {
             $('body').removeClass('fixed-left-void').addClass('fixed-left');
         }
-      
+
         if($('#wrapper').hasClass('enlarged')) {
             $('.left ul').removeAttr('style');
         } else {
@@ -113,9 +113,6 @@ class Header extends React.Component<any, any>{
                                 </a>
                                 <NavLink to='/settings' className='dropdown-item notify-item'>
                                     <i className='md md-settings'></i> <span>{t('Settings')}</span>
-                                </NavLink>
-                                <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
-                                    <i className='dripicons-blog'></i><span>{t('Logs')}</span>
                                 </NavLink>
                             </div>
                     </li>
