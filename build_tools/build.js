@@ -1,6 +1,6 @@
 const fs = require('fs');
 const config = require('../package');
-
+/*
 const deps = ['jquery', 'popper.js'];
 const devDeps = ['electron-packager', 'electron'];
 
@@ -12,7 +12,7 @@ config.devDependencies = devDeps.reduce((acc, name) => {
     acc[name] = config.devDependencies[name];
     return acc;
 }, {});
-
+*/
 config.main = './main.js';
 config.private = false;
 
