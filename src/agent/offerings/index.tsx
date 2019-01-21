@@ -61,22 +61,16 @@ class Offerings extends React.Component<IProps, any>{
     refresh = async () => {
 
         const { ws, product, products, statuses } = this.props;
-        let offerings = [];
         const productId = product === 'all' ? '' : product;
 
-        if(statuses.length){
-            const offeringsRequests = statuses.map(status => ws.getAgentOfferings(productId, status));
-            offerings = (await Promise.all(offeringsRequests)).reduce((res, offerings) => res.concat(offerings.items), []);
-        } else {
-            offerings = (await ws.getAgentOfferings(productId)).items;
-        }
+        const offerings_wo_products = await ws.getAgentOfferings(productId, statuses);
 
         const resolveTable = products.reduce((table, product) => {
             table[product.id] = product.name;
             return table;
         }, {});
 
-        offerings = offerings.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        const offerings = offerings_wo_products.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
 
         await this.unsubscribe();
         this.subscribes = await Promise.all([ws.subscribe('channel', ['agentAfterChannelCreate'], this.refresh), /* available supply */
