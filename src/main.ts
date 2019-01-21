@@ -4,6 +4,7 @@ import {app, ipcMain, BrowserWindow} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
+import * as fse from 'fs-extra';
 
 import { updateChecker } from './updateChecker';
 
@@ -34,6 +35,10 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         event.sender.send('api-reply', JSON.stringify({req: msg, res: file}));
     }else if(req.endpoint === '/saveAs'){
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
+        });
+    }else if(req.endpoint === '/moveFile'){
+        fse.move(req.options.src, req.options.dest, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
     }else if(req.endpoint === '/localSettings'){
