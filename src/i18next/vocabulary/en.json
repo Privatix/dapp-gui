@@ -323,7 +323,8 @@
         "Stack": "Stack",
         "ShowBtn": "show",
         "StackTrace": "Stack trace:",
-        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!"
+        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!",
+        "OSNotDetected": "We can't detect you OS. This function is not available for you!"
     },
     "logs/logsContext": {
         "Key": "Key",

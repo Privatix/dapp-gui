@@ -201,7 +201,7 @@ class Logs extends React.Component <any,any> {
         }
     }
 
-    exportToFile = () => {
+    exportControllerLogsToFile = () => {
         (dialog.showSaveDialog as any)(null, {
             title: 'Saving logs',
             defaultPath: 'logs.csv'
@@ -250,7 +250,7 @@ class Logs extends React.Component <any,any> {
                     <div className='col-12'>
                         <div className='card-box'>
 
-                            <ExportBtns exportToFile={this.exportToFile} />
+                            <ExportBtns exportControllerLogsToFile={this.exportControllerLogsToFile} />
 
                             <Search
                                 searchText={this.state.searchText}

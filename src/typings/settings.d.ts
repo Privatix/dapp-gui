@@ -15,7 +15,7 @@ export interface LocalSettings {
         userid: string;
         key: string;
         enable: boolean;
-    },
+    };
     commit: string;
     logsCountPerPage: number;
     elementsPerPage: number;
@@ -25,6 +25,18 @@ export interface LocalSettings {
     platformsEndpoint: string;
     releases: {[key:string]: any};
     updateCheckFreq: number;
+    collectLogsPath: {
+        utils: {
+            linux: string,
+            windows: string,
+            macOs: string
+        },
+        archives: {
+            linux: string,
+            windows: string,
+            macOs: string
+        }
+    };
 }
 
 export interface DbSetting {
