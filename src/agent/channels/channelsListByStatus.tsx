@@ -31,7 +31,7 @@ interface Props {
 class Channels extends React.Component<Props, any> {
 
     private subscription: string;
-    private stopPolling: Function;
+    private onNewChannelSubscription: string;
 
     constructor(props: Props) {
         super(props);
@@ -70,9 +70,9 @@ class Channels extends React.Component<Props, any> {
             this.subscription = undefined;
         }
 
-        if(this.stopPolling){
-            this.stopPolling();
-            this.stopPolling = null;
+        if (this.subscription) {
+            ws.unsubscribe(this.onNewChannelSubscription);
+            this.onNewChannelSubscription = undefined;
         }
 
     }
@@ -94,13 +94,14 @@ class Channels extends React.Component<Props, any> {
         const getActiveChannels = ws.getAgentChannels.bind(ws, [], statusArr, 0, 0);
         const channels = await getActiveChannels();
 
-
         const channelsIds = channels.items.map(channel => channel.id);
         if(channelsIds.length){
             this.subscription = await ws.subscribe('channel', channelsIds, this.refresh);
         }
 
-        this.stopPolling = ws.on(getActiveChannels, channels, this.refresh);
+        if(!this.onNewChannelSubscription){
+            this.onNewChannelSubscription = await ws.subscribe('channel', ['agentAfterChannelCreate'], this.refresh);
+        }
 
         const channelsOfferings: Promise<Offering>[] = channels.items.map(channel => ws.getOffering(channel.offering));
         const offerings = (await Promise.all(channelsOfferings)) as Offering[];

@@ -1,10 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
-import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
 import {Template, TemplateType} from 'typings/templates';
-import {OfferStatus, Offering, ResolvedOffering} from 'typings/offerings';
+import {OfferStatus, Offering} from 'typings/offerings';
 import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
@@ -125,27 +124,6 @@ export class WS {
             };
             this.socket.send(JSON.stringify(req));
         }) as Promise<string>;
-    }
-
-    on(testRequest: Function, currentResult: any, handler: Function){
-
-        const state = { id: null};
-
-        const tester = async () => {
-            const result = await testRequest();
-            if(isEqual(result, currentResult)){
-                state.id = setTimeout(tester, 1000);
-            }else {
-                handler();
-            }
-        };
-
-        tester();
-
-        return () => {
-            clearTimeout(state.id);
-        };
-
     }
 
     unsubscribe(id: string){
@@ -374,27 +352,6 @@ export class WS {
 
     getOffering(id: string): Promise<Offering>{
         return this.getObject('offering', id) as Promise<Offering>;
-    }
-
-    async fetchOfferingsAndProducts(productId: string, statuses: OfferStatus[]): Promise<{offerings: ResolvedOffering[], products: Product[]}> {
-
-        let offerings = [];
-        const products = await this.getProducts();
-
-        if(statuses.length){
-            const offeringsRequests = statuses.map(status => this.getAgentOfferings(productId, status));
-            offerings = (await Promise.all(offeringsRequests)).reduce((res, offerings) => res.concat(offerings.items), []);
-        } else {
-            offerings = (await this.getAgentOfferings(productId)).items;
-        }
-
-        const resolveTable = products.reduce((table, product) => {
-            table[product.id] = product.name;
-            return table;
-        }, {});
-
-        const resOfferings = offerings.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
-        return {offerings: resOfferings, products};
     }
 
     createOffering(payload: any): Promise<string>{
