@@ -83,6 +83,7 @@ export default class ExportBtns extends React.Component<IProps, any> {
         const archivePath = __dirname + '\\..\\util\\dump\\';
         const archiveName = 'dump.zip';
 
+        console.log('Dir', __dirname);
         console.log('utilPath', utilPath);
         console.log('archivePath', archivePath);
 
@@ -102,12 +103,16 @@ export default class ExportBtns extends React.Component<IProps, any> {
 
     saveMacOSLogs() {
         const settings = this.state.settings;
-        const utilPath = settings.collectLogsPath.utils.macOs;
+        const utilPath = __dirname + '/../../util/dump/';
         const archivePath = settings.collectLogsPath.archives.macOs;
+        const archiveName = 'dump.zip';
+
+        console.log('Dir', __dirname);
+        console.log('utilPath', utilPath);
+        console.log('archivePath', archivePath);
+        console.log('archive', `${archivePath}${archiveName}`);
 
         exec(`.${utilPath}dump_mac.sh`, (error, stdout, stderr) => {
-            const archiveName = 'dump.zip';
-
             (dialog.showSaveDialog as any)(null, {
                 title: 'Saving all logs',
                 defaultPath: archiveName
