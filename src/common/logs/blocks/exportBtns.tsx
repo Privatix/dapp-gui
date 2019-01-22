@@ -7,6 +7,7 @@ import * as api from 'utils/api';
 import {LocalSettings} from 'typings/settings';
 import {remote} from 'electron';
 const {dialog} = remote;
+import * as path from 'path';
 
 interface IProps {
     t?: any;
@@ -79,11 +80,11 @@ export default class ExportBtns extends React.Component<IProps, any> {
     }
 
     saveWindowsLogs() {
-        const utilPath = __dirname + '\\..\\util\\';
-        const archivePath = __dirname + '\\..\\util\\dump\\';
+        const utilPath = process.cwd() + '\\..\\util\\';
+        const archivePath = process.cwd() + '\\..\\util\\dump\\';
         const archiveName = 'dump.zip';
 
-        console.log('Dir', __dirname);
+        console.log('Dir', process.cwd());
         console.log('utilPath', utilPath);
         console.log('archivePath', archivePath);
 
@@ -103,11 +104,11 @@ export default class ExportBtns extends React.Component<IProps, any> {
 
     saveMacOSLogs() {
         const settings = this.state.settings;
-        const utilPath = __dirname + '/../../util/dump/';
+        const utilPath = process.cwd() + '/../../util/dump/';
         const archivePath = settings.collectLogsPath.archives.macOs;
         const archiveName = 'dump.zip';
 
-        console.log('Dir', __dirname);
+        console.log('Dir', process.cwd());
         console.log('utilPath', utilPath);
         console.log('archivePath', archivePath);
         console.log('archive', `${archivePath}${archiveName}`);
