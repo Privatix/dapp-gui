@@ -28,12 +28,10 @@ export interface LocalSettings {
     collectLogsPath: {
         utils: {
             linux: string,
-            windows: string,
             macOs: string
         },
         archives: {
             linux: string,
-            windows: string,
             macOs: string
         }
     };

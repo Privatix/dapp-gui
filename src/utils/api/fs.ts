@@ -11,3 +11,7 @@ export const readFile = function(fileName: string): Promise<string>{
 export const moveFile = function(src: string, dest: string): Promise<any>{
     return fetch('/moveFile', {src, dest}) as Promise<any>;
 };
+
+export const removeFile = function(src: string): Promise<any>{
+    return fetch('/removeFile', {src}) as Promise<any>;
+};

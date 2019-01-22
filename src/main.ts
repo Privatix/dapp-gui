@@ -41,6 +41,10 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         fse.move(req.options.src, req.options.dest, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
+    }else if(req.endpoint === '/removeFile'){
+        fs.unlink(req.options.src, (err:any) => {
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
+        });
     }else if(req.endpoint === '/localSettings'){
         if (req.options.method === 'get'){
             event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
