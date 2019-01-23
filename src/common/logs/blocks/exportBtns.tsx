@@ -60,11 +60,11 @@ export default class ExportBtns extends React.Component<IProps, any> {
     saveUbuntuLogs() {
         const settings = this.state.settings;
         const archiveName = 'dump.zip';
-        const utilPath = path.join(settings.collectLogsPath.linux, 'dump_ubuntu.py');
-        const archivePath = path.join(settings.collectLogsPath.linux, archiveName);
+        const util = path.join(settings.collectLogsPath.linux, 'dump_ubuntu.py');
+        const archive = path.join(settings.collectLogsPath.linux, archiveName);
 
-        exec(`sudo python ${utilPath} ${archivePath}`, (error, stdout, stderr) => {
-            this.saveDialogHandler(archivePath, archiveName);
+        exec(`sudo python ${util} ${archive}`, (error, stdout, stderr) => {
+            this.saveDialogHandler(archive, archiveName);
         });
     }
 
@@ -92,39 +92,30 @@ export default class ExportBtns extends React.Component<IProps, any> {
     }
 
     saveMacOSLogs() {
-        const settings = this.state.settings;
-        const utilPath = process.cwd() + '/../../util/dump/';
-        const archivePath = settings.collectLogsPath.archives.macOs;
         const archiveName = 'dump.zip';
+        const utilPath = path.join(process.cwd(), '/../../util/dump/');
+        const util = path.join(utilPath, 'dump_mac.sh');
+        const archive = path.join(utilPath, archiveName);
 
         console.log('Dir', process.cwd());
         console.log('utilPath', utilPath);
-        console.log('archivePath', archivePath);
-        console.log('archive', `${archivePath}${archiveName}`);
+        console.log('util', util);
+        console.log('archive', archive);
 
-        exec(`.${utilPath}dump_mac.sh`, (error, stdout, stderr) => {
-            (dialog.showSaveDialog as any)(null, {
-                title: 'Saving all logs',
-                defaultPath: archiveName
-            }, (pathToArchive: string) => {
-                if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {
-                    api.fs.moveFile(`${archivePath}${archiveName}`, pathToArchive);
-                } else {
-                    api.fs.removeFile(`${archivePath}${archiveName}`);
-                }
-            });
+        exec(utilPath, (error, stdout, stderr) => {
+            this.saveDialogHandler(archive, archiveName);
         });
     }
 
-    saveDialogHandler(archivePath: string, archiveName: string) {
+    saveDialogHandler(archive: string, archiveName: string) {
         (dialog.showSaveDialog as any)(null, {
             title: 'Saving all logs',
             defaultPath: archiveName
         }, (pathToArchive: string) => {
             if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {
-                api.fs.moveFile(archivePath, pathToArchive);
+                api.fs.moveFile(archive, pathToArchive);
             } else {
-                api.fs.removeFile(archivePath);
+                api.fs.removeFile(archive);
             }
         });
     }

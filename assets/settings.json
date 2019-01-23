@@ -24,13 +24,6 @@
    "releases": {},
    "updateCheckFreq": 480,
    "collectLogsPath": {
-      "utils": {
-         "linux": "/opt/privatix/initializer/dump/",
-         "macOs": "/Applications/Privatix/util/dump/"
-      },
-      "archives": {
-        "linux": "/opt/privatix/initializer/dump/",
-        "macOs": "/Applications/Privatix/dump/"
-      }
+       "linux": "/opt/privatix/initializer/dump/"
    }
 }
