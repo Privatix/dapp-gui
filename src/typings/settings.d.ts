@@ -26,14 +26,7 @@ export interface LocalSettings {
     releases: {[key:string]: any};
     updateCheckFreq: number;
     collectLogsPath: {
-        utils: {
-            linux: string,
-            macOs: string
-        },
-        archives: {
-            linux: string,
-            macOs: string
-        }
+        linux: string;
     };
 }
 

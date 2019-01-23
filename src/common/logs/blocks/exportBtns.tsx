@@ -59,23 +59,12 @@ export default class ExportBtns extends React.Component<IProps, any> {
 
     saveUbuntuLogs() {
         const settings = this.state.settings;
-        const utilPath = settings.collectLogsPath.utils.linux;
-        const archivePath = settings.collectLogsPath.archives.linux;
+        const archiveName = 'dump.zip';
+        const utilPath = path.join(settings.collectLogsPath.linux, 'dump_ubuntu.py');
+        const archivePath = path.join(settings.collectLogsPath.linux, archiveName);
 
-        exec(`sudo python ${utilPath}dump_ubuntu.py ${archivePath}`, (error, stdout, stderr) => {
-            const dates = stdout.match(/(\d{2}-\d{2}-\d{2}\s\d{2}-\d{2}-\d{2})/);
-            const archiveName = `${dates[0]}.zip`;
-
-            (dialog.showSaveDialog as any)(null, {
-                title: 'Saving all logs',
-                defaultPath: archiveName
-            }, (pathToArchive: string) => {
-                if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {
-                    api.fs.moveFile(`${archivePath}${archiveName}`, pathToArchive);
-                } else {
-                    api.fs.removeFile(`${archivePath}${archiveName}`);
-                }
-            });
+        exec(`sudo python ${utilPath} ${archivePath}`, (error, stdout, stderr) => {
+            this.saveDialogHandler(archivePath, archiveName);
         });
     }
 
@@ -124,6 +113,19 @@ export default class ExportBtns extends React.Component<IProps, any> {
                     api.fs.removeFile(`${archivePath}${archiveName}`);
                 }
             });
+        });
+    }
+
+    saveDialogHandler(archivePath: string, archiveName: string) {
+        (dialog.showSaveDialog as any)(null, {
+            title: 'Saving all logs',
+            defaultPath: archiveName
+        }, (pathToArchive: string) => {
+            if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {
+                api.fs.moveFile(archivePath, pathToArchive);
+            } else {
+                api.fs.removeFile(archivePath);
+            }
         });
     }
 
