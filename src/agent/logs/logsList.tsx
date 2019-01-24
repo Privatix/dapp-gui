@@ -21,7 +21,6 @@ import LogsTime from 'common/etc/logsTime';
 import LogsStack from './logsStack';
 import LogsContext from './logsContext';
 
-import {LocalSettings} from 'typings/settings';
 import {State} from 'typings/state';
 
 @translate(['logs/logsList', 'common'])
@@ -63,31 +62,27 @@ class Logs extends React.Component <any,any> {
         };
     }
 
-    async getSettings() {
-        return (await api.settings.getLocal()) as LocalSettings;
-    }
-
     async getActiveLang() {
-        const settings = await this.getSettings();
-        this.setState({lang: settings.lang});
+        const { localSettings } = this.props;
+        this.setState({lang: localSettings.lang});
     }
 
     async getLogsData(dateFrom:any = null, dateTo:any = null, levels:string[] = []) {
+
+        const { localSettings, t } = await this.props;
+
         const dateFromData = dateFrom === null ? this.state.dateFrom : dateFrom;
         const dateToData = dateTo === null ? this.state.dateTo : dateTo;
-        const settings = await this.getSettings();
 
         // getLogs params
         const isoDateFrom = new Date(dateFromData).toISOString();
         const isoDateTo = new Date(dateToData).toISOString();
         const searchText = this.state.searchText !== '' ? this.state.searchText : '';
         const levelsData = this.state.levels.length > 0 ? this.state.levels : [];
-        const logsPerPage = settings.logsCountPerPage;
+        const logsPerPage = localSettings.logsCountPerPage;
         const offset = this.state.activePage > 1 ? (this.state.activePage - 1) * logsPerPage : this.state.offset;
 
         const logs = await this.props.ws.getLogs(levelsData, searchText, isoDateFrom, isoDateTo, offset, logsPerPage);
-
-        const { t } = this.props;
 
         const logsDataArr = [];
         if (logs.totalItems > 0) {
@@ -411,4 +406,4 @@ class Logs extends React.Component <any,any> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws}) )(Logs);
+export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(Logs);

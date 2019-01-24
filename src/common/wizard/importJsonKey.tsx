@@ -88,12 +88,12 @@ class ImportJsonKey extends React.Component<IProps, any>{
             ,name
         };
 
-        ws.importAccountFromJSON(payload, keyObject, pwd, (res: any)=>{
+        ws.importAccountFromJSON(payload, keyObject, pwd, async (res: any)=>{
             if('error' in res){
                 msg = t('SomethingWentWrong');
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             }else{
-                api.settings.updateLocal({accountCreated:true});
+                await ws.setGUISettings({accountCreated:true});
                 this.props.history.push(`/backup/${res.result}/importJsonKey`);
             }
         });

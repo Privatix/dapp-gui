@@ -1,45 +1,61 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
-import {asyncReactor} from 'async-reactor';
 
 import Wizard from './wizard/';
 import Login from './auth/login';
 import App from './app';
-
-import * as api from 'utils/api';
 
 import { I18nextProvider} from 'react-i18next';
 import i18n from 'i18next/init';
 
 import initElectronMenu from './electronMenu';
 
-function Loader() {
+import {State} from 'typings/state';
+import {LocalSettings} from 'typings/settings';
 
-  return (<h2>Loading settings ...</h2>);
+interface IProps {
+    localSettings?: LocalSettings;
+}
+
+interface IState {
 
 }
 
-async function AsyncStart (props:any){
-    const settings = await api.settings.getLocal();
+class Start extends React.Component<IProps, IState> {
 
-    i18n.changeLanguage(settings.lang);
+    MemoryHistory: any = null;
 
-    // From custom electron menu
-    initElectronMenu();
+    componentDidMount(){
 
-    const MemoryHistory = createMemoryHistory();
+        const { localSettings } = this.props;
 
-    const login = <Router history={MemoryHistory as any}>
-        <Switch>
-            <Route exact path='/' render={() => <Login entryPoint={'/app'} />} />
-            <Route path='/app' component={App} />
-        </Switch>
-    </Router>;
+        i18n.changeLanguage(localSettings.lang);
 
-     return <I18nextProvider i18n={ i18n }>
-                { settings.firstStart || !settings.accountCreated ? <Wizard currentState={settings.firstStart ? 'firstStart' : 'setAccount'} app={App} /> :  login }
-            </I18nextProvider>;
+        // From custom electron menu
+        initElectronMenu();
+
+        this.MemoryHistory = createMemoryHistory();
+    }
+
+    render(){
+
+        const { localSettings: { firstStart, accountCreated } } = this.props;
+
+        const login = <Router history={this.MemoryHistory as any}>
+            <Switch>
+                <Route exact path='/' render={() => <Login entryPoint={'/app'} />} />
+                <Route path='/app' component={App} />
+            </Switch>
+        </Router>;
+
+         return (
+             <I18nextProvider i18n={ i18n }>
+                 { firstStart || !accountCreated ? <Wizard currentState={firstStart ? 'firstStart' : 'setAccount'} app={App} /> :  login }
+             </I18nextProvider>
+         );
+    }
 }
 
-export default asyncReactor(AsyncStart, Loader);
+export default connect( (state: State) => ({localSettings: state.localSettings}) )(Start);

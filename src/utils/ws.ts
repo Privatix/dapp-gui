@@ -2,6 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
 
+import * as api from './api';
+
 import {Template, TemplateType} from 'typings/templates';
 import {OfferStatus, Offering} from 'typings/offerings';
 import {Account} from 'typings/accounts';
@@ -37,9 +39,11 @@ export class WS {
 //    private reject: Function = null;
     private resolve: Function = null;
 
-    constructor(endpoint: string) {
-
-        this.reconnect(endpoint);
+    constructor() {
+        api.settings.getLocal()
+           .then(settings => {
+                this.reconnect(settings.wsEndpoint);
+           });
 
     }
 
@@ -444,6 +448,31 @@ export class WS {
         return this.send('ui_updateSettings', [updateSettings]);
     }
 
+    getGUISettings() {
+        return this.send('ui_getGUISettings', []);
+    }
+
+    async setGUISettings(updateSettings: Object){
+        if(this.token){
+            const settings = await this.getGUISettings();
+            const payload = Object.assign({}, settings, updateSettings);
+            window.localStorage.setItem('localSettings', JSON.stringify(payload));
+            return this.send('ui_setGUISettings', [payload]);
+        }else{
+            let localCache = window.localStorage.getItem('localSettings');
+            return localCache ? JSON.parse(localCache) : {};
+        }
+    }
+
+    async getLocal(){
+        let localCache = window.localStorage.getItem('localSettings');
+        if(localCache){
+            localCache = JSON.parse(localCache);
+        }
+        const mutableSettings = this.token ? await this.getGUISettings() : (localCache || {});
+        const immutableSettings = await api.settings.getLocal();
+        return Object.assign({}, mutableSettings, immutableSettings);
+    }
 
 }
 

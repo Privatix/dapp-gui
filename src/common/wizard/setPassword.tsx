@@ -9,7 +9,6 @@ import Steps from './steps';
 
 import { registerBugsnag } from 'utils/bugsnag';
 import {default as notice, closeNotice } from 'utils/notice';
-import * as api from 'utils/api';
 import handlers from 'redux/actions';
 import { WS } from 'utils/ws';
 
@@ -85,15 +84,14 @@ class SetPassword extends React.Component<any, any>{
             return;
         }
 
-        await api.settings.updateLocal({firstStart:false});
-        const settings = await api.settings.getLocal();
-        const ws = new WS(settings.wsEndpoint);
+        const ws = new WS();
         notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 60*60*1000);
         const ready = await ws.whenReady();
         closeNotice();
         if(ready){
             try {
                 await ws.setPassword(pwd);
+                await ws.setGUISettings({firstStart:false});
                 registerBugsnag(ws);
                 this.props.dispatch(handlers.setWS(ws));
                 const role = await ws.getUserRole();

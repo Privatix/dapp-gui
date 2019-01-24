@@ -37,14 +37,7 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
     }else if(req.endpoint === '/localSettings'){
-        if (req.options.method === 'get'){
-            event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
-        }else{
-            settings = req.options.body;
-            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
-            event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
-            win.webContents.send('localSettings', settings);
-        }
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
     }
   });
 

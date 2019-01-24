@@ -8,69 +8,106 @@ import SortableTable from 'react-sortable-table-vilan';
 import DateSorter from 'common/sorters/sortingDates';
 import ExternalLink from 'common/etc/externalLink';
 import PgTime from 'common/etc/pgTime';
-import * as api from 'utils/api';
 
-import {State} from 'typings/state';
-import {LocalSettings} from 'typings/settings';
+import { WS } from 'utils/ws';
+import { State } from 'typings/state';
+import { LocalSettings } from 'typings/settings';
+import { Transaction } from 'typings/transactions';
+
+interface IProps{
+    ws?: WS;
+    t?: any;
+    localSettings?: LocalSettings;
+    accountId: string;
+    network: string;
+}
+
+interface IState{
+    transactions: Transaction[];
+    totalItems: number;
+    activePage: number;
+    offset: number;
+}
 
 @translate('transactions/transactionsList')
+class Transactions extends React.Component<IProps, IState>{
 
-class Transactions extends React.Component<any, any>{
+    handler = null;
 
-    constructor(props:any) {
+    get columns() {
+
+        const { t } = this.props;
+
+        return [
+            {
+                header: t('Date'),
+                key: 'date',
+                defaultSorting: 'DESC',
+                descSortFunction: DateSorter.desc,
+                ascSortFunction: DateSorter.asc
+            },
+            {
+                header: t('EthereumLink'),
+                key: 'ethereumLink',
+                sortable: false
+            }
+        ];
+    }
+
+    constructor(props: IProps) {
+
         super(props);
-        const { t } = props;
 
         this.state = {
-            transactionsDataArr: [],
-            handler: null,
-            elementsPerPage: 0,
+            transactions: [],
             totalItems: 0,
             activePage: 1,
-            offset: 0,
-            columns: [
-                {
-                    header: t('Date'),
-                    key: 'date',
-                    defaultSorting: 'DESC',
-                    descSortFunction: DateSorter.desc,
-                    ascSortFunction: DateSorter.asc
-                },
-                {
-                    header: t('EthereumLink'),
-                    key: 'ethereumLink',
-                    sortable: false
-                }
-            ]
+            offset: 0
         };
     }
 
     async componentDidMount() {
-        await this.getElementsPerPage();
         this.startRefreshing();
     }
 
-    async getElementsPerPage() {
-        const settings = (await api.settings.getLocal()) as LocalSettings;
-        this.setState({elementsPerPage: settings.elementsPerPage});
-    }
-
     async getTransactions(activePage:number = 1) {
-        const limit = this.state.elementsPerPage;
+
+        const { ws, accountId, localSettings } = this.props;
+
+        const limit = localSettings.elementsPerPage;
         const offset = activePage > 1 ? (activePage - 1) * limit : this.state.offset;
 
-        const transactions = await this.props.ws.getTransactions('accountAggregated', this.props.accountId, offset, limit);
-        const transactionsDataArr = this.getTransactionsDataArr(transactions.items);
+        const transactions = await ws.getTransactions('accountAggregated', accountId, offset, limit);
 
         this.setState({
-            transactionsDataArr,
+            transactions: transactions.items,
             totalItems: transactions.totalItems,
             activePage: activePage
         });
     }
 
-    getTransactionsDataArr(transactions: Array<Object>) {
-        return transactions.map((transaction: any) => {
+    handlePageChange = (pageNumber:number) => {
+        this.getTransactions(pageNumber);
+    }
+
+    startRefreshing = () => {
+        this.getTransactions(this.state.activePage);
+        this.handler = setTimeout(this.startRefreshing, 3000);
+    }
+
+    stopRefreshing() {
+        if (this.handler) {
+            clearInterval(this.handler);
+            this.handler = null;
+        }
+    }
+
+    componentWillUnmount() {
+        this.stopRefreshing();
+    }
+
+    getTransactionsDataArr(transactions: Transaction[]) {
+        return transactions.map((transaction: Transaction) => {
             const tx = `0x${transaction.hash}`;
             return {
                 date: <PgTime time={transaction.issued} />,
@@ -79,38 +116,23 @@ class Transactions extends React.Component<any, any>{
         });
     }
 
-    handlePageChange(pageNumber:number) {
-        this.getTransactions(pageNumber);
-    }
-
-    startRefreshing(){
-        this.getTransactions(this.state.activePage);
-        this.setState({handler: setTimeout( ()=> {
-                this.startRefreshing();
-            }, 3000)});
-    }
-
-    stopRefreshing() {
-        if (this.state.handler) {
-            clearInterval(this.state.handler);
-        }
-    }
-
-    componentWillUnmount() {
-        this.stopRefreshing();
-    }
-
     render() {
-        const {t} = this.props;
 
-        const pagination = this.state.totalItems <= this.state.elementsPerPage ? '' :
-            <div>
+        const { t, localSettings } = this.props;
+        const { transactions, activePage, totalItems } = this.state;
+        const { elementsPerPage } = localSettings;
+
+        const transactionsDataArr = this.getTransactionsDataArr(transactions);
+
+        const pagination = totalItems <= elementsPerPage
+            ? null
+            : <div>
                 <Pagination
-                    activePage={this.state.activePage}
-                    itemsCountPerPage={this.state.elementsPerPage}
-                    totalItemsCount={this.state.totalItems}
+                    activePage={activePage}
+                    itemsCountPerPage={elementsPerPage}
+                    totalItemsCount={totalItems}
                     pageRangeDisplayed={10}
-                    onChange={this.handlePageChange.bind(this)}
+                    onChange={this.handlePageChange}
                     prevPageText='‹'
                     nextPageText='›'
                 />
@@ -123,8 +145,8 @@ class Transactions extends React.Component<any, any>{
                     <div className='col-12'>
                         <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                             <SortableTable
-                                data={this.state.transactionsDataArr}
-                                columns={this.state.columns} />
+                                data={transactionsDataArr}
+                                columns={this.columns} />
                         </div>
 
                         {pagination}
@@ -135,4 +157,4 @@ class Transactions extends React.Component<any, any>{
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws}) )(Transactions);
+export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(Transactions);

@@ -4,11 +4,9 @@ import { withRouter, RouteComponentProps } from 'react-router';
 import { translate, Trans } from 'react-i18next';
 import Select from 'react-select';
 
-import * as api from 'utils/api';
 import notice from 'utils/notice';
 import toFixedN from 'utils/toFixedN';
 import parseFloatPrix from 'utils/parseFloatPrix';
-import {LocalSettings} from 'typings/settings';
 import countries from 'utils/countries';
 import GasRange from 'common/etc/gasRange';
 import ExternalLink from 'common/etc/externalLink';
@@ -21,6 +19,7 @@ import { WS } from 'utils/ws';
 import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
 import { Product } from 'typings/products';
+import {LocalSettings} from 'typings/settings';
 
 (String as any).prototype.capitalize = function() {
     return this.charAt(0).toUpperCase() + this.slice(1);
@@ -31,119 +30,137 @@ type IProps = RouteComponentProps<any> & {
     product?: string;
     ws?: WS;
     t?: any;
+    localSettings?: LocalSettings;
     done?: Function;
     closeModal?: Function;
     accounts?: Account[];
     products?: Product[];
+    gasPrice?: number;
 };
 
-@translate(['offerings/createOffering', 'common', 'utils/notice'])
-class CreateOffering extends React.Component<IProps, any>{
-
-    static defaultState = {
-        payload: {
-            serviceName: ''
-           ,description: ''
-           ,country: ''
-           ,supply: ''
-           ,unitName: 'MB'
-           ,unitType: 'units'
-           ,unitPrice: ''
-           ,billingType: 'prepaid'
-           ,maxBillingUnitLag: 70
-           ,minUnits: ''
-           ,maxUnit: ''
-           ,maxSuspendTime: ''
-           ,maxInactiveTimeSec: ''
-           ,template: ''
-           ,deposit: 0
-           ,product: ''
-           ,minDownloadMbits: ''
-           ,minUploadMbits: ''
-           ,blocked: false
-        },
-        products: [], accounts: [], templates: [], template: null, gasPrice: 6*1e9
+interface IState {
+    payload?: {
+        agent: string;
+        serviceName: string;
+        description: string;
+        country: string;
+        supply: string;
+        unitName: string;
+        unitType: string;
+        unitPrice: string;
+        billingType: string;
+        maxBillingUnitLag: number;
+        minUnits: string;
+        maxUnit: string;
+        maxSuspendTime: string;
+        maxInactiveTimeSec: string;
+        template: string;
+        deposit: number;
+        product: string;
+        minDownloadMbits: string;
+        minUploadMbits: string;
+        additionalParams?: any;
+        billingInterval?: number;
     };
+    gasPrice?: number;
+    blocked?: boolean;
+    account?: Account;
+    errMsg?: string;
+}
 
-    getDefaultState(){
-        const state = Object.assign({}, CreateOffering.defaultState);
-        if(this.props.product){
-            state.payload.product = this.props.product;
-        }
-        return state;
+@translate(['offerings/createOffering', 'common', 'utils/notice'])
+class CreateOffering extends React.Component<IProps, IState>{
+
+    get defaultState(){
+
+        const { accounts, products, product, gasPrice } = this.props;
+        const account = accounts.find(account => account.isDefault);
+        const productId = product ? product : products[0].id;
+        const currentProduct = products.find(product => product.id === productId);
+        const country = currentProduct.country;
+
+        return {
+            payload: {
+                agent: account.id
+               ,serviceName: ''
+               ,description: ''
+               ,country: country ? country.toUpperCase() : ''
+               ,supply: ''
+               ,unitName: 'MB'
+               ,unitType: 'units'
+               ,unitPrice: ''
+               ,billingType: 'prepaid'
+               ,maxBillingUnitLag: 70
+               ,minUnits: ''
+               ,maxUnit: ''
+               ,maxSuspendTime: ''
+               ,maxInactiveTimeSec: ''
+               ,template: currentProduct.offerTplID
+               ,deposit: 0
+               ,product: productId
+               ,minDownloadMbits: ''
+               ,minUploadMbits: ''
+            }
+           ,gasPrice
+           ,account
+           ,blocked: false
+        };
     }
 
     constructor(props: IProps){
         super(props);
-        this.state = this.getDefaultState();
+        this.state = this.defaultState;
     }
 
-    componentDidMount(){
-        this.refresh();
-    }
-
-    static getDerivedStateFromProps(props: IProps, state: any){
-        const { accounts } = props;
-        const account = accounts.find(state.account
-            ? account => account.id === state.account.id
-            : account => account.isDefault);
-
-        return {account, accounts};
-    }
-
-    async refresh() {
-        const { ws, accounts, products } = this.props;
-
-        const account = accounts.find(account => account.isDefault);
-
-        const payload = Object.assign({}, this.state.payload, {product: this.props.product
-                                                                      ? this.props.product
-                                                                      : products[0].id,
-                                                               agent: account.id,
-                                                               country: products[0].country ? products[0].country.toUpperCase() : ''
-                                                              });
-        this.setState({products, accounts, account, payload});
-        const templates = await ws.getTemplate(products[0].offerTplID);
-        const state = {
-            payload: Object.assign({}, this.state.payload, {template: products[0].offerTplID}),
-            template: templates[0]
-        };
-        this.setState(state);
-    }
-
-    onGasPriceChanged(evt:any){
+    onGasPriceChanged = (evt:any) => {
         this.setState({gasPrice: Math.floor(evt.target.value * 1e9)});
     }
 
-    onProductChanged(product: any){
-        if(product){
-            const payload = Object.assign({}, this.state.payload, {product: product.value});
+    onProductChanged = (selectedProduct: any) => {
+
+        const { products } = this.props;
+
+        const currentProduct = products.find(product => product.id === selectedProduct.value);
+
+        if(selectedProduct){
+            const payload = Object.assign({}
+                                         ,this.state.payload
+                                         ,{
+                                              product: selectedProduct.value
+                                             ,template: currentProduct.offerTplID
+                                             ,country: currentProduct.country ? currentProduct.country.toUpperCase() : ''
+                                          }
+                                         );
             this.setState({payload});
         }
     }
 
-    onAccountChanged(selectedAccount: any) {
-        const account = this.state.accounts.find(account => account.id === selectedAccount.value);
-        const payload = Object.assign({}, this.state.payload, {agent: selectedAccount.value});
-        this.setState({account, payload});
+    onAccountChanged = (selectedAccount: any) => {
+
+        const { accounts } = this.props;
+        const { payload } = this.state;
+
+        const account = accounts.find(account => account.id === selectedAccount.value);
+        this.setState({account, payload: Object.assign({}, payload, {agent: selectedAccount.value})});
     }
 
-    onUserInput(evt: any){
+    onUserInput = (evt: any) => {
 
         const payload = Object.assign({}, this.state.payload, {[evt.target.dataset.payloadValue]: evt.target.value, additionalParams: {}});
-        payload.deposit = (payload.supply ? 0 + payload.supply : 0)
+        payload.deposit = (payload.supply ? parseInt(payload.supply, 10) : 0)
                         * (payload.unitPrice ? parseFloatPrix(payload.unitPrice) : 0)
-                        * (payload.minUnits ? payload.minUnits : 0)
+                        * (payload.minUnits ? parseInt(payload.minUnits, 10) : 0)
                         ;
         this.setState({payload});
     }
 
-    async onSubmit(evt:any){
+    onSubmit = async (evt:any) => {
 
-        this.setState({errMsg: ''});
         evt.preventDefault();
+        this.setState({errMsg: ''});
 
-        const { t, ws } = this.props;
+        const { t, ws, localSettings, closeModal, done } = this.props;
+        const { account, gasPrice } = this.state;
 
         const aliases = {
             serviceName: t('Name')
@@ -168,8 +185,6 @@ class CreateOffering extends React.Component<IProps, any>{
         const mustBeInteger = [];
         const mustBeNumber = [];
         const isZero = [];
-
-        const settings = (await api.settings.getLocal()) as LocalSettings;
 
         let err = false;
         const payload = Object.assign({}, this.state.payload);
@@ -198,11 +213,11 @@ class CreateOffering extends React.Component<IProps, any>{
 
         });
 
-        payload.unitPrice = parseFloatPrix(payload.unitPrice);
+        (payload as any).unitPrice = parseFloatPrix(payload.unitPrice);
 
         const emptyStrings = strings.filter((key: string) => required.includes(key) && payload[key].trim() === '');
 
-        if(mustBeFilled.length || emptyStrings.length || payload.unitPrice !== payload.unitPrice || payload.unitPrice <= 0){
+        if(mustBeFilled.length || emptyStrings.length || payload.unitPrice !== payload.unitPrice || parseFloatPrix(payload.unitPrice) <= 0){
             err = true;
         }
 
@@ -235,16 +250,16 @@ class CreateOffering extends React.Component<IProps, any>{
         const wrongKeys = [...mustBeInteger, ...mustBeFilled, ...mustBePositive, ...isZero];
         if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
             if (payload.maxUnit !== '') {
-                if (payload.maxUnit < payload.minUnits) {
+                if (parseInt(payload.maxUnit, 10) < parseInt(payload.minUnits, 10)) {
                     err = true;
                 }
             }
         }
-        if(payload.deposit !== payload.deposit || payload.deposit > this.state.account.pscBalance){
+        if(payload.deposit !== payload.deposit || payload.deposit > account.pscBalance){
             err = true;
         }
 
-        if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
+        if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
             err=true;
         }
 
@@ -294,18 +309,18 @@ class CreateOffering extends React.Component<IProps, any>{
             if(!wrongKeys.includes('unitPrice') && payload.unitPrice !== payload.unitPrice){
                 msg += t('UnitPriceMustBeANumber') + ' ';
             }
-            if(payload.unitPrice <= 0){
+            if(parseFloatPrix(payload.unitPrice) <= 0){
                 msg += t('UnitPriceMustBeMoreThen0') + ' ';
             }
-            if(payload.deposit === payload.deposit && payload.deposit > this.state.account.pscBalance){
+            if(payload.deposit === payload.deposit && payload.deposit > account.pscBalance){
                 msg += t('DepositIsGreaterThenServiceBalance') + ' ';
             }
-            if(this.state.account.ethBalance < settings.gas.createOffering*this.state.gasPrice){
+            if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
                 msg += t('NotEnoughFunds') + ' ';
             }
             if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
                 if (payload.maxUnit !== '') {
-                    if (payload.maxUnit < payload.minUnits) {
+                    if (parseInt(payload.maxUnit, 10) < parseInt(payload.minUnits, 10)) {
                         msg += t('MaximumUnitsMustBeEqual') + ' ';
                     }
                 }
@@ -333,12 +348,12 @@ class CreateOffering extends React.Component<IProps, any>{
             if (payload.maxUnit === '') {
                 delete payload.maxUnit;
             }else{
-                payload.maxUnit = parseInt(payload.maxUnit, 10);
+                (payload as any).maxUnit = parseInt(payload.maxUnit, 10);
             }
 
             // MaxSuspendTime and MaxInactiveTime to seconds
-            payload.maxSuspendTime = Math.floor(parseFloat(payload.maxSuspendTime)) * 60;
-            payload.maxInactiveTimeSec = Math.floor(parseFloat(payload.maxInactiveTimeSec)) * 60;
+            (payload as any).maxSuspendTime = Math.floor(parseFloat(payload.maxSuspendTime)) * 60;
+            (payload as any).maxInactiveTimeSec = Math.floor(parseFloat(payload.maxInactiveTimeSec)) * 60;
 
             // additional parameters
             if('minDownloadMbits' in payload){
@@ -359,14 +374,14 @@ class CreateOffering extends React.Component<IProps, any>{
 
             this.setState({blocked: true});
             const offeringId = await ws.createOffering(payload);
-            await ws.changeOfferingStatus(offeringId, 'publish', this.state.gasPrice);
-            this.setState(this.getDefaultState());
+            await ws.changeOfferingStatus(offeringId, 'publish', gasPrice);
+            this.setState(this.defaultState);
 
-            if(typeof this.props.closeModal === 'function'){
-                this.props.closeModal();
+            if(typeof closeModal === 'function'){
+                closeModal();
             }
-            if(typeof this.props.done === 'function'){
-               this.props.done();
+            if(typeof done === 'function'){
+               done();
             }
         }
 
@@ -374,7 +389,7 @@ class CreateOffering extends React.Component<IProps, any>{
 
     }
 
-    redirectToServers() {
+    redirectToServers = () => {
         if (this.props.location.pathname === '/products') {
             this.props.closeModal();
         } else {
@@ -383,32 +398,31 @@ class CreateOffering extends React.Component<IProps, any>{
     }
 
     render(){
-        const { t } = this.props;
+        const { t, accounts, products } = this.props;
+        const { payload, account, gasPrice, blocked } = this.state;
 
         const selectProduct = <Select className='form-control'
-            value={this.state.payload.product}
+            value={payload.product}
             searchable={false}
             clearable={false}
-            options={this.state.products.map(product => ({value: product.id, label: product.name})) }
-            onChange={this.onProductChanged.bind(this)} />;
+            options={products.map(product => ({value: product.id, label: product.name})) }
+            onChange={this.onProductChanged} />;
 
         const selectAccount =  <Select className='form-control'
-            value={this.state.payload.agent}
+            value={payload.agent}
             searchable={false}
             clearable={false}
-            options={this.state.accounts.map(account => ({value: account.id, label: account.name}))}
-            onChange={this.onAccountChanged.bind(this)} />;
-            // {this.state.accounts.map((account:any) => <option key={account.id} value={account.id}>{account.name}</option>) }
+            options={accounts.map(account => ({value: account.id, label: account.name}))}
+            onChange={this.onAccountChanged} />;
 
-        // const title = this.state.template ? this.state.template.raw.schema.properties.serviceName.title : '';
-        const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
-        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8})) : 0;
+        const ethBalance = account ? (toFixedN({number: (account.ethBalance / 1e18), fixed: 8})) : 0;
+        const pscBalance = account ? (toFixedN({number: (account.pscBalance / 1e8), fixed: 8})) : 0;
 
-        const onUserInput = this.onUserInput.bind(this);
+        const onUserInput = this.onUserInput;
 
-        const country = countries.filter((country:any) => country.id === this.state.payload.country.toUpperCase());
+        const country = countries.filter((country:any) => country.id === payload.country.toUpperCase());
         const countryName = country[0] ? country[0].name : '';
-        const countryImg = !this.state.payload.country ? '' :
+        const countryImg = !payload.country ? '' :
             <span className='input-group-addon bootstrap-touchspin-prefix'>
                 <img src={`images/country/${this.state.payload.country.toLowerCase()}.png`} width='25px'/>
             </span>;
@@ -434,7 +448,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                className='form-control'
                                                onChange={onUserInput}
                                                data-payload-value='serviceName'
-                                               value={this.state.payload.serviceName}
+                                               value={payload.serviceName}
                                                placeholder={t('serviceNameTitle')}
                                         />
                                     </div>
@@ -446,7 +460,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                className='form-control'
                                                onChange={onUserInput}
                                                data-payload-value='description'
-                                               value={this.state.payload.description}
+                                               value={payload.description}
                                                placeholder={t('description')}
                                         />
                                     </div>
@@ -464,7 +478,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                     For changing country you must go to the
                                                     <button
                                                         className='btn btn-link btnLinkSmallCustom'
-                                                        onClick={this.redirectToServers.bind(this)}
+                                                        onClick={this.redirectToServers}
                                                     >Servers</button>
                                                     page
                                                 </Trans>
@@ -479,7 +493,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                className='form-control autonumber'
                                                onChange={onUserInput}
                                                data-payload-value='supply'
-                                               value={this.state.payload.supply}
+                                               value={payload.supply}
                                                placeholder={t('ie') + ' 3'}
                                                data-v-max='999'
                                                data-v-min='0'
@@ -514,7 +528,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                    placeholder={t('ie') + ' 0.001'}
                                                    onChange={onUserInput}
                                                    data-payload-value='unitPrice'
-                                                   value={this.state.payload.unitPrice}
+                                                   value={payload.unitPrice}
                                             />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                         </div>
@@ -529,7 +543,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                    placeholder={t('ie') + ' 3'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxBillingUnitLag'
-                                                   value={this.state.payload.maxBillingUnitLag}
+                                                   value={payload.maxBillingUnitLag}
                                             />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
@@ -557,7 +571,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                    placeholder={t('ie') + ' 100'}
                                                    onChange={onUserInput}
                                                    data-payload-value='minUnits'
-                                                   value={this.state.payload.minUnits}
+                                                   value={payload.minUnits}
                                             />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
@@ -575,7 +589,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                    placeholder={t('unlimited')}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxUnit'
-                                                   value={this.state.payload.maxUnit}
+                                                   value={payload.maxUnit}
                                             />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>MB</span>
                                         </div>
@@ -598,7 +612,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                    placeholder={t('ie') + ' 10'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxSuspendTime'
-                                                   value={this.state.payload.maxSuspendTime}
+                                                   value={payload.maxSuspendTime}
                                             />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>{t('min')}</span>
                                         </div>
@@ -620,7 +634,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                    placeholder={t('ie') + ' 10'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxInactiveTimeSec'
-                                                   value={this.state.payload.maxInactiveTimeSec}
+                                                   value={payload.maxInactiveTimeSec}
                                             />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>{t('min')}</span>
                                         </div>
@@ -648,7 +662,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                    placeholder={t('ie') + ' 100'}
                                                    onChange={onUserInput}
                                                    data-payload-value='minDownloadMbits'
-                                                   value={this.state.payload.minDownloadMbits}
+                                                   value={payload.minDownloadMbits}
                                             />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>{t('Mbits')}</span>
                                         </div>
@@ -667,7 +681,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                                    placeholder={t('ie') + ' 80'}
                                                    onChange={onUserInput}
                                                    data-payload-value='minUploadMbits'
-                                                   value={this.state.payload.minUploadMbits}
+                                                   value={payload.minUploadMbits}
                                             />
                                             <span className='input-group-addon bootstrap-touchspin-postfix'>{t('Mbits')}</span>
                                         </div>
@@ -698,7 +712,7 @@ class CreateOffering extends React.Component<IProps, any>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   value={toFixedN({number: (this.state.payload.deposit / 1e8), fixed: 8})}
+                                                   value={toFixedN({number: (payload.deposit / 1e8), fixed: 8})}
                                                    placeholder='PRIX'
                                                    readOnly
                                             />
@@ -712,15 +726,15 @@ class CreateOffering extends React.Component<IProps, any>{
                                         </span>
                                     </div>
                                 </div>
-                                <GasRange onChange={this.onGasPriceChanged.bind(this)} value={Math.floor(this.state.gasPrice/1e9)} />
+                                <GasRange onChange={this.onGasPriceChanged} value={Math.floor(gasPrice/1e9)} />
                             </div>
                         </div>
                         <div className='form-group row'>
                             <div className='col-md-8'>
-                                {this.state.blocked
+                                {blocked
                                     ? <div className='btn btnCustomDisabled disabled btn-block' >{t('CreateAndPublish')}</div>
                                     : <button type='submit'
-                                              onClick={this.onSubmit.bind(this)}
+                                              onClick={this.onSubmit}
                                               className='btn btn-default btn-custom btn-block waves-effect waves-light'
                                       >
                                           {t('CreateAndPublish')}
@@ -735,6 +749,13 @@ class CreateOffering extends React.Component<IProps, any>{
 }
 
 // export default withRouter(CreateOffering);
-export default withRouter(connect( (state: State, onProps: IProps) => {
-    return (Object.assign({}, {ws: state.ws, accounts: state.accounts, products: state.products}, onProps));
+export default withRouter(connect( (state: State, ownProps: IProps) => {
+    const { ws, accounts, products, localSettings } = state;
+    return (
+        Object.assign({}
+                     ,{ws, accounts, products, localSettings}
+                     ,{gasPrice: parseFloat(state.settings['eth.default.gasprice'])}
+                     ,ownProps
+                     )
+    );
 } )(CreateOffering));

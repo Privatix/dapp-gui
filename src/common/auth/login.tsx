@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { registerBugsnag } from 'utils/bugsnag';
-import * as api from 'utils/api';
 import { WS } from 'utils/ws';
 import {default as notice, closeNotice } from 'utils/notice';
 import { translate } from 'react-i18next';
@@ -59,8 +58,7 @@ class Login extends React.Component<any, any> {
         const { t } = this.props;
 
         if (this.pwdIsCorrect(pwd)) {
-            const settings = await api.settings.getLocal();
-            const ws = new WS(settings.wsEndpoint);
+            const ws = new WS();
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 0);
             const ready = await ws.whenReady();
             closeNotice();

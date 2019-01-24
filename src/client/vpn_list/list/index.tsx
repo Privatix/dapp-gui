@@ -23,6 +23,7 @@ import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
 
 import {State} from 'typings/state';
+import {Offering} from 'typings/offerings';
 import { asyncProviders } from 'redux/actions';
 
 @translate(['client/vpnList', 'utils/notice', 'common'])
@@ -161,7 +162,7 @@ class VPNList extends React.Component<any,any> {
         }
     }
 
-    formFilteredDataRow(offering: any) {
+    formFilteredDataRow(offering: Offering) {
         const { t, offeringsAvailability } = this.props;
         const offeringHash = '0x' + offering.hash;
 
