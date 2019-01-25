@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { connect } from 'react-redux';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 
@@ -12,7 +11,6 @@ import i18n from 'i18next/init';
 
 import initElectronMenu from './electronMenu';
 
-import {State} from 'typings/state';
 import {LocalSettings} from 'typings/settings';
 
 interface IProps {
@@ -20,42 +18,49 @@ interface IProps {
 }
 
 interface IState {
-
+    component: any;
 }
 
-class Start extends React.Component<IProps, IState> {
+const memoryHistory = createMemoryHistory();
 
-    MemoryHistory: any = null;
+const login = <Switch>
+        <Route exact path='/' render={() => <Login entryPoint={'/app'} />} />
+        <Route path='/app' component={App} />
+    </Switch>;
 
-    componentDidMount(){
+const wizardFirstStart = <Wizard currentState={'firstStart'} app={App} />;
+const wizardCreateAcc = <Wizard currentState={'setAccount'} app={App} />;
 
-        const { localSettings } = this.props;
+export default class Start extends React.Component<IProps, IState> {
 
+    constructor(props: IProps){
+
+        super(props);
+
+        const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
         i18n.changeLanguage(localSettings.lang);
-
-        // From custom electron menu
         initElectronMenu();
 
-        this.MemoryHistory = createMemoryHistory();
+        let component;
+        if(localSettings.firstStart){
+            component = wizardFirstStart;
+        }else if(!localSettings.accountCreated){
+            component = wizardCreateAcc;
+        }else{
+            component = login;
+        }
+
+        this.state =  { component };
     }
 
     render(){
 
-        const { localSettings: { firstStart, accountCreated } } = this.props;
-
-        const login = <Router history={this.MemoryHistory as any}>
-            <Switch>
-                <Route exact path='/' render={() => <Login entryPoint={'/app'} />} />
-                <Route path='/app' component={App} />
-            </Switch>
-        </Router>;
-
-         return (
-             <I18nextProvider i18n={ i18n }>
-                 { firstStart || !accountCreated ? <Wizard currentState={firstStart ? 'firstStart' : 'setAccount'} app={App} /> :  login }
-             </I18nextProvider>
+        return (
+            <Router history={memoryHistory}>
+                <I18nextProvider i18n={ i18n }>
+                    {this.state.component}
+                </I18nextProvider>
+            </Router>
          );
     }
 }
-
-export default connect( (state: State) => ({localSettings: state.localSettings}) )(Start);

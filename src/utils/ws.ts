@@ -62,6 +62,8 @@ export class WS {
           if(this.pwd){
               const token = await this.getToken();
               this.token = token;
+              this.authorized = true;
+              await this.saveCache();
           }
           this.resolve(true);
           this.resolve = null;
@@ -163,7 +165,9 @@ export class WS {
     send(method: string, params: any[] = []){
 
         const uuid = uuidv4();
-        params.unshift(this.token);
+        if(!['ui_updatePassword'].includes(method)){
+            params.unshift(this.token);
+        }
         const req = {
             jsonrpc: '2.0',
             id: uuid,
@@ -216,7 +220,6 @@ export class WS {
 
     setPassword(pwd: string){
         const uuid = uuidv4();
-
         const req = {
             jsonrpc: '2.0',
             id: uuid,
@@ -227,22 +230,22 @@ export class WS {
         this.pwd = pwd;
 
         return new Promise((resolve: Function, reject: Function) => {
-            const updateToken = () => {
-                this.getToken()
-                    .then(token => {
-                        if(token){
-                            this.token = token;
-                            this.authorized = true;
-                            resolve(true);
-                        }else{
-                            reject(false);
-                        }
-                    })
-                    .catch(err => {
+            const updateToken = async () => {
+                try {
+                    const token = await this.getToken();
+                    if(token){
+                        this.token = token;
+                        this.authorized = true;
+                        await this.saveCache();
+                        resolve(true);
+                    }else{
+                        reject(false);
+                    }
+                 } catch(err){
                         reject(err);
-                    });
+                }
             };
-            const handler = (res: any) => {
+            const handler = async (res: any) => {
                 if('error' in res && res.error.message.indexOf('password exists') === -1){
                     reject(res.error);
                 }else{
@@ -254,6 +257,11 @@ export class WS {
         });
     }
 
+    updatePassword(pwd: string){
+        const old = this.pwd;
+        this.pwd = pwd;
+        return this.send('ui_updatePassword', [old, pwd]);
+    }
 // accounts
 
     getAccount(id: string): Promise<Account> {
@@ -460,18 +468,23 @@ export class WS {
             return this.send('ui_setGUISettings', [payload]);
         }else{
             let localCache = window.localStorage.getItem('localSettings');
-            return localCache ? JSON.parse(localCache) : {};
+            const localCacheObj = JSON.parse(localCache);
+            window.localStorage.setItem('localSettings', JSON.stringify(Object.assign({}, localCacheObj, updateSettings)));
         }
     }
 
     async getLocal(){
         let localCache = window.localStorage.getItem('localSettings');
-        if(localCache){
-            localCache = JSON.parse(localCache);
-        }
-        const mutableSettings = this.token ? await this.getGUISettings() : (localCache || {});
+        localCache = JSON.parse(localCache);
+        const mutableSettings = this.token ? await this.getGUISettings() : localCache;
         const immutableSettings = await api.settings.getLocal();
-        return Object.assign({}, mutableSettings, immutableSettings);
+        return Object.assign({}, immutableSettings, mutableSettings);
+    }
+
+    saveCache(){
+        let localCache = window.localStorage.getItem('localSettings');
+        localCache = JSON.parse(localCache);
+        return this.setGUISettings(localCache);
     }
 
 }

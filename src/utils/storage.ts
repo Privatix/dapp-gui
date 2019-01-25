@@ -2,14 +2,24 @@ import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 
 import reducers from 'redux/reducers';
-import { asyncProviders } from 'redux/actions';
+import { asyncProviders, default as handlers } from 'redux/actions';
+
+import { WS } from 'utils/ws';
 
 import { Role } from 'typings/mode';
+
+const localCache = window.localStorage.getItem('localSettings');
+if(!localCache){
+    window.localStorage.setItem('localSettings', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en'}));
+}
 
 const storage = createStore(reducers, applyMiddleware(
     thunkMiddleware, // lets us dispatch() functions
   ));
 
+const ws = new WS();
+storage.dispatch(handlers.setWS(ws));
+storage.dispatch(asyncProviders.updateLocalSettings());
 
 const refresh = function(){
 
