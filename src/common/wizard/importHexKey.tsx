@@ -6,7 +6,6 @@ import Steps from './steps';
 import { PreviousButton, NextButton, back } from './utils';
 import notice from 'utils/notice';
 
-import * as api from 'utils/api';
 import { WS, ws } from 'utils/ws';
 
 interface IProps{
@@ -82,7 +81,7 @@ class ImportHexKey extends React.Component<IProps, any>{
 
         try {
             const id = await ws.importAccountFromHex(payload);
-            api.settings.updateLocal({accountCreated:true});
+            await ws.setGUISettings({accountCreated:true});
             this.props.history.push(`/backup/${id}/importHexKey`);
         } catch (e) {
             msg = t('SomethingWentWrong');

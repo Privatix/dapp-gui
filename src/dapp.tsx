@@ -7,6 +7,14 @@ import Start from 'common/start';
 import { registerBugsnag } from 'utils/bugsnag';
 import { store } from 'utils/storage';
 
-registerBugsnag();
+const unsubscribe = store.subscribe(()=>{
+    const storage = store.getState();
+    if(storage.localSettings && storage.localSettings.lang){
+        registerBugsnag();
 
-render(<Provider store={store}><Start /></Provider>, document.getElementById('app'));
+        render(<Provider store={store}>
+                       <Start />
+               </Provider>, document.getElementById('app'));
+       unsubscribe();
+    }
+});

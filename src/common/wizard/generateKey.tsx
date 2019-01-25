@@ -6,7 +6,6 @@ import Steps from './steps';
 import {PreviousButton, NextButton, back} from './utils';
 import notice from 'utils/notice';
 
-import * as api from 'utils/api';
 import { WS, ws } from 'utils/ws';
 
 interface IProps{
@@ -71,7 +70,7 @@ class GenerateKey extends React.Component<IProps, any>{
 
         try {
             const accountId = await ws.generateAccount(payload);
-            api.settings.updateLocal({accountCreated:true});
+            await ws.setGUISettings({accountCreated:true});
             this.props.history.push(`/backup/${accountId}/generateKey`);
         } catch (e){
             msg = t('SomethingWentWrong');

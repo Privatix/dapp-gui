@@ -48,7 +48,8 @@ class App extends React.Component<Props, any> {
 
         const { mode } = this.props;
 
-        const app = <Router history={MemoryHistory as any}>
+        const app = (
+            <Router history={MemoryHistory}>
                 <div id='wrapper'>
                     <Header />
                     <Navigation />
@@ -79,7 +80,8 @@ class App extends React.Component<Props, any> {
                         </div>
                     </div>
                 </div>
-            </Router>;
+            </Router>
+        );
 
             return app;
     }

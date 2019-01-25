@@ -33,14 +33,14 @@ export default class Wizard extends React.Component<IProps, IState> {
 
         if(currentState === 'firstStart'){
             return (
-                <Router history={MemoryHistory as any}>
+                <Router history={MemoryHistory}>
                     <Switch>
                         <Route exact path='/' component={SetLanguage} />
                         <Route exact path='/setPassword' component={SetPassword} />
                         <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
                         <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                         <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                        <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
                         <Route path='/backup/:accountId/:from'
                                render={(props: any) => <Backup entryPoint={'/app'}
                                                                accountId={props.match.params.accountId}
@@ -63,13 +63,13 @@ export default class Wizard extends React.Component<IProps, IState> {
 
         if(currentState === 'setAccount'){
             return (
-                <Router history={MemoryHistory as any}>
+                <Router history={MemoryHistory}>
                     <Switch>
                         <Route exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />
                         <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
                         <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                         <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                        <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
                         <Route path='/backup/:accountId/:from'
                                render={(props: any) => <Backup entryPoint={'/app'}
                                                                accountId={props.match.params.accountId}
@@ -91,12 +91,12 @@ export default class Wizard extends React.Component<IProps, IState> {
 
         if(currentState === 'createAccount'){
             return (
-                <Router history={MemoryHistory as any}>
+                <Router history={MemoryHistory}>
                     <Switch>
                         <Route exact path='/' render={() => <SetAccount default={false} /> } />
                         <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                         <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                        <Route path='/importJsonKey/:default' component={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
                         <Route path='/backup/:accountId/:from'
                                render={(props: any) => <Backup entryPoint={'/app'}
                                                                accountId={props.match.params.accountId}

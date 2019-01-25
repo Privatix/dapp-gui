@@ -1,33 +1,30 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import * as moment from 'moment';
-import * as api from '../../utils/api';
-import {LocalSettings} from '../../typings/settings';
 
-export default class PgTime extends React.Component<any, any> {
+import { State } from 'typings/state';
 
-    constructor(props: any) {
-        super(props);
+interface IProps {
+    lang?: string;
+    time: string;
+}
 
-        this.state = {lang:''};
-    }
+interface IState {
 
-    async componentDidMount() {
-        const lang = await this.getActiveLang();
-        this.setState({lang});
-    }
+}
 
-    async getActiveLang() {
-        const settings = (await api.settings.getLocal()) as LocalSettings;
-        return settings.lang;
-    }
+class PgTime extends React.Component<IProps, IState> {
 
     render() {
-        if (this.props.time) {
-            moment.locale(this.state.lang);
 
-            const date = new Date(Date.parse(this.props.time));
+        const { time, lang } = this.props;
+
+        if (time) {
+            moment.locale(lang);
+
+            const date = new Date(Date.parse(time));
             let formattedDate = moment(date).format('MMM D YYYY HH:mm:ss');
-            if (this.state.lang === 'ru') {
+            if (lang === 'ru') {
                 moment.updateLocale('ru', {
                     monthsShort : {
                         format: 'Янв_Фев_Мар_Апр_Мая_Июня_Июля_Авг_Сен_Окт_Ноя_Дек'.split('_'),
@@ -43,3 +40,10 @@ export default class PgTime extends React.Component<any, any> {
         }
     }
 }
+
+export default connect( (state: State, ownProps: IProps) => {
+    return Object.assign({}
+                        ,{lang: state.localSettings.lang}
+                        ,ownProps
+                        );
+} )(PgTime);

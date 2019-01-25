@@ -1,126 +1,121 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 
 import Select from 'react-select';
-import * as api from 'utils/api';
 import notice from 'utils/notice';
 import GasRange from 'common/etc/gasRange';
 import toFixedN from 'utils/toFixedN';
 import countryByIso from 'utils/countryByIso';
 
-import {LocalSettings} from 'typings/settings';
+import { State } from 'typings/state';
 import {Offering} from 'typings/offerings';
-import { WS, ws } from 'utils/ws';
+import {Account} from 'typings/accounts';
+import {LocalSettings} from 'typings/settings';
+import { WS } from 'utils/ws';
 
 interface IProps{
     ws?: WS;
     t?: any;
+    localSettings?: LocalSettings;
+    accounts?: Account[];
+    gasPrice?: number;
     history?: any;
     offering: Offering;
     mode?: string;
 }
 
+interface IState{
+    deposit: number;
+    customDeposit: number;
+    gasPrice: number;
+    account: Account;
+    thereAreActiveChannels: boolean;
+}
+
 @translate(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice'])
-class AcceptOffering extends React.Component<IProps, any>{
+class AcceptOffering extends React.Component<IProps, IState>{
 
     acceptBtn = null;
 
     constructor(props:IProps){
         super(props);
 
-        const { t } = props;
+        const { gasPrice, offering, accounts } = props;
 
         this.acceptBtn = React.createRef();
-        const acceptOfferingBtnBl = <div className='form-group row'>
-            <div className='col-md-12'>
-                <button type='submit'
-                        onClick={this.onSubmit.bind(this)}
-                        ref={this.acceptBtn}
-                        className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
-                >
-                    {t('Accept')}
-                </button>
-            </div>
-        </div>;
 
         this.state = {
-            accounts: [],
-            gasPrice: 6*1e9,
-            deposit: props.offering.unitPrice * props.offering.minUnits,
-            customDeposit: props.offering.unitPrice * props.offering.minUnits,
-            acceptOfferingBtnBl: acceptOfferingBtnBl
+            deposit: offering.unitPrice * offering.minUnits,
+            customDeposit: offering.unitPrice * offering.minUnits,
+            gasPrice: gasPrice,
+            account: accounts.find((account: Account) => account.isDefault),
+            thereAreActiveChannels: false
         };
     }
 
     async componentDidMount(){
 
-        const { ws } = this.props;
-
-        const accounts = await ws.getAccounts();
-        const account = accounts.find((account: any) => account.isDefault);
         this.getNotTerminatedConnections();
-        this.setState({accounts, account});
     }
 
     async getNotTerminatedConnections() {
 
-        const { t, ws } = this.props;
+        const { ws } = this.props;
 
         const activeChannels = await ws.getNotTerminatedClientChannels();
-
-        if(activeChannels.length > 0){
-            this.setState({
-                acceptOfferingBtnBl: <div className='form-group row'>
-                    <div className='col-md-12'>
-                        <div className='text-danger'>{t('CanHaveOneVPNConnection')}</div>
-                    </div>
-                </div>
-            });
-        }
+        this.setState({thereAreActiveChannels: activeChannels.length > 0});
+ 
     }
 
-    onAccountChanged(selectedAccount: any) {
-        const account = this.state.accounts.find((account: any) => account.id === selectedAccount.value);
+    onAccountChanged = (selectedAccount: any) => {
+
+        const { accounts } = this.props;
+
+        const account = accounts.find((account: Account) => account.id === selectedAccount.value);
         this.setState({account});
     }
 
-    onGasPriceChanged(evt:any){
+    onGasPriceChanged = (evt:any) => {
         this.setState({gasPrice: Math.floor(evt.target.value * 1e9)});
     }
 
-    changeDepositHandler(evt:any) {
+    changeDepositHandler = (evt:any) => {
         let customDeposit = evt.target.value * 1e8;
         this.setState({customDeposit});
     }
 
-    async onSubmit(evt: any){
+    onSubmit = async (evt: any) => {
+
         evt.preventDefault();
+
         this.acceptBtn.current.setAttribute('disabled', 'disabled');
         let err = false;
         let msg = '';
-        const settings = (await api.settings.getLocal()) as LocalSettings;
-        const { t } = this.props;
 
-        if(this.state.customDeposit < this.state.deposit) {
+        const { t, ws, localSettings, offering } = this.props;
+        const { deposit, customDeposit, account, gasPrice } = this.state;
+
+        if(customDeposit < deposit) {
             err=true;
-            msg += ' ' + t('DepositMustBeMoreThan') + ' ' + toFixedN({number: (this.state.deposit / 1e8), fixed: 8}) + ' PRIX.';
+            msg += ' ' + t('DepositMustBeMoreThan') + ' ' + toFixedN({number: (deposit / 1e8), fixed: 8}) + ' PRIX.';
         }
 
-        if(this.props.offering.maxUnit && this.props.offering.maxUnit > 0) {
-            const topDepositLimit = this.props.offering.maxUnit * this.props.offering.unitPrice;
-            if (this.state.customDeposit > topDepositLimit) {
+        if(offering.maxUnit && offering.maxUnit > 0) {
+            const topDepositLimit = offering.maxUnit * offering.unitPrice;
+            if (customDeposit > topDepositLimit) {
                 err = true;
                 msg += ' ' + t('DepositMustBeLessOrEqualThan') + ' ' + toFixedN({number: (topDepositLimit / 1e8), fixed: 8}) + ' PRIX.';
             }
         }
 
-        if(this.state.account.pscBalance < this.state.customDeposit){
+        if(account.pscBalance < customDeposit){
             err=true;
             msg += ' ' + t('NotEnoughPrixForDeposit');
         }
 
-        if(this.state.account.ethBalance < settings.gas.acceptOffering*this.state.gasPrice){
+        if(account.ethBalance < localSettings.gas.acceptOffering*gasPrice){
             err=true;
             msg += ' ' + t('NotEnoughToPublishTransaction');
         }
@@ -132,7 +127,7 @@ class AcceptOffering extends React.Component<IProps, any>{
         }
 
         try {
-            const acceptRes = await this.props.ws.acceptOffering(this.state.account.ethAddr, this.props.offering.id, this.state.customDeposit, this.state.gasPrice);
+            const acceptRes = await ws.acceptOffering(account.ethAddr, offering.id, customDeposit, gasPrice);
             if (typeof acceptRes === 'string') {
                 notice({level: 'info', header: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
                 this.acceptBtn.current.removeAttribute('disabled');
@@ -145,21 +140,38 @@ class AcceptOffering extends React.Component<IProps, any>{
             this.acceptBtn.current.removeAttribute('disabled');
         }
 
-
     }
 
 
     render(){
 
-        const {t} = this.props;
-        const offering = this.props.offering;
+        const { t, offering, accounts } = this.props;
+        const { account, thereAreActiveChannels } = this.state;
+
+        const acceptOfferingBtnBl = thereAreActiveChannels
+            ? <div className='form-group row'>
+                  <div className='col-md-12'>
+                      <div className='text-danger'>{t('CanHaveOneVPNConnection')}</div>
+                  </div>
+              </div>
+            : <div className='form-group row'>
+                <div className='col-md-12'>
+                    <button type='submit'
+                            onClick={this.onSubmit}
+                            ref={this.acceptBtn}
+                            className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
+                    >
+                        {t('Accept')}
+                    </button>
+                </div>
+            </div>;
 
         const selectAccount =  <Select className='form-control'
-            value={this.state.account ? this.state.account.id : ''}
+            value={account ? account.id : ''}
             searchable={false}
             clearable={false}
-            options={this.state.accounts.map((account:any) => ({value: account.id, label: account.name}))}
-            onChange={this.onAccountChanged.bind(this)} />;
+            options={accounts.map((account:Account) => ({value: account.id, label: account.name}))}
+            onChange={this.onAccountChanged} />;
 
         return <div className='col-lg-12 col-md-12'>
             <div className='card m-b-20'>
@@ -262,7 +274,7 @@ class AcceptOffering extends React.Component<IProps, any>{
                                     <div className='input-group bootstrap-touchspin'>
                                         <input id='offeringDeposit' type='number' className='form-control' min='0' step='0.01'
                                                value={toFixedN({number: (this.state.customDeposit / 1e8), fixed: 8})}
-                                               onChange={this.changeDepositHandler.bind(this)}/>
+                                               onChange={this.changeDepositHandler}/>
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                     <span className='help-block'>
@@ -270,7 +282,7 @@ class AcceptOffering extends React.Component<IProps, any>{
                                     </span>
                                 </div>
                             </div>
-                            <GasRange onChange={this.onGasPriceChanged.bind(this)} value={Math.floor(this.state.gasPrice/1e9)}
+                            <GasRange onChange={this.onGasPriceChanged} value={Math.floor(this.state.gasPrice/1e9)}
                                       extLinkText='Information about Gas price' averageTimeText={t('utils/gasRange:AverageAcceptanceTimeText')} />
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>{t('AcceptancePrice')}</strong></div>
@@ -281,11 +293,17 @@ class AcceptOffering extends React.Component<IProps, any>{
                         </div>
                     </div>
 
-                    {this.state.acceptOfferingBtnBl}
+                    {acceptOfferingBtnBl}
                 </div>
             }
         </div>;
     }
 }
 
-export default ws<IProps>(withRouter(AcceptOffering));
+export default connect( (state: State, ownProps: IProps) => {
+    return Object.assign({}, {
+    ws: state.ws
+   ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
+   ,localSettings: state.localSettings
+   ,accounts: state.accounts
+}, ownProps);} )(withRouter(AcceptOffering));

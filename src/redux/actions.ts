@@ -74,6 +74,15 @@ export const asyncProviders: AsyncProviders = {
                 });
         };
     },
+    updateLocalSettings: function(){
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+            ws.getLocal()
+                .then(localSettings => {
+                    dispatch(handlers.updateLocalSettings(localSettings));
+                });
+        };
+    },
     updateOfferings: function(){
         return function(dispatch: any, getState: Function){
             const { ws } = getState();

@@ -15,17 +15,20 @@ import { WS } from 'utils/ws';
 import {State} from 'typings/state';
 import {Account as AccountType} from 'typings/accounts';
 
-interface Props {
-    accounts: AccountType[];
-    t: any;
-    ws: WS;
+interface IProps {
+    accounts?: AccountType[];
+    t?: any;
+    ws?: WS;
+}
+
+interface IState {
+
 }
 
 @translate(['accounts/accountsList', 'utils/notice'])
+class Accounts extends React.Component<IProps, IState> {
 
-class Accounts extends React.Component<Props, any> {
-
-    constructor(props: any) {
+    constructor(props: IProps) {
 
         super(props);
     }
@@ -41,7 +44,7 @@ class Accounts extends React.Component<Props, any> {
 
         const { t, accounts } = this.props;
 
-        const accountsDataArr = accounts.map((account: any) => {
+        const accountsDataArr = accounts.map((account: AccountType) => {
 
             const isDefault = account.isDefault === true ? 'on' : 'off';
 
