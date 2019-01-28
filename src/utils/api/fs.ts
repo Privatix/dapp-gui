@@ -8,8 +8,8 @@ export const readFile = function(fileName: string): Promise<string>{
     return fetch('/readFile', {method: 'post', body: {fileName}}) as Promise<string>;
 };
 
-export const moveFile = function(src: string, dest: string): Promise<any>{
-    return fetch('/moveFile', {src, dest}) as Promise<any>;
+export const copyFile = function(src: string, dest: string): Promise<any>{
+    return fetch('/copyFile', {src, dest}) as Promise<any>;
 };
 
 export const removeFile = function(src: string): Promise<any>{

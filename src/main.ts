@@ -37,8 +37,8 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
-    }else if(req.endpoint === '/moveFile'){
-        fse.move(req.options.src, req.options.dest, {overwrite: true}, (err:any) => {
+    }else if(req.endpoint === '/copyFile'){
+        fse.copy(req.options.src, req.options.dest, {overwrite: true}, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
     }else if(req.endpoint === '/removeFile'){

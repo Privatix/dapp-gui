@@ -19,7 +19,7 @@ interface IProps {
 
 export default class ExportBtns extends React.Component<IProps, any> {
 
-    archiveName = 'dump_' + Date.now() + '.zip';
+    archiveName = 'dump.zip';
     detectedOS = null;
 
     constructor(props: IProps) {
@@ -77,10 +77,11 @@ export default class ExportBtns extends React.Component<IProps, any> {
     saveWindowsLogs() {
         const utilPath = path.join(process.cwd(), '\\..\\util\\dump\\');
         const archivePath = path.join(process.cwd(), '\\..');
-        const archive = path.join(archivePath, '\\dump\\', this.archiveName);
+        const archiveName = 'dump_' + Date.now() + '.zip';
+        const archive = path.join(archivePath, '\\dump\\', archiveName);
 
         exec(`"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`, () => {
-            this.saveDialogHandler(archive, this.archiveName);
+            this.saveDialogHandler(archive, archiveName);
         });
     }
 
@@ -108,14 +109,17 @@ export default class ExportBtns extends React.Component<IProps, any> {
             }]
         }, (pathToArchive: string) => {
             if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {
-                api.fs.moveFile(archive, pathToArchive)
+                api.fs.copyFile(archive, pathToArchive)
                     .then(res => {
-                        if (this.detectedOS === 'win32' && res.err && res.err.code !== 'EPERM') {
-                            this.commonErrorHandler(res.err);
-                        } else if (this.detectedOS !== 'win32' && res.err) {
-                            this.commonErrorHandler(res.err);
+                        if (res.err) {
+                            if (res.err.code === 'EACCES') {
+                                notice({level: 'error', msg: t('PermissionDenied')});
+                            } else {
+                                notice({level: 'error', msg: t('UnknownError')});
+                            }
                         } else {
                             notice({level: 'info', msg: t('LogsDownloaded')});
+                            api.fs.removeFile(archive);
                         }
                     });
             } else {
@@ -124,16 +128,6 @@ export default class ExportBtns extends React.Component<IProps, any> {
 
             this.setState({disabledBtn: false});
         });
-    }
-
-    commonErrorHandler(err: any) {
-        const {t} = this.props;
-
-        if (err.code === 'EACCES') {
-            notice({level: 'error', msg: t('PermissionDenied')});
-        } else {
-            notice({level: 'error', msg: t('UnknownError')});
-        }
     }
 
     render() {
