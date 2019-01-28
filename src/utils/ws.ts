@@ -349,8 +349,8 @@ export class WS {
 
 // offerings
 
-    getAgentOfferings(productId: string='', status: OfferStatus = '', offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
-        return this.send('ui_getAgentOfferings', [productId, status, offset, limit]) as Promise<OfferingResponse>;
+    getAgentOfferings(productId: string='', statuses: OfferStatus[] = [], offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
+        return this.send('ui_getAgentOfferings', [productId, statuses, offset, limit]) as Promise<OfferingResponse>;
     }
 
     getClientOfferings(agent: string = ''
