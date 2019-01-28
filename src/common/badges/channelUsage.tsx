@@ -31,7 +31,7 @@ class Usage extends React.Component<IProps, IState>{
         if(!usage && channelId){
             ws.getChannelsUsage([channelId])
               .then(usage => {
-                  this.setState({usage: usage[0]});
+                  this.setState({usage: usage[channelId]});
               });
         }
     }
@@ -61,7 +61,7 @@ class Usage extends React.Component<IProps, IState>{
         const { ws, channelId } = this.props;
         if(channelId){
             const usage = await ws.getChannelsUsage([channelId]);
-            this.setState({usage: usage[0]});
+            this.setState({usage: usage[channelId]});
             this.handlerId = setTimeout(this.refresh, 2000);
         }
     }

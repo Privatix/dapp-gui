@@ -99,7 +99,7 @@ class ClientHistory extends React.Component<IProps, IState> {
 
         const ids = allTerminatedChannels.map(channel => channel.id);
         const usages = await ws.getChannelsUsage(ids);
-        const updatedChannels = allTerminatedChannels.map((channel, i) => Object.assign({}, channel, {usage: usages[i]}));
+        const updatedChannels = allTerminatedChannels.map(channel => Object.assign({}, channel, {usage: usages[channel.id]}));
 
         this.setState({allTerminatedChannels: updatedChannels});
 
