@@ -309,7 +309,8 @@
     },
     "logs/logsList": {
         "LogsHeader": "Logs list",
-        "ExportBtn": "Export to a file",
+        "ExportControllerLogsBtn": "Export controller's logs to a file",
+        "ExportAllLogsBtn": "Export all logs to a file",
         "LogsFilterFrom": "From:",
         "LogsFilterTo": "To:",
         "LogsFilterTime": "time",
@@ -322,7 +323,12 @@
         "Stack": "Stack",
         "ShowBtn": "show",
         "StackTrace": "Stack trace:",
-        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!"
+        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!",
+        "OSNotDetected": "We can't detect you OS. This function is not available for you!",
+        "SavingAllLogs": "Saving all logs",
+        "PermissionDenied": "Permission denied. Try to save to another folder with right permissions",
+        "UnknownError": "An error occurred while saving the logs",
+        "LogsDownloaded": "All logs have been successfully downloaded"
     },
     "logs/logsContext": {
         "Key": "Key",

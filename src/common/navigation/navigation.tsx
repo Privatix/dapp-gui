@@ -94,6 +94,12 @@ class Navigation extends React.Component<Props, any> {
                                 <i className='fa fa-server'></i><span> {t('Servers')} </span>
                             </NavLink>
                         </li>
+
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
+                            <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
+                                <i className='dripicons-blog'></i><span>{t('Logs')}</span>
+                            </NavLink>
+                        </li>
                     </ul>
                     <div className='clearfix'></div>
                 </div>
@@ -118,6 +124,11 @@ class Navigation extends React.Component<Props, any> {
                         <li className=''>
                             <NavLink exact to='/client-history' activeClassName='active' className='waves-effect'>
                                 <i className='fa fa-history'></i><span> {t('History')} </span>
+                            </NavLink>
+                        </li>
+                        <li onClick={this.handleClickFalse.bind(this)} className=''>
+                            <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
+                                <i className='dripicons-blog'></i><span>{t('Logs')}</span>
                             </NavLink>
                         </li>
                     </ul>

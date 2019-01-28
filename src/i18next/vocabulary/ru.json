@@ -309,7 +309,8 @@
     },
     "logs/logsList": {
         "LogsHeader": "Список логов",
-        "ExportBtn": "Экспорт в файл",
+        "ExportControllerLogsBtn": "Экспорт логов контроллера в файл",
+        "ExportAllLogsBtn": "Экспорт всех логов в файл",
         "LogsFilterFrom": "От:",
         "LogsFilterTo": "До:",
         "LogsFilterTime": "время",
@@ -322,7 +323,12 @@
         "Stack": "Стек",
         "ShowBtn": "показать",
         "StackTrace": "Stack Trace",
-        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!"
+        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!",
+        "OSNotDetected": "Не смогли определить Вашу ОС. Этот функционал Вам недоступен!",
+        "SavingAllLogs": "Сохранение логов",
+        "PermissionDenied": "Доступ запрещен. Попробуйте сохранить в другую папку с разрешенными правами доступа",
+        "UnknownError": "При сохранении логов возникла ошибка",
+        "LogsDownloaded": "Все логи были успешно загружены"
     },
     "logs/logsContext": {
         "Key": "Ключ",

@@ -26,7 +26,7 @@ import AcceptOffering from 'client/vpn_list/acceptOffering';
 import ClientHistory from 'client/vpn_list/history';
 
 
-import Logs from 'agent/logs/logsList';
+import Logs from 'common/logs/logsList';
 
 import {State} from 'typings/state';
 import { Role } from 'typings/mode';
