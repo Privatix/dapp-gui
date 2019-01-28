@@ -7,6 +7,7 @@ import * as api from 'utils/api';
 import {LocalSettings} from 'typings/settings';
 import {remote} from 'electron';
 const {dialog} = remote;
+const {app} = remote;
 import * as path from 'path';
 
 interface IProps {
@@ -18,11 +19,15 @@ interface IProps {
 
 export default class ExportBtns extends React.Component<IProps, any> {
 
+    archiveName = 'dump_' + Date.now() + '.zip';
+    detectedOS = null;
+
     constructor(props: IProps) {
         super(props);
 
         this.state = {
-            settings: null
+            settings: null,
+            disabledBtn: false
         };
     }
 
@@ -36,15 +41,17 @@ export default class ExportBtns extends React.Component<IProps, any> {
     }
 
     exportAllLogsToFile = () => {
-        const detectedOS = os.platform();
+        this.detectedOS = os.platform();
 
-        if (!detectedOS || detectedOS === null || typeof detectedOS === 'undefined') {
+        if (!this.detectedOS || this.detectedOS === null || typeof this.detectedOS === 'undefined') {
             const {t} = this.props;
             notice({level: 'warning', msg: t('OSNotDetected')});
             return;
         }
 
-        switch (detectedOS) {
+        this.setState({disabledBtn: true});
+
+        switch (this.detectedOS) {
             case 'linux':
                 this.saveUbuntuLogs();
                 break;
@@ -59,65 +66,74 @@ export default class ExportBtns extends React.Component<IProps, any> {
 
     saveUbuntuLogs() {
         const settings = this.state.settings;
-        const archiveName = 'dump.zip';
         const util = path.join(settings.collectLogsPath.linux, 'dump_ubuntu.py');
-        const archive = path.join(settings.collectLogsPath.linux, archiveName);
+        const archive = path.join(settings.collectLogsPath.linux, this.archiveName);
 
-        exec(`sudo python ${util} ${archive}`, (error, stdout, stderr) => {
-            this.saveDialogHandler(archive, archiveName);
+        exec(`sudo python ${util} ${archive}`, () => {
+            this.saveDialogHandler(archive);
         });
     }
 
     saveWindowsLogs() {
-        const utilPath = process.cwd() + '\\..\\util\\';
-        const archivePath = process.cwd() + '\\..\\util\\dump\\';
-        const archiveName = 'dump.zip';
+        const utilPath = path.join(process.cwd(), '\\..\\util\\dump\\');
+        const archivePath = path.join(process.cwd(), '\\..');
+        const archive = path.join(archivePath, '\\dump\\', this.archiveName);
 
-        console.log('Dir', process.cwd());
-        console.log('utilPath', utilPath);
-        console.log('archivePath', archivePath);
-
-        exec(`${utilPath}ps-runner.exe -script ${utilPath}new-dump.ps1 -installDir "${archivePath + archiveName}"`, (error, stdout, stderr) => {
-            (dialog.showSaveDialog as any)(null, {
-                title: 'Saving all logs',
-                defaultPath: archiveName
-            }, (pathToArchive: string) => {
-                if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {
-                    api.fs.moveFile(`${archivePath}${archiveName}`, pathToArchive);
-                } else {
-                    api.fs.removeFile(`${archivePath}${archiveName}`);
-                }
-            });
+        exec(`"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`, () => {
+            this.saveDialogHandler(archive, this.archiveName);
         });
     }
 
     saveMacOSLogs() {
-        const archiveName = 'dump.zip';
-        const utilPath = path.join(process.cwd(), '/../../util/dump/');
+        const appPath = app.getAppPath();
+        const utilPath = path.join(appPath, '/../../../../../util/dump/');
         const util = path.join(utilPath, 'dump_mac.sh');
-        const archive = path.join(utilPath, archiveName);
+        const archivePath = path.join(appPath, '/../../../../../../');
 
-        console.log('Dir', process.cwd());
-        console.log('utilPath', utilPath);
-        console.log('util', util);
-        console.log('archive', archive);
-
-        exec(utilPath, (error, stdout, stderr) => {
-            this.saveDialogHandler(archive, archiveName);
+        exec(`${util} ${archivePath}`, () => {
+            this.saveDialogHandler(archivePath + this.archiveName);
         });
     }
 
-    saveDialogHandler(archive: string, archiveName: string) {
+    saveDialogHandler(archive: string, archiveName: string = null) {
+        const {t} = this.props;
+        archiveName = archiveName ? archiveName : this.archiveName;
+
         (dialog.showSaveDialog as any)(null, {
-            title: 'Saving all logs',
-            defaultPath: archiveName
+            title: t('SavingAllLogs'),
+            defaultPath: archiveName,
+            filters: [{
+                name: 'zip',
+                extensions: ['zip']
+            }]
         }, (pathToArchive: string) => {
             if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {
-                api.fs.moveFile(archive, pathToArchive);
+                api.fs.moveFile(archive, pathToArchive)
+                    .then(res => {
+                        if (this.detectedOS === 'win32' && res.err && res.err.code !== 'EPERM') {
+                            this.commonErrorHandler(res.err);
+                        } else if (this.detectedOS !== 'win32' && res.err) {
+                            this.commonErrorHandler(res.err);
+                        } else {
+                            notice({level: 'info', msg: t('LogsDownloaded')});
+                        }
+                    });
             } else {
                 api.fs.removeFile(archive);
             }
+
+            this.setState({disabledBtn: false});
         });
+    }
+
+    commonErrorHandler(err: any) {
+        const {t} = this.props;
+
+        if (err.code === 'EACCES') {
+            notice({level: 'error', msg: t('PermissionDenied')});
+        } else {
+            notice({level: 'error', msg: t('UnknownError')});
+        }
     }
 
     render() {
@@ -129,7 +145,8 @@ export default class ExportBtns extends React.Component<IProps, any> {
                     onClick={this.props.exportControllerLogsToFile}>{t('ExportControllerLogsBtn')}</button>
 
                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-30'
-                    onClick={this.exportAllLogsToFile}>{t('ExportAllLogsBtn')}</button>
+                    onClick={this.exportAllLogsToFile}
+                    disabled={this.state.disabledBtn}>{t('ExportAllLogsBtn')}</button>
             </div>
         );
     }

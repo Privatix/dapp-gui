@@ -324,7 +324,11 @@
         "ShowBtn": "show",
         "StackTrace": "Stack trace:",
         "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!",
-        "OSNotDetected": "We can't detect you OS. This function is not available for you!"
+        "OSNotDetected": "We can't detect you OS. This function is not available for you!",
+        "SavingAllLogs": "Saving all logs",
+        "PermissionDenied": "Permission denied. Try to save to another folder with right permissions",
+        "UnknownError": "An error occurred while saving the logs",
+        "LogsDownloaded": "All logs have been successfully downloaded"
     },
     "logs/logsContext": {
         "Key": "Key",
