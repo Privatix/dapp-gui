@@ -1,6 +1,6 @@
 export default function (num: string) {
 
-    const raw = num.split('.');
+    const raw = String(num).split('.');
 
     if(raw.length === 1){
         return parseInt(raw[0], 10) * 1e8;
