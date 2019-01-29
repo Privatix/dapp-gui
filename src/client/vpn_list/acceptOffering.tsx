@@ -129,7 +129,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
         try {
             const acceptRes = await ws.acceptOffering(account.ethAddr, offering.id, customDeposit, gasPrice);
             if (typeof acceptRes === 'string') {
-                notice({level: 'info', header: t('utils/noticeCongratulations!'), msg: t('OfferingAccepted')});
+                notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('OfferingAccepted')});
                 this.acceptBtn.current.removeAttribute('disabled');
                 document.body.classList.remove('modal-open');
                 this.props.history.push('/client-dashboard-connecting');
