@@ -10,7 +10,7 @@ interface IProps {
     t?: any;
     ws?: WS;
     usage?: ClientChannelUsage;
-    channelId: string;
+    channelId?: string;
     mode: string;
 }
 
@@ -28,16 +28,18 @@ class Usage extends React.Component<IProps, IState>{
         const { channelId, usage, ws } = this.props;
         this.state = { usage };
 
-        if(!usage){
-            ws.getChannelUsage(channelId)
+        if(!usage && channelId){
+            ws.getChannelsUsage([channelId])
               .then(usage => {
-                  this.setState({usage});
+                  this.setState({usage: usage[channelId]});
               });
         }
     }
 
     componentDidMount(){
-        this.startRefresh();
+        if(this.props.channelId){
+            this.startRefresh();
+        }
     }
 
     componentWillUnmount(){
@@ -57,9 +59,11 @@ class Usage extends React.Component<IProps, IState>{
 
     refresh = async () => {
         const { ws, channelId } = this.props;
-        const usage = await ws.getChannelUsage(channelId);
-        this.setState({usage});
-        this.handlerId = setTimeout(this.refresh, 2000);
+        if(channelId){
+            const usage = await ws.getChannelsUsage([channelId]);
+            this.setState({usage: usage[channelId]});
+            this.handlerId = setTimeout(this.refresh, 2000);
+        }
     }
 
     render(){

@@ -414,8 +414,8 @@ export class WS {
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 
-    getChannelUsage(channelId: string): Promise<ClientChannelUsage>{
-        return this.send('ui_getChannelUsage', [channelId]) as Promise<ClientChannelUsage>;
+    getChannelsUsage(channelIds: string[]): Promise<{[key: string] : ClientChannelUsage}>{
+        return this.send('ui_getChannelsUsage', [channelIds]) as Promise<{[key: string] : ClientChannelUsage}>;
     }
 
     changeChannelStatus(channelId: string, channelStatus: string){

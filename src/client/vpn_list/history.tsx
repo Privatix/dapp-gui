@@ -24,20 +24,21 @@ interface IProps {
     t?: any;
     ws?: WS;
 }
+interface IState {
+    allTerminatedChannels: ClientChannel[];
+}
 
 @translate(['client/history', 'utils/notice'])
-class ClientHistory extends React.Component<IProps, any> {
+class ClientHistory extends React.Component<IProps, IState> {
 
     subscribeId = null;
+    polling = null;
 
     constructor(props:IProps) {
 
         super(props);
 
-        this.state = {
-            historyData: [],
-            awaitForTerminateData: [],
-        };
+        this.state = {allTerminatedChannels: []};
     }
 
     componentDidMount() {
@@ -52,6 +53,12 @@ class ClientHistory extends React.Component<IProps, any> {
 
         if(this.subscribeId){
             ws.unsubscribe(this.subscribeId);
+            this.subscribeId = null;
+        }
+
+        if(this.polling){
+            clearTimeout(this.polling);
+            this.polling = null;
         }
 
     }
@@ -59,7 +66,6 @@ class ClientHistory extends React.Component<IProps, any> {
     refresh = () => {
 
         this.getHistoryData();
-        this.getAwaitForTerminateColumns();
 
     }
 
@@ -72,20 +78,43 @@ class ClientHistory extends React.Component<IProps, any> {
         }
         const ids = channels.map(channel => channel.id);
         this.subscribeId = await ws.subscribe('channel', ids, this.refresh);
+        this.updateUsage();
     }
 
     async getHistoryData() {
 
-        const { t, ws } = this.props;
-        const clientChannels = await ws.getClientChannels([], ['terminated'], 0, 0);
+        const { ws } = this.props;
+        const allTerminatedChannels = (await ws.getClientChannels([], ['terminated'], 0, 0)).items;
+
         const allClientChannels = await ws.getClientChannels([], [], 0, 0);
         this.subscribe(allClientChannels.items);
 
-        const historyData = clientChannels.items.filter((channel) => {
-            if (channel.channelStatus.channelStatus !== 'active') {
-                return true;
-            }
-        }).map(channel => {
+        this.setState({allTerminatedChannels});
+    }
+
+    updateUsage = async () => {
+
+        const { ws } = this.props;
+        const { allTerminatedChannels } = this.state;
+
+        const ids = allTerminatedChannels.map(channel => channel.id);
+        const usages = await ws.getChannelsUsage(ids);
+        const updatedChannels = allTerminatedChannels.map(channel => Object.assign({}, channel, {usage: usages[channel.id]}));
+
+        this.setState({allTerminatedChannels: updatedChannels});
+
+        this.polling = setTimeout(this.updateUsage, 2000);
+    }
+
+    render() {
+
+        const { t } = this.props;
+        const { allTerminatedChannels } = this.state;
+
+        const historyChannels = allTerminatedChannels.filter(channel => channel.channelStatus.channelStatus !== 'active');
+        const activeContractChannels = allTerminatedChannels.filter(channel => channel.channelStatus.channelStatus === 'active');
+
+        const historyChannelsView = historyChannels.map(channel => {
             return {
                 id: <ModalWindow
                     customClass='shortTableText'
@@ -102,17 +131,7 @@ class ClientHistory extends React.Component<IProps, any> {
             };
         });
 
-        this.setState({historyData});
-    }
-
-    async getAwaitForTerminateColumns() {
-
-        const { t, ws } = this.props;
-        const clientChannels = await ws.getClientChannels(['active'], ['terminated'], 0, 0);
-
-        this.subscribe(clientChannels.items);
-
-        const data = clientChannels.items.map((channel) => {
+        const activeContractChannelsView = activeContractChannels.map((channel) => {
             let jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
             let jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
             const jobStatus = <JobStatus status={channel.job.status} />;
@@ -134,12 +153,6 @@ class ClientHistory extends React.Component<IProps, any> {
             };
         });
 
-        this.setState({awaitForTerminateData: data});
-    }
-
-    render() {
-
-        const { t } = this.props;
         const awaitForTerminateColumns = [
             {
                 header: t('Id'),
@@ -182,12 +195,12 @@ class ClientHistory extends React.Component<IProps, any> {
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: ([channelId, usage]) => <Usage usage={usage} channelId={channelId} mode='unit' />
+                render: ([channelId, usage]) => <Usage usage={usage} mode='unit' />
             },
             {
                 header: t('CostPRIX'),
                 key: 'cost',
-                render: ([channelId, usage]) => <Usage usage={usage} channelId={channelId} mode='prix' />
+                render: ([channelId, usage]) => <Usage usage={usage} mode='prix' />
             }
         ];
 
@@ -243,7 +256,7 @@ class ClientHistory extends React.Component<IProps, any> {
                 <div className='card-body'>
                     <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                         <SortableTable
-                            data={this.state.awaitForTerminateData}
+                            data={activeContractChannelsView}
                             columns={awaitForTerminateColumns}/>
                     </div>
                 </div>
@@ -254,7 +267,7 @@ class ClientHistory extends React.Component<IProps, any> {
                 <div className='card-body'>
                     <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                         <SortableTable
-                            data={this.state.historyData}
+                            data={historyChannelsView}
                             columns={historyColumns}/>
                     </div>
                 </div>
