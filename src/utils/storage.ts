@@ -1,3 +1,4 @@
+import * as api from './api';
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
 
@@ -20,6 +21,12 @@ const storage = createStore(reducers, applyMiddleware(
 const ws = new WS();
 storage.dispatch(handlers.setWS(ws));
 storage.dispatch(asyncProviders.updateLocalSettings());
+
+api.on('releases', async function(event: any, data: any){
+    const guiSettings = await ws.getGUISettings();
+    const updated = Object.assign({}, guiSettings, {releases: Object.assign({}, (guiSettings as any).releases, data)});
+    await ws.setGUISettings(updated);
+});
 
 const refresh = function(){
 

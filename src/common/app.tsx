@@ -83,7 +83,7 @@ class App extends React.Component<Props, any> {
             </Router>
         );
 
-            return app;
+        return app;
     }
 }
 

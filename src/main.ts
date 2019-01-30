@@ -12,9 +12,7 @@ let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
 
   const announce = function(announcement: any){
-      settings = Object.assign({}, settings, {'releases': Object.assign({}, settings.releases, announcement)});
-      fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
-      win.webContents.send('localSettings', settings);
+      win.webContents.send('releases', announcement);
   };
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
