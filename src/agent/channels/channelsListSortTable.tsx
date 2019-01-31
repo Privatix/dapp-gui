@@ -77,13 +77,14 @@ class ChannelsTable extends React.Component<any, any> {
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: (props) => <ChannelUsage channelId={props.channelId} mode='unit'/>
+                render: (usage) => <ChannelUsage usage={usage} mode='unit'/>
             },
             {
                 header: t('Income'),
                 key: 'incomePRIX',
                 headerStyle: {textAlign: 'center'},
                 dataProps: { className: 'text-center'},
+                render: (usage) => <ChannelUsage usage={usage} mode='prix'/>
             },
             {
                 header: t('ServiceChangedTime'),

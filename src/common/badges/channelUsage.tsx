@@ -24,6 +24,10 @@ class Usage extends React.Component<IProps, IState>{
 
         const { t, mode, usage } = this.props;
 
+        if(!usage) {
+            return null;
+        }
+
         return mode === 'unit'
             ? (usage
                 ? <span>{usage.current}&nbsp;{t('of')}&nbsp;{usage.maxUsage}&nbsp;{usage.unitName}</span>
