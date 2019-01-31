@@ -17,16 +17,61 @@ import ModalWindow from 'common/modalWindow';
 import CopyToClipboard from 'common/copyToClipboard';
 import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 
+import { ws, WS } from 'utils/ws';
+import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+
+interface IProps {
+    t?: any;
+    ws?: WS;
+    channels: ClientChannel[];
+}
+interface IState {
+    popup: boolean;
+    usage: {[key: string]: ClientChannelUsage};
+}
+
 @translate('client/connections/active')
+class ActiveConnection extends React.Component<IProps, IState>{
 
-class ActiveConnection extends React.Component<any, any>{
+    polling = null;
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
 
         this.state = {
             popup: false,
+            usage: props.channels.reduce((usage, channel) => {
+                usage[channel.id] = channel.usage;
+                return usage;
+            }, {})
         };
+    }
+
+    componentDidMount() {
+
+        this.updateUsage();
+
+    }
+
+    componentWillUnmount(){
+
+        if(this.polling){
+            clearTimeout(this.polling);
+            this.polling = null;
+        }
+
+    }
+
+    updateUsage = async () => {
+
+        const { ws, channels } = this.props;
+
+        const ids = channels.map(channel => channel.id);
+        const usage = await ws.getChannelsUsage(ids);
+
+        this.setState({usage});
+
+        this.polling = setTimeout(this.updateUsage, 2000);
     }
 
     private getColumns(){
@@ -79,12 +124,12 @@ class ActiveConnection extends React.Component<any, any>{
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: ([channelId, usage]) => { return <Usage usage={usage} channelId={channelId} mode='unit' />; }
+                render: (usage) => { return <Usage usage={usage} mode='unit' />; }
             },
             {
                 header: t('CostPRIX'),
                 key: 'costPRIX',
-                render: ([channelId, usage]) => { return <Usage usage={usage} channelId={channelId} mode='prix' />; }
+                render: (usage) => { return <Usage usage={usage} mode='prix' />; }
             }
         ];
     }
@@ -92,6 +137,7 @@ class ActiveConnection extends React.Component<any, any>{
     render() {
 
         const { t, channels } = this.props;
+        const { usage } = this.state;
 
         const connections = channels.map((channel: any) => {
 
@@ -120,9 +166,8 @@ class ActiveConnection extends React.Component<any, any>{
                 contractStatus: channel.channelStatus.channelStatus,
                 serviceStatus: channel.channelStatus.serviceStatus,
                 jobStatus: [channel.job.jobtype, jobStatus, jobTime],
-                usage: [channel.id, channel.usage],
-                costPRIX: [channel.id, channel.usage],
-                // costPRIX: toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})
+                usage: usage[channel.id],
+                costPRIX: usage[channel.id],
             };
         });
 
@@ -145,4 +190,4 @@ class ActiveConnection extends React.Component<any, any>{
     }
 }
 
-export default withRouter(ActiveConnection);
+export default ws<IProps>(withRouter(ActiveConnection));

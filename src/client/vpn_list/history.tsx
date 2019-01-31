@@ -125,8 +125,8 @@ class ClientHistory extends React.Component<IProps, IState> {
                 />,
                 agent: channel.agent,
                 contractStatus: channel.channelStatus.channelStatus,
-                usage: [channel.id, channel.usage],
-                cost: [channel.id, channel.usage],
+                usage: channel.usage,
+                cost: channel.usage,
                 lastUsed: channel.channelStatus.lastChanged
             };
         });
@@ -148,8 +148,8 @@ class ClientHistory extends React.Component<IProps, IState> {
                 contractStatus: channel.channelStatus.channelStatus,
                 serviceStatus: channel.channelStatus.serviceStatus,
                 jobStatus: <span><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</span>,
-                usage: [channel.id, channel.usage],
-                cost: [channel.id, channel.usage],
+                usage: channel.usage,
+                cost: channel.usage,
             };
         });
 
@@ -195,12 +195,12 @@ class ClientHistory extends React.Component<IProps, IState> {
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: ([channelId, usage]) => <Usage usage={usage} mode='unit' />
+                render: (usage) => <Usage usage={usage} mode='unit' />
             },
             {
                 header: t('CostPRIX'),
                 key: 'cost',
-                render: ([channelId, usage]) => <Usage usage={usage} mode='prix' />
+                render: (usage) => <Usage usage={usage} mode='prix' />
             }
         ];
 
@@ -233,12 +233,12 @@ class ClientHistory extends React.Component<IProps, IState> {
             {
                 header: t('Usage'),
                 key: 'usage',
-                render: ([channelId, usage]) => <Usage usage={usage} channelId={channelId} mode='unit' />
+                render: (usage) => <Usage usage={usage} mode='unit' />
             },
             {
                 header: t('CostPRIX'),
                 key: 'cost',
-                render: ([channelId, usage]) => <Usage usage={usage} channelId={channelId} mode='prix' />
+                render: (usage) => <Usage usage={usage} mode='prix' />
             },
             {
                 header: t('LastUsed'),
