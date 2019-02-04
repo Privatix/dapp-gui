@@ -5,9 +5,10 @@ import Pagination from 'react-js-pagination';
 
 import SortableTable from 'react-sortable-table-vilan';
 
-import DateSorter from 'common/sorters/sortingDates';
 import ExternalLink from 'common/etc/externalLink';
 import PgTime from 'common/etc/pgTime';
+
+import { DateCol, EthereumLink } from 'common/tables/';
 
 import { WS } from 'utils/ws';
 import { State } from 'typings/state';
@@ -35,23 +36,7 @@ class Transactions extends React.Component<IProps, IState>{
     handler = null;
 
     get columns() {
-
-        const { t } = this.props;
-
-        return [
-            {
-                header: t('Date'),
-                key: 'date',
-                defaultSorting: 'DESC',
-                descSortFunction: DateSorter.desc,
-                ascSortFunction: DateSorter.asc
-            },
-            {
-                header: t('EthereumLink'),
-                key: 'ethereumLink',
-                sortable: false
-            }
-        ];
+        return [ DateCol, EthereumLink ];
     }
 
     constructor(props: IProps) {
