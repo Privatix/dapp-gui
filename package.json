@@ -1,7 +1,7 @@
 {
     "name": "dappctrlgui",
     "description": "Privatix Network GUI",
-    "version": "0.19.1",
+    "version": "0.20.0",
     "main": "build/main.js",
     "devDependencies": {
         "@types/colors": "^1.1.3",
