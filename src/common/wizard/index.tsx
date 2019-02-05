@@ -94,6 +94,7 @@ export default class Wizard extends React.Component<IProps, IState> {
                 <Router history={MemoryHistory}>
                     <Switch>
                         <Route exact path='/' render={() => <SetAccount default={false} /> } />
+                        <Route exact path='/setAccount' render={() => <SetAccount default={false} /> } />
                         <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
                         <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
                         <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
