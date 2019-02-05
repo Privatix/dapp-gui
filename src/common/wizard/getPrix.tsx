@@ -123,7 +123,10 @@ class GetPrix extends React.Component<IProps, any>{
                                                    type='text'
                                                    defaultValue={ethAddr}
                                             />
-                                            <span className='input-group-addon bootstrap-touchspin-postfix'><CopyToClipboard text={ethAddr} /></span>
+                                            <span style={ {paddingLeft: '9px', paddingRight: '16px'} }
+                                                  className='input-group-addon bootstrap-touchspin-postfix'>
+                                                <CopyToClipboard text={ethAddr} />
+                                            </span>
                                     </div>
                                     <br />
                                 </li>
