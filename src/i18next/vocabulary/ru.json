@@ -72,6 +72,8 @@
         "PressButton": "Нажмите на кнопку \"Я это сделал(а)\".",
         "IdidIt": "Я это сделал(a)",
         "PleaseWait": "Пожалуйста подождите. Идет отправка PRIX и ETH на Ваш аккаунт.",
+        "TokensHaveBeenReceived": "Токены были получены.",
+        "WeAreTransferring": "Мы переводим их на аккаунт сервиса...",
         "AllDonePressFinish": "Все готово. Нажмите кнопку Завершить"
     },
     "auth/steps": {
