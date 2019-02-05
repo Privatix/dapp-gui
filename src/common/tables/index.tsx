@@ -32,6 +32,8 @@ export const Client = {
 export const ClientIP = {
     header: i18n.t('tables:ClientIP'),
     key: 'clientIP',
+    headerStyle: {textAlign: 'center'},
+    dataProps: {className: 'text-center shortTableTextTd'},
     sortable: false
 };
 
@@ -51,7 +53,8 @@ export const Agent = {
 export const Id = {
     header: i18n.t('tables:Id'),
     key: 'id',
-    dataProps: { className: 'shortTableTextTd' },
+    headerStyle: {textAlign: 'center'},
+    dataProps: {className: 'text-center shortTableTextTd'},
     descSortFunction: ModalPropTextSorter.desc,
     ascSortFunction: ModalPropTextSorter.asc
 };
