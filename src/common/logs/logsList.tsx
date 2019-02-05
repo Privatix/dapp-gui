@@ -57,7 +57,9 @@ class Logs extends React.Component <any,any> {
     }
 
     async getLogsData(dateFrom:any = null, dateTo:any = null, levels:string[] = []) {
+
         const { localSettings, t } = await this.props;
+
         const dateFromData = dateFrom === null ? this.state.dateFrom : dateFrom;
         const dateToData = dateTo === null ? this.state.dateTo : dateTo;
 
@@ -76,7 +78,7 @@ class Logs extends React.Component <any,any> {
             (logs.items as any).map(log => {
                 let row = {
                     level: log.level,
-                    date: log.time,
+                    date: [log.time, this.state.lang],
                     message: log.message,
                     context: log.context !== '{}' ?
                         <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('Context')}
@@ -139,7 +141,7 @@ class Logs extends React.Component <any,any> {
         this.getLogsData(null, null, levels);
     }
 
-    handleChangeDateFrom(date: any) {
+    handleChangeDateFrom = (date: any) => {
         this.resetActivePage();
         this.alertOnBigDateRangeSelect(date, this.state.dateTo);
         this.setState({
@@ -148,7 +150,7 @@ class Logs extends React.Component <any,any> {
         this.getLogsData(date);
     }
 
-    handleChangeDateTo(date: any) {
+    handleChangeDateTo = (date: any) => {
         this.resetActivePage();
         this.alertOnBigDateRangeSelect(this.state.dateFrom, date);
         this.setState({
@@ -157,7 +159,7 @@ class Logs extends React.Component <any,any> {
         this.getLogsData(null, date);
     }
 
-    handleNow() {
+    handleNow = () => {
         this.resetActivePage();
         const date = moment();
         this.setState({
@@ -166,7 +168,7 @@ class Logs extends React.Component <any,any> {
         this.getLogsData(null, date);
     }
 
-    handlePageChange(pageNumber:number) {
+    handlePageChange = (pageNumber:number) => {
         this.setState({activePage: pageNumber});
         this.getLogsData();
     }
@@ -219,15 +221,25 @@ class Logs extends React.Component <any,any> {
     }
 
     render() {
-        const { t } = this.props;
 
-        const pagination = this.state.totalItems <= this.state.logsPerPage ? '' :
+        const { t } = this.props;
+        const { totalItems
+              , logsPerPage
+              , activePage
+              , searchText
+              , levels
+              , dateFrom
+              , dateTo
+              , lang
+              , logsDataArr } = this.state;
+
+        const pagination = totalItems <= logsPerPage ? '' :
             <Pagination
-                activePage={this.state.activePage}
-                itemsCountPerPage={this.state.logsPerPage}
-                totalItemsCount={this.state.totalItems}
+                activePage={activePage}
+                itemsCountPerPage={logsPerPage}
+                totalItemsCount={totalItems}
                 pageRangeDisplayed={10}
-                onChange={this.handlePageChange.bind(this)}
+                onChange={this.handlePageChange}
                 prevPageText='‹'
                 nextPageText='›'
             />;
@@ -246,7 +258,7 @@ class Logs extends React.Component <any,any> {
                             <ExportBtns exportControllerLogsToFile={this.exportControllerLogsToFile} />
 
                             <Search
-                                searchText={this.state.searchText}
+                                searchText={searchText}
                                 handleSearch={this.handleSearch}
                                 handleChangeSearch={this.handleChangeSearch}
                                 handleClearSearch={this.handleClearSearch}
@@ -254,31 +266,31 @@ class Logs extends React.Component <any,any> {
 
                             <div className='row m-b-20'>
 
-                                <LevelsFilter levels={this.state.levels} handleChangeLevel={this.handleChangeLevel} />
+                                <LevelsFilter levels={levels} handleChangeLevel={this.handleChangeLevel} />
 
                                 <TimeFilter
                                     blockClass='logsTimeFilterFromBl'
                                     label={t('LogsFilterFrom')}
                                     id='dateFrom'
-                                    selected={this.state.dateFrom}
-                                    lang={this.state.lang}
-                                    handleChangeDate={this.handleChangeDateFrom.bind(this)}
+                                    selected={dateFrom}
+                                    lang={lang}
+                                    handleChangeDate={this.handleChangeDateFrom}
                                 />
 
                                 <TimeFilter
                                     blockClass='logsTimeFilterToBl'
                                     label={t('LogsFilterTo')}
                                     id='dateTo'
-                                    selected={this.state.dateTo}
-                                    lang={this.state.lang}
-                                    handleChangeDate={this.handleChangeDateTo.bind(this)}
+                                    selected={dateTo}
+                                    lang={lang}
+                                    handleChangeDate={this.handleChangeDateTo}
                                     showNowBtn={true}
-                                    handleNow={this.handleNow.bind(this)}
+                                    handleNow={this.handleNow}
                                 />
 
                             </div>
 
-                            <LogsTable lang={this.state.lang} logsDataArr={this.state.logsDataArr} />
+                            <LogsTable lang={lang} logsDataArr={logsDataArr} />
 
                             <div>{pagination}</div>
 

@@ -6,6 +6,8 @@ import SortableTable from 'react-sortable-table-vilan';
 import { WS, ws } from 'utils/ws';
 import {ClientChannel} from 'typings/channels';
 
+import { Id, Agent, Server, Offering as OfferingCol } from 'common/tables/';
+
 import ChannelStatus from 'common/badges/channelStatus';
 import ContractStatus from 'common/badges/contractStatus';
 
@@ -70,22 +72,10 @@ class Connection extends React.Component<IProps, any>{
         }
 
         const sessionsColumns = [
-            {
-                header: t('Id'),
-                key: 'id'
-            },
-            {
-                header: t('Agent'),
-                key: 'agent'
-            },
-            {
-                header: t('Server'),
-                key: 'server'
-            },
-            {
-                header: t('Offering'),
-                key: 'offering'
-            },
+            Id,
+            Agent,
+            Server,
+            OfferingCol,
             {
                 header: t('Started'),
                 key: 'started'

@@ -2,19 +2,11 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
-import ContractStatus from 'common/badges/contractStatus';
-import ChannelStatus from 'common/badges/channelStatus';
-import JobStatus from 'common/badges/jobStatus';
-import JobName from 'common/badges/jobName';
-import Usage from 'common/badges/channelUsage';
-
 import ServiceView from './serviceView';
 
-import PgTime from 'common/etc/pgTime';
+import { Id, Agent, ContractStatus, ServiceStatus, JobStatus, Usage, CostPRIX, LastUsed } from 'common/tables/';
+
 import ModalWindow from 'common/modalWindow';
-import DateSorter from 'common/sorters/sortingDate';
-import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
-import CopyToClipboard from 'common/copyToClipboard';
 
 import { ClientChannel } from 'typings/channels';
 
@@ -126,15 +118,12 @@ class ClientHistory extends React.Component<IProps, IState> {
                 agent: channel.agent,
                 contractStatus: channel.channelStatus.channelStatus,
                 usage: channel.usage,
-                cost: channel.usage,
-                lastUsed: channel.channelStatus.lastChanged
+                costPRIX: channel.usage,
+                lastUsedTime: channel.channelStatus.lastChanged
             };
         });
 
         const activeContractChannelsView = activeContractChannels.map((channel) => {
-            let jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
-            let jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
-            const jobStatus = <JobStatus status={channel.job.status} />;
 
             return {
                 id: <ModalWindow
@@ -147,107 +136,29 @@ class ClientHistory extends React.Component<IProps, IState> {
                 agent: channel.agent,
                 contractStatus: channel.channelStatus.channelStatus,
                 serviceStatus: channel.channelStatus.serviceStatus,
-                jobStatus: <span><JobName jobtype={channel.job.jobtype} /> ({jobStatus} {jobTime})</span>,
+                jobStatus: channel.job,
                 usage: channel.usage,
-                cost: channel.usage,
+                costPRIX: channel.usage,
             };
         });
 
         const awaitForTerminateColumns = [
-            {
-                header: t('Id'),
-                key: 'id',
-                dataProps: { className: 'shortTableTextTd' },
-                descSortFunction: ModalPropTextSorter.desc,
-                ascSortFunction: ModalPropTextSorter.asc
-            },
-            {
-                header: t('Agent'),
-                key: 'agent',
-                dataProps: { className: 'shortTableTextTd' },
-                render: (agent) => {
-                    return <div>
-                        <span className='shortTableText' title={agent}>{agent}</span>
-                        <CopyToClipboard text={agent} />
-                    </div>;
-                }
-
-            },
-            {
-                header: t('ContractStatus'),
-                key: 'contractStatus',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                render: (contractStatus) => <ContractStatus contractStatus={contractStatus} />
-            },
-            {
-                header: t('ServiceStatus'),
-                key: 'serviceStatus',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                render: (serviceStatus) => <ChannelStatus serviceStatus={serviceStatus} />
-            },
-            {
-                header: t('JobStatus'),
-                key: 'jobStatus',
-                sortable: false
-            },
-            {
-                header: t('Usage'),
-                key: 'usage',
-                render: (usage) => <Usage usage={usage} mode='unit' />
-            },
-            {
-                header: t('CostPRIX'),
-                key: 'cost',
-                render: (usage) => <Usage usage={usage} mode='prix' />
-            }
+            Id,
+            Agent,
+            ContractStatus,
+            ServiceStatus,
+            JobStatus,
+            Usage,
+            CostPRIX
         ];
 
         const historyColumns = [
-            {
-                header: t('Id'),
-                key: 'id',
-                dataProps: { className: 'shortTableTextTd' },
-                descSortFunction: ModalPropTextSorter.desc,
-                ascSortFunction: ModalPropTextSorter.asc
-            },
-            {
-                header: t('Agent'),
-                key: 'agent',
-                dataProps: { className: 'shortTableTextTd' },
-                render: (agent) => {
-                    return <div>
-                        <span className='shortTableText' title={agent}>{agent}</span>
-                        <CopyToClipboard text={agent} />
-                    </div>;
-                }
-            },
-            {
-                header: t('ContractStatus'),
-                key: 'contractStatus',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                render: (contractStatus) => <ContractStatus contractStatus={contractStatus} />
-            },
-            {
-                header: t('Usage'),
-                key: 'usage',
-                render: (usage) => <Usage usage={usage} mode='unit' />
-            },
-            {
-                header: t('CostPRIX'),
-                key: 'cost',
-                render: (usage) => <Usage usage={usage} mode='prix' />
-            },
-            {
-                header: t('LastUsed'),
-                key: 'lastUsed',
-                render: (lastUsed) => <PgTime time={lastUsed} />,
-                descSortFunction: DateSorter.desc,
-                ascSortFunction: DateSorter.asc
-
-            }
+            Id,
+            Agent,
+            ContractStatus,
+            Usage,
+            CostPRIX,
+            LastUsed
         ];
 
         return <div className='col-lg-12 col-md-12'>

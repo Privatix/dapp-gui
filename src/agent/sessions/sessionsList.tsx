@@ -40,7 +40,7 @@ class Sessions extends React.Component <any,any> {
                 started: session.started,
                 stopped: session.stopped,
                 usage: session.unitsUsed + ' MB',
-                lastUsageTime: session.lastUsageTime,
+                lastUsedTime: session.lastUsageTime,
                 clientIP: session.clientIP
             };
         });

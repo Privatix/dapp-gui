@@ -246,15 +246,6 @@
         "TerminateService": "Terminate service",
         "TerminateContract": "Terminate contract"
     },
-    "channels/channelsListSortTable":{
-        "Server": "Server",
-        "Client": "Client",
-        "ContractStatus": "Contract status",
-        "ServiceStatus": "Service status",
-        "Usage": "Usage",
-        "Income": "Income (PRIX)",
-        "ServiceChangedTime": "Service changed time"
-    },
     "sessions/sessionsList": {
         "TotalStatistics": "Total statistics",
         "TotalUsage": "Total usage",
@@ -275,13 +266,9 @@
     "header": {
         "Accounts": "Accounts",
         "Help": "Help",
-        "SwitchToClient": "Switch to Client",
-        "SwitchToAgent": "Switch to Agent",
         "Settings": "Settings",
         "Logs": "Logs",
-        "SomethingWentWrong": "Something went wrong!",
-        "UserWasSwitchedToAGENT": "User mode was successfully switched to AGENT",
-        "UserWasSwitchedToCLIENT": "User mode was successfully switched to CLIENT"
+        "SomethingWentWrong": "Something went wrong!"
     },
     "navigation": {
         "Dashboard": "Dashboard",
@@ -426,7 +413,6 @@
         "Availability": "Availability",
         "Block": "Block",
         "Hash": "Hash",
-        "Agent": "Agent",
         "Country": "Country",
         "Price": "Price (PRIX/MB)",
         "SupplyTotal": "Supply (total)",
@@ -481,8 +467,6 @@
     "client/history": {
         "Service": "Service",
         "of": "of",
-        "Id": "Id",
-        "Agent": "Agent",
         "ContractStatus": "Contract status",
         "ServiceStatus": "Service status",
         "JobStatus": "Job status",
@@ -522,9 +506,7 @@
     "client/connections/active": {
         "Connection": "Connection",
         "ActiveConnection": "Active Connection:",
-        "Id": "Id",
         "Offering": "Offering",
-        "Agent": "Agent",
         "ContractStatus": "Contract status",
         "ServiceStatus": "Service status",
         "JobStatus": "Job status",
@@ -544,9 +526,6 @@
     },
     "client/connections/connection": {
         "Offering": "Offering",
-        "Id": "Id",
-        "Agent": "Agent",
-        "Server": "Server",
         "Started": "Started",
         "Stopped": "Stopped",
         "Usage": "Usage",
@@ -723,5 +702,44 @@
         "announcement": "<0>New version <1>{{name}}</1> was released!</0>",
         "GoToUpdate": "Go to update",
         "DoNotShow": "Do not show"
+    },
+    "tables": {
+        "Client": "Client",
+        "ClientIP": "Client IP",
+        "Agent": "Agent address",
+        "Id": "Id",
+        "Offering": "Offering",
+        "Status": "Status",
+        "ContractStatus": "Contract Status",
+        "ServiceStatus": "Service Status",
+        "JobStatus": "Job status",
+        "Usage": "Usage:",
+        "CostPRIX": "Cost (PRIX)",
+        "IncomePRIX": "Income",
+        "Availability": "Availability",
+        "Hash": "Hash",
+        "Block": "Block",
+        "Country": "Country",
+        "Price": "Price (PRIX/MB)",
+        "AvailableSupply": "Available supply",
+        "Supply": "Supply",
+        "ServiceName": "Service name",
+        "ServiceChangedTime": "Service changed time",
+        "LastUsedTime": "Last usage time",
+        "Started": "Started",
+        "Stopped": "Stopped",
+        "Date": "Date",
+        "ETH": "ETH",
+        "EthereumLink": "Ethereum link",
+        "EthereumAddress": "Ethereum address",
+        "ExchangeBalance": "Exchange balance",
+        "Level": "Level",
+        "Message": "Message",
+        "Context": "Context",
+        "Stack": "Stack",
+        "Name": "Name",
+        "ServiceBalance": "Service Balance",
+        "IsDefault": "Is Default",
+        "Actions": "Actions"
     }
 }

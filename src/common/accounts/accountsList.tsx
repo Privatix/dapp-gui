@@ -7,13 +7,14 @@ import SortableTable from 'react-sortable-table-vilan';
 
 import ModalWindow from 'common/modalWindow';
 import Account from './accountView';
-import CopyToClipboard from 'common/copyToClipboard';
 
 import notice from 'utils/notice';
 import { WS } from 'utils/ws';
 
 import {State} from 'typings/state';
 import {Account as AccountType} from 'typings/accounts';
+
+import { Name, EthereumAddress, ETH, ExchangeBalance, ServiceBalance, IsDefault, Actions } from 'common/tables/';
 
 interface IProps {
     accounts?: AccountType[];
@@ -27,11 +28,6 @@ interface IState {
 
 @translate(['accounts/accountsList', 'utils/notice'])
 class Accounts extends React.Component<IProps, IState> {
-
-    constructor(props: IProps) {
-
-        super(props);
-    }
 
     async onRefresh(accountId:any, evt: any){
         evt.preventDefault();
@@ -75,52 +71,13 @@ class Accounts extends React.Component<IProps, IState> {
         });
 
         const columns = [
-            {
-                header: t('Name'),
-                key: 'name'
-            },
-            {
-                header: t('EthereumAddress'),
-                key: 'ethereumAddress',
-                dataProps: { className: 'shortTableTextTd' },
-                render: (ethereumAddress) => {
-                    return <div>
-                        <span className='shortTableText' title={ethereumAddress}>{ethereumAddress}</span>
-                        <CopyToClipboard text={ethereumAddress} />
-                    </div>;
-                }
-            },
-            {
-                header: t('ETH'),
-                key: 'eth'
-            },
-            {
-                header: t('ExchangeBalance'),
-                key: 'exchangeBalance',
-                headerStyle: {textAlign: 'center'},
-                dataProps: {className: 'text-center'},
-            },
-            {
-                header: t('ServiceBalance'),
-                key: 'serviceBalance',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-            }
-            ,
-            {
-                header: t('IsDefault'),
-                key: 'isDefault',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                sortable: false
-            },
-            {
-                header: t('Actions'),
-                key: 'actions',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                sortable: false
-            }
+            Name,
+            EthereumAddress,
+            ETH,
+            ExchangeBalance,
+            ServiceBalance,
+            IsDefault,
+            Actions
         ];
 
         return <div className='container-fluid'>

@@ -163,8 +163,8 @@ class Channels extends React.Component<Props, any> {
                     client: channel.client,
                     contractStatus: channel.channelStatus,
                     serviceStatus: channel.serviceStatus,
-                    usage: usage[channel.id],
-                    incomePRIX: usage[channel.id],
+                    usage: usage,
+                    incomePRIX: usage,
                     serviceChangedTime: channel.serviceChangedTime
                 };
             });
