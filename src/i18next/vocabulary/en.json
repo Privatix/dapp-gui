@@ -73,7 +73,7 @@
         "IdidIt": "I did it",
         "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
         "TokensHaveBeenReceived": "Tokens have been received.",
-        "WeAreTransferring": "We are transferring them to a service balance...",
+        "WeAreTransferring": "We are transferring them to a service balance (it might take 5-10 min)...",
         "AllDonePressFinish": "All done. Press Finish"
     },
     "auth/steps": {

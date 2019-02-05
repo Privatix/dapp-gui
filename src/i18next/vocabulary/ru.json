@@ -73,7 +73,7 @@
         "IdidIt": "Я это сделал(a)",
         "PleaseWait": "Пожалуйста подождите. Идет отправка PRIX и ETH на Ваш аккаунт.",
         "TokensHaveBeenReceived": "Токены получены.",
-        "WeAreTransferring": "Мы переводим их на баланс сервиса...",
+        "WeAreTransferring": "Мы переводим их на баланс сервиса (это может занять 5-10 минут)...",
         "AllDonePressFinish": "Готово. Нажмите кнопку Завершить"
     },
     "auth/steps": {
