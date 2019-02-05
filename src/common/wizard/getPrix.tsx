@@ -27,7 +27,7 @@ class GetPrix extends React.Component<IProps, any>{
 
     constructor(props:IProps){
         super(props);
-        this.state = {ethAddr: '', didIt: false, done: false};
+        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false};
     }
 
     componentDidMount(){
@@ -44,16 +44,40 @@ class GetPrix extends React.Component<IProps, any>{
         }
     }
 
-    startObserve = async () => {
+    startObserveAccountBalance = async () => {
 
         const { ws, accountId } = this.props;
 
         const account = await ws.getAccount(accountId);
-        if(account.ethBalance !== 0 || account.ptcBalance !== 0 ){
+        if(account.ptcBalance !== 0 && account.ethBalance !== 0){
+            this.setState({getPrix: true});
+            this.observerId = null;
+            this.transferTokens();
+        }else{
+            this.observerId = setTimeout(this.startObserveAccountBalance, 3000);
+        }
+    }
+
+    transferTokens = async () => {
+        const { ws, accountId } = this.props;
+
+        const account = await ws.getAccount(accountId);
+        const settings = await ws.getSettings();
+
+        await ws.transferTokens(accountId, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
+        this.startObserveServiceBalance();
+    }
+
+     startObserveServiceBalance = async () => {
+
+        const { ws, accountId } = this.props;
+
+        const account = await ws.getAccount(accountId);
+        if(account.pscBalance !== 0 ){
             this.setState({done: true});
             this.observerId = null;
         }else{
-            this.observerId = setTimeout(this.startObserve, 3000);
+            this.observerId = setTimeout(this.startObserveServiceBalance, 3000);
         }
     }
 
@@ -63,7 +87,7 @@ class GetPrix extends React.Component<IProps, any>{
 
         evt.preventDefault();
         this.setState({didIt: true});
-        this.startObserve();
+        this.startObserveAccountBalance();
     }
 
     onFinish = (evt: any) => {
@@ -123,9 +147,15 @@ class GetPrix extends React.Component<IProps, any>{
                                             }
                                         </div>
                                     </div>
-                                    {this.state.didIt && !this.state.done
+                                    {this.state.didIt && (!this.state.getPrix || !this.state.done)
                                         ? <div className='text-center'>
-                                              {t('PleaseWait')}
+                                              {this.state.getPrix
+                                                  ? <>
+                                                      <div>{t('TokensHaveBeenReceived')}</div>
+                                                      <div>{t('WeAreTransferring')}</div>
+                                                    </>
+                                                  : t('PleaseWait')
+                                              }
                                               <Spinner />
                                           </div>
                                         : null
