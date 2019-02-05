@@ -75,7 +75,6 @@ class Channels extends React.Component<Props, any> {
             this.onNewChannelSubscription = undefined;
         }
         if (this.polling) {
-            console.log('stopPolling');
             clearTimeout(this.polling);
             this.polling = null;
         }
