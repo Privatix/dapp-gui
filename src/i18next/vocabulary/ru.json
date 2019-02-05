@@ -66,15 +66,15 @@
     },
     "auth/getPrix":{
         "WeAreCurrentlyOnTestnet": "На данный момент мы работаем в тестовой сети Ethereum.",
-        "YouShouldGetPRIXandETH": "Вас нужно получить PRIX и ETH у бота privatix.",
+        "YouShouldGetPRIXandETH": "Вам нужно получить PRIX и ETH у бота privatix.",
         "CopyTheAddress": "Скопируйте адрес ниже в буфер обмена",
-        "PostIntoBot": "<0>Отправьте его <1>чат боту Privatix</1>.</0>",
+        "PostIntoBot": "<0>Отправьте его в <1>чат боту Privatix</1>.</0>",
         "PressButton": "Нажмите на кнопку \"Я это сделал(а)\".",
         "IdidIt": "Я это сделал(a)",
         "PleaseWait": "Пожалуйста подождите. Идет отправка PRIX и ETH на Ваш аккаунт.",
-        "TokensHaveBeenReceived": "Токены были получены.",
-        "WeAreTransferring": "Мы переводим их на аккаунт сервиса...",
-        "AllDonePressFinish": "Все готово. Нажмите кнопку Завершить"
+        "TokensHaveBeenReceived": "Токены получены.",
+        "WeAreTransferring": "Мы переводим их на баланс сервиса...",
+        "AllDonePressFinish": "Готово. Нажмите кнопку Завершить"
     },
     "auth/steps": {
         "Language": "Язык",
