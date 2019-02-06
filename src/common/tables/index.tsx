@@ -138,7 +138,7 @@ export const CostPRIX = {
 
 export const IncomePRIX = {
     header: i18n.t('tables:IncomePRIX'),
-    key: 'costPRIX',
+    key: 'incomePRIX',
     headerStyle: {textAlign: 'center'},
     dataProps: { className: 'text-center'},
     render: usage => <UsageComponent usage={usage} mode='prix' />
