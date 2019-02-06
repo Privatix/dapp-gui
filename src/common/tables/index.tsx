@@ -18,6 +18,7 @@ import LogsTime from 'common/etc/logsTime';
 
 export const Client = {
     header: i18n.t('tables:Client'),
+    headerStyle: {textAlign: 'center'},
     key: 'client',
     dataProps: { className: 'shortTableTextTd' },
     render: (client) => {
