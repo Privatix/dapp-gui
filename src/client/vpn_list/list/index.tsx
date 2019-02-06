@@ -30,6 +30,7 @@ import { asyncProviders } from 'redux/actions';
 class VPNList extends React.Component<any,any> {
 
     checkAvailabilityBtn = null;
+    handler = null;
 
     constructor(props:any) {
         super(props);
@@ -62,8 +63,9 @@ class VPNList extends React.Component<any,any> {
     }
 
     componentWillUnmount(){
-        if (this.state.handler !== null) {
-            clearTimeout(this.state.handler);
+        if (this.handler !== null) {
+            clearTimeout(this.handler);
+            this.handler = null;
         }
     }
 
@@ -87,10 +89,11 @@ class VPNList extends React.Component<any,any> {
 
     async getClientOfferings(activePage:number = 1, from:number = 0, to:number = 0) {
 
-        const { t, localSettings } = this.props;
+        const { t, ws, localSettings } = this.props;
+        const { offeringHash, checkedCountries, agent} = this.state;
 
         // If not empty filter input Offering hash - search only by Offering hash
-        if (this.state.offeringHash !== '') {
+        if (offeringHash !== '') {
             notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
             return;
         }
@@ -98,9 +101,7 @@ class VPNList extends React.Component<any,any> {
         const limit = localSettings.elementsPerPage;
         const offset = activePage > 1 ? (activePage - 1) * limit : 0;
 
-        const checkedCountries = this.state.checkedCountries;
-
-        const filterParams = await this.props.ws.getClientOfferingsFilterParams();
+        const filterParams = await ws.getClientOfferingsFilterParams();
         const allCountries = filterParams.countries;
 
         const min = filterParams.minPrice / 1e8;
@@ -112,22 +113,21 @@ class VPNList extends React.Component<any,any> {
         const fromVal = Math.round(from * 1e8);
         const toVal = Math.round(to * 1e8);
 
-        const clientOfferingsLimited = await this.props.ws.getClientOfferings(this.state.agent.replace(/^0x/, ''), fromVal, toVal, checkedCountries, offset, limit);
+        const clientOfferingsLimited = await ws.getClientOfferings(agent.replace(/^0x/, ''), fromVal, toVal, checkedCountries, offset, limit);
         const {items: clientOfferings} = clientOfferingsLimited;
 
         // Show loader when downloading VPN list
-        const isFiltered = checkedCountries.length > 0 || this.state.agent !== '' || this.state.offeringHash !== '' || from > 0 || to > 0;
+        const isFiltered = checkedCountries.length > 0 || agent !== '' || offeringHash !== '' || from > 0 || to > 0;
+        if (this.handler !== null) {
+            clearInterval(this.handler);
+            this.handler = null;
+        }
         if (Object.keys(clientOfferings).length === 0 && !isFiltered) {
             this.setState({spinner: true});
-            const refreshHandler = setTimeout(() => {
+            this.handler = setTimeout(() => {
                 this.refresh();
             }, 5000);
-            this.setState({refreshHandler});
             return;
-        } else {
-            if (this.state.handler !== null) {
-                clearInterval(this.state.refreshHandler);
-            }
         }
 
         this.setState({
@@ -227,13 +227,14 @@ class VPNList extends React.Component<any,any> {
 
         const handler = setTimeout(() => {
             this.getClientOfferings(1, from, to);
-        }, 200);
+        }, 1000);
 
-        if (this.state.handler !== null) {
-            clearTimeout(this.state.handler);
+        if (this.handler !== null) {
+            clearTimeout(this.handler);
+            this.handler = handler;
         }
 
-        this.setState({handler, from, to});
+        this.setState({from, to});
     }
 
     filterCountries = (e:any): void => {
