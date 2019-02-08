@@ -341,7 +341,8 @@ class VPNList extends React.Component<IProps, IState> {
                 checkedCountries.splice(checkedCountries.indexOf(country), 1);
             }
 
-            this.updateFilter({checkedCountries}, this.getClientOfferings);
+            this.updateFilter({checkedCountries}, undefined);
+            this.setState({activePage: 0}, this.getClientOfferings);
         }
     }
 
