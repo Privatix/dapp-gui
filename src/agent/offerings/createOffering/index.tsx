@@ -729,18 +729,16 @@ class CreateOffering extends React.Component<IProps, IState>{
                                 <GasRange onChange={this.onGasPriceChanged} value={Math.floor(gasPrice/1e9)} />
                             </div>
                         </div>
-                        <div className='form-group row'>
-                            <div className='col-md-8'>
-                                {blocked
-                                    ? <div className='btn btnCustomDisabled disabled btn-block' >{t('CreateAndPublish')}</div>
-                                    : <button type='submit'
-                                              onClick={this.onSubmit}
-                                              className='btn btn-default btn-custom btn-block waves-effect waves-light'
-                                      >
-                                          {t('CreateAndPublish')}
-                                      </button>
-                                }
-                            </div>
+                        <div className='form-group'>
+                            {blocked
+                                ? <div className='btn btnCustomDisabled disabled btn-block' >{t('CreateAndPublish')}</div>
+                                : <button type='submit'
+                                          onClick={this.onSubmit}
+                                          className='btn btn-default btn-custom btn-block waves-effect waves-light'
+                                  >
+                                      {t('CreateAndPublish')}
+                                  </button>
+                            }
                         </div>
                 </div>
             </div>
