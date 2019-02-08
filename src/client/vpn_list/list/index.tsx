@@ -392,10 +392,10 @@ class VPNList extends React.Component<IProps, IState> {
 
         const resetFilters = this.isFiltered()
             ? <div className='m-b-20'>
-                <button className='btn btn-block btn-warning' onClick={this.resetFilters}>{t('ResetFilters')}</button>
+                <button className='btn-block btn btn-warning btn-custom waves-effect waves-light' onClick={this.resetFilters}>{t('ResetFilters')}</button>
               </div>
             : <div className='m-b-20'>
-                <div className='btn btn-block btn-warning disabled'>{t('ResetFilters')}</div>
+                <div className='btn-block btn btn-warning btn-custom waves-effect waves-light disabled'>{t('ResetFilters')}</div>
               </div>;
 
         return (
