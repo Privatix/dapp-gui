@@ -38,6 +38,7 @@ interface IProps {
 
 interface Filter {
     price: {
+        userFilter: boolean;
         from: number;
         to: number;
         min: number;
@@ -76,6 +77,7 @@ class VPNList extends React.Component<IProps, IState> {
     get defaultFilter(){
         return {
             price: {
+                userFilter: false,
                 from: 0,
                 to: 0.01,
                 min: 0,
@@ -154,9 +156,8 @@ class VPNList extends React.Component<IProps, IState> {
 
         const { filter } = this.state;
 
-        return !isEqual(filter, Object.assign({}, this.defaultFilter, {price: filter.price}))
-               || filter.price.min !== filter.price.from
-               || filter.price.max !== filter.price.to;
+        return (!isEqual(filter, Object.assign({}, this.defaultFilter, {price: filter.price})))
+               || filter.price.userFilter;
     }
 
     async getClientOfferings() {
@@ -188,9 +189,8 @@ class VPNList extends React.Component<IProps, IState> {
         const min = filterParams.minPrice / 1e8;
         const max = filterParams.maxPrice / 1e8;
 
-        const defaultFilter = this.defaultFilter;
-        const from = filter.price.from === defaultFilter.price.from ? min : filter.price.from;
-        const to = filter.price.to === defaultFilter.price.to ? max : filter.price.to;
+        const from =  filter.price.userFilter ? filter.price.from : min;
+        const to = filter.price.userFilter ? filter.price.to : max;
 
         const fromVal = Math.round(from * 1e8);
         const toVal = Math.round(to * 1e8);
@@ -216,7 +216,7 @@ class VPNList extends React.Component<IProps, IState> {
             countries: allCountries,
             filteredCountries: filter.searchCountryStr === '' ? allCountries : this.filterCountries(filter.searchCountryStr, allCountries)
         });
-        this.updateFilter({price: {min, max, from, to}}, undefined);
+        this.updateFilter({price: {userFilter: filter.price.userFilter, min, max, from, to}}, undefined);
     }
 
     formFilteredDataRow(offering: Offering) {
@@ -276,10 +276,12 @@ class VPNList extends React.Component<IProps, IState> {
     }
 
     onChangeRange = (value:any): void => {
+        const { filter } = this.state;
         if(this.checkFilters()){
             const [ from, to ] = value;
-
-            this.updateFilter({price: Object.assign({}, this.state.filter.price, {from, to})}, this.getClientOfferings);
+            if(from !== filter.price.from || to !== filter.price.to){
+                this.updateFilter({price: Object.assign({}, filter.price, {userFilter: true, from, to})}, this.getClientOfferings);
+            }
         }
     }
 
@@ -391,7 +393,9 @@ class VPNList extends React.Component<IProps, IState> {
             ? <div className='m-b-20'>
                 <button className='btn btn-block btn-warning' onClick={this.resetFilters}>{t('ResetFilters')}</button>
               </div>
-            : null;
+            : <div className='m-b-20'>
+                <div className='btn btn-block btn-warning disabled'>{t('ResetFilters')}</div>
+              </div>;
 
         return (
             <div className='container-fluid'>
@@ -411,6 +415,7 @@ class VPNList extends React.Component<IProps, IState> {
                     </div>
                     <div className='col-3'>
 
+                        {resetFilters}
                         <div className='card m-b-20'>
                             <div className='card-body'>
                                 <SelectByAgent agentHash={filter.agent} onChange={this.onAgentChanged} />
@@ -437,7 +442,6 @@ class VPNList extends React.Component<IProps, IState> {
                             onSearch={this.onCountriesSearch}
                         />
 
-                        {resetFilters}
                     </div>
                     <div className='col-9'>
                         <div className='card-box'>
