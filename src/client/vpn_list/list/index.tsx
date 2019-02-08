@@ -77,7 +77,7 @@ class VPNList extends React.Component<IProps, IState> {
         return {
             price: {
                 from: 0,
-                to: 0,
+                to: 0.01,
                 min: 0,
                 max: 0.01,
             },
@@ -188,8 +188,9 @@ class VPNList extends React.Component<IProps, IState> {
         const min = filterParams.minPrice / 1e8;
         const max = filterParams.maxPrice / 1e8;
 
-        const from = filter.price.from === 0 ? min : filter.price.from;
-        const to = filter.price.to === 0 ? max : filter.price.to;
+        const defaultFilter = this.defaultFilter;
+        const from = filter.price.from === defaultFilter.price.from ? min : filter.price.from;
+        const to = filter.price.to === defaultFilter.price.to ? max : filter.price.to;
 
         const fromVal = Math.round(from * 1e8);
         const toVal = Math.round(to * 1e8);
@@ -202,7 +203,7 @@ class VPNList extends React.Component<IProps, IState> {
             this.handler = null;
         }
         // Show loader when downloading VPN list
-        if (Object.keys(clientOfferings).length === 0 && !this.isFiltered()) {
+        if (clientOfferings.length === 0 && !this.isFiltered()) {
             this.setState({spinner: true});
             this.handler = setTimeout(this.refresh, 5000);
             return;
