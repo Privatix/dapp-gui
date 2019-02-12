@@ -75,7 +75,6 @@ class Channels extends React.Component<Props, any> {
             this.onNewChannelSubscription = undefined;
         }
         if (this.polling) {
-            console.log('stopPolling');
             clearTimeout(this.polling);
             this.polling = null;
         }
@@ -163,8 +162,8 @@ class Channels extends React.Component<Props, any> {
                     client: channel.client,
                     contractStatus: channel.channelStatus,
                     serviceStatus: channel.serviceStatus,
-                    usage: usage,
-                    incomePRIX: usage,
+                    usage: usage[channel.id],
+                    incomePRIX: usage[channel.id],
                     serviceChangedTime: channel.serviceChangedTime
                 };
             });

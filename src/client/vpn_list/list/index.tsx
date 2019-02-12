@@ -3,10 +3,12 @@ import { translate } from 'react-i18next';
 import { connect } from 'react-redux';
 import Pagination from 'react-js-pagination';
 
-import './list.css';
-import 'rc-slider/assets/index.css';
+import { asyncProviders } from 'redux/actions';
 
 import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
+
+import './list.css';
+import 'rc-slider/assets/index.css';
 
 import AcceptOffering from '../acceptOffering';
 import ModalWindow from 'common/modalWindow';
@@ -24,34 +26,87 @@ import SelectByPrice from './selectByPrice';
 
 import {State} from 'typings/state';
 import {Offering} from 'typings/offerings';
-import { asyncProviders } from 'redux/actions';
+import { WS } from 'utils/ws';
+
+interface IProps {
+    t?: any;
+    ws?: WS;
+    dispatch?: any;
+    offeringsAvailability?: State['offeringsAvailability'];
+    localSettings?: State['localSettings'];
+}
+
+interface Filter {
+    price: {
+        userFilter: boolean;
+        from: number;
+        to: number;
+        min: number;
+        max: number;
+    };
+    agent: string;
+    offeringHash: string;
+    checkedCountries: string[];
+    searchCountryStr: string;
+}
+
+type UpdateFilter = {
+    [K in keyof Filter]?: Filter[K];
+};
+
+interface IState {
+    filter: Filter;
+    spinner: boolean;
+    countries: string[];
+    filteredCountries: string[];
+    activePage: number;
+    totalItems: number;
+    rawOfferings: any[];
+    form: {
+        fromStr: string;
+        toStr: string;
+        step: number;
+    };
+}
 
 @translate(['client/vpnList', 'utils/notice', 'common'])
-class VPNList extends React.Component<any,any> {
+class VPNList extends React.Component<IProps, IState> {
 
     checkAvailabilityBtn = null;
+    handler = null;
+    get defaultFilter(){
+        return {
+            price: {
+                userFilter: false,
+                from: 0,
+                to: 0.01,
+                min: 0,
+                max: 0.01,
+            },
+            agent: '',
+            offeringHash: '',
+            checkedCountries: [],
+            searchCountryStr: ''
+        };
+    }
 
-    constructor(props:any) {
+    constructor(props:IProps) {
         super(props);
 
         this.checkAvailabilityBtn = React.createRef();
 
         this.state = {
-            from: 0,
-            to: 0,
-            step: 0.0001,
-            min: 0,
-            max: 0.01,
+            filter: this.defaultFilter,
+            form: {
+                fromStr: '0',
+                toStr: '0',
+                step: 0.0001,
+            },
             spinner: true,
-            refreshHandler: null,
-            changePriceInput: false,
             countries: [],
             filteredCountries: [],
-            checkedCountries: [],
             activePage: 1,
             totalItems: 0,
-            agent: '',
-            offeringHash: '',
             rawOfferings: [],
         };
 
@@ -62,108 +117,112 @@ class VPNList extends React.Component<any,any> {
     }
 
     componentWillUnmount(){
-        if (this.state.handler !== null) {
-            clearTimeout(this.state.handler);
+        if (this.handler !== null) {
+            clearTimeout(this.handler);
+            this.handler = null;
         }
     }
 
-    async refresh(clicked?: boolean, activePage:number = 1) {
+    refresh = async () => {
+
+        await this.getClientOfferings();
+    }
+
+    onRefresh = async () => {
         const { t } = this.props;
-
-        this.getClientOfferings(activePage).then(() => {
-            if (clicked === true) {
-                notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('SuccessUpdateMsg')});
-            }
-        });
+        await this.refresh();
+        notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('SuccessUpdateMsg')});
     }
 
-    shouldComponentUpdate(nextProps:any, nextState:any) {
-        return (this.state.spinner !== nextState.spinner)
-            || (this.state.filteredCountries !== nextState.filteredCountries)
-            || (this.state.offeringHash !== nextState.offeringHash)
-            || !(isEqual(this.props.offeringsAvailability, nextProps.offeringsAvailability))
-            || !(isEqual(nextState.rawOfferings, this.state.rawOfferings));
+    updateFilter(filter: UpdateFilter, cb: () => void){
+        this.setState({filter: Object.assign({}, this.state.filter, filter)}, cb);
     }
 
-    async getClientOfferings(activePage:number = 1, from:number = 0, to:number = 0) {
+    checkFilters(){
 
-        const { t, localSettings } = this.props;
+        const { t } = this.props;
+        const { filter } = this.state;
 
         // If not empty filter input Offering hash - search only by Offering hash
-        if (this.state.offeringHash !== '') {
+        if (filter.offeringHash !== '') {
             notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
+            return false;
+        }
+
+        return true;
+    }
+
+    isFiltered(){
+
+        const { filter } = this.state;
+
+        return (!isEqual(filter, Object.assign({}, this.defaultFilter, {price: filter.price})))
+               || filter.price.userFilter;
+    }
+
+    async getClientOfferings() {
+
+        const { ws, localSettings } = this.props;
+        const { filter, activePage } = this.state;
+
+        if (filter.offeringHash !== '') {
+
+            try {
+                const offering = await this.props.ws.getObjectByHash('offering', filter.offeringHash.replace(/^0x/, ''));
+                this.setState({
+                    rawOfferings: [offering],
+                    totalItems: 1
+                });
+            } catch (e) {
+                this.setState({rawOfferings: [], totalItems: 0});
+            }
+
             return;
         }
 
         const limit = localSettings.elementsPerPage;
         const offset = activePage > 1 ? (activePage - 1) * limit : 0;
 
-        const checkedCountries = this.state.checkedCountries;
-
-        const filterParams = await this.props.ws.getClientOfferingsFilterParams();
+        const filterParams = await ws.getClientOfferingsFilterParams();
         const allCountries = filterParams.countries;
 
         const min = filterParams.minPrice / 1e8;
         const max = filterParams.maxPrice / 1e8;
 
-        from = from === 0 && this.state.from === 0 ? min : from > 0 ? from : this.state.from;
-        to = to === 0 && this.state.to === 0 ? max : to > 0 ? to : this.state.to;
+        const from =  filter.price.userFilter ? filter.price.from : min;
+        const to = filter.price.userFilter ? filter.price.to : max;
 
         const fromVal = Math.round(from * 1e8);
         const toVal = Math.round(to * 1e8);
 
-        const clientOfferingsLimited = await this.props.ws.getClientOfferings(this.state.agent.replace(/^0x/, ''), fromVal, toVal, checkedCountries, offset, limit);
+        const clientOfferingsLimited = await ws.getClientOfferings(filter.agent.replace(/^0x/, ''), fromVal, toVal, filter.checkedCountries, offset, limit);
         const {items: clientOfferings} = clientOfferingsLimited;
 
+        if (this.handler !== null) {
+            clearInterval(this.handler);
+            this.handler = null;
+        }
         // Show loader when downloading VPN list
-        const isFiltered = checkedCountries.length > 0 || this.state.agent !== '' || this.state.offeringHash !== '' || from > 0 || to > 0;
-        if (Object.keys(clientOfferings).length === 0 && !isFiltered) {
+        if (clientOfferings.length === 0 && !this.isFiltered()) {
             this.setState({spinner: true});
-            const refreshHandler = setTimeout(() => {
-                this.refresh();
-            }, 5000);
-            this.setState({refreshHandler});
+            this.handler = setTimeout(this.refresh, 5000);
             return;
-        } else {
-            if (this.state.handler !== null) {
-                clearInterval(this.state.refreshHandler);
-            }
         }
 
         this.setState({
             spinner: false,
             rawOfferings: clientOfferings,
             totalItems: clientOfferingsLimited.totalItems,
-            offset,
-            activePage,
-            min,
-            max,
-            from,
-            to,
             countries: allCountries,
-            filteredCountries: allCountries
+            filteredCountries: filter.searchCountryStr === '' ? allCountries : this.filterCountries(filter.searchCountryStr, allCountries)
         });
-    }
-
-    async getClientOfferingsByOfferingHash() {
-        if (this.state.offeringHash === '') {
-            this.getClientOfferings();
-            return;
-        }
-
-        try {
-            const offering = await this.props.ws.getObjectByHash('offering', this.state.offeringHash.replace(/^0x/, ''));
-            this.setState({
-                rawOfferings: [offering],
-                totalItems: 1
-            });
-        } catch (e) {
-            this.setState({rawOfferings: [], totalItems: 0});
-        }
+        this.updateFilter({price: {userFilter: filter.price.userFilter, min, max, from, to}}, undefined);
     }
 
     formFilteredDataRow(offering: Offering) {
+
         const { t, offeringsAvailability } = this.props;
+
         const offeringHash = '0x' + offering.hash;
 
         const availability = (offering.id in offeringsAvailability.statuses)
@@ -189,117 +248,128 @@ class VPNList extends React.Component<any,any> {
     }
 
     onChangeMinPrice = (evt:any): void => {
-        let priceFrom = evt.target.value;
-        if (priceFrom === '' || Number.isNaN(priceFrom) || (typeof priceFrom === 'undefined')) {
-            priceFrom = this.state.from;
-        }
 
-        if (this.state.changePriceInput === true) {
-            this.setState({changePriceInput: false});
-        } else {
-            this.setState({changePriceInput: true});
-        }
-        const priceTo = (document.getElementById('priceTo') as HTMLInputElement).value;
+        const { filter } = this.state;
 
-        this.onChangeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
+        if(this.checkFilters()){
+            let priceFrom = parseFloat(evt.target.value);
+            if (!isFinite(priceFrom) || (typeof priceFrom === 'undefined')) {
+                priceFrom = filter.price.from;
+            }
+
+            this.onChangeRange([priceFrom, filter.price.to]);
+        }
     }
 
     onChangeMaxPrice = (evt:any):void => {
-        let priceTo = evt.target.value;
-        if (priceTo === '' || Number.isNaN(priceTo) || (typeof priceTo === 'undefined')) {
-            priceTo = this.state.to;
-        }
-        if (this.state.changePriceInput === true) {
-            this.setState({changePriceInput: false});
-        } else {
-            this.setState({changePriceInput: true});
-        }
-        const priceFrom = (document.getElementById('priceFrom') as HTMLInputElement).value;
 
-        this.onChangeRange([parseFloat(priceFrom), parseFloat(priceTo)]);
+        const { filter } = this.state;
+
+        if(this.checkFilters()){
+            let priceTo = parseFloat(evt.target.value);
+            if (!isFinite(priceTo) || (typeof priceTo === 'undefined')) {
+                priceTo = filter.price.to;
+            }
+
+            this.onChangeRange([filter.price.from, priceTo]);
+        }
     }
 
     onChangeRange = (value:any): void => {
-        let from = value[0];
-        let to = value[1];
-        (document.getElementById('priceFrom') as HTMLInputElement).value = from;
-        (document.getElementById('priceTo') as HTMLInputElement).value = to;
-
-        const handler = setTimeout(() => {
-            this.getClientOfferings(1, from, to);
-        }, 200);
-
-        if (this.state.handler !== null) {
-            clearTimeout(this.state.handler);
+        const { filter } = this.state;
+        if(this.checkFilters()){
+            const [ from, to ] = value;
+            if(from !== filter.price.from || to !== filter.price.to){
+                this.updateFilter({price: Object.assign({}, filter.price, {userFilter: true, from, to})}, this.getClientOfferings);
+            }
         }
-
-        this.setState({handler, from, to});
     }
 
-    filterCountries = (e:any): void => {
-        const searchText = e.target.value;
-        let patt = new RegExp(searchText, 'i');
-        let filteredCountries = this.state.countries.filter((item) => {
-            const countryName = countryByIso(item);
-            return patt.test(countryName);
-        });
+    filterCountries(pattern: string, countries: string[]){
+        const regexp = new RegExp(pattern, 'i');
+        return countries.filter(country => regexp.test(countryByIso(country)));
+    }
 
-        this.setState({
-            filteredCountries: filteredCountries
-        });
+    onCountriesSearch = (e:any): void => {
+        if(this.checkFilters()){
+            const searchText = e.target.value.trim();
+            const filteredCountries = this.filterCountries(searchText, this.state.countries);
+
+            this.setState({filteredCountries});
+            this.updateFilter({searchCountryStr: searchText}, this.getClientOfferings);
+        }
     }
 
     onAgentChanged = (e: any): void => {
-        let agent = e.target.value.toLowerCase().trim();
 
-        this.setState({agent}, this.getClientOfferings);
+        const { t } = this.props;
+
+        const agent = e.target.value.toLowerCase().trim();
+        if(this.state.filter.offeringHash.trim() === ''){
+            this.updateFilter({agent}, this.getClientOfferings);
+        }else{
+            notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
+        }
     }
 
     onOfferingHashChanged = (e: any): void => {
-        let offeringHash = e.target.value.toLowerCase().trim();
 
-        this.setState({offeringHash}, this.getClientOfferingsByOfferingHash);
+        const { t } = this.props;
+        const { filter } = this.state;
+
+        const offeringHash = e.target.value.toLowerCase().trim();
+        if(filter.agent.trim() === ''){
+            this.updateFilter({offeringHash}, this.getClientOfferings);
+        }else{
+            notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('ClearAgentHashToUseOtherFilters')});
+        }
     }
 
     filterByCountryHandler = (e:any): void => {
-        let checkedCountries = this.state.checkedCountries.slice();
-        const country = e.target.value;
 
-        if (e.target.checked && checkedCountries.indexOf(country) === -1) {
-            checkedCountries.push(country);
-        } else if (!e.target.checked && checkedCountries.indexOf(country) !== -1) {
-            checkedCountries.splice(checkedCountries.indexOf(country), 1);
+        const { filter } = this.state;
+
+        if(this.checkFilters()){
+            const checkedCountries = filter.checkedCountries.slice();
+            const country = e.target.value.trim();
+
+            const add = e.target.checked && checkedCountries.indexOf(country) === -1;
+
+            if (add) {
+                checkedCountries.push(country);
+            } else {
+                checkedCountries.splice(checkedCountries.indexOf(country), 1);
+            }
+
+            this.updateFilter({checkedCountries}, undefined);
+            this.setState({activePage: 0}, this.getClientOfferings);
         }
-
-        this.setState({checkedCountries}, this.getClientOfferings);
     }
 
-    handlePageChange(pageNumber:number) {
-        this.getClientOfferings(pageNumber);
+    handlePageChange = (pageNumber: number) => {
+        this.setState({activePage: pageNumber}, this.getClientOfferings);
     }
 
-    resetFilters() {
-        this.setState({
-            agent: '',
-            offeringHash: '',
-            checkedCountries: [],
-            from: this.state.min,
-            to: this.state.max
-        }, this.getClientOfferings);
+    resetFilters = () => {
+        this.updateFilter(this.defaultFilter, this.getClientOfferings);
     }
 
-    checkStatus() {
+    onCheckStatus = () => {
         this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
         const offeringsIds = this.state.rawOfferings.map(offering => offering.id);
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
     }
 
     render() {
-        let offerings = this.state.rawOfferings.map(offering => {
-            return this.formFilteredDataRow(offering);
-        });
+
+        if(this.state.spinner){
+            return <Spinner />;
+        }
 
         const { t, localSettings, offeringsAvailability } = this.props;
+        const { rawOfferings, filteredCountries, filter, form, activePage, totalItems } = this.state;
+
+        const offerings = rawOfferings.map(offering => this.formFilteredDataRow(offering));
 
         if (offeringsAvailability.counter === 0
             && this.checkAvailabilityBtn.current
@@ -307,33 +377,26 @@ class VPNList extends React.Component<any,any> {
             this.checkAvailabilityBtn.current.removeAttribute('disabled');
         }
 
-        const pagination = this.state.totalItems <= localSettings.elementsPerPage ? '' :
+        const pagination = totalItems <= localSettings.elementsPerPage ? null :
             <div>
                 <Pagination
-                    activePage={this.state.activePage}
+                    activePage={activePage}
                     itemsCountPerPage={localSettings.elementsPerPage}
-                    totalItemsCount={this.state.totalItems}
+                    totalItemsCount={totalItems}
                     pageRangeDisplayed={10}
-                    onChange={this.handlePageChange.bind(this)}
+                    onChange={this.handlePageChange}
                     prevPageText='‹'
                     nextPageText='›'
                 />
             </div>;
 
-        const resetFilters = this.state.agent !== ''
-            || this.state.offeringHash !== ''
-            || this.state.min !== this.state.from
-            || this.state.max !== this.state.to
-            || this.state.offeringHash !== ''
-            || this.state.checkedCountries.length > 0 ?
-                <div className='m-b-20'>
-                    <button className='btn btn-block btn-warning' onClick={this.resetFilters.bind(this)}>{t('ResetFilters')}</button>
-                </div>
-                : '';
-
-        if(this.state.spinner){
-            return <Spinner />;
-        }
+        const resetFilters = this.isFiltered()
+            ? <div className='m-b-20'>
+                <button className='btn-block btn btn-warning btn-custom waves-effect waves-light' onClick={this.resetFilters}>{t('ResetFilters')}</button>
+              </div>
+            : <div className='m-b-20'>
+                <div className='btn-block btn btn-warning btn-custom waves-effect waves-light disabled'>{t('ResetFilters')}</div>
+              </div>;
 
         return (
             <div className='container-fluid'>
@@ -341,22 +404,23 @@ class VPNList extends React.Component<any,any> {
                     <div className='col-12 m-b-20'>
                         <button
                             className='btn btn-default btn-custom waves-effect waves-light'
-                            onClick={this.refresh.bind(this, true, this.state.activePage)}>
+                            onClick={this.onRefresh}>
                             {t('Refresh')}
                         </button>
                         <button
                             className='btn btn-default btn-custom waves-effect waves-light ml-3'
                             ref={this.checkAvailabilityBtn}
-                            onClick={this.checkStatus.bind(this)}>
+                            onClick={this.onCheckStatus}>
                             {t('CheckAvailability')}
                         </button>
                     </div>
                     <div className='col-3'>
 
+                        {resetFilters}
                         <div className='card m-b-20'>
                             <div className='card-body'>
-                                <SelectByAgent agentHash={this.state.agent} onChange={this.onAgentChanged} />
-                                <SelectByOffering offeringHash={this.state.offeringHash} onChange={this.onOfferingHashChanged} />
+                                <SelectByAgent agentHash={filter.agent} onChange={this.onAgentChanged} />
+                                <SelectByOffering offeringHash={filter.offeringHash} onChange={this.onOfferingHashChanged} />
                             </div>
                         </div>
 
@@ -364,21 +428,21 @@ class VPNList extends React.Component<any,any> {
                             onChangeMinPrice={this.onChangeMinPrice}
                             onChangeMaxPrice={this.onChangeMaxPrice}
                             onChangeRange={this.onChangeRange}
-                            min={this.state.min}
-                            max={this.state.max}
-                            step={this.state.step}
-                            start={this.state.from}
-                            end={this.state.to}
+                            min={filter.price.min}
+                            max={filter.price.max}
+                            step={form.step}
+                            start={filter.price.from}
+                            end={filter.price.to}
                         />
 
                         <SelectCountry
-                            selectedCountries={this.state.checkedCountries}
-                            allCountries={this.state.filteredCountries}
+                            selectedCountries={filter.checkedCountries}
+                            allCountries={filteredCountries}
+                            searchStr={filter.searchCountryStr}
                             onChange={this.filterByCountryHandler}
-                            onSearch={this.filterCountries}
+                            onSearch={this.onCountriesSearch}
                         />
 
-                        {resetFilters}
                     </div>
                     <div className='col-9'>
                         <div className='card-box'>

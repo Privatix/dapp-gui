@@ -95,7 +95,7 @@ class Backup extends React.Component<IProps, any>{
                                 <div className='col-12'>
                                     <label>{t('auth/importJsonKey:PathToJSONKeystoreFile')}:</label>
                                     <div className='row'>
-                                      <div className='col-10'><input type='text' className='form-control' value={this.state.fileName} /></div>
+                                      <div className='col-10'><input type='text' className='form-control' value={this.state.fileName} readOnly /></div>
                                       <div className='col-2'><button onClick={this.saveDialog} className='btn btn-white waves-effect'>{t('Browse')}</button></div>
                                     </div>
                                </div>

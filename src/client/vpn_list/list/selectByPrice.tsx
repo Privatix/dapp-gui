@@ -23,16 +23,17 @@ const translated = translate(['client/vpnList']);
 
 class SelectByPrice extends React.Component<IProps, IState>{
 
+    Range = null;
+
     constructor(props: IProps){
         super(props);
+        const createSliderWithTooltip = Slider.createSliderWithTooltip;
+        this.Range = createSliderWithTooltip(Slider.Range);
     }
 
     render () {
 
         const { t, onChangeMinPrice, onChangeMaxPrice, onChangeRange, min, max, step, start, end } = this.props;
-
-        const createSliderWithTooltip = Slider.createSliderWithTooltip;
-        const Range = createSliderWithTooltip(Slider.Range);
 
         return (
             <div className='card m-b-20'>
@@ -50,7 +51,6 @@ class SelectByPrice extends React.Component<IProps, IState>{
                                        step={step}
                                        className='form-control'
                                        placeholder={String(min)}
-                                       id='priceFrom'
                                        value={toFixedN({number: start, fixed: 8})}
                                        onChange={onChangeMinPrice}
                                 />
@@ -67,7 +67,6 @@ class SelectByPrice extends React.Component<IProps, IState>{
                                        step={step}
                                        className='form-control'
                                        placeholder={String(max)}
-                                       id='priceTo'
                                        value={toFixedN({number: end, fixed: 8})}
                                        onChange={onChangeMaxPrice}
                                 />
@@ -76,7 +75,7 @@ class SelectByPrice extends React.Component<IProps, IState>{
                     </div>
                     <div className='row m-t-30'>
                         <div className='col-12'>
-                            <Range defaultValue={[start, end]}
+                            <this.Range value={[start, end]}
                                    min={min}
                                    max={max}
                                    step={step}

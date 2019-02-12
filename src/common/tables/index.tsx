@@ -18,6 +18,7 @@ import LogsTime from 'common/etc/logsTime';
 
 export const Client = {
     header: i18n.t('tables:Client'),
+    headerStyle: {textAlign: 'center'},
     key: 'client',
     dataProps: { className: 'shortTableTextTd' },
     render: (client) => {
@@ -32,6 +33,8 @@ export const Client = {
 export const ClientIP = {
     header: i18n.t('tables:ClientIP'),
     key: 'clientIP',
+    headerStyle: {textAlign: 'center'},
+    dataProps: {className: 'text-center shortTableTextTd'},
     sortable: false
 };
 
@@ -50,13 +53,15 @@ export const Agent = {
 
 export const Id = {
     header: i18n.t('tables:Id'),
+    headerStyle: {textAlign: 'center'},
     key: 'id',
-    dataProps: { className: 'shortTableTextTd' },
+    dataProps: {className: 'text-center shortTableTextTd'},
     descSortFunction: ModalPropTextSorter.desc,
     ascSortFunction: ModalPropTextSorter.asc
 };
 export const CopyableId = {
     header: i18n.t('tables:Id'),
+    headerStyle: {textAlign: 'center'},
     key: 'id',
     sortable: false,
     dataProps: { className: 'shortTableTextTd' },
@@ -70,6 +75,7 @@ export const CopyableId = {
 
 export const Offering = {
     header: i18n.t('tables:Offering'),
+    headerStyle: {textAlign: 'center'},
     key: 'offering',
     dataProps: { className: 'shortTableTextTd' },
     descSortFunction: ModalPropTextSorter.desc,
@@ -78,81 +84,83 @@ export const Offering = {
 
 export const OfferingStatus = {
     header: i18n.t('tables:Status'),
-    key: 'offerStatus',
     headerStyle: {textAlign: 'center'},
+    key: 'offerStatus',
     dataProps: {className: 'text-center'},
     render: (offerStatus) => { return <OfferingStatusComponent status={offerStatus} />; }
 };
 
 export const ContractStatus = {
     header: i18n.t('tables:ContractStatus'),
-    key: 'contractStatus',
     headerStyle: {textAlign: 'center'},
+    key: 'contractStatus',
     dataProps: {className: 'text-center'},
     render: status => <ContractStatusComponent contractStatus={status}/>
 };
 
 export const ServiceStatus = {
     header: i18n.t('tables:ServiceStatus'),
-    key: 'serviceStatus',
     headerStyle: {textAlign: 'center'},
+    key: 'serviceStatus',
     dataProps: {className: 'text-center'},
     render: status => <ChannelStatus serviceStatus={status}/>
 };
 
 export const JobStatus = {
     header: i18n.t('tables:JobStatus'),
+    headerStyle: {textAlign: 'center'},
     key: 'jobStatus',
     sortable: false,
     render: (job) => {
         const jobTimeRaw = new Date(Date.parse(job.createdAt));
         const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
-        return <div className='noWrap'><JobName jobtype={job.type} /><br /> (<JobStatusComponent status={job.status} /> {jobTime})</div>;
+        return <div className='noWrap'><JobName jobtype={job.jobtype} /><br /> (<JobStatusComponent status={job.status} /> {jobTime})</div>;
     }
 };
 
 export const PlainUsage = {
     header: i18n.t('tables:Usage'),
-    key: 'usage',
     headerStyle: {textAlign: 'center'},
+    key: 'usage',
     dataProps: { className: 'text-center'},
     sortable: false
 };
 
 export const Usage = {
     header: i18n.t('tables:Usage'),
-    key: 'usage',
     headerStyle: {textAlign: 'center'},
+    key: 'usage',
     dataProps: { className: 'text-center'},
     render: (usage) => { return <UsageComponent usage={usage} mode='unit' />; }
 };
 
 export const CostPRIX = {
     header: i18n.t('tables:CostPRIX'),
+    headerStyle: {textAlign: 'center'},
     key: 'costPRIX',
     render: usage => <UsageComponent usage={usage} mode='prix' />
 };
 
 export const IncomePRIX = {
     header: i18n.t('tables:IncomePRIX'),
-    key: 'costPRIX',
     headerStyle: {textAlign: 'center'},
+    key: 'incomePRIX',
     dataProps: { className: 'text-center'},
     render: usage => <UsageComponent usage={usage} mode='prix' />
 };
 
 export const Availability = {
     header: i18n.t('tables:Availability'),
-    key: 'availability',
     headerStyle: {textAlign: 'center'},
+    key: 'availability',
     dataProps: {className: 'text-center'},
     render: availability => <AvailabilityComponent availability={availability} />
 };
 
 export const Hash = {
     header: i18n.t('tables:Hash'),
-    key: 'hash',
     headerStyle: {textAlign: 'center'},
+    key: 'hash',
     dataProps: { className: 'text-center shortTableTextTd'},
     descSortFunction: ModalPropTextSorter.desc,
     ascSortFunction: ModalPropTextSorter.asc
@@ -160,40 +168,45 @@ export const Hash = {
 
 export const Block = {
     header: i18n.t('tables:Block'),
+    headerStyle: {textAlign: 'center'},
     key: 'block'
 };
 
 export const Country = {
     header: i18n.t('tables:Country'),
+    headerStyle: {textAlign: 'center'},
     key: 'country'
 };
 
 export const Price = {
     header: i18n.t('tables:Price'),
+    headerStyle: {textAlign: 'center'},
     key: 'price'
 };
 
 export const AvailableSupply = {
     header: i18n.t('tables:AvailableSupply'),
-    key: 'availableSupply',
     headerStyle: {textAlign: 'center'},
+    key: 'availableSupply',
     dataProps: { className: 'text-center'}
 };
 
 export const Supply = {
     header: i18n.t('tables:Supply'),
-    key: 'supply',
     headerStyle: {textAlign: 'center'},
+    key: 'supply',
     dataProps: { className: 'text-center'}
 };
 
 export const ServiceName = {
     header: i18n.t('tables:ServiceName'),
+    headerStyle: {textAlign: 'center'},
     key: 'serviceName'
 };
 
 export const Server = {
     header: i18n.t('tables:Server'),
+    headerStyle: {textAlign: 'center'},
     key: 'server',
     descSortFunction: ModalPropTextSorter.desc,
     ascSortFunction: ModalPropTextSorter.asc
@@ -201,6 +214,7 @@ export const Server = {
 
 export const ServiceLastChanged = {
     header: i18n.t('tables:ServiceChangedTime'),
+    headerStyle: {textAlign: 'center'},
     key: 'serviceChangedTime',
     descSortFunction: DateSorter.desc,
     ascSortFunction: DateSorter.asc,
@@ -209,6 +223,7 @@ export const ServiceLastChanged = {
 
 export const LastUsed = {
     header: i18n.t('tables:LastUsedTime'),
+    headerStyle: {textAlign: 'center'},
     key: 'lastUsedTime',
     descSortFunction: DateSorter.desc,
     ascSortFunction: DateSorter.asc,
@@ -217,6 +232,7 @@ export const LastUsed = {
 
 export const Started = {
     header: i18n.t('tables:Started'),
+    headerStyle: {textAlign: 'center'},
     key: 'started',
     sortable: false,
     render: started => <PgTime time={started} />
@@ -224,6 +240,7 @@ export const Started = {
 
 export const Stopped = {
     header: i18n.t('tables:Stopped'),
+    headerStyle: {textAlign: 'center'},
     key: 'stopped',
     sortable: false,
     render: stopped => <PgTime time={stopped} />
@@ -231,6 +248,7 @@ export const Stopped = {
 
 export const DateCol = {
     header: i18n.t('tables:Date'),
+    headerStyle: {textAlign: 'center'},
     key: 'date',
     defaultSorting: 'DESC',
     descSortFunction: DateSorter.desc,
@@ -239,12 +257,14 @@ export const DateCol = {
 
 export const EthereumLink = {
     header: i18n.t('tables:EthereumLink'),
+    headerStyle: {textAlign: 'center'},
     key: 'ethereumLink',
     sortable: false
 };
 
 export const Level = {
     header: i18n.t('tables:Level'),
+    headerStyle: {textAlign: 'center'},
     key: 'level',
     render: level => {
         const labelClasses = {
@@ -260,6 +280,7 @@ export const Level = {
 
 export const LogsDate = {
     header: i18n.t('tables:Date'),
+    headerStyle: {textAlign: 'center'},
     key: 'date',
     dataProps: {className: 'minWidth160'},
     descSortFunction: DateSorter.desc,
@@ -269,18 +290,21 @@ export const LogsDate = {
 
 export const Message = {
     header: i18n.t('tables:Message'),
+    headerStyle: {textAlign: 'center'},
     key: 'message',
     sortable: false
 };
 
 export const Context = {
     header: i18n.t('tables:Context'),
+    headerStyle: {textAlign: 'center'},
     key: 'context',
     sortable: false
 };
 
 export const Stack = {
     header: i18n.t('tables:Stack'),
+    headerStyle: {textAlign: 'center'},
     key: 'stack',
     sortable: false
 };
@@ -289,11 +313,13 @@ export const Stack = {
 
 export const Name = {
     header: i18n.t('tables:Name'),
+    headerStyle: {textAlign: 'center'},
     key: 'name'
 };
 
 export const EthereumAddress = {
     header: i18n.t('tables:EthereumAddress'),
+    headerStyle: {textAlign: 'center'},
     key: 'ethereumAddress',
     dataProps: { className: 'shortTableTextTd' },
     render: ethereumAddress => (
@@ -306,35 +332,36 @@ export const EthereumAddress = {
 
 export const ETH = {
     header: i18n.t('tables:ETH'),
+    headerStyle: {textAlign: 'center'},
     key: 'eth'
 };
 
 export const ExchangeBalance = {
     header: i18n.t('tables:ExchangeBalance'),
-    key: 'exchangeBalance',
     headerStyle: {textAlign: 'center'},
+    key: 'exchangeBalance',
     dataProps: {className: 'text-center'},
 };
 
 export const ServiceBalance = {
     header: i18n.t('tables:ServiceBalance'),
-    key: 'serviceBalance',
     headerStyle: {textAlign: 'center'},
+    key: 'serviceBalance',
     dataProps: { className: 'text-center'},
 };
 
 export const IsDefault = {
     header: i18n.t('tables:IsDefault'),
-    key: 'isDefault',
     headerStyle: {textAlign: 'center'},
+    key: 'isDefault',
     dataProps: { className: 'text-center'},
     sortable: false
 };
 
 export const Actions = {
     header: i18n.t('tables:Actions'),
-    key: 'actions',
     headerStyle: {textAlign: 'center'},
+    key: 'actions',
     dataProps: { className: 'text-center'},
     sortable: false
 };

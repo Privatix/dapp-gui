@@ -41,7 +41,7 @@ class ChannelView extends React.Component<IProps, any> {
 
         const usage = await ws.getChannelsUsage([channel.id]);
         if(usage){
-            this.setState({usage: usage[0]});
+            this.setState({usage: usage[channel.id]});
         }
     }
 

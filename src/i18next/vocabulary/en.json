@@ -73,7 +73,7 @@
         "IdidIt": "I did it",
         "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
         "TokensHaveBeenReceived": "Tokens have been received.",
-        "WeAreTransferring": "We are transferring them to a service account...",
+        "WeAreTransferring": "We are transferring them to a service balance (it might take 5-10 min)...",
         "AllDonePressFinish": "All done. Press Finish"
     },
     "auth/steps": {
@@ -691,9 +691,9 @@
         "agentPreOfferingPopUp" : "request offering popup",
         "agentAfterOfferingPopUp" : "finalize offering popup",
         "agentAfterOfferingDelete" : "finalize offering remove",
-        "preAccountAddBalanceApprove" : "aproving token transfer to service account",
-        "preAccountAddBalance" : "add balance to service account",
-        "afterAccountAddBalance" : "update balance on service account",
+        "preAccountAddBalanceApprove" : "approving token transfer to service balance",
+        "preAccountAddBalance" : "add PRIX to service balance",
+        "afterAccountAddBalance" : "update service balance",
         "preAccountReturnBalance" : "request token transfer to ERC20 account",
         "afterAccountReturnBalance" : "update balance on ERC20 account",
         "accountUpdateBalances" : "check and update account balance info",
