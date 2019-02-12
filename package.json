@@ -1,7 +1,7 @@
 {
     "name": "dappctrlgui",
     "description": "Privatix Network GUI",
-    "version": "0.19.1",
+    "version": "0.20.0",
     "main": "build/main.js",
     "devDependencies": {
         "@types/colors": "^1.1.3",
@@ -9,8 +9,9 @@
         "@types/lodash.isstring": "^4.0.4",
         "@types/node": "^9.6.32",
         "@types/node-fetch": "^2.1.4",
-        "@types/react": "^16.4.14",
+        "@types/react": "^16.7.18",
         "@types/react-redux": "^6.0.9",
+        "@types/react-router": "^4.4.3",
         "@types/semver": "^5.5.0",
         "css-loader": "^0.28.11",
         "electron": "^1.8.8",
@@ -47,7 +48,6 @@
         "package-linux": "cd ./build && npm install && npm run package-linux-helper && shx mv ./release-builds ../"
     },
     "dependencies": {
-        "async-reactor": "^1.2.2",
         "bootstrap": "^4.1.0",
         "btoa": "^1.2.1",
         "bugsnag-js": "^4.7.2",
@@ -55,6 +55,7 @@
         "cors": "^2.8.4",
         "dateformat": "^3.0.3",
         "electron": "^1.8.8",
+        "fs-extra": "^7.0.1",
         "history": "^4.7.2",
         "i18next": "^11.9.0",
         "jquery": "^3.3.1",
@@ -64,8 +65,8 @@
         "node-fetch": "^2.3.0",
         "node-loader": "^0.6.0",
         "popper.js": "^1.14.3",
-        "rc-slider": "^8.6.3",
-        "react": "^16.5.2",
+        "rc-slider": "8.6.3",
+        "react": "^16.7.0",
         "react-awesome-modal-perfected": "^1.1.1",
         "react-copy-to-clipboard": "^5.0.1",
         "react-countdown-now": "^1.3.0",

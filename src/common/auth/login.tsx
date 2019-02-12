@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
 
 import { registerBugsnag } from 'utils/bugsnag';
-import * as api from 'utils/api';
 import { WS } from 'utils/ws';
 import {default as notice, closeNotice } from 'utils/notice';
 import { translate } from 'react-i18next';
@@ -14,6 +13,7 @@ interface Props {
     entryPoint: any;
     dispatch?: any;
     t?: any;
+    ws?: WS;
 }
 
 @translate('login', 'utils/notice')
@@ -56,11 +56,9 @@ class Login extends React.Component<any, any> {
     async login() {
 
         const pwd = this.state.password.trim();
-        const { t } = this.props;
+        const { t, ws, entryPoint } = this.props;
 
         if (this.pwdIsCorrect(pwd)) {
-            const settings = await api.settings.getLocal();
-            const ws = new WS(settings.wsEndpoint);
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 0);
             const ready = await ws.whenReady();
             closeNotice();
@@ -69,10 +67,9 @@ class Login extends React.Component<any, any> {
                     await ws.setPassword(pwd);
                     // TODO notice if server returns error (not implemented on dappctrl yet)
                     registerBugsnag(ws);
-                    this.props.dispatch(handlers.setWS(ws));
                     const role = await ws.getUserRole();
                     this.props.dispatch(handlers.setMode(role));
-                    this.props.history.push(this.props.entryPoint);
+                    this.props.history.push(entryPoint);
                 } catch(e) {
                     notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
                     this.submitted = false;
@@ -135,6 +132,6 @@ class Login extends React.Component<any, any> {
     }
 }
 
-export default connect( (state: State, onProps: Props) => {
-    return (onProps);
+export default connect( (state: State, ownProps: Props) => {
+    return Object.assign({}, {ws: state.ws}, ownProps);
 } )(withRouter(Login));

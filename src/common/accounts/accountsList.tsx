@@ -7,7 +7,6 @@ import SortableTable from 'react-sortable-table-vilan';
 
 import ModalWindow from 'common/modalWindow';
 import Account from './accountView';
-import CopyToClipboard from 'common/copyToClipboard';
 
 import notice from 'utils/notice';
 import { WS } from 'utils/ws';
@@ -15,33 +14,33 @@ import { WS } from 'utils/ws';
 import {State} from 'typings/state';
 import {Account as AccountType} from 'typings/accounts';
 
-interface Props {
-    accounts: AccountType[];
-    t: any;
-    ws: WS;
+import { Name, EthereumAddress, ETH, ExchangeBalance, ServiceBalance, IsDefault, Actions } from 'common/tables/';
+
+interface IProps {
+    accounts?: AccountType[];
+    t?: any;
+    ws?: WS;
+}
+
+interface IState {
+
 }
 
 @translate(['accounts/accountsList', 'utils/notice'])
-
-class Accounts extends React.Component<Props, any> {
-
-    constructor(props: any) {
-
-        super(props);
-    }
+class Accounts extends React.Component<IProps, IState> {
 
     async onRefresh(accountId:any, evt: any){
         evt.preventDefault();
         const { t, ws } = this.props;
         await ws.updateBalance(accountId);
-        notice({level: 'info', title: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
+        notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
     }
 
     render(){
 
         const { t, accounts } = this.props;
 
-        const accountsDataArr = accounts.map((account: any) => {
+        const accountsDataArr = accounts.map((account: AccountType) => {
 
             const isDefault = account.isDefault === true ? 'on' : 'off';
 
@@ -72,52 +71,13 @@ class Accounts extends React.Component<Props, any> {
         });
 
         const columns = [
-            {
-                header: t('Name'),
-                key: 'name'
-            },
-            {
-                header: t('EthereumAddress'),
-                key: 'ethereumAddress',
-                dataProps: { className: 'shortTableTextTd' },
-                render: (ethereumAddress) => {
-                    return <div>
-                        <span className='shortTableText' title={ethereumAddress}>{ethereumAddress}</span>
-                        <CopyToClipboard text={ethereumAddress} />
-                    </div>;
-                }
-            },
-            {
-                header: t('ETH'),
-                key: 'eth'
-            },
-            {
-                header: t('ExchangeBalance'),
-                key: 'exchangeBalance',
-                headerStyle: {textAlign: 'center'},
-                dataProps: {className: 'text-center'},
-            },
-            {
-                header: t('ServiceBalance'),
-                key: 'serviceBalance',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-            }
-            ,
-            {
-                header: t('IsDefault'),
-                key: 'isDefault',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                sortable: false
-            },
-            {
-                header: t('Actions'),
-                key: 'actions',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'},
-                sortable: false
-            }
+            Name,
+            EthereumAddress,
+            ETH,
+            ExchangeBalance,
+            ServiceBalance,
+            IsDefault,
+            Actions
         ];
 
         return <div className='container-fluid'>

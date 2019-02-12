@@ -64,6 +64,18 @@
         "NoteWeEncryptThisFile": "Note: We encrypt this file using your application access password. Don't forget it!",
         "Browse": "Browse"
     },
+    "auth/getPrix":{
+        "WeAreCurrentlyOnTestnet": "We are currently on testnet.",
+        "YouShouldGetPRIXandETH": "You should get PRIX and ETH from privatix bot.",
+        "CopyTheAddress": "Copy the address below to the clipboard",
+        "PostIntoBot": "<0>Post it into <1>Privatix's bot chat</1>.</0>",
+        "PressButton": "Press button \"I did it\".",
+        "IdidIt": "I did it",
+        "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
+        "TokensHaveBeenReceived": "Tokens have been received.",
+        "WeAreTransferring": "We are transferring them to a service balance (it might take 5-10 min)...",
+        "AllDonePressFinish": "All done. Press Finish"
+    },
     "auth/steps": {
         "Language": "Language",
         "Password": "Password",
@@ -73,7 +85,8 @@
     },
     "auth/utils": {
         "Next": "Next",
-        "Previous": "Previous"
+        "Previous": "Previous",
+        "Finish": "Finish"
     },
     "offerings": {
         "CreateAnOffering": "Create an offering"
@@ -235,15 +248,6 @@
         "TerminateService": "Terminate service",
         "TerminateContract": "Terminate contract"
     },
-    "channels/channelsListSortTable":{
-        "Server": "Server",
-        "Client": "Client",
-        "ContractStatus": "Contract status",
-        "ServiceStatus": "Service status",
-        "Usage": "Usage",
-        "Income": "Income (PRIX)",
-        "ServiceChangedTime": "Service changed time"
-    },
     "sessions/sessionsList": {
         "TotalStatistics": "Total statistics",
         "TotalUsage": "Total usage",
@@ -264,13 +268,9 @@
     "header": {
         "Accounts": "Accounts",
         "Help": "Help",
-        "SwitchToClient": "Switch to Client",
-        "SwitchToAgent": "Switch to Agent",
         "Settings": "Settings",
         "Logs": "Logs",
-        "SomethingWentWrong": "Something went wrong!",
-        "UserWasSwitchedToAGENT": "User mode was successfully switched to AGENT",
-        "UserWasSwitchedToCLIENT": "User mode was successfully switched to CLIENT"
+        "SomethingWentWrong": "Something went wrong!"
     },
     "navigation": {
         "Dashboard": "Dashboard",
@@ -298,7 +298,8 @@
     },
     "logs/logsList": {
         "LogsHeader": "Logs list",
-        "ExportBtn": "Export to a file",
+        "ExportControllerLogsBtn": "Export controller's logs to a file",
+        "ExportAllLogsBtn": "Export all logs to a file",
         "LogsFilterFrom": "From:",
         "LogsFilterTo": "To:",
         "LogsFilterTime": "time",
@@ -311,7 +312,12 @@
         "Stack": "Stack",
         "ShowBtn": "show",
         "StackTrace": "Stack trace:",
-        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!"
+        "WarningDateMessage": "Please, don't select logs in more than 5 days. It can take a lot of time!",
+        "OSNotDetected": "We can't detect you OS. This function is not available for you!",
+        "SavingAllLogs": "Saving all logs",
+        "PermissionDenied": "Permission denied. Try to save to another folder with right permissions",
+        "UnknownError": "An error occurred while saving the logs",
+        "LogsDownloaded": "All logs have been successfully downloaded"
     },
     "logs/logsContext": {
         "Key": "Key",
@@ -409,7 +415,6 @@
         "Availability": "Availability",
         "Block": "Block",
         "Hash": "Hash",
-        "Agent": "Agent",
         "Country": "Country",
         "Price": "Price (PRIX/MB)",
         "SupplyTotal": "Supply (total)",
@@ -464,8 +469,6 @@
     "client/history": {
         "Service": "Service",
         "of": "of",
-        "Id": "Id",
-        "Agent": "Agent",
         "ContractStatus": "Contract status",
         "ServiceStatus": "Service status",
         "JobStatus": "Job status",
@@ -505,9 +508,7 @@
     "client/connections/active": {
         "Connection": "Connection",
         "ActiveConnection": "Active Connection:",
-        "Id": "Id",
         "Offering": "Offering",
-        "Agent": "Agent",
         "ContractStatus": "Contract status",
         "ServiceStatus": "Service status",
         "JobStatus": "Job status",
@@ -527,9 +528,6 @@
     },
     "client/connections/connection": {
         "Offering": "Offering",
-        "Id": "Id",
-        "Agent": "Agent",
-        "Server": "Server",
         "Started": "Started",
         "Stopped": "Stopped",
         "Usage": "Usage",
@@ -634,6 +632,7 @@
         "psc_periods_challenge_Name": "Challenge period",
         "psc_periods_popup_Name": "Popup period",
         "psc_periods_remove_Name": "Remove period",
+        "updateDismissVersion_Name": "Dismissed update version",
         "error_sendremote_Description": "Allow error reporting to send logs to Privatix.",
         "eth_challenge_period_Description": "Number of blocks to wait from an uncooperativeClose initiated by the Client in order to give the Agent a chance to respond with a balance proof in case the Client cheats. After the challenge period, the Client can settle and delete the channel. Number of blocks Agent will wait from registerServiceOffering or from createChannel before he can delete service offering and recieve Agent's deposit back_",
         "eth_default_gasprice_Description": "Default GAS price for transactions.",
@@ -651,7 +650,8 @@
         "psc_periods_challenge_Description": "Number of blocks to be mined to finish uncooperative channel close",
         "psc_periods_popup_Description": "Number of blocks to be mined to repeatedly pop up an offering",
         "psc_periods_remove_Description": "Number of blocks to be mined from last offering update in blockchain to remove offering",
-        "client_somc_transports_Description": "This setting defines what SOMC type should be used to display Offering"
+        "client_somc_transports_Description": "This setting defines what SOMC type should be used to display Offering",
+        "updateDismissVersion_Description": "Last dismissed update version"
     },
     "copyToClipboard": {
         "Copied": "Copied!",
@@ -691,9 +691,9 @@
         "agentPreOfferingPopUp" : "request offering popup",
         "agentAfterOfferingPopUp" : "finalize offering popup",
         "agentAfterOfferingDelete" : "finalize offering remove",
-        "preAccountAddBalanceApprove" : "aproving token transfer to service account",
-        "preAccountAddBalance" : "add balance to service account",
-        "afterAccountAddBalance" : "update balance on service account",
+        "preAccountAddBalanceApprove" : "approving token transfer to service balance",
+        "preAccountAddBalance" : "add PRIX to service balance",
+        "afterAccountAddBalance" : "update service balance",
         "preAccountReturnBalance" : "request token transfer to ERC20 account",
         "afterAccountReturnBalance" : "update balance on ERC20 account",
         "accountUpdateBalances" : "check and update account balance info",
@@ -704,5 +704,44 @@
         "announcement": "<0>New version <1>{{name}}</1> was released!</0>",
         "GoToUpdate": "Go to update",
         "DoNotShow": "Do not show"
+    },
+    "tables": {
+        "Client": "Client",
+        "ClientIP": "Client IP",
+        "Agent": "Agent address",
+        "Id": "Id",
+        "Offering": "Offering",
+        "Status": "Status",
+        "ContractStatus": "Contract Status",
+        "ServiceStatus": "Service Status",
+        "JobStatus": "Job status",
+        "Usage": "Usage:",
+        "CostPRIX": "Cost (PRIX)",
+        "IncomePRIX": "Income",
+        "Availability": "Availability",
+        "Hash": "Hash",
+        "Block": "Block",
+        "Country": "Country",
+        "Price": "Price (PRIX/MB)",
+        "AvailableSupply": "Available supply",
+        "Supply": "Supply",
+        "ServiceName": "Service name",
+        "ServiceChangedTime": "Service changed time",
+        "LastUsedTime": "Last usage time",
+        "Started": "Started",
+        "Stopped": "Stopped",
+        "Date": "Date",
+        "ETH": "ETH",
+        "EthereumLink": "Ethereum link",
+        "EthereumAddress": "Ethereum address",
+        "ExchangeBalance": "Exchange balance",
+        "Level": "Level",
+        "Message": "Message",
+        "Context": "Context",
+        "Stack": "Stack",
+        "Name": "Name",
+        "ServiceBalance": "Service Balance",
+        "IsDefault": "Is Default",
+        "Actions": "Actions"
     }
 }

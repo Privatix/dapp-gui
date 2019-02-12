@@ -64,6 +64,18 @@
         "NoteWeEncryptThisFile": "Внимание: Мы зашифруем этот файл используя Ваш пароль для приложения.",
         "Browse": "Выбрать"
     },
+    "auth/getPrix":{
+        "WeAreCurrentlyOnTestnet": "На данный момент мы работаем в тестовой сети Ethereum.",
+        "YouShouldGetPRIXandETH": "Вам нужно получить PRIX и ETH у бота privatix.",
+        "CopyTheAddress": "Скопируйте адрес ниже в буфер обмена",
+        "PostIntoBot": "<0>Отправьте его в <1>чат боту Privatix</1>.</0>",
+        "PressButton": "Нажмите на кнопку \"Я это сделал(а)\".",
+        "IdidIt": "Я это сделал(a)",
+        "PleaseWait": "Пожалуйста подождите. Идет отправка PRIX и ETH на Ваш аккаунт.",
+        "TokensHaveBeenReceived": "Токены получены.",
+        "WeAreTransferring": "Мы переводим их на баланс сервиса (это может занять 5-10 минут)...",
+        "AllDonePressFinish": "Готово. Нажмите кнопку Завершить"
+    },
     "auth/steps": {
         "Language": "Язык",
         "Password": "Пароль",
@@ -74,7 +86,8 @@
     },
     "auth/utils": {
         "Next": "Далее",
-        "Previous": "Назад"
+        "Previous": "Назад",
+        "Finish": "Завершить"
     },
     "offerings": {
         "CreateAnOffering": "Создать предложение"
@@ -298,7 +311,8 @@
     },
     "logs/logsList": {
         "LogsHeader": "Список логов",
-        "ExportBtn": "Экспорт в файл",
+        "ExportControllerLogsBtn": "Экспорт логов контроллера в файл",
+        "ExportAllLogsBtn": "Экспорт всех логов в файл",
         "LogsFilterFrom": "От:",
         "LogsFilterTo": "До:",
         "LogsFilterTime": "время",
@@ -311,7 +325,12 @@
         "Stack": "Стек",
         "ShowBtn": "показать",
         "StackTrace": "Stack Trace",
-        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!"
+        "WarningDateMessage": "Отображение списка Логов более чем за 5 дней, может занять много времени!",
+        "OSNotDetected": "Не смогли определить Вашу ОС. Этот функционал Вам недоступен!",
+        "SavingAllLogs": "Сохранение логов",
+        "PermissionDenied": "Доступ запрещен. Попробуйте сохранить в другую папку с разрешенными правами доступа",
+        "UnknownError": "При сохранении логов возникла ошибка",
+        "LogsDownloaded": "Все логи были успешно загружены"
     },
     "logs/logsContext": {
         "Key": "Ключ",
@@ -628,6 +647,10 @@
         "offering_autopopup_Name": "автоподнятие предложения",
         "system_version_app_Name": "версия приложения",
         "somc_transport_tor_Name": "использовать Tor",
+        "psc_periods_challenge_Name": "Период ожидания расторжения договора",
+        "psc_periods_popup_Name": "Период обновления офферинга",
+        "psc_periods_remove_Name": "период удаления офферинга",
+        "updateDismissVersion_Name": "Версия отклоненного обновления",
         "error_sendremote_Description": "Разрешить отчет об ошибках отправлять в Privatix.",
         "eth_challenge_period_Description": "Количество блоков, ожидающих от uncooperativeClose, инициированных Клиентом, чтобы дать Агенту возможность ответить с подтверждением баланса в случае, если Клиент обманывает. После периода запроса Клиент может установить и удалить канал. Количество блоков Агент будет ждать от registerServiceOffering или от createChannel, прежде чем он сможет удалить предложение сервиса и получить депозит агента.",
         "eth_default_gasprice_Description": "Цена по умолчанию GAS для транзакций.",
@@ -641,7 +664,12 @@
         "eth_event_lastProcessedBlock_Description": "Последний номер блока в блок-цепочке хранит последний обработанный блок.",
         "offering_autopopup_Description": "Разрешить поднять предложение автоматически.",
         "system_version_app_Description": "Версия приложения.",
-        "somc_transport_tor_Description": "Полностью децентрализованный режим. Если установлено в true - используется Tor для обмена сообщениями между Агентом и Клиентом. Офферинги и данные для доступа будут передаваться через Tor. Сообщения, опубликованные через централизованный SOMC, будут недоступны."
+        "somc_transport_tor_Description": "Полностью децентрализованный режим. Если установлено в true - используется Tor для обмена сообщениями между Агентом и Клиентом. Офферинги и данные для доступа будут передаваться через Tor. Сообщения, опубликованные через централизованный SOMC, будут недоступны.",
+        "psc_periods_challenge_Description": "Число блоков блокчейна необходимых для завершения одностороннего расторжения контракта.",
+        "psc_periods_popup_Description": "Число блоков блокчейна необходимых для повторного поднятия офферинга",
+        "psc_periods_remove_Description": "Число блоков блокчейна с момента последнего обновления офферинга после которых можно удалить офферинг",
+        "client_somc_transports_Description": "Эта опция указывает какой тип SOMC необходимо использовать для передачи офферинга",
+        "updateDismissVersion_Description": "Версия последнего отклоненного обновления"
     },
     "copyToClipboard": {
         "Copied": "Скопировано!",
@@ -694,5 +722,44 @@
         "announcement": "<0>Доступна новая версия: <1>{{name}}</1>!</0>",
         "GoToUpdate": "Перейти к обновлению",
         "DoNotShow": "Не показывать"
+    },
+    "tables": {
+        "Client": "Клиент",
+        "ClientIP": "IP клиента",
+        "Agent": "Адрес агента",
+        "Id": "Id",
+        "Offering": "Предложение",
+        "Status": "Статус",
+        "ContractStatus": "Статус контракта",
+        "ServiceStatus": "Статус сервиса",
+        "JobStatus": "Job статус",
+        "Usage": "Использовано",
+        "CostPRIX": "Стоимость (PRIX)",
+        "IncomePRIX": "Доход (PRIX):",
+        "Availability": "Доступность",
+        "Hash": "Хеш",
+        "Block": "Блок",
+        "Country": "Страна",
+        "Price": "Цена (PRIX/MB)",
+        "AvailableSupply": "Доступно слотов",
+        "Supply": "Количесто слотов",
+        "ServiceName": "Название сервиса",
+        "ServiceChangedTime": "Время последнего изменения сервиса",
+        "LastUsedTime": "Время последней активности",
+        "Started": "Запущен",
+        "Stopped": "Остановлен",
+        "Date": "Дата",
+        "ETH": "ETH",
+        "EthereumLink": "Ссылка Ethereum",
+        "EthereumAddress": "Ethereum адрес",
+        "ExchangeBalance": "Баланс контракта",
+        "Level": "Уровень",
+        "Message": "Сообщение",
+        "Context": "Контекст",
+        "Stack": "Стек",
+        "Name": "Имя",
+        "ServiceBalance": "Баланс сервиса",
+        "IsDefault": "По умолчанию",
+        "Actions": "Действия"
     }
 }

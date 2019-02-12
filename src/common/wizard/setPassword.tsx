@@ -9,16 +9,29 @@ import Steps from './steps';
 
 import { registerBugsnag } from 'utils/bugsnag';
 import {default as notice, closeNotice } from 'utils/notice';
-import * as api from 'utils/api';
 import handlers from 'redux/actions';
 import { WS } from 'utils/ws';
 
+interface IProps {
+    t?: any;
+    ws?: WS;
+    dispatch?: any;
+    history?: any;
+}
+
+interface IState {
+    [key: string]: string; // !
+    pwd: string;
+    conf: string;
+}
+
+
 @translate(['auth/setPassword', 'utils/notice'])
-class SetPassword extends React.Component<any, any>{
+class SetPassword extends React.Component<IProps, IState>{
 
     private submitted = false;
 
-    constructor(props:any){
+    constructor(props: IProps){
         super(props);
         this.state = {pwd: '', conf: ''};
     }
@@ -57,15 +70,17 @@ class SetPassword extends React.Component<any, any>{
     }
 
     onUserInput = (evt:any) => {
-        this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
+        this.setState({[evt.target.dataset.payloadValue as string]: evt.target.value.trim()});
     }
 
     onSubmit = async (evt: any) => {
-        this.submitted = true;
-        const { t } = this.props;
+
         evt.preventDefault();
 
+        const { t, ws } = this.props;
         const {pwd, conf} = this.state;
+
+        this.submitted = true;
         let msg = '';
         let err = false;
 
@@ -85,17 +100,14 @@ class SetPassword extends React.Component<any, any>{
             return;
         }
 
-        await api.settings.updateLocal({firstStart:false});
-        const settings = await api.settings.getLocal();
-        const ws = new WS(settings.wsEndpoint);
         notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 60*60*1000);
         const ready = await ws.whenReady();
         closeNotice();
         if(ready){
             try {
                 await ws.setPassword(pwd);
+                await ws.setGUISettings({firstStart:false});
                 registerBugsnag(ws);
-                this.props.dispatch(handlers.setWS(ws));
                 const role = await ws.getUserRole();
                 this.props.dispatch(handlers.setMode(role));
                 this.props.history.push('/setAccount');
@@ -118,7 +130,7 @@ class SetPassword extends React.Component<any, any>{
             </div>
             <form className='form-horizontal m-t-20' action='#' onSubmit={this.onSubmit} >
                 <div className='p-20 wizard clearfix'>
-                    <Steps step='2' />
+                    <Steps step={2} />
                     <div className='content clearfix'>
                         <section className='setPasswordsBl'>
                             <p> {t('ThePasswordMustBeStrong')}</p>

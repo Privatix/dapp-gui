@@ -7,97 +7,88 @@ import SortableTable from 'react-sortable-table-vilan';
 import OfferingById from './offeringById';
 import Connection from './connection';
 
-import JobStatus from 'common/badges/jobStatus';
-import JobName from 'common/badges/jobName';
-import Usage from 'common/badges/channelUsage';
-import ContractStatus from 'common/badges/contractStatus';
-import ChannelStatus from 'common/badges/channelStatus';
 
 import ModalWindow from 'common/modalWindow';
-import CopyToClipboard from 'common/copyToClipboard';
-import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
+
+import { Id, Agent, Offering, ContractStatus, ServiceStatus, JobStatus, Usage, CostPRIX } from 'common/tables/';
+
+import { ws, WS } from 'utils/ws';
+import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+
+interface IProps {
+    t?: any;
+    ws?: WS;
+    channels: ClientChannel[];
+}
+interface IState {
+    popup: boolean;
+    usage: {[key: string]: ClientChannelUsage};
+}
 
 @translate('client/connections/active')
+class ActiveConnection extends React.Component<IProps, IState>{
 
-class ActiveConnection extends React.Component<any, any>{
+    polling = null;
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
 
         this.state = {
             popup: false,
+            usage: props.channels.reduce((usage, channel) => {
+                usage[channel.id] = channel.usage;
+                return usage;
+            }, {})
         };
+    }
+
+    componentDidMount() {
+
+        this.updateUsage();
+
+    }
+
+    componentWillUnmount(){
+
+        if(this.polling){
+            clearTimeout(this.polling);
+            this.polling = null;
+        }
+
+    }
+
+    updateUsage = async () => {
+
+        const { ws, channels } = this.props;
+
+        const ids = channels.map(channel => channel.id);
+        const usage = await ws.getChannelsUsage(ids);
+
+        this.setState({usage});
+
+        this.polling = setTimeout(this.updateUsage, 2000);
     }
 
     private getColumns(){
 
-        const { t } = this.props;
-
         return [
-            {
-                header: t('Id'),
-                key: 'id',
-                dataProps: { className: 'shortTableTextTd' },
-                descSortFunction: ModalPropTextSorter.desc,
-                ascSortFunction: ModalPropTextSorter.asc
-            },
-            {
-                header: t('Offering'),
-                key: 'offering',
-                dataProps: { className: 'shortTableTextTd' },
-                descSortFunction: ModalPropTextSorter.desc,
-                ascSortFunction: ModalPropTextSorter.asc
-            },
-            {
-                header: t('Agent'),
-                key: 'agent',
-                dataProps: { className: 'shortTableTextTd' },
-                render: (agent) => {
-                    return <div>
-                        <span className='shortTableText' title={agent}>{agent}</span>
-                        <CopyToClipboard text={agent} />
-                    </div>;
-                }
-            },
-            {
-                header: t('ContractStatus'),
-                key: 'contractStatus',
-                dataProps: {className: 'text-center'},
-                render: (status) => { return <ContractStatus contractStatus={status}/>; }
-            },
-            {
-                header: t('ServiceStatus'),
-                key: 'serviceStatus',
-                dataProps: {className: 'text-center'},
-                render: (status) => { return <ChannelStatus serviceStatus={status}/>; }
-            },
-            {
-                header: t('JobStatus'),
-                key: 'jobStatus',
-                render: ([jobtype, jobStatus, jobTime]) => { return <div className='noWrap'><JobName jobtype={jobtype} /><br /> ({jobStatus} {jobTime})</div>;}
-            },
-            {
-                header: t('Usage'),
-                key: 'usage',
-                render: ([channelId, usage]) => { return <Usage usage={usage} channelId={channelId} mode='unit' />; }
-            },
-            {
-                header: t('CostPRIX'),
-                key: 'costPRIX',
-                render: ([channelId, usage]) => { return <Usage usage={usage} channelId={channelId} mode='prix' />; }
-            }
+            Id,
+            Offering,
+            Agent,
+            ContractStatus,
+            ServiceStatus,
+            JobStatus,
+            Usage,
+            CostPRIX
         ];
     }
 
     render() {
 
         const { t, channels } = this.props;
+        const { usage } = this.state;
 
         const connections = channels.map((channel: any) => {
-
-            const jobTimeRaw = new Date(Date.parse(channel.job.createdAt));
-            const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
-            const jobStatus = <JobStatus status={channel.job.status} />;
 
             return {
                 id: <ModalWindow
@@ -119,10 +110,9 @@ class ActiveConnection extends React.Component<any, any>{
                 agent: channel.agent,
                 contractStatus: channel.channelStatus.channelStatus,
                 serviceStatus: channel.channelStatus.serviceStatus,
-                jobStatus: [channel.job.jobtype, jobStatus, jobTime],
-                usage: [channel.id, channel.usage],
-                costPRIX: [channel.id, channel.usage],
-                // costPRIX: toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})
+                jobStatus: channel.job,
+                usage: usage[channel.id],
+                costPRIX: usage[channel.id],
             };
         });
 
@@ -145,4 +135,4 @@ class ActiveConnection extends React.Component<any, any>{
     }
 }
 
-export default withRouter(ActiveConnection);
+export default ws<IProps>(withRouter(ActiveConnection));

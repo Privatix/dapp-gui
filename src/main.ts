@@ -4,6 +4,7 @@ import {app, ipcMain, BrowserWindow} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
+import * as fse from 'fs-extra';
 
 import { updateChecker } from './updateChecker';
 
@@ -11,9 +12,7 @@ let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
 
   const announce = function(announcement: any){
-      settings = Object.assign({}, settings, {'releases': Object.assign({}, settings.releases, announcement)});
-      fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
-      win.webContents.send('localSettings', settings);
+      win.webContents.send('releases', announcement);
   };
 
   if(process.env.TARGET && process.env.TARGET === 'test'){
@@ -36,15 +35,16 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         fs.writeFile(req.options.body.fileName, req.options.body.data, {encoding: 'utf8'}, (err:any) => {
             event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
         });
+    }else if(req.endpoint === '/copyFile'){
+        fse.copy(req.options.src, req.options.dest, {overwrite: true}, (err:any) => {
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
+        });
+    }else if(req.endpoint === '/removeFile'){
+        fs.unlink(req.options.src, (err:any) => {
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {err}}));
+        });
     }else if(req.endpoint === '/localSettings'){
-        if (req.options.method === 'get'){
-            event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
-        }else{
-            settings = req.options.body;
-            fs.writeFileSync(`${__dirname}/settings.json`, JSON.stringify(settings, null, 4));
-            event.sender.send('api-reply', JSON.stringify({req: msg, res: {}}));
-            win.webContents.send('localSettings', settings);
-        }
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
     }
   });
 

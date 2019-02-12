@@ -1,38 +1,47 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
 import Transactions from 'common/transactions/transactionsList';
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import GasRange from 'common/etc/gasRange';
 
-import * as api from 'utils/api';
-import { WS, ws } from 'utils/ws';
+import { WS } from 'utils/ws';
 import notice from 'utils/notice';
 
+import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
+import {LocalSettings} from 'typings/settings';
 
 interface IProps {
     ws?: WS;
     t?: any;
+    localSettings?: LocalSettings;
+    gasPrice?: number;
     account: Account;
 }
 
-@translate(['accounts/accountView', 'utils/notice'])
-class AccountView extends React.Component<IProps, any> {
+interface IState {
+    gasPrice: number;
+    amount: number;
+    destination: 'psc' | 'ptc';
+    address: string;
+}
 
-    constructor(props: any) {
+@translate(['accounts/accountView', 'utils/notice'])
+class AccountView extends React.Component<IProps, IState> {
+
+    constructor(props: IProps) {
+
         super(props);
-        this.state = {gasPrice: 6*1e9
+
+        const { gasPrice, account } = props;
+
+        this.state = {gasPrice
                      ,amount: 0
                      ,destination: 'psc'
-                     ,address: `0x${props.account.ethAddr}`
-                     ,network: ''
+                     ,address: `0x${account.ethAddr}`
         };
-    }
-
-    componentDidMount() {
-        api.settings.getLocal()
-            .then(settings => this.setState({network: settings.network}));
     }
 
     onGasPriceChanged = (evt: any) => {
@@ -51,28 +60,28 @@ class AccountView extends React.Component<IProps, any> {
 
     checkUserInput = async () => {
 
-        const { t, account } = this.props;
+        const { t, account, localSettings } = this.props;
+        const { amount, destination, gasPrice } = this.state;
 
         let err = false;
         let msg = '';
-        const settings = await api.settings.getLocal();
 
-        if(this.state.amount <= 0){
+        if(amount <= 0){
             err = true;
             msg += t('ErrorMoreThanZero');
         }
 
-        if(this.state.destination === 'psc' && account.ptcBalance < this.state.amount){
+        if(destination === 'psc' && account.ptcBalance < amount){
             err = true;
             msg += t('ErrorNotEnoughExchangeFunds');
         }
 
-        if(this.state.destination === 'ptc' && account.pscBalance < this.state.amount){
+        if(destination === 'ptc' && account.pscBalance < amount){
             err = true;
             msg += t('ErrorNotEnoughServiceFunds');
         }
 
-        if(settings.gas.transfer*this.state.gasPrice > account.ethBalance) {
+        if(localSettings.gas.transfer*gasPrice > account.ethBalance) {
             err = true;
             msg += t('ErrorNotEnoughPublishFunds');
         }
@@ -107,8 +116,8 @@ class AccountView extends React.Component<IProps, any> {
 
     render() {
 
-        const { t, account } = this.props;
-        const { destination, address, gasPrice, network } = this.state;
+        const { t, account, localSettings } = this.props;
+        const { destination, address, gasPrice } = this.state;
 
         return <div className='col-lg-9 col-md-8'>
             <div className='card m-b-20'>
@@ -211,9 +220,14 @@ class AccountView extends React.Component<IProps, any> {
                 </div>
             </div>
 
-            <Transactions accountId={account.id} network={network} />
+            <Transactions accountId={account.id} network={localSettings.network} />
         </div>;
     }
 }
 
-export default ws<IProps>(AccountView);
+export default connect( (state: State, ownProps: IProps) => {
+    return Object.assign({}, {
+    ws: state.ws
+   ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
+   ,localSettings: state.localSettings
+}, ownProps);} )(AccountView);

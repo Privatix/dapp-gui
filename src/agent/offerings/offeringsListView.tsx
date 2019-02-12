@@ -5,13 +5,12 @@ import SortableTable from 'react-sortable-table-vilan';
 import Offering from './offering';
 import Product from 'agent/products/product';
 
-import OfferingStatus from 'common/badges/offeringStatus';
-
-import ModalPropTextSorter from 'common/sorters/sortingModalByPropText';
 import ModalWindow from 'common/modalWindow';
 
 import { Product as ProductType } from 'typings/products';
 import { ResolvedOffering } from 'typings/offerings';
+
+import { Hash, ServiceName, Server, OfferingStatus, AvailableSupply, Supply } from 'common/tables/';
 
 interface IProps {
     products: ProductType[];
@@ -52,41 +51,12 @@ class OfferingsListView extends React.Component<IProps, any> {
         });
 
         const columns = [
-            {
-                header: t('Hash'),
-                key: 'hash',
-                dataProps: { className: 'shortTableTextTd' },
-                descSortFunction: ModalPropTextSorter.desc,
-                ascSortFunction: ModalPropTextSorter.asc
-            },
-            {
-                header: t('ServiceName'),
-                key: 'serviceName'
-            },
-            {
-                header: t('Server'),
-                key: 'server',
-                sortable: false
-            },
-            {
-                header: t('Status'),
-                key: 'offerStatus',
-                headerStyle: {textAlign: 'center'},
-                dataProps: {className: 'text-center'},
-                render: (offerStatus) => { return <OfferingStatus status={offerStatus} />; }
-            },
-            {
-                header: t('AvailableSupply'),
-                key: 'availableSupply',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'}
-            },
-            {
-                header: t('Supply'),
-                key: 'supply',
-                headerStyle: {textAlign: 'center'},
-                dataProps: { className: 'text-center'}
-            }
+            Hash,
+            ServiceName,
+            Server,
+            OfferingStatus,
+            AvailableSupply,
+            Supply
         ];
 
         return <div className='row'>

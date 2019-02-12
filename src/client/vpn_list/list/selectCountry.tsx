@@ -7,6 +7,7 @@ interface IProps {
     t?: any;
     selectedCountries: string[];
     allCountries: string[];
+    searchStr: string;
     onChange(evt: any): void;
     onSearch(evt: any): void;
 }
@@ -30,17 +31,12 @@ class SelectCountry extends React.Component<IProps, IState>{
     }
 
     showCountriesHandler = () => {
-        // this.setState({filteredCountries: this.state.countries}); WHY?
-        if (this.state.showAllCountries) {
-            this.setState({showAllCountries: false});
-        } else {
-            this.setState({showAllCountries: true});
-        }
+        this.setState({showAllCountries: !this.state.showAllCountries});
     }
 
     render () {
 
-        const { t, selectedCountries, allCountries, onChange, onSearch } = this.props;
+        const { t, selectedCountries, allCountries, searchStr, onChange, onSearch } = this.props;
         const { showAllCountries, defaultShowCountriesCount } = this.state;
 
         let searchHtml = null;
@@ -51,8 +47,13 @@ class SelectCountry extends React.Component<IProps, IState>{
                         <div className='input-group-prepend'>
                             <span className='input-group-text'><i className='fa fa-search'></i></span>
                         </div>
-                        <input className='form-control' type='search' name='search' placeholder={t('Search')}
-                               onChange={onSearch} />
+                        <input type='search'
+                               name='search'
+                               className='form-control'
+                               placeholder={t('Search')}
+                               value={searchStr}
+                               onChange={onSearch}
+                       />
                     </div>
                 </div>
             </div>;
@@ -63,7 +64,7 @@ class SelectCountry extends React.Component<IProps, IState>{
                     <button type='button' className='btn btn-link waves-effect'
                             onClick={this.showCountriesHandler}>{showAllCountries ? t('HideBtn') : t('ShowAllBtn')}</button>
                 </div>
-            : '';
+            : null;
 
         return (
             <div className='card m-t-15 m-b-20 vpnListCountryFilterBl'>
@@ -71,8 +72,8 @@ class SelectCountry extends React.Component<IProps, IState>{
                 <div className='card-body'>
                     {searchHtml}
 
-                    {allCountries.map((country, key) => {
-                        let countryCheckboxHtml = <div className='checkbox checkbox-custom' key={country}>
+                    {(showAllCountries ? allCountries : allCountries.slice(0, defaultShowCountriesCount)).map((country, key) => (
+                        <div className='checkbox checkbox-custom' key={country}>
                             <input id={country}
                                    type='checkbox'
                                    name='checkboxCountry'
@@ -80,13 +81,8 @@ class SelectCountry extends React.Component<IProps, IState>{
                                    checked={selectedCountries.includes(country)}
                                    onChange={onChange} />
                             <label htmlFor={country}>{countryByIso(country)}</label>
-                        </div>;
-                        if (showAllCountries || key < defaultShowCountriesCount) {
-                            return countryCheckboxHtml;
-                        } else {
-                            return null;
-                        }
-                    })}
+                        </div>
+                    ))}
 
                     {showHideCountriesBtn}
                 </div>

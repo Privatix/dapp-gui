@@ -1,6 +1,4 @@
 {
-   "firstStart": true,
-   "accountCreated": false,
    "wsEndpoint": "ws://localhost:8888/ws",
    "gas": {
         "acceptOffering": 100000,
@@ -22,5 +20,8 @@
    "releasesEndpoint": "https://api.github.com/repos/Privatix/privatix/releases",
    "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/${version}/versions.txt",
    "releases": {},
-   "updateCheckFreq": 480
+   "updateCheckFreq": 480,
+   "collectLogsPath": {
+       "linux": "/opt/privatix/initializer/dump/"
+   }
 }

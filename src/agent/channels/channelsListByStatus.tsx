@@ -7,7 +7,6 @@ import Channel from './channel';
 import ModalWindow from 'common/modalWindow';
 import Product from 'agent/products/product';
 
-import toFixedN from 'utils/toFixedN';
 import { WS } from 'utils/ws';
 
 import { Product as ProductType } from 'typings/products';
@@ -31,7 +30,8 @@ interface Props {
 class Channels extends React.Component<Props, any> {
 
     private subscription: string;
-    private stopPolling: Function;
+    private onNewChannelSubscription: string;
+    polling = null;
 
     constructor(props: Props) {
         super(props);
@@ -41,6 +41,7 @@ class Channels extends React.Component<Props, any> {
             lastUpdatedStatus: null,
             productsByChannels: [],
             channels: [],
+            usage: {}
         };
 
     }
@@ -49,7 +50,6 @@ class Channels extends React.Component<Props, any> {
         if (this.state.lastUpdatedStatus === this.state.status) {
             return;
         }
-
         this.refresh();
     }
 
@@ -70,9 +70,13 @@ class Channels extends React.Component<Props, any> {
             this.subscription = undefined;
         }
 
-        if(this.stopPolling){
-            this.stopPolling();
-            this.stopPolling = null;
+        if (this.subscription) {
+            ws.unsubscribe(this.onNewChannelSubscription);
+            this.onNewChannelSubscription = undefined;
+        }
+        if (this.polling) {
+            clearTimeout(this.polling);
+            this.polling = null;
         }
 
     }
@@ -81,8 +85,8 @@ class Channels extends React.Component<Props, any> {
 
         this.stop();
 
-        const status = this.state.status;
         const { ws } = this.props;
+        const { status } = this.state;
         let statusArr;
 
         if (status === 'active') {
@@ -91,16 +95,17 @@ class Channels extends React.Component<Props, any> {
             statusArr = status ? [status] : [];
         }
 
-        const getActiveChannels = ws.getAgentChannels.bind(ws, [], statusArr, 0, 0);
-        const channels = await getActiveChannels();
-
+        const channels = await ws.getAgentChannels([], statusArr, 0, 0);
 
         const channelsIds = channels.items.map(channel => channel.id);
         if(channelsIds.length){
             this.subscription = await ws.subscribe('channel', channelsIds, this.refresh);
+            this.updateUsage(channelsIds);
         }
 
-        this.stopPolling = ws.on(getActiveChannels, channels, this.refresh);
+        if(!this.onNewChannelSubscription){
+            this.onNewChannelSubscription = await ws.subscribe('channel', ['agentAfterChannelCreate'], this.refresh);
+        }
 
         const channelsOfferings: Promise<Offering>[] = channels.items.map(channel => ws.getOffering(channel.offering));
         const offerings = (await Promise.all(channelsOfferings)) as Offering[];
@@ -114,6 +119,18 @@ class Channels extends React.Component<Props, any> {
 
     }
 
+    async updateUsage(ids: string[]){
+
+        const { ws } = this.props;
+
+        this.setState({usage: await ws.getChannelsUsage(ids)});
+        if (this.polling) {
+            clearTimeout(this.polling);
+            this.polling = null;
+        }
+        this.polling = setTimeout(this.updateUsage.bind(this, ids), 2000);
+    }
+
     static getDerivedStateFromProps(props: any, state: any){
         return {status: props.status};
     }
@@ -124,7 +141,7 @@ class Channels extends React.Component<Props, any> {
         this.refreshIfStatusChanged();
 
         const { t, products } = this.props;
-        const { productsByChannels, channels } = this.state;
+        const { productsByChannels, channels, usage } = this.state;
 
         const channelsDataArr = productsByChannels
             .map((productId) => products.find(product => productId === product.id))
@@ -145,8 +162,8 @@ class Channels extends React.Component<Props, any> {
                     client: channel.client,
                     contractStatus: channel.channelStatus,
                     serviceStatus: channel.serviceStatus,
-                    usage: {channelId: channel.id, channelStatus: channel.serviceStatus},
-                    incomePRIX: toFixedN({number: (channel.receiptBalance/1e8), fixed: 8}),
+                    usage: usage[channel.id],
+                    incomePRIX: usage[channel.id],
                     serviceChangedTime: channel.serviceChangedTime
                 };
             });

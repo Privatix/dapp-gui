@@ -10,12 +10,14 @@ import notice from 'utils/notice';
 import Steps from './steps';
 import {NextButton} from './utils';
 
+type From = 'generateKey' | 'importHexKey' | 'importJsonKey';
+
 interface IProps{
     ws?: WS;
     t?: any;
     history?: any;
     accountId: string;
-    from: string;
+    from: From;
     entryPoint: string;
 }
 
@@ -53,7 +55,7 @@ class Backup extends React.Component<IProps, any>{
 
     onSubmit = (evt: any) => {
 
-        const { t, ws, accountId, entryPoint } = this.props;
+        const { t, ws, accountId, entryPoint, from } = this.props;
 
         evt.preventDefault();
 
@@ -68,7 +70,7 @@ class Backup extends React.Component<IProps, any>{
                     if(res.err){
                         notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
                     }else{
-                        this.props.history.push(entryPoint);
+                        this.props.history.push(from === 'generateKey' ? `/getPrix/${accountId}` : entryPoint);
                     }
                 });
         });
@@ -76,7 +78,7 @@ class Backup extends React.Component<IProps, any>{
 
     render(){
 
-        const { t } = this.props;
+        const { t, from } = this.props;
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -84,7 +86,7 @@ class Backup extends React.Component<IProps, any>{
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step='5' />
+                    <Steps step={5} prix={from === 'generateKey'} />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('ToPreventEthereumAddress')}</p>
@@ -93,7 +95,7 @@ class Backup extends React.Component<IProps, any>{
                                 <div className='col-12'>
                                     <label>{t('auth/importJsonKey:PathToJSONKeystoreFile')}:</label>
                                     <div className='row'>
-                                      <div className='col-10'><input type='text' className='form-control' value={this.state.fileName} /></div>
+                                      <div className='col-10'><input type='text' className='form-control' value={this.state.fileName} readOnly /></div>
                                       <div className='col-2'><button onClick={this.saveDialog} className='btn btn-white waves-effect'>{t('Browse')}</button></div>
                                     </div>
                                </div>

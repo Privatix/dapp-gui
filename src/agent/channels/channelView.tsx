@@ -26,17 +26,22 @@ class ChannelView extends React.Component<IProps, any> {
 
     constructor(props: IProps){
         super(props);
-        this.state = {offering: null};
+        this.state = {offering: null, usage: null};
         this.updateOffering(props.channel.offering);
     }
 
     async updateOffering(offeringId: string){
 
-        const { ws } = this.props;
+        const { ws, channel } = this.props;
 
         const offering = await ws.getOffering(offeringId);
         if(offering){
             this.setState({offering});
+        }
+
+        const usage = await ws.getChannelsUsage([channel.id]);
+        if(usage){
+            this.setState({usage: usage[channel.id]});
         }
     }
 
@@ -47,9 +52,11 @@ class ChannelView extends React.Component<IProps, any> {
     }
 
     render(){
-        const { t, channel, render } = this.props;
 
-        if(this.state.offering && channel.offering !== this.state.offering.id){
+        const { t, channel, render } = this.props;
+        const { offering, usage } = this.state;
+
+        if(offering && channel.offering !== offering.id){
             this.updateOffering(channel.offering);
         }
 
@@ -73,16 +80,16 @@ class ChannelView extends React.Component<IProps, any> {
                                     </tr>
                                     <tr>
                                         <td>{t('OfferingTd')}</td>
-                                        <td>{this.state.offering
+                                        <td>{offering
                                                 ? <a href='#' onClick={this.showOffering}>
-                                                    { this.state.offering.hash }
+                                                    { offering.hash }
                                                   </a>
-                                                : ''}
+                                                : null}
                                         </td>
                                     </tr>
                                     <tr><td>{t('ContractStatus')}</td><td><ContractStatus contractStatus={channel.channelStatus} /></td></tr>
                                     <tr><td>{t('ServiceStatus')}</td><td><ChannelStatus serviceStatus={channel.serviceStatus} /></td></tr>
-                                    <tr><td>{t('Usage')}</td><td><ChannelUsage channelId={this.props.channel.id} mode='unit'/></td></tr>
+                                    <tr><td>{t('Usage')}</td><td><ChannelUsage usage={usage} mode='unit'/></td></tr>
                                     <tr><td>{t('Income')}</td><td>{toFixedN({number: channel.receiptBalance/1e8, fixed: 8})} PRIX</td></tr>
                                     <tr><td>{t('Deposit')}</td><td>{toFixedN({number: channel.totalDeposit/1e8, fixed: 8})} PRIX</td></tr>
                                 </tbody>

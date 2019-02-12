@@ -6,7 +6,6 @@ import Select from 'react-select';
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import GasRange from 'common/etc/gasRange';
 
-import * as api from 'utils/api';
 import notice from 'utils/notice';
 import toFixedN from 'utils/toFixedN';
 
@@ -54,14 +53,13 @@ class IncreaseDepositView extends React.Component<any, any> {
 
     checkUserInput = async () => {
 
-        const { t } = this.props;
+        const { t, localSettings } = this.props;
 
         let err = false;
         let msg = [];
-        const settings = await api.settings.getLocal();
         const deposit = this.getDeposit();
 
-        if(!this.state.account || settings.gas.increaseDeposit*this.state.gasPrice > this.state.account.ethBalance) {
+        if(!this.state.account || localSettings.gas.increaseDeposit*this.state.gasPrice > this.state.account.ethBalance) {
             err = true;
             msg.push(t('ErrorNotEnoughPublishFunds'));
         }
@@ -244,4 +242,5 @@ export default connect( (state: State) => {
     ws: state.ws
    ,accounts: state.accounts
    ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
+   ,localSettings: state.localSettings
 };} )(IncreaseDepositView);

@@ -49,7 +49,7 @@ class UpdateInformer extends React.Component<any, any>{
             return null;
         }
 
-        if('updateDismissVersion' in dbSettings){
+        if(valid(dbSettings.updateDismissVersion)){
             if(!gt(max, dbSettings.updateDismissVersion)){
                 return null;
             }

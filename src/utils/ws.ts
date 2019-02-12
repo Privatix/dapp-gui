@@ -1,10 +1,11 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
-import isEqual = require('lodash.isequal'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
+
+import * as api from './api';
 
 import {Template, TemplateType} from 'typings/templates';
-import {OfferStatus, Offering, ResolvedOffering} from 'typings/offerings';
+import {OfferStatus, Offering} from 'typings/offerings';
 import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
 import {Product} from 'typings/products';
@@ -38,9 +39,11 @@ export class WS {
 //    private reject: Function = null;
     private resolve: Function = null;
 
-    constructor(endpoint: string) {
-
-        this.reconnect(endpoint);
+    constructor() {
+        api.settings.getLocal()
+           .then(settings => {
+                this.reconnect(settings.wsEndpoint);
+           });
 
     }
 
@@ -59,6 +62,8 @@ export class WS {
           if(this.pwd){
               const token = await this.getToken();
               this.token = token;
+              this.authorized = true;
+              await this.saveCache();
           }
           this.resolve(true);
           this.resolve = null;
@@ -127,27 +132,6 @@ export class WS {
         }) as Promise<string>;
     }
 
-    on(testRequest: Function, currentResult: any, handler: Function){
-
-        const state = { id: null};
-
-        const tester = async () => {
-            const result = await testRequest();
-            if(isEqual(result, currentResult)){
-                state.id = setTimeout(tester, 1000);
-            }else {
-                handler();
-            }
-        };
-
-        tester();
-
-        return () => {
-            clearTimeout(state.id);
-        };
-
-    }
-
     unsubscribe(id: string){
 
         const uuid = uuidv4();
@@ -181,7 +165,9 @@ export class WS {
     send(method: string, params: any[] = []){
 
         const uuid = uuidv4();
-        params.unshift(this.token);
+        if(!['ui_updatePassword'].includes(method)){
+            params.unshift(this.token);
+        }
         const req = {
             jsonrpc: '2.0',
             id: uuid,
@@ -234,7 +220,6 @@ export class WS {
 
     setPassword(pwd: string){
         const uuid = uuidv4();
-
         const req = {
             jsonrpc: '2.0',
             id: uuid,
@@ -245,22 +230,22 @@ export class WS {
         this.pwd = pwd;
 
         return new Promise((resolve: Function, reject: Function) => {
-            const updateToken = () => {
-                this.getToken()
-                    .then(token => {
-                        if(token){
-                            this.token = token;
-                            this.authorized = true;
-                            resolve(true);
-                        }else{
-                            reject(false);
-                        }
-                    })
-                    .catch(err => {
+            const updateToken = async () => {
+                try {
+                    const token = await this.getToken();
+                    if(token){
+                        this.token = token;
+                        this.authorized = true;
+                        await this.saveCache();
+                        resolve(true);
+                    }else{
+                        reject(false);
+                    }
+                 } catch(err){
                         reject(err);
-                    });
+                }
             };
-            const handler = (res: any) => {
+            const handler = async (res: any) => {
                 if('error' in res && res.error.message.indexOf('password exists') === -1){
                     reject(res.error);
                 }else{
@@ -272,7 +257,16 @@ export class WS {
         });
     }
 
+    updatePassword(pwd: string){
+        const old = this.pwd;
+        this.pwd = pwd;
+        return this.send('ui_updatePassword', [old, pwd]);
+    }
 // accounts
+
+    getAccount(id: string): Promise<Account> {
+        return this.getObject('account', id);
+    }
 
     getAccounts(): Promise<Account[]> {
         return this.send('ui_getAccounts') as Promise<Account[]>;
@@ -355,8 +349,8 @@ export class WS {
 
 // offerings
 
-    getAgentOfferings(productId: string='', status: OfferStatus = '', offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
-        return this.send('ui_getAgentOfferings', [productId, status, offset, limit]) as Promise<OfferingResponse>;
+    getAgentOfferings(productId: string='', statuses: OfferStatus[] = [], offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
+        return this.send('ui_getAgentOfferings', [productId, statuses, offset, limit]) as Promise<OfferingResponse>;
     }
 
     getClientOfferings(agent: string = ''
@@ -370,27 +364,6 @@ export class WS {
 
     getOffering(id: string): Promise<Offering>{
         return this.getObject('offering', id) as Promise<Offering>;
-    }
-
-    async fetchOfferingsAndProducts(productId: string, statuses: OfferStatus[]): Promise<{offerings: ResolvedOffering[], products: Product[]}> {
-
-        let offerings = [];
-        const products = await this.getProducts();
-
-        if(statuses.length){
-            const offeringsRequests = statuses.map(status => this.getAgentOfferings(productId, status));
-            offerings = (await Promise.all(offeringsRequests)).reduce((res, offerings) => res.concat(offerings.items), []);
-        } else {
-            offerings = (await this.getAgentOfferings(productId)).items;
-        }
-
-        const resolveTable = products.reduce((table, product) => {
-            table[product.id] = product.name;
-            return table;
-        }, {});
-
-        const resOfferings = offerings.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
-        return {offerings: resOfferings, products};
     }
 
     createOffering(payload: any): Promise<string>{
@@ -441,8 +414,8 @@ export class WS {
         return this.send('ui_getAgentChannels', [channelStatus, serviceStatus, offset, limit]) as Promise<ChannelResponse>;
     }
 
-    getChannelUsage(channelId: string): Promise<ClientChannelUsage>{
-        return this.send('ui_getChannelUsage', [channelId]) as Promise<ClientChannelUsage>;
+    getChannelsUsage(channelIds: string[]): Promise<{[key: string] : ClientChannelUsage}>{
+        return this.send('ui_getChannelsUsage', [channelIds]) as Promise<{[key: string] : ClientChannelUsage}>;
     }
 
     changeChannelStatus(channelId: string, channelStatus: string){
@@ -483,6 +456,36 @@ export class WS {
         return this.send('ui_updateSettings', [updateSettings]);
     }
 
+    getGUISettings() {
+        return this.send('ui_getGUISettings', []);
+    }
+
+    async setGUISettings(updateSettings: Object){
+        if(this.token){
+            const settings = await this.getGUISettings();
+            const payload = Object.assign({}, settings, updateSettings);
+            window.localStorage.setItem('localSettings', JSON.stringify(payload));
+            return this.send('ui_setGUISettings', [payload]);
+        }else{
+            let localCache = window.localStorage.getItem('localSettings');
+            const localCacheObj = JSON.parse(localCache);
+            window.localStorage.setItem('localSettings', JSON.stringify(Object.assign({}, localCacheObj, updateSettings)));
+        }
+    }
+
+    async getLocal(){
+        let localCache = window.localStorage.getItem('localSettings');
+        localCache = JSON.parse(localCache);
+        const mutableSettings = this.token ? await this.getGUISettings() : localCache;
+        const immutableSettings = await api.settings.getLocal();
+        return Object.assign({}, immutableSettings, mutableSettings);
+    }
+
+    saveCache(){
+        let localCache = window.localStorage.getItem('localSettings');
+        localCache = JSON.parse(localCache);
+        return this.setGUISettings(localCache);
+    }
 
 }
 

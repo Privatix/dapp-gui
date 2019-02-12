@@ -13,7 +13,12 @@ class UpdateChecker {
         const res = await fetch(settings.releasesEndpoint);
 
         try{
-            const releases = JSON.parse(await res.text());
+            const _releases = JSON.parse(await res.text());
+            const releases = _releases.map(release => ({platforms: release.platforms
+                                                      ,name: release.name
+                                                      ,tag_name: release.tag_name
+                                                      ,html_url: release.html_url
+                                                      }));
             const versions = releases.map(release => release.tag_name);
 
             versions.forEach(async (version) => {

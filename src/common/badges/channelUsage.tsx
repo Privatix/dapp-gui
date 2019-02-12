@@ -1,71 +1,32 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
 
-import { WS, ws } from 'utils/ws';
 import { ClientChannelUsage } from 'typings/channels';
 
 import toFixedN from 'utils/toFixedN';
 
 interface IProps {
     t?: any;
-    ws?: WS;
-    usage?: ClientChannelUsage;
-    channelId: string;
+    usage: ClientChannelUsage;
+    // channelId?: string;
     mode: string;
 }
 
 interface IState {
-    usage?: ClientChannelUsage;
 }
 
-@translate('client/connections/usage')
+const translated = translate('client/connections/usage');
+
 class Usage extends React.Component<IProps, IState>{
 
-    private handlerId =  undefined;
-
-    constructor(props: IProps){
-        super(props);
-        const { channelId, usage, ws } = this.props;
-        this.state = { usage };
-
-        if(!usage){
-            ws.getChannelUsage(channelId)
-              .then(usage => {
-                  this.setState({usage});
-              });
-        }
-    }
-
-    componentDidMount(){
-        this.startRefresh();
-    }
-
-    componentWillUnmount(){
-        this.stopRefresh();
-    }
-
-    startRefresh(){
-        this.handlerId = setTimeout(this.refresh, 2000);
-    }
-
-    stopRefresh(){
-        if(this.handlerId){
-            clearTimeout(this.handlerId);
-            this.handlerId = undefined;
-        }
-    }
-
-    refresh = async () => {
-        const { ws, channelId } = this.props;
-        const usage = await ws.getChannelUsage(channelId);
-        this.setState({usage});
-        this.handlerId = setTimeout(this.refresh, 2000);
-    }
 
     render(){
 
-        const { t, mode } = this.props;
-        const { usage } = this.state;
+        const { t, mode, usage } = this.props;
+
+        if(!usage) {
+            return null;
+        }
 
         return mode === 'unit'
             ? (usage
@@ -76,4 +37,4 @@ class Usage extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(Usage);
+export default translated(Usage);

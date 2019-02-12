@@ -9,11 +9,7 @@ import Navigation from './navigation/navigation';
 import Header from './header';
 import Settings from './settings/';
 
-import SetAccount from './auth/setAccount';
-import GenerateKey from './auth/generateKey';
-import ImportHexKey from './auth/importHexKey';
-import ImportJsonKey from './auth/importJsonKey';
-import Backup from './auth/backup';
+import Wizard from './wizard/';
 
 import Main from 'agent/main/';
 import Products from 'agent/products/';
@@ -30,15 +26,16 @@ import AcceptOffering from 'client/vpn_list/acceptOffering';
 import ClientHistory from 'client/vpn_list/history';
 
 
-import Logs from 'agent/logs/logsList';
+import Logs from 'common/logs/logsList';
 
+import {State} from 'typings/state';
 import { Role } from 'typings/mode';
 
 const MemoryHistory = createMemoryHistory();
 
 interface Props {
     mode: Role;
-    dispatch: any;
+    dispatch?: any;
 }
 
 class App extends React.Component<Props, any> {
@@ -51,7 +48,8 @@ class App extends React.Component<Props, any> {
 
         const { mode } = this.props;
 
-        return <Router history={MemoryHistory as any}>
+        const app = (
+            <Router history={MemoryHistory}>
                 <div id='wrapper'>
                     <Header />
                     <Navigation />
@@ -70,17 +68,7 @@ class App extends React.Component<Props, any> {
                                 <Route path='/channels' component={ChannelsList} />
                                 <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                                 <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
-                                <Route path='/setAccount' render={() => <SetAccount default={false} />} />
-                                <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
-                                <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                                <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
-                                <Route path='/backup/:accountId/:from'
-                                        render={ (props:any) => <Backup entryPoint={'/accounts'}
-                                                                        accountId={props.match.params.accountId}
-                                                                        from={props.match.params.from}
-                                                                />
-                                               }
-                                />
+                                <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} />} />
                                 <Route path='/logs' component={Logs} />
 
                                 <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
@@ -92,8 +80,11 @@ class App extends React.Component<Props, any> {
                         </div>
                     </div>
                 </div>
-            </Router>;
+            </Router>
+        );
+
+        return app;
     }
 }
 
-export default connect(state => state)(withRouter(App));
+export default connect<Props>((state:State) => ({ mode: state.mode}))(withRouter(App));
