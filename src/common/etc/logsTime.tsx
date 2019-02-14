@@ -1,7 +1,12 @@
 import * as React from 'react';
 import * as moment from 'moment';
 
-export default function (props: any) {
+interface IProps {
+    time?: string;
+    lang: string;
+}
+
+export default function (props: IProps) {
     if (props.time) {
         moment.locale(props.lang);
 
@@ -10,6 +15,6 @@ export default function (props: any) {
 
         return <span>{formattedDate}</span>;
     } else {
-        return <span></span>;
+        return null;
     }
 }

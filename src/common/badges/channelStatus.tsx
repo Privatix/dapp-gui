@@ -1,11 +1,26 @@
 import * as React from 'react';
 
-export default class ChannelStatusStyle extends React.Component<any, any> {
-    constructor(props: any) {
-        super(props);
-    }
+interface ServiceStatuses {
+    pending: string;
+    activating: string;
+    active: string;
+    suspending: string;
+    suspended: string;
+    terminating: string;
+    terminated: string;
+}
 
-    get classes() {
+interface IProps {
+    serviceStatus: keyof ServiceStatuses;
+}
+
+interface IState {
+
+}
+
+export default class ChannelStatusStyle extends React.Component<IProps, IState> {
+
+    get classes(): ServiceStatuses {
         return {
             pending: 'primary',
             activating: 'primary',
@@ -18,7 +33,7 @@ export default class ChannelStatusStyle extends React.Component<any, any> {
     }
 
     render() {
-        const status = this.props.serviceStatus;
-        return <span className={`label label-table label-${this.classes[status]}`}>{status}</span>;
+        const {serviceStatus } = this.props;
+        return <span className={`label label-table label-${this.classes[serviceStatus]}`}>{serviceStatus}</span>;
     }
 }

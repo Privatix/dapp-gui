@@ -8,8 +8,17 @@ import GoToUpdateButton from './goToUpdateButton';
 
 import {State} from 'typings/state';
 
+interface IProps {
+    localSettings: State['localSettings'];
+    dbSettings: State['settings'];
+}
+
+interface IState {
+
+}
+
 @translate('updateInformer')
-class UpdateInformer extends React.Component<any, any>{
+class UpdateInformer extends React.Component<IProps, IState>{
 
     render(){
 
@@ -86,4 +95,5 @@ class UpdateInformer extends React.Component<any, any>{
         );
     }
 }
+
 export default connect( (state: State) => ({localSettings: state.localSettings, dbSettings: state.settings}) )(UpdateInformer);

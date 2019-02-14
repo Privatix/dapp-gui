@@ -21,8 +21,12 @@ interface IProps{
     entryPoint: string;
 }
 
+interface IState {
+    fileName: string;
+}
+
 @translate(['auth/backup', 'auth/setAccount', 'auth/importJsonKey', 'utils/notice'])
-class Backup extends React.Component<IProps, any>{
+class Backup extends React.Component<IProps, IState>{
 
     constructor(props:IProps){
         super(props);
@@ -55,22 +59,23 @@ class Backup extends React.Component<IProps, any>{
 
     onSubmit = (evt: any) => {
 
-        const { t, ws, accountId, entryPoint, from } = this.props;
+        const { t, ws, history, accountId, entryPoint, from } = this.props;
+        const { fileName } = this.state;
 
         evt.preventDefault();
 
-        if(this.state.fileName === ''){
+        if(fileName === ''){
             notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('PleaseBackupYourAccount')});
             return;
         }
 
         ws.exportAccount(accountId, (res: any) => {
-            api.fs.saveAs(this.state.fileName, atob(res.result))
+            api.fs.saveAs(fileName, atob(res.result))
                 .then((res:any) => {
                     if(res.err){
                         notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
                     }else{
-                        this.props.history.push(from === 'generateKey' ? `/getPrix/${accountId}` : entryPoint);
+                        history.push(from === 'generateKey' ? `/getPrix/${accountId}` : entryPoint);
                     }
                 });
         });
@@ -79,6 +84,7 @@ class Backup extends React.Component<IProps, any>{
     render(){
 
         const { t, from } = this.props;
+        const { fileName } = this.state;
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -95,7 +101,7 @@ class Backup extends React.Component<IProps, any>{
                                 <div className='col-12'>
                                     <label>{t('auth/importJsonKey:PathToJSONKeystoreFile')}:</label>
                                     <div className='row'>
-                                      <div className='col-10'><input type='text' className='form-control' value={this.state.fileName} readOnly /></div>
+                                      <div className='col-10'><input type='text' className='form-control' value={fileName} readOnly /></div>
                                       <div className='col-2'><button onClick={this.saveDialog} className='btn btn-white waves-effect'>{t('Browse')}</button></div>
                                     </div>
                                </div>

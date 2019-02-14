@@ -13,15 +13,22 @@ interface IProps{
     ws?: WS;
     t?: any;
     history?: any;
-    default: string;
+    isDefault: boolean;
+}
+
+interface IState {
+
+    name: string;
+    fileName: string;
+    pwd: string;
 }
 
 @translate(['auth/importJsonKey', 'auth/setAccount', 'auth/generateKey', 'utils/notice'])
-class ImportJsonKey extends React.Component<IProps, any>{
+class ImportJsonKey extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
         super(props);
-        this.state = {name: props.default === 'true' ? 'main' : ''
+        this.state = {name: props.isDefault ? 'main' : ''
                      ,fileName: ''
                      ,pwd: ''
                      };
@@ -43,21 +50,26 @@ class ImportJsonKey extends React.Component<IProps, any>{
         }
     }
 
-    onUserInput = (evt: any) => {
+    onUserInput(field: keyof IState, evt: any){
 
-        this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
+        // https://github.com/Microsoft/TypeScript/issues/13948
+        this.setState({[field]: String(evt.target.value).trim()} as Pick<IState, keyof IState>);
     }
 
+    onNameChanged = this.onUserInput.bind(this, 'name');
+    onPasswordChanged = this.onUserInput.bind(this, 'pwd');
+
     onFileSelected = (evt: any) => {
-        const fileName = evt.target.files[0].path;
+        const fileName = String(evt.target.files[0].path).trim();
         this.setState({fileName});
     }
 
     onSubmit = async (evt: any) => {
         evt.preventDefault();
 
-        const { t, ws } = this.props;
+        const { t, ws, isDefault } = this.props;
         const {pwd, fileName, name} = this.state;
+
         let msg = '';
         let err = false;
 
@@ -83,7 +95,7 @@ class ImportJsonKey extends React.Component<IProps, any>{
         const keyObject = JSON.parse(res);
 
         const payload = {
-             isDefault: this.props.default === 'true'
+             isDefault
             ,inUse: true
             ,name
         };
@@ -102,6 +114,7 @@ class ImportJsonKey extends React.Component<IProps, any>{
     render(){
 
         const { t } = this.props;
+        const { name, pwd } = this.state;
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -115,12 +128,11 @@ class ImportJsonKey extends React.Component<IProps, any>{
                            <div className='form-group row'>
                                 <label className='col-2 col-form-label'>{t('auth/generateKey:Name')}:</label>
                                 <div className='col-8'>
-                                    <input data-payload-value='name'
-                                           type='text'
+                                    <input type='text'
                                            name='name'
                                            className='form-control'
-                                           value={this.state.name}
-                                           onChange={this.onUserInput}
+                                           value={name}
+                                           onChange={this.onNameChanged}
                                     />
                                 </div>
                            </div>
@@ -133,11 +145,10 @@ class ImportJsonKey extends React.Component<IProps, any>{
                            <div className='form-group row'>
                             <div className='col-12'>
                                 <label>{t('PasswordWillBeUsed')}</label>
-                                <input data-payload-value='pwd'
-                                       type='password'
+                                <input type='password'
                                        className='form-control'
-                                       value={this.state.pwd}
-                                       onChange={this.onUserInput}
+                                       value={pwd}
+                                       onChange={this.onPasswordChanged}
                                 />
                               </div>
                            </div>

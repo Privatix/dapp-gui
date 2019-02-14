@@ -97,7 +97,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
                     title={t('Remove')}
                     text={<span>{t('removeInfo')}<br />
                         {t('WouldYouLikeToProceed')}</span>}
-                    class={'btn btn-danger btn-custom btn-block'}
+                    className={'btn btn-danger btn-custom btn-block'}
                     swalType='danger'
                     swalConfirmBtnText={t('YesRemoveIt')}
                     swalTitle={t('confirmPopupSwal:AreYouSure')}

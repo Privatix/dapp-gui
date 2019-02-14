@@ -37,10 +37,10 @@ export default class Wizard extends React.Component<IProps, IState> {
                     <Switch>
                         <Route exact path='/' component={SetLanguage} />
                         <Route exact path='/setPassword' component={SetPassword} />
-                        <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
-                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
-                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+                        <Route path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
+                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />
+                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />
+                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />
                         <Route path='/backup/:accountId/:from'
                                render={(props: any) => <Backup entryPoint={'/app'}
                                                                accountId={props.match.params.accountId}
@@ -67,9 +67,9 @@ export default class Wizard extends React.Component<IProps, IState> {
                     <Switch>
                         <Route exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />
                         <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
-                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
-                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />
+                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />
+                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />
                         <Route path='/backup/:accountId/:from'
                                render={(props: any) => <Backup entryPoint={'/app'}
                                                                accountId={props.match.params.accountId}
@@ -95,9 +95,9 @@ export default class Wizard extends React.Component<IProps, IState> {
                     <Switch>
                         <Route exact path='/' render={() => <SetAccount default={false} /> } />
                         <Route exact path='/setAccount' render={() => <SetAccount default={false} /> } />
-                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey default={props.match.params.default} /> } />
-                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey default={props.match.params.default} /> } />
-                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey default={props.match.params.default} /> } />
+                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />
+                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />
+                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />
                         <Route path='/backup/:accountId/:from'
                                render={(props: any) => <Backup entryPoint={'/app'}
                                                                accountId={props.match.params.accountId}

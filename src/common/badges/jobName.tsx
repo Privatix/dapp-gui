@@ -1,12 +1,17 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
 
-@translate('jobName')
-class JobStatus extends React.Component<any, any>{
+interface IProps {
+    t?: any;
+    jobtype: string;
+}
 
-    constructor(props: any){
-        super(props);
-    }
+interface IState {
+
+}
+
+@translate('jobName')
+class JobStatus extends React.Component<IProps, IState>{
 
     render() {
 

@@ -1,6 +1,6 @@
 import {Job} from './job';
 
-export type ServiceStatus = 'pending' |'activating' | 'active' | 'suspending' | 'suspended' | 'terminating' | 'terminanted';
+export type ServiceStatus = 'pending' |'activating' | 'active' | 'suspending' | 'suspended' | 'terminating' | 'terminated';
 export type ChannelStatus = 'pending' | 'active' | 'wait_coop' | 'closed_coop' | 'wait_challenge' | 'in_challenge' | 'wait_uncoop' | 'closed_uncoop';
 export type ChannelActions = 'terminate' | 'pause' | 'resume';
 

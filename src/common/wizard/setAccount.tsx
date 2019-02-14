@@ -5,12 +5,22 @@ import { translate } from 'react-i18next';
 import Steps from './steps';
 import {NextButton} from './utils';
 
+interface IProps {
+    t?: any;
+    history?: any;
+    isDefault: boolean;
+}
+
+interface IState {
+
+}
+
 @translate('auth/setAccount')
-class SetAccount extends React.Component<any, any> {
+class SetAccount extends React.Component<IProps, IState> {
 
     keyType: string;
 
-    constructor(props: any){
+    constructor(props: IProps){
         super(props);
         this.keyType = 'generateKey';
     }
@@ -33,9 +43,9 @@ class SetAccount extends React.Component<any, any> {
         this.keyType = e.target.value;
     }
 
-    onSubmit(evt: any){
+    onSubmit = (evt: any) => {
         evt.preventDefault();
-        this.props.history.push(`/${this.keyType}/${this.props.default}`);
+        this.props.history.push(`/${this.keyType}/${this.props.isDefault}`);
     }
 
     render(){
@@ -98,7 +108,7 @@ class SetAccount extends React.Component<any, any> {
                                 </div>
                             </div>
                             <div className='form-group text-right m-t-40'>
-                                <NextButton onSubmit={this.onSubmit.bind(this)} />
+                                <NextButton onSubmit={this.onSubmit} />
                             </div>
                         </section>
                     </div>

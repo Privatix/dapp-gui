@@ -1,12 +1,14 @@
 import * as React from 'react';
 
-export default class OfferingStatus extends React.Component<any, any>{
+interface IProps {
+    offeringStatus: string;
+}
 
-    handler: number;
+interface IState {
 
-    constructor(props: any){
-        super(props);
-    }
+}
+
+export default class OfferingStatus extends React.Component<IProps, IState>{
 
     get classes() {
         return {
@@ -42,9 +44,11 @@ export default class OfferingStatus extends React.Component<any, any>{
     }
 
     render() {
-        const status = this.props.status;
-        return <span className={`label label-table label-${this.classes[status].label ? this.classes[status].label : 'inverse'}`} >
-                {this.classes[status].alias}
+
+        const { offeringStatus } = this.props;
+
+        return <span className={`label label-table label-${this.classes[offeringStatus].label ? this.classes[offeringStatus].label : 'inverse'}`} >
+                {this.classes[offeringStatus].alias}
             </span>;
     }
 }

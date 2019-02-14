@@ -1,14 +1,25 @@
 import * as React from 'react';
 import {shell} from 'electron';
 
-export default function(props:any){
+import { Transaction } from 'typings/transactions';
+
+interface IProps {
+    transaction: Transaction;
+}
+
+export default function(props: IProps){
+
+    const { transaction } = props;
+
     const etherscan = (evt:any) => {
         evt.preventDefault();
-        shell.openExternal(`https://etherscan.io/address/0x${props.transaction.ethAddr}`);
+        shell.openExternal(`https://etherscan.io/address/0x${transaction.ethAddr}`);
     };
+
     const elem = <tr>
-        <td>{props.transaction.date}</td>
-        <td> <a href='#' onClick={etherscan}>0x{props.transaction.ethAddr}</a></td>
+        <td>{transaction.date}</td>
+        <td> <a href='#' onClick={etherscan}>0x{transaction.ethAddr}</a></td>
     </tr>;
+
     return (elem);
 }

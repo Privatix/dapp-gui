@@ -12,15 +12,19 @@ interface IProps{
     ws?: WS;
     t?: any;
     history?: any;
-    default: string;
+    isDefault: boolean;
+}
+
+interface IState {
+    name: string;
 }
 
 @translate(['auth/generateKey', 'auth/setAccount', 'utils/notice'])
-class GenerateKey extends React.Component<IProps, any>{
+class GenerateKey extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
         super(props);
-        this.state = {name: props.default === 'true' ? 'main' : ''};
+        this.state = {name: props.isDefault ? 'main' : ''};
     }
 
     back = back('/setAccount').bind(this);
@@ -40,13 +44,13 @@ class GenerateKey extends React.Component<IProps, any>{
     }
 
     onUserInput = (evt:any) => {
-        this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
+        this.setState({name: String(evt.target.value).trim()});
     }
 
     onSubmit = async (evt: any) => {
         evt.preventDefault();
 
-        const { t, ws } = this.props;
+        const { t, ws, isDefault } = this.props;
         const { name } = this.state;
 
         let msg = '';
@@ -63,7 +67,7 @@ class GenerateKey extends React.Component<IProps, any>{
         }
 
         const payload = {
-             isDefault: this.props.default === 'true'
+             isDefault
             ,inUse: true
             ,name
         };
@@ -81,6 +85,7 @@ class GenerateKey extends React.Component<IProps, any>{
     render(){
 
         const { t } = this.props;
+        const { name } = this.state;
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -99,7 +104,7 @@ class GenerateKey extends React.Component<IProps, any>{
                                            name='name'
                                            className='form-control'
                                            onChange={this.onUserInput}
-                                           value={this.state.name}
+                                           value={name}
                                     />
                                 </div>
                            </div>

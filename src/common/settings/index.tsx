@@ -8,9 +8,13 @@ interface IProps {
     ws?: WS;
 }
 
-class Settings extends React.Component <IProps, any>{
+interface IState {
+    settings: any;
+}
 
-    constructor(props:any) {
+class Settings extends React.Component <IProps, IState>{
+
+    constructor(props:IProps) {
         super(props);
         this.state = {settings: {}};
     }
