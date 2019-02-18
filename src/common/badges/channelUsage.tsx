@@ -8,16 +8,12 @@ import toFixedN from 'utils/toFixedN';
 interface IProps {
     t?: any;
     usage: ClientChannelUsage;
-    // channelId?: string;
     mode: string;
-}
-
-interface IState {
 }
 
 const translated = translate('client/connections/usage');
 
-class Usage extends React.Component<IProps, IState>{
+class Usage extends React.Component<IProps, {}>{
 
 
     render(){

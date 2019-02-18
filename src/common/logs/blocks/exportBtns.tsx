@@ -18,9 +18,13 @@ interface IProps {
     exportControllerLogsToFile(evt:any): void;
 }
 
+interface IState {
+    disabledBtn: boolean;
+}
+
 @translate('logs/logsList')
 
-class ExportBtns extends React.Component<IProps, any> {
+class ExportBtns extends React.Component<IProps, IState> {
 
     archiveName = 'dump.zip';
     detectedOS = null;

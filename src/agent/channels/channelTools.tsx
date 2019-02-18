@@ -40,7 +40,7 @@ class ChannelTools extends React.Component<any, any>{
                             done={done}
                             title={buttonTitle}
                             text={<span>{`${info} ${warning}`}</span>}
-                            class={'btn btn-danger btn-custom btn-block'}
+                            className={'btn btn-danger btn-custom btn-block'}
                             swalType='danger'
                             swalConfirmBtnText={t('YesTerminateIt')}
                             swalTitle={t('AreYouSure')}/>

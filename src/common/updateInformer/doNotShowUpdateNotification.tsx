@@ -10,7 +10,7 @@ interface IProps {
 }
 
 @translate('updateInformer')
-class DoNotShowUpdateNotification extends React.Component<IProps, any>{
+class DoNotShowUpdateNotification extends React.Component<IProps, {}>{
 
     onSkip = (evt: any) => {
         const { ws, version } = this.props;

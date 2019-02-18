@@ -9,11 +9,7 @@ interface IProps {
     time: string;
 }
 
-interface IState {
-
-}
-
-class PgTime extends React.Component<IProps, IState> {
+class PgTime extends React.Component<IProps, {}> {
 
     render() {
 

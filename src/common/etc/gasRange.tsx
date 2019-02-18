@@ -3,9 +3,16 @@ import ExternalLink from './externalLink';
 import isString = require('lodash.isstring'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 import { translate } from 'react-i18next';
 
-@translate('utils/gasRange')
+interface IProps {
+    onChange: Function;
+    value: number;
+    t?: any;
+    extLinkText?: string;
+    averageTimeText?: string;
+}
 
-export default class GasRange extends React.Component<any, any> {
+@translate('utils/gasRange')
+export default class GasRange extends React.Component<IProps, {}> {
 
     changeGasPrice = (evt: any) => {
         if(typeof this.props.onChange === 'function'){

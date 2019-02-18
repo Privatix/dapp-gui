@@ -22,12 +22,8 @@ interface IProps {
     ws?: WS;
 }
 
-interface IState {
-
-}
-
 @translate(['accounts/accountsList', 'utils/notice'])
-class Accounts extends React.Component<IProps, IState> {
+class Accounts extends React.Component<IProps, {}> {
 
     async onRefresh(accountId:any, evt: any){
         evt.preventDefault();
@@ -43,8 +39,8 @@ class Accounts extends React.Component<IProps, IState> {
         const accountsDataArr = accounts.map((account: AccountType) => {
 
             const isDefault = account.isDefault === true ? 'on' : 'off';
-
             const ethereumAddress = `0x${account.ethAddr}`;
+
             return {
                 name: <ModalWindow key={ethereumAddress}
                                    visible={false}

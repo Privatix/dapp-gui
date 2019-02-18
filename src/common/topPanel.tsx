@@ -11,7 +11,7 @@ interface Props {
 }
 
 @translate(['topPanel'])
-class TopPanel extends React.Component <Props, any>{
+class TopPanel extends React.Component <Props, {}>{
 
     render(){
 

@@ -262,7 +262,7 @@ class Connecting extends React.Component<any, any>{
                             title={t('Pause')}
                             text={<span>{t('ThisOperationWillPauseVPNUsage')}<br />
                             {t('ForThisContractMaxSuspendTimeIs', {minutes: maxSuspendTimeMinutes})}</span>}
-                            class={'btn btn-primary btn-custom btn-block'}
+                            className={'btn btn-primary btn-custom btn-block'}
                             swalType='warning'
                             swalConfirmBtnText={t('YesPauseIt')}
                             swalTitle={t('confirmPopupSwal:AreYouSure')} />

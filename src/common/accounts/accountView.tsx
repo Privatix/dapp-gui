@@ -211,7 +211,7 @@ class AccountView extends React.Component<IProps, IState> {
                                         <br />{t('TransferSwalTextPart2')}
                                         <br /><br />{t('TransferSwalTextPart3')}
                                       </span>}
-                                class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
+                                className={'btn btn-default btn-block btn-custom waves-effect waves-light'}
                                 swalType='warning'
                                 swalConfirmBtnText={t('TransferConfirmBtn')}
                                 swalTitle={t('TransferSwalTitle')} />

@@ -225,7 +225,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                                 done={this.onConfirm}
                                 title={t('IncreaseBtn')}
                                 text={<div>{t('client/increaseDepositButton:ThisOperationWillIncrease')}<br />{t('WouldYouLikeToProceed')}</div>}
-                                class={'btn btn-default btn-block btn-custom waves-effect waves-light'}
+                                className={'btn btn-default btn-block btn-custom waves-effect waves-light'}
                                 swalType='warning'
                                 swalConfirmBtnText={t('IncreaseConfirmBtn')}
                                 swalTitle={t('IncreaseSwalTitle')} />

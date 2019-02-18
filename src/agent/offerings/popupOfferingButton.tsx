@@ -95,7 +95,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
                     done={this.popupOffering}
                     title={t('Popup')}
                     text={<span>{popupInfo}</span>}
-                    class={'btn btn-block btn-primary btn-custom'}
+                    className={'btn btn-block btn-primary btn-custom'}
                     swalType='warning'
                     swalConfirmBtnText={t('YesPopUpIt')}
                     swalTitle={t('confirmPopupSwal:AreYouSure')}

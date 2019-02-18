@@ -20,8 +20,15 @@ interface IProps{
     entryPoint: string;
 }
 
+interface IState {
+    ethAddr: string;
+    didIt: boolean;
+    getPrix: boolean;
+    done: boolean;
+}
+
 @translate(['auth/getPrix', 'auth/utils'])
-class GetPrix extends React.Component<IProps, any>{
+class GetPrix extends React.Component<IProps, IState>{
 
     observerId = null;
 
@@ -101,7 +108,7 @@ class GetPrix extends React.Component<IProps, any>{
     render(){
 
         const { t } = this.props;
-        const { ethAddr } = this.state;
+        const { ethAddr, didIt, getPrix, done } = this.state;
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -139,7 +146,7 @@ class GetPrix extends React.Component<IProps, any>{
                                     <p>{t('PressButton')}</p>
                                     <div className='form-group row'>
                                         <div className='col-md-12'>
-                                            {this.state.didIt
+                                            {didIt
                                                 ?<button className='btn btnCustomDisabled btn-block disabled' >{t('IdidIt')}</button>
                                                 :<button type='submit'
                                                         onClick={this.onSubmit}
@@ -150,9 +157,9 @@ class GetPrix extends React.Component<IProps, any>{
                                             }
                                         </div>
                                     </div>
-                                    {this.state.didIt && (!this.state.getPrix || !this.state.done)
+                                    {didIt && (!getPrix || !done)
                                         ? <div className='text-center'>
-                                              {this.state.getPrix
+                                              {getPrix
                                                   ? <>
                                                       <div>{t('TokensHaveBeenReceived')}</div>
                                                       <div>{t('WeAreTransferring')}</div>
@@ -164,13 +171,13 @@ class GetPrix extends React.Component<IProps, any>{
                                         : null
                                     }
                                     <h4 className='text-center'>
-                                        {this.state.done ? t('AllDonePressFinish') : null }
+                                        {done ? t('AllDonePressFinish') : null }
                                     </h4>
                                 </li>
                             </ol>
                             <div className='form-group text-right m-t-40'>
                                 <PreviousButton onSubmit={this.back} />
-                                {this.state.done
+                                {done
                                     ? <FinishButton onSubmit={this.onFinish} />
                                     : <button className='btn btn-default text-uppercase waves-effect waves-light pull-right m-l-5 btnCustomDisabled disabled' >
                                           {t('auth/utils:Finish')}

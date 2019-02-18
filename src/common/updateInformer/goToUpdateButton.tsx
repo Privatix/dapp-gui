@@ -7,7 +7,7 @@ interface IProps {
 }
 
 @translate('updateInformer')
-class GoToUpdateButton extends React.Component<IProps, any>{
+class GoToUpdateButton extends React.Component<IProps, {}>{
 
     onClick = (evt: any) => {
 

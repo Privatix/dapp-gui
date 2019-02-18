@@ -6,8 +6,13 @@ import Steps from './steps';
 import {NextButton} from './utils';
 import SelectLanguage from 'i18next/selectLanguage';
 
+interface IProps {
+    t?: any;
+    history?: any;
+}
+
 @translate(['auth/setLanguage'])
-class SetLanguage extends React.Component<any, any>{
+class SetLanguage extends React.Component<IProps, {}>{
 
     componentDidMount() {
         document.addEventListener('keydown', this.handleKeyDown);

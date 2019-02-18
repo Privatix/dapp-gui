@@ -9,15 +9,23 @@ import { translate } from 'react-i18next';
 import handlers from 'redux/actions';
 import {State} from 'typings/state';
 
-interface Props {
+interface IOwnProps {
     entryPoint: any;
-    dispatch?: any;
+}
+
+interface IProps extends IOwnProps{
     t?: any;
     ws?: WS;
+    dispatch?: any;
+    history: any;
+}
+
+interface IState {
+    password: string;
 }
 
 @translate('login', 'utils/notice')
-class Login extends React.Component<any, any> {
+class Login extends React.Component<IProps, IState> {
 
     private submitted = false;
 
@@ -132,6 +140,6 @@ class Login extends React.Component<any, any> {
     }
 }
 
-export default connect( (state: State, ownProps: Props) => {
+export default connect( (state: State, ownProps: IOwnProps) => {
     return Object.assign({}, {ws: state.ws}, ownProps);
 } )(withRouter(Login));

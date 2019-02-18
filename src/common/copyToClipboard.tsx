@@ -4,8 +4,13 @@ import { translate } from 'react-i18next';
 
 import notice from 'utils/notice';
 
+interface IProps {
+    t?: any;
+    text: string;
+}
+
 @translate(['copyToClipboard', 'utils/notice'])
-export default class CopyToClipboardWrapper extends React.Component<any, any> {
+export default class CopyToClipboardWrapper extends React.Component<IProps, {}> {
 
     onCopy = () => {
 
@@ -17,10 +22,10 @@ export default class CopyToClipboardWrapper extends React.Component<any, any> {
 
     render() {
 
-        const { t } = this.props;
+        const { t, text } = this.props;
 
         return (
-            <CopyToClipboard text={this.props.text} onCopy={this.onCopy} >
+            <CopyToClipboard text={text} onCopy={this.onCopy} >
                 <button className='btn btn-link copyToClipboardBtn' title={t('Copy')}>
                     <i className='fa fa-clipboard'></i>
                 </button>

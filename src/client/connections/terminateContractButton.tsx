@@ -56,7 +56,7 @@ class TerminateContractButton extends React.Component<IProps, any>{
                                 : ''
                             }
                         </span>}
-                        class={'btn btn-danger btn-custom btn-block'}
+                        className={'btn btn-danger btn-custom btn-block'}
                         swalType='danger'
                         swalConfirmBtnText={t('YesTerminateContract')}
                         swalTitle={t('AreYouSure')}

@@ -7,30 +7,34 @@ interface IProps {
     t?: any;
     beforeAsking?: Function;
     done?: Function;
-    awaitForDone?: boolean;
-    class: string;
+    className: string;
     title: string;
     swalType: string;
     swalTitle: string|JSX.Element;
     swalConfirmBtnText: string;
     text: string|JSX.Element;
-    disabledBtn?: boolean;
+    disabledBtn?: boolean; // what for?
+}
+
+interface IState {
+    show: boolean;
 }
 
 @translate('confirmPopupSwal')
 
-export default class ConfirmPopupSwal extends React.Component<IProps, any>{
+export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
 
     showConfirmAlertBtn = null;
 
-    constructor(props: any) {
+    constructor(props: IProps) {
         super(props);
         this.showConfirmAlertBtn = React.createRef();
         this.state = {show: false};
     }
 
-    async showPopUpSwal(event: any) {
-        event.preventDefault();
+    showPopUpSwal = async (event: any) => {
+
+       event.preventDefault();
         if (this.props.disabledBtn) {
             this.showConfirmAlertBtn.current.setAttribute('disabled', 'disabled');
         }
@@ -41,25 +45,22 @@ export default class ConfirmPopupSwal extends React.Component<IProps, any>{
         }
     }
 
-    async confirmHandler() {
+    confirmHandler = async () => {
+
         if (this.props.disabledBtn) {
             this.cancelHandler(null, true);
         } else {
             this.cancelHandler();
         }
         if('done' in this.props && 'function' === typeof this.props.done) {
-            if (this.props.awaitForDone) {
-                await this.props.done();
-            } else {
-                this.props.done();
-            }
+            await this.props.done();
         }
         if (this.props.disabledBtn && this.showConfirmAlertBtn.current) {
             this.showConfirmAlertBtn.current.removeAttribute('disabled');
         }
     }
 
-    cancelHandler(event?: any, keepDisabled?: boolean) {
+    cancelHandler = (event?: any, keepDisabled?: boolean) => {
         if(event && event.preventDefault){
             event.preventDefault();
         }
@@ -71,11 +72,12 @@ export default class ConfirmPopupSwal extends React.Component<IProps, any>{
     }
 
     render(){
-        const { t } = this.props;
+
+        const { t, className } = this.props;
 
         return (
             <div>
-                <button onClick={this.showPopUpSwal.bind(this)} className={this.props.class} ref={this.showConfirmAlertBtn}>
+                <button onClick={this.showPopUpSwal} className={className} ref={this.showConfirmAlertBtn}>
                     {this.props.title}
                 </button>
                 <ReactSweetAlert
@@ -88,8 +90,8 @@ export default class ConfirmPopupSwal extends React.Component<IProps, any>{
                     confirmBtnCssClass='swal2-styled'
                     cancelBtnCssClass='swal2-styled'
                     title={this.props.swalTitle}
-                    onConfirm={this.confirmHandler.bind(this)}
-                    onCancel={this.cancelHandler.bind(this)}
+                    onConfirm={this.confirmHandler}
+                    onCancel={this.cancelHandler}
                 >{this.props.text}</ReactSweetAlert>
             </div>
         );

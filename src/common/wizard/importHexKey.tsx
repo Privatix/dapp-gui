@@ -8,19 +8,24 @@ import notice from 'utils/notice';
 
 import { WS, ws } from 'utils/ws';
 
-interface IProps{
+interface IProps {
     ws?: WS;
     t?: any;
     history?: any;
-    default: string;
+    isDefault: boolean;
+}
+
+interface IState {
+    name: string;
+    privateKey: string;
 }
 
 @translate(['auth/importHexKey', 'auth/setAccount', 'auth/generateKey', 'auth/importJsonKey', 'utils/notice'])
-class ImportHexKey extends React.Component<IProps, any>{
+class ImportHexKey extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
         super(props);
-        this.state = {name: props.default === 'true' ? 'main' : ''
+        this.state = {name: props.isDefault ? 'main' : ''
                      ,privateKey: ''
                      };
     }
@@ -41,17 +46,22 @@ class ImportHexKey extends React.Component<IProps, any>{
         }
     }
 
-    onUserInput = (evt: any) => {
+    onUserInput(field: keyof IState, evt: any){
 
-        this.setState({[evt.target.dataset.payloadValue]: evt.target.value.trim()});
+        // https://github.com/Microsoft/TypeScript/issues/13948
+        this.setState({[field]: String(evt.target.value).trim()} as Pick<IState, keyof IState>);
     }
+
+    onNameChanged = this.onUserInput.bind(this, 'name');
+    onPrivateKeyChanged = this.onUserInput.bind(this, 'privateKey');
 
     onSubmit = async (evt: any) => {
 
         evt.preventDefault();
 
-        const { t, ws } = this.props;
+        const { t, ws, isDefault } = this.props;
         let {privateKey, name} = this.state;
+
         let msg = '';
         let err = false;
 
@@ -73,7 +83,7 @@ class ImportHexKey extends React.Component<IProps, any>{
         }
 
         const payload = {
-             isDefault: this.props.default === 'true'
+             isDefault
             ,inUse: true
             ,name
             ,privateKeyHex: privateKey
@@ -105,12 +115,11 @@ class ImportHexKey extends React.Component<IProps, any>{
                            <div className='form-group row'>
                                 <label className='col-2 col-form-label'>{t('auth/generateKey:Name')}:</label>
                                 <div className='col-8'>
-                                    <input data-payload-value='name'
-                                           type='text'
+                                    <input type='text'
                                            name='name'
                                            className='form-control'
                                            value={this.state.name}
-                                           onChange={this.onUserInput}
+                                           onChange={this.onNameChanged}
                                     />
                                 </div>
                            </div>
@@ -118,7 +127,7 @@ class ImportHexKey extends React.Component<IProps, any>{
                            <div className='form-group row'>
                             <div className='col-12'>
                                 <label>{t('PrivateKey')}:</label>
-                                <textarea data-payload-value='privateKey' className='form-control' onChange={this.onUserInput} ></textarea>
+                                <textarea className='form-control' onChange={this.onPrivateKeyChanged} ></textarea>
                               </div>
                            </div>
                            <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('auth/importJsonKey:MoreInformation')}</a>
