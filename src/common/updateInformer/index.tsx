@@ -13,12 +13,8 @@ interface IProps {
     dbSettings: State['settings'];
 }
 
-interface IState {
-
-}
-
 @translate('updateInformer')
-class UpdateInformer extends React.Component<IProps, IState>{
+class UpdateInformer extends React.Component<IProps, {}>{
 
     render(){
 

@@ -8,12 +8,8 @@ interface IProps {
     onChange: (event: any) => void;
 }
 
-interface IState {
-
-}
-
 @translate(['settings', 'utils/notice'])
-class SettingsItem extends React.Component<IProps, IState> {
+class SettingsItem extends React.Component<IProps, {}> {
 
     render(){
         const { name: key, setting, onChange, t } = this.props;

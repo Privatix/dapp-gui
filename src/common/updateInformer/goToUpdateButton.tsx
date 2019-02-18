@@ -6,12 +6,8 @@ interface IProps {
     href: string;
 }
 
-interface IState {
-
-}
-
 @translate('updateInformer')
-class GoToUpdateButton extends React.Component<IProps, IState>{
+class GoToUpdateButton extends React.Component<IProps, {}>{
 
     onClick = (evt: any) => {
 

@@ -11,12 +11,8 @@ interface IProps {
     history?: any;
 }
 
-interface IState {
-
-}
-
 @translate(['auth/setLanguage'])
-class SetLanguage extends React.Component<IProps, IState>{
+class SetLanguage extends React.Component<IProps, {}>{
 
     componentDidMount() {
         document.addEventListener('keydown', this.handleKeyDown);

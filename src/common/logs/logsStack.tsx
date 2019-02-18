@@ -4,11 +4,7 @@ interface IProps {
     context: any;
 }
 
-interface IState {
-
-}
-
-export default class LogsStack extends React.Component <IProps, IState> {
+export default class LogsStack extends React.Component <IProps, {}> {
 
     render() {
         return <div>

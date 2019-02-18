@@ -38,11 +38,7 @@ interface IProps {
     dispatch?: any;
 }
 
-interface IState {
-
-}
-
-class App extends React.Component<IProps, IState> {
+class App extends React.Component<IProps, {}> {
 
     constructor(props: IProps) {
         super(props);

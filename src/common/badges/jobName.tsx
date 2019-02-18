@@ -6,12 +6,8 @@ interface IProps {
     jobtype: string;
 }
 
-interface IState {
-
-}
-
 @translate('jobName')
-class JobStatus extends React.Component<IProps, IState>{
+class JobStatus extends React.Component<IProps, {}>{
 
     render() {
 

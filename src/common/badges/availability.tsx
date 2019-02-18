@@ -10,11 +10,7 @@ interface IProps {
     availability: keyof AvailabilityStatuses;
 }
 
-interface IState {
-
-}
-
-export default class Availability extends React.Component<IProps, IState>{
+export default class Availability extends React.Component<IProps, {}>{
 
     get classes(): AvailabilityStatuses {
         return {

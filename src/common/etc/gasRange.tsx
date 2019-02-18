@@ -11,12 +11,8 @@ interface IProps {
     averageTimeText?: string;
 }
 
-interface IState {
-
-}
-
 @translate('utils/gasRange')
-export default class GasRange extends React.Component<IProps, IState> {
+export default class GasRange extends React.Component<IProps, {}> {
 
     changeGasPrice = (evt: any) => {
         if(typeof this.props.onChange === 'function'){

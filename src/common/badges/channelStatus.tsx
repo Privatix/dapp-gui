@@ -14,11 +14,7 @@ interface IProps {
     serviceStatus: keyof ServiceStatuses;
 }
 
-interface IState {
-
-}
-
-export default class ChannelStatusStyle extends React.Component<IProps, IState> {
+export default class ChannelStatusStyle extends React.Component<IProps, {}> {
 
     get classes(): ServiceStatuses {
         return {

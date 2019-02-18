@@ -9,7 +9,7 @@ interface IProps {
     visible?: boolean;
     component: any;
     copyToClipboard?: boolean;
-    // REFACTOR IT copyToClipboard component should receive child component
+    // TODO copyToClipboard component should receive child component
 }
 
 interface IState {

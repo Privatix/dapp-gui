@@ -4,11 +4,7 @@ interface IProps {
     offeringStatus: string;
 }
 
-interface IState {
-
-}
-
-export default class OfferingStatus extends React.Component<IProps, IState>{
+export default class OfferingStatus extends React.Component<IProps, {}>{
 
     get classes() {
         return {

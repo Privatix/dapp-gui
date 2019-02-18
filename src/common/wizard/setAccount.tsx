@@ -11,12 +11,8 @@ interface IProps {
     isDefault: boolean;
 }
 
-interface IState {
-
-}
-
 @translate('auth/setAccount')
-class SetAccount extends React.Component<IProps, IState> {
+class SetAccount extends React.Component<IProps, {}> {
 
     keyType: string;
 

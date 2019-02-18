@@ -17,7 +17,6 @@ interface IProps{
 }
 
 interface IState {
-
     name: string;
     fileName: string;
     pwd: string;

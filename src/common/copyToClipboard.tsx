@@ -9,12 +9,8 @@ interface IProps {
     text: string;
 }
 
-interface IState {
-
-}
-
 @translate(['copyToClipboard', 'utils/notice'])
-export default class CopyToClipboardWrapper extends React.Component<IProps, IState> {
+export default class CopyToClipboardWrapper extends React.Component<IProps, {}> {
 
     onCopy = () => {
 

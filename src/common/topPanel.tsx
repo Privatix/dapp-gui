@@ -10,12 +10,8 @@ interface Props {
     t?: any;
 }
 
-interface IState {
-
-}
-
 @translate(['topPanel'])
-class TopPanel extends React.Component <Props, IState>{
+class TopPanel extends React.Component <Props, {}>{
 
     render(){
 

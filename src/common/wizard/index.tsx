@@ -20,11 +20,7 @@ interface IProps {
     app: React.ComponentType;
 }
 
-interface IState {
-
-}
-
-export default class Wizard extends React.Component<IProps, IState> {
+export default class Wizard extends React.Component<IProps, {}> {
 
     render(){
 
