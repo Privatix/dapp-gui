@@ -19,34 +19,16 @@ class UpdateInformer extends React.Component<IProps, {}>{
     render(){
 
         const { localSettings, dbSettings } = this.props;
-        const { release: releaseVersion, target, releases } = localSettings;
+        const { release: releaseVersion, latestReleaseChecked } = localSettings;
 
         if(!valid(releaseVersion)){
             return null;
         }
-
-        const versions = Object.keys(releases);
-        if(!versions.length){
+        if(!latestReleaseChecked || !valid(latestReleaseChecked.tag_name)){
             return null;
         }
 
-        const max = versions.reduce((max, version) => {
-            if(!valid(version)){
-               return max;
-            }
-            if(!gt(version, max)){
-               return max;
-            }
-            if(!('platforms' in releases[version]) || target === '' || !(target in releases[version].platforms)){
-               return max;
-            }
-            if(!('minVersion' in releases[version].platforms[target]) || gt(releases[version].platforms[target].minVersion, max)){
-                return max;
-            }
-            return version;
-        }, releaseVersion);
-
-        if(max === releaseVersion){
+        if(latestReleaseChecked.tag_name === releaseVersion){
             return null;
         }
 
@@ -55,12 +37,12 @@ class UpdateInformer extends React.Component<IProps, {}>{
         }
 
         if(valid(dbSettings.updateDismissVersion)){
-            if(!gt(max, dbSettings.updateDismissVersion)){
+            if(!gt(latestReleaseChecked.tag_name, dbSettings.updateDismissVersion)){
                 return null;
             }
         }
 
-        const release = releases[max];
+        const release = latestReleaseChecked;
         const version = release.name ? release.name : release.tag_name;
 
         const styles = {
@@ -84,7 +66,7 @@ class UpdateInformer extends React.Component<IProps, {}>{
                             <div style={ {margin: '10px'} } >New version <b>{{name: version}}</b> was released.</div>
                         </Trans>
                         <GoToUpdateButton href={release.html_url} />
-                        <DoNotShowUpdateNotificationButton version={max} />
+                        <DoNotShowUpdateNotificationButton version={release.tag_name} />
                     </div>
                 </li>
             </ul>

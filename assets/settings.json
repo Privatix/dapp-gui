@@ -19,7 +19,6 @@
    "lang": "en",
    "releasesEndpoint": "https://api.github.com/repos/Privatix/privatix/releases",
    "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/${version}/versions.txt",
-   "releases": {},
    "updateCheckFreq": 480,
    "collectLogsPath": {
        "linux": "/opt/privatix/initializer/dump/"
