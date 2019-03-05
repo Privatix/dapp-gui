@@ -62,12 +62,13 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 
     saveUbuntuLogs() {
-        const settings = this.props.localSettings;
-        const util = path.join(settings.collectLogsPath.linux, 'dump_ubuntu.py');
-        const archive = path.join(settings.collectLogsPath.linux, this.archiveName);
+        const appPath = app.getAppPath();
+        const utilPath = path.join(appPath, '../util/dump/');
+        const util = path.join(utilPath, 'dump_ubuntu.sh');
+        const archivePath = path.join(appPath, '../../');
 
-        exec(`sudo python ${util} ${archive}`, () => {
-            this.saveDialogHandler(archive);
+        exec(`${util} ${archivePath}`, () => {
+            this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
         });
     }
 
@@ -101,8 +102,8 @@ class ExportBtns extends React.Component<IProps, IState> {
             title: t('SavingAllLogs'),
             defaultPath: archiveName,
             filters: [{
-                name: 'zip',
-                extensions: ['zip']
+                name: this.detectedOS === 'linux' ? 'tar.gz' : 'zip',
+                extensions: ['zip', 'tar.gz']
             }]
         }, (pathToArchive: string) => {
             if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {
