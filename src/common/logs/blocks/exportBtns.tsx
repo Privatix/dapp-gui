@@ -63,7 +63,7 @@ class ExportBtns extends React.Component<IProps, IState> {
 
     saveUbuntuLogs() {
         const appPath = app.getAppPath();
-        const utilPath = path.join(appPath, '../util/dump/');
+        const utilPath = path.join(appPath, '../../../util/dump/');
         const util = path.join(utilPath, 'dump_ubuntu.sh');
         const archivePath = path.join(appPath, '../../');
 
