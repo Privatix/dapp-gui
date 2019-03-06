@@ -67,7 +67,12 @@ class ExportBtns extends React.Component<IProps, IState> {
         const util = path.join(utilPath, 'dump_ubuntu.sh');
         const archivePath = path.join(appPath, '../../');
 
-        exec(`${util} ${archivePath}`, () => {
+        console.log('appPath', appPath);
+        console.log('utilPath', utilPath);
+        console.log('util', util);
+        console.log('archivePath', archivePath);
+
+        exec(`sudo ${util} ${archivePath}`, () => {
             this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
         });
     }
