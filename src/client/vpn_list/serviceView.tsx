@@ -164,7 +164,7 @@ class ServiceView extends React.Component <any,any> {
                                     </tr>
                                     <tr>
                                         <td>{t('OfferingHash')}</td>
-                                        <td>{offering ? offering.hash : null}</td>
+                                        <td>{offering ? `0x${offering.hash}` : null}</td>
                                     </tr>
                                     <tr>
                                         <td>{t('ContractStatusTd')}</td>
