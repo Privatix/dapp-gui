@@ -77,7 +77,7 @@ class ExportBtns extends React.Component<IProps, IState> {
         const archivePath = path.join(process.cwd(), '\\..');
         const archiveName = 'dump_' + Date.now() + '.zip';
         const archive = path.join(archivePath, '\\dump\\', archiveName);
-
+        console.log(`"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`);
         exec(`"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`, () => {
             this.saveDialogHandler(archive, archiveName);
         });
@@ -95,6 +95,7 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 
     saveDialogHandler(archive: string, archiveName: string = null) {
+        console.log(archive, archiveName, this.archiveName);
         const {t} = this.props;
         archiveName = archiveName ? archiveName : this.archiveName;
 
@@ -110,6 +111,7 @@ class ExportBtns extends React.Component<IProps, IState> {
                 api.fs.copyFile(archive, pathToArchive)
                     .then(res => {
                         if (res.err) {
+                            console.log('ERROR!!!', res.err);
                             if (res.err.code === 'EACCES') {
                                 notice({level: 'error', msg: t('PermissionDenied')});
                             } else {
