@@ -30,6 +30,7 @@ export class WS {
     static byUUID = {}; // uuid -> subscribeID
     static bySubscription = {}; // subscribeId -> uuid
     static subscriptions = {};
+    static subscribeRequests = {};
 
     private socket: WebSocket;
     private pwd: string;
@@ -68,6 +69,7 @@ export class WS {
               this.resolveAuth(true);
               this.resolveAuth = null;
               await this.saveCache();
+              this.restoreSubscriptions();
           }
           this.resolve(true);
           this.resolve = null;
@@ -123,20 +125,50 @@ export class WS {
         return this.authorized;
     }
 
-    subscribe(entityType:string, ids: string[], handler: Function): Promise<string>{
-        return new Promise((resolve: Function, reject: Function) => {
-            const uuid = uuidv4();
-            const req = {
-                jsonrpc: '2.0',
-                id: uuid,
-                method: 'ui_subscribe',
-                params: ['objectChange', this.token, entityType, ids]
+    private restoreSubscriptions(){
+        Object.keys(WS.subscribeRequests).forEach(uuid => {
+            const { entityType, ids, handler, onReconnect } = WS.subscribeRequests[uuid];
+            this._subscribe(uuid, entityType, ids, handler, onReconnect);
+        });
+    }
+
+    private _subscribe (uuid: string, entityType:string, ids: string[], handler: Function, onReconnect: Function, resolve?:Function){
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_subscribe',
+            params: ['objectChange', this.token, entityType, ids]
+        };
+
+        if(!WS.subscribeRequests[uuid]){
+
+            WS.subscribeRequests[uuid] = {
+                entityType, ids, handler, onReconnect
             };
+
             WS.subscriptions[uuid] = () => {
                 WS.listeners[uuid] = handler;
                 resolve(uuid);
             };
-            this.socket.send(JSON.stringify(req));
+
+        }else{
+
+            WS.subscriptions[uuid] = () => {
+                if(WS.subscribeRequests[uuid] && WS.subscribeRequests[uuid].onReconnect){
+                    WS.subscribeRequests[uuid].onReconnect();
+                }
+            };
+
+        }
+
+        this.socket.send(JSON.stringify(req));
+    }
+
+    subscribe(entityType:string, ids: string[], handler: Function, onReconnect?: Function): Promise<string>{
+        return new Promise((resolve: Function, reject: Function) => {
+            const uuid = uuidv4();
+            this._subscribe(uuid, entityType, ids, handler, onReconnect, resolve);
         }) as Promise<string>;
     }
 
@@ -166,6 +198,7 @@ export class WS {
                 delete WS.listeners[id];
                 delete WS.bySubscription[WS.byUUID[id]];
                 delete WS.byUUID[id];
+                delete WS.subscribeRequests[id];
             });
         }
     }
