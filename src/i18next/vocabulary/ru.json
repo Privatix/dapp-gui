@@ -497,7 +497,8 @@
     "client/serviceView": {
         "CommonInfo": "Общая информация",
         "IdTd": "Id:",
-        "Offering": "Предложение:",
+        "OfferingID": "ID предложения:",
+        "OfferingHash": "Хэш предложения:",
         "ContractStatusTd": "Статус контракта:",
         "ServiceStatusTd": "Статус сервиса:",
         "Transferred": "Передано:",

@@ -481,7 +481,8 @@
     "client/serviceView": {
         "CommonInfo": "Common Info",
         "IdTd": "Id:",
-        "Offering": "Offering:",
+        "OfferingID": "Offering ID:",
+        "OfferingHash": "Offering Hash:",
         "ContractStatusTd": "Contract status:",
         "ServiceStatusTd": "Service status:",
         "Transferred": "Transferred:",
