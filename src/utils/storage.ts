@@ -22,7 +22,6 @@ const storage = createStore(reducers, applyMiddleware(
 const ws = new WS();
 storage.dispatch(handlers.setWS(ws));
 storage.dispatch(asyncProviders.updateLocalSettings());
-
 const checkVersion = function(releases: any, currentRelease: string, target: string){
     const versions = Object.keys(releases);
     if(!versions.length){
@@ -66,15 +65,16 @@ api.on('releases', async function(event: any, data: any){
     await ws.setGUISettings(updated);
 });
 
-const refresh = function(){
+const refresh = async function(){
 
-    const { ws, mode } = storage.getState();
+    const { ws, mode, serviceName } = storage.getState();
 
     if(ws) {
-        storage.dispatch(asyncProviders.updateLocalSettings());
-    }
 
-    if(ws && ws.authorized){
+        storage.dispatch(asyncProviders.updateLocalSettings());
+
+        await ws.whenAuthorized();
+
         storage.dispatch(asyncProviders.updateAccounts());
         storage.dispatch(asyncProviders.updateProducts());
         storage.dispatch(asyncProviders.updateSettings());
@@ -83,7 +83,12 @@ const refresh = function(){
             storage.dispatch(asyncProviders.updateTotalIncome());
         }
 
+        if(serviceName === ''){
+            storage.dispatch(asyncProviders.updateServiceName());
+        }
+
         setTimeout(refresh, 3000);
+
     }else{
         setTimeout(refresh, 1000);
     }

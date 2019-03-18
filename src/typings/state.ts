@@ -9,6 +9,7 @@ interface State {
   [s: string]: any;
     accounts: Account[];
     products: Product[];
+    serviceName: string;
     settings: {[key: string]: string};
     localSettings: LocalSettings;
     channel: string;
@@ -24,6 +25,7 @@ interface State {
 const StateDefault: State = {
     accounts: [],
     products: [],
+    serviceName: '',
     settings: {},
     localSettings: null,
     channel: '',

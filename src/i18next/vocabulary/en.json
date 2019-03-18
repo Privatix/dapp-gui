@@ -281,7 +281,7 @@
         "Offerings": "Offerings",
         "Servers": "Servers",
         "ClientDashboard": "Client dashboard",
-        "VPNList": "VPN List"
+        "ServiceList": "<0>{{serviceName}} list</0>"
     },
     "topPanel": {
         "ETHBalance": "ETH balance",
@@ -380,19 +380,19 @@
         "AreYouSure": "Are you sure?"
     },
     "client/dashboard/connecting": {
-        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the VPN.",
-        "TheServiceHasAPendingStatus": "The service has a pending status. After the connection is ready, you can start using the VPN",
-        "TheServiceHasAnActivatingStatus": "The service has an activating status. After the connection is ready, you can start using the VPN",
+        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the {{serviceName}}.",
+        "TheServiceHasAPendingStatus": "The service has a pending status. After the connection is ready, you can start using the {{serviceName}}",
+        "TheServiceHasAnActivatingStatus": "The service has an activating status. After the connection is ready, you can start using the {{serviceName}}",
         "TheServiceHasASuspendingStatus": "The service has a suspending status. After connections is suspended, you can resume or terminate it.",
         "TheServiceHasATerminatingStatus": "The service has a terminating status. After the connection is terminated, the contract can also be terminated.",
         "WaitingTimeIsOver": "Waiting time is over. Finish procedure will be called automatically.",
         "FailedToAcceptOffering": "Failed to accept offering. Please, try another one.",
         "Synchronizing": "Synchronizing",
-        "YouCanStartUsingVPN": "You can start using VPN",
+        "YouCanStartUsingService": "You can start using service {{serviceName}}",
         "Connect": "Connect",
         "YesConnectIt": "Yes, connect it!",
         "Pause": "Pause",
-        "ThisOperationWillPauseVPNUsage": "This operation will pause VPN usage.",
+        "ThisOperationWillPauseServiceUsage": "This operation will pause {{serviceName}} usage.",
         "ForThisContractMaxSuspendTimeIs": "For this contract, max suspend time is {{minutes}} min.",
         "YesPauseIt": "Yes, pause it!",
         "Remaining": "Remaining",
@@ -403,7 +403,7 @@
         "CountryAlertUnknown": "The application won't be able to detect the offering's country. IP address {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "Start using VPN"
+        "StartUsingService": "<0>Start using {{serviceName}}</0>"
     },
     "agent/dashboard": {
         "TotalIncome": "Total income:",

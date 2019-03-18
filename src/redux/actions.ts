@@ -14,6 +14,7 @@ export const enum actions {
     UPDATE_LOCAL_SETTINGS,
     UPDATE_OFFERINGS,
     UPDATE_TOTAL_INCOME,
+    UPDATE_SERVICE_NAME,
     SET_CHANNEL,
     SET_WS,
     SET_OFFERINGS_AVAILABILITY,
@@ -32,6 +33,7 @@ const handlers: ReduxHandlers = {
     updateLocalSettings        : function(settings: LocalSettings){ return { type: actions.UPDATE_LOCAL_SETTINGS, value: settings };},
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
+    updateServiceName          : function(serviceName: string){ return { type: actions.UPDATE_SERVICE_NAME, value: serviceName };},
     setMode                    : function(mode: Role){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
@@ -59,6 +61,15 @@ export const asyncProviders: AsyncProviders = {
             ws.getProducts()
                .then(products => {
                    dispatch(handlers.updateProducts(products));
+               });
+        };
+    },
+    updateServiceName: function(){
+        return function(dispatch: any, getState: Function){
+            const { ws } = getState();
+            ws.getProducts()
+               .then(products => {
+                   dispatch(handlers.updateServiceName(products[0].name));
                });
         };
     },

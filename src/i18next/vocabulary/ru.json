@@ -294,7 +294,7 @@
         "Offerings": "Предложения",
         "Servers": "Серверы",
         "ClientDashboard": "Главная",
-        "VPNList": "Список VPN"
+        "ServiceList": "<0>Список сервисов {{serviceName}}</0>"
     },
     "topPanel": {
         "ETHBalance": "Баланс ETH",
@@ -393,19 +393,19 @@
         "AreYouSure": "Вы уверены?"
     },
     "client/dashboard/connecting": {
-        "AfterTheConnectionIsReady": "После того как соединение будет готовы Вы сможете начать использовать VPN.",
-        "TheServiceHasAPendingStatus": "Соединение находится в статусе ожидания. После того как соединение будет готово Вы сможете начать использовать VPN.",
-        "TheServiceHasAnActivatingStatus": "Соединение находится в статусе активации. После того как соединение будет готово Вы сможете начать использовать VPN.",
+        "AfterTheConnectionIsReady": "После того как соединение будет готовы Вы сможете начать использовать {{seviceName}}.",
+        "TheServiceHasAPendingStatus": "Соединение находится в статусе ожидания. После того как соединение будет готово Вы сможете начать использовать {{serviceName}}.",
+        "TheServiceHasAnActivatingStatus": "Соединение находится в статусе активации. После того как соединение будет готово Вы сможете начать использовать {{serviceName}}.",
         "TheServiceHasASuspendingStatus": "Соединение находится в статусе остановки. После того как соединение будет остановлено Вы можете возобновить его либо завершить",
         "TheServiceHasATerminatingStatus": "Соединение находится в статусе завершения. После того как соединение будет завершено Вы можете также завершить контракт.",
         "WaitingTimeIsOver": "Время ожидания истекло. Процедура завершения будет вызвана автоматически.",
         "FailedToAcceptOffering": "Не удалось принять предложение. Пожалуйста, попробуйте другое.",
         "Synchronizing": "Синхронизация",
-        "YouCanStartUsingVPN": "Вы можете начать использовать VPN",
+        "YouCanStartUsingService": "Вы можете начать использовать {{serviceName}}",
         "Connect": "Подключение",
         "YesConnectIt": "Да, подключиться!",
         "Pause": "Приостановить",
-        "ThisOperationWillPauseVPNUsage": "Эта операция приостановить использование VPN.",
+        "ThisOperationWillPauseServiceUsage": "Эта операция приостановит использование {{ serviceName}}.",
         "ForThisContractMaxSuspendTimeIs": "Для этого контракта максимальноe время ожидания составляет {{minutes}} мин.",
         "YesPauseIt": "Да, поставить на паузу!",
         "Remaining": "Осталось",
@@ -416,7 +416,7 @@
         "CountryAlertUnknown": "Приложение не смогло определить страну предложения. IP адрес {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "Начать использование VPN"
+        "StartUsingService": "<0>Начать использовать {{serviceName}}</0>"
     },
     "agent/dashboard": {
         "TotalIncome": "Доход:",
