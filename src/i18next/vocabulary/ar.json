@@ -174,7 +174,6 @@
         "Hash": "دالة التجزئة",
         "ServiceName": "اسم الخدمة",
         "Server": "الخادم",
-        "MessageStatus": "حالة الرسالة",
         "Status": "الحالة",
         "AvailableSupply": "الإمدادات المتاحة",
         "Supply": "الإمداد"
@@ -231,15 +230,6 @@
         "TerminateService": "إنهاء الخدمة",
         "TerminateContract": "إنهاء العقد"
     },
-    "channels/channelsListSortTable": {
-        "Server": "الخادم",
-        "Client": "العميل",
-        "ContractStatus": "حالة التعاقد",
-        "ServiceStatus": "حالة الخدمة",
-        "Usage": "الاستخدام",
-        "Income": "الدخل (PRIX)",
-        "ServiceChangedTime": "وقت تغيير الخدمة"
-    },
     "sessions/sessionsList": {
         "TotalStatistics": "إجمالى الاحصائيات",
         "TotalUsage": "إجمالي الاستخدام",
@@ -260,14 +250,9 @@
     "header": {
         "Accounts": "الحسابات",
         "Help": "المساعدة",
-        "SwitchToClient": "التبديل إلى عميل",
-        "SwitchToAgent": "التبديل إلى وكيل",
         "Settings": "الإعدادات",
         "Logs": "السجلات",
-        "user": "المستخدم",
-        "SomethingWentWrong": "حدث خطأ ما!",
-        "UserWasSwitchedToAGENT": "تم تبديل وضع المستخدم إلى الوكيل بنجاح",
-        "UserWasSwitchedToCLIENT": "تم تبديل وضع المستخدم إلى العميل بنجاح"
+        "SomethingWentWrong": "حدث خطأ ما!"
     },
     "navigation": {
         "Dashboard": "لوحة التحكم",
@@ -278,7 +263,7 @@
         "Offerings": "العروض",
         "Servers": "الخوادم",
         "ClientDashboard": "لوحة تحكم العميل",
-        "VPNList": "قائمة VPN"
+        "ServiceList": "<0>قائمة {{serviceName}}</0>"
     },
     "topPanel": {
         "ETHBalance": "رصيد ETH",
@@ -295,7 +280,6 @@
     },
     "logs/logsList": {
         "LogsHeader": "قائمة السجلات",
-        "ExportBtn": "تصدير إلى ملف",
         "LogsFilterFrom": "من:",
         "LogsFilterTo": "إلى:",
         "LogsFilterTime": "الوقت",
@@ -348,16 +332,7 @@
         "ServiceBalanceOption": "رصيد الخدمة",
         "Amount": "االمبلغ:",
         "TransferConfirmBtn": "نعم ، قم بالتحويل!",
-        "TransferSwalTitle": "هل أنت متأكد؟",
-        "ServiceSwalBalanceFrom": "رصيد الخدمة",
-        "ExchangeSwalBalanceFrom": "رصيد التبادل",
-        "ServiceSwalBalance": "رصيد الخدمة",
-        "ExchangeSwalBalance": "رصيد الصرف",
-        "TransferSwalText1": "سيعمل هذا الإجراء على تحويل الرموز المميزة من",
-        "TransferSwalText2": "إلى",
-        "TransferSwalText3": ".",
-        "TransferSwalText4": "هذه العملية تستغرق الوقت وتستهلك الغاز.",
-        "TransferSwalText5": "يمكنك مراقبة حالة المعاملة في سجل المعاملات."
+        "TransferSwalTitle": "هل أنت متأكد؟"
     },
     "utils/gasRange": {
         "GasPrice": "سعر الغاز",
@@ -376,30 +351,29 @@
         "AreYouSure": "هل أنت متأكد؟"
     },
     "client/dashboard/connecting": {
-        "TheServiceHasAPendingStatus": "الخدمة لديها حالة في وضع الانتظار. عندما يكون الاتصال جاهزًا، يمكنك البدء في استخدام VPN",
-        "TheServiceHasAnActivatingStatus": "الخدمة لديها حالة تنشيط. عندما يكون الاتصال جاهزًا، يمكنك البدء في استخدام VPN",
+        "TheServiceHasAPendingStatus": "الخدمة لديها حالة في وضع الانتظار. عندما يكون الاتصال جاهزًا، يمكنك البدء في استخدام {{serviceName}}",
+        "TheServiceHasAnActivatingStatus": "الخدمة لديها حالة تنشيط. عندما يكون الاتصال جاهزًا، يمكنك البدء في استخدام {{serviceName}}",
         "TheServiceHasASuspendingStatus": "الخدمة لديها حالة تعليق. بعد تعليق الاتصالات، يمكنك استئنافها أو إنهاؤها.",
         "TheServiceHasATerminatingStatus": "الخدمة لديها حالة إنهاء. بعد إنهاء الاتصال، يمكن أيضًا إنهاء العقد.",
         "WaitingTimeIsOver": "انتهى وقت الانتظار. سيتم استدعاء الإجراء النهائي تلقائيًا.",
         "FailedToAcceptOffering": "فشل قبول العرض. من فضلك، حاول فبول عرض آخر.",
         "Synchronizing": "جار المزامنة",
-        "YouCanStartUsingVPN": "يمكنك البدء في استخدام VPN",
+        "YouCanStartUsingService": "يمكنك البدء في استخدام {{serviceName}}",
         "Connect": "توصيل",
         "YesConnectIt": "نعم ، قم بتوصيله!",
         "Pause": "إيقاف مؤقت",
-        "ThisOperationWillPauseVPNUsage": "ستوقف هذه العملية استخدام VPN مؤقتًا.",
+        "ThisOperationWillPauseServiceUsage": "ستوقف هذه العملية استخدام {{serviceName}} مؤقتًا.",
         "ForThisContractMaxSuspendTimeIs": "بالنسبة إلى هذا العقد، يكون الحد الأقصى للتعليق هو {{minutes}} دقيقة.",
         "YesPauseIt": "نعم، أوقفة مؤقتًا!",
         "Remaining": "متبق",
         "AfterMaxInactivityTimeHasBeenReached": "بعد الوصول إلى أقصى مدة منؤعدم النشاط، سيتم استدعاء \"إجراءات الإنهاء\" تلقائيًا.",
         "Resume": "استئناف",
         "YesResumeIt": "نعم ، استأنفه!",
-        "min": "دقيقة",
         "CountryAlertInvalid": "الدولة الموجودة في العرض غير متطابقة للدولة التي تم اكتشافها بناءًا على عنوان IP. عنوان IP هو {{ip}}",
         "CountryAlertUnknown": "لن يتمكن التطبيق من اكتشاف دولة العرض. عنوان IP هو {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "البدء في استخدام VPN"
+        "StartUsingService": "<0>البدء في استخدام {{serviceName}}</0>"
     },
     "agent/dashboard": {
         "TotalIncome": "إجمالي الدخل:",
@@ -410,18 +384,17 @@
     "client/vpnList": {
         "Block": "كتلة",
         "Hash": "التجزئة",
-        "Agent": "الوكيل",
         "Country": "الدولة",
         "Price": "السعر (PRIX/ميغابايت)",
         "SupplyTotal": "الإمدادات (الإجمالي)",
         "AvailableSupply": "الإمدادات المتاحة",
-        "SuccessUpdateMsg": "تم تحديث قائمة VPN بنجاح!",
+        "SuccessUpdateMsg": "تم تحديث قائمة {{serviceName}} بنجاح!",
         "AcceptOffering": "قبول العرض",
         "ShowAllBtn": "عرض الكل...",
         "HideBtn": "إخفاء",
         "Search": "بحث",
         "WaitForDownloading": "من فضلك انتظر التنزيل....",
-        "CurrentlyWeAreDownloading": "حاليًا، نقوم بتنزيل قائمة VPN.",
+        "CurrentlyWeAreDownloading": "حاليًا، نقوم بتنزيل قائمة {{serviceName}}.",
         "TakesTimeOnFirstRun": "يستغرق الأمر بعض الوقت في المرة الأولى فقط.",
         "AverageTimeForDownloading": "متوسط ​​وقت تنزيل التطبيق 2-5 دقائق.",
         "Refresh": "تحديث",
@@ -435,13 +408,13 @@
     },
     "client/acceptOffering": {
         "Accept": "قبول",
-        "CanHaveOneVPNConnection": "ملاحظة. يمكن أن يكون لديك اتصال VPN واحد فقط. لقبول آخر، قم بإنهاء الاتصال الحالي.",
+        "CanHaveOneServiceConnection": "ملاحظة. يمكن أن يكون لديك اتصال {{serviceName}} واحد فقط. لقبول آخر، قم بإنهاء الاتصال الحالي.",
         "DepositMustBeMoreThan": "يجب أن يكون الإيداع أكثر من",
         "DepositMustBeLessOrEqualThan": "يجب أن يكون الإيداع أقل من أو يساوي",
         "NotEnoughPrixForDeposit": "عملات PRIX غير كافية للإيداع. من فضلك، حدد حساب آخر.",
         "NotEnoughToPublishTransaction": "لا توجد أموال كافية لنشر المعاملة. من فضلك، حدد حسابًا آخر.",
         "OfferingAccepted": "تم قبول العرض!",
-        "VPNInfo": "معلومات VPN",
+        "ServiceInfo": "معلومات {{serviceName}}",
         "Country": "الدولة:",
         "BillingInfo": "معلومات الفوترة",
         "PricePerMB": "السعر لكل ميغابايت:",
@@ -460,8 +433,6 @@
     "client/history": {
         "Service": "الخدمة",
         "of": "من",
-        "Id": "المُعرف",
-        "Agent": "الوكيل",
         "ContractStatus": "حالة التعاقد",
         "ServiceStatus": "حالة الخدمة",
         "JobStatus": "حالة الوظيفة",
@@ -474,7 +445,6 @@
     "client/serviceView": {
         "CommonInfo": "معلومات شائعة",
         "IdTd": "المُعرف:",
-        "Offering": "العرض:",
         "ContractStatusTd": "حالة التعاقد:",
         "ServiceStatusTd": "حالة الخدمة:",
         "Transferred": "تم تحويل:",
@@ -501,9 +471,7 @@
     "client/connections/active": {
         "Connection": "الاتصال",
         "ActiveConnection": "اتصال نشط:",
-        "Id": "مُعرف",
         "Offering": "عرض",
-        "Agent": "الوكيل",
         "ContractStatus": "حالة التعاقد",
         "ServiceStatus": "حالة الخدمة",
         "JobStatus": "حالة الوظيفة",
@@ -523,9 +491,6 @@
     },
     "client/connections/connection": {
         "Offering": "عرض",
-        "Id": "المُعرف",
-        "Agent": "الوكيل",
-        "Server": "الخادم",
         "Started": "بدأ",
         "Stopped": "توقف",
         "Usage": "الاستخدام",
@@ -544,7 +509,7 @@
         "Sessions": "الجلسات"
     },
     "client/increaseDepositButton": {
-        "ThisOperationWillIncrease": "هذه العملية ستزيد من رصيد الـ VPN الخاص بك عن طريق زيادة الإيداع.",
+        "ThisOperationWillIncrease": "هذه العملية ستزيد من رصيد الـ {{serviceName}} الخاص بك عن طريق زيادة الإيداع.",
         "IncreaseDeposit": "زيادة الإيداع"
     },
     "client/connections/increaseDepositView": {

@@ -419,13 +419,13 @@
         "Price": "Price (PRIX/MB)",
         "SupplyTotal": "Supply (total)",
         "AvailableSupply": "Available supply",
-        "SuccessUpdateMsg": "VPN list was successfully updated!",
+        "SuccessUpdateMsg": "{{serviceName}} list was successfully updated!",
         "AcceptOffering": "Accept offering",
         "ShowAllBtn": "show all...",
         "HideBtn": "hide",
         "Search": "search",
         "WaitForDownloading": "Please, wait for downloading....",
-        "CurrentlyWeAreDownloading": "Currently, we are downloading VPN list.",
+        "CurrentlyWeAreDownloading": "Currently, we are downloading {{serviceName}} list.",
         "TakesTimeOnFirstRun": "It takes time only on the first run.",
         "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
         "Refresh": "Refresh",
@@ -440,14 +440,14 @@
     },
     "client/acceptOffering": {
         "Accept": "Accept",
-        "CanHaveOneVPNConnection": "Note. You can have only one VPN connection. To accept another, terminate the current connection.",
+        "CanHaveOneServiceConnection": "Note. You can have only one {{serviceName}} connection. To accept another, terminate the current connection.",
         "DepositMustBeMoreThan": "The deposit must be more than",
         "DepositMustBeLessOrEqualThan": "The deposit must be less or equal than",
         "NotEnoughPrixForDeposit": "Not enough PRIXes for deposit. Please, select another account.",
         "NotEnoughToPublishTransaction": "Not enough funds for publish transaction. Please, select another account.",
         "ErrorAcceptingOffering": "Something went wrong. Try to accept another offering!",
         "OfferingAccepted": "Offering accepted!",
-        "VPNInfo": "VPN info",
+        "ServiceInfo": "{{serviceName}} info",
         "Country": "Country:",
         "BillingInfo": "Billing info",
         "PricePerMB": "Price per MB:",
@@ -547,7 +547,7 @@
         "Sessions": "Sessions"
     },
     "client/increaseDepositButton":{
-        "ThisOperationWillIncrease": "This operation will increase your VPN balance by increasing the deposit.",
+        "ThisOperationWillIncrease": "This operation will increase your {{serviceName}} balance by increasing the deposit.",
         "IncreaseDeposit": "Increase deposit"
     },
     "client/connections/increaseDepositView":{

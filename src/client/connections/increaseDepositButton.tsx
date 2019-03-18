@@ -1,14 +1,16 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { connect } from 'react-redux';
+import { translate, Trans } from 'react-i18next';
 
 import ModalWindow from 'common/modalWindow';
 import IncreaseDepositView from './increaseDepositView';
 
+import {State} from 'typings/state';
+
 @translate('client/increaseDepositButton')
+class IncreaseDepositButton extends React.Component<any, any>{
 
-export default class IncreaseDepositButton extends React.Component<any, any>{
-
-    openIncreaseDepositModal(evt:any) {
+    openIncreaseDepositModal = (evt:any) => {
         evt.preventDefault();
         const { t, render } = this.props;
         render(t('IncreaseDeposit'), <IncreaseDepositView channel={this.props.channel} />);
@@ -16,26 +18,34 @@ export default class IncreaseDepositButton extends React.Component<any, any>{
 
     render(){
 
-        const { t, render } = this.props;
+        const { t, render, serviceName, channel } = this.props;
 
-        let increaseDepositView = <button className='btn btn-primary btn-custom btn-block' onClick={this.openIncreaseDepositModal.bind(this)}>
-            {t('IncreaseDeposit')}
-        </button>;
-
-        if (render === undefined) {
-            increaseDepositView = <ModalWindow
-                customClass='btn btn-primary btn-custom btn-block'
-                modalTitle={t('IncreaseDeposit')}
-                text={t('IncreaseDeposit')}
-                component={<IncreaseDepositView channel={this.props.channel} />}
-            />;
-        }
+        const increaseDepositView =
+            render === undefined ?
+                <ModalWindow
+                    customClass='btn btn-primary btn-custom btn-block'
+                    modalTitle={t('IncreaseDeposit')}
+                    text={t('IncreaseDeposit')}
+                    component={<IncreaseDepositView channel={channel} />}
+                />
+                :
+                <button className='btn btn-primary btn-custom btn-block' onClick={this.openIncreaseDepositModal}>
+                    {t('IncreaseDeposit')}
+                </button>
+        ;
 
         return  <div className='card m-b-20 card-body text-xs-center buttonBlock'>
-            <p className='card-text'>{t('ThisOperationWillIncrease')}</p>
+            <p className='card-text'>
+                <Trans i18nKey='ThisOperationWillIncrease' values={{serviceName}} >
+                    This operation will increase your {{serviceName}} balance by increasing the deposit.
+                </Trans>
+                {t('ThisOperationWillIncrease')}
+            </p>
             <div>
                 {increaseDepositView}
             </div>
         </div>;
     }
 }
+
+export default connect((state: State) => ({serviceName: state.serviceName}))(IncreaseDepositButton);
