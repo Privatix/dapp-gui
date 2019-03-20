@@ -35,9 +35,10 @@ export class WS {
     private pwd: string;
     private token: string;
     private ready: Promise<boolean>;
-    authorized: boolean = false;
+    private authorized: Promise<boolean>;
 //    private reject: Function = null;
     private resolve: Function = null;
+    private resolveAuth: Function = null;
 
     constructor() {
         api.settings.getLocal()
@@ -52,8 +53,10 @@ export class WS {
         const socket = new WebSocket(endpoint);
         if(!this.resolve){
             this.ready = new Promise((resolve: Function, reject: Function) => {
-                // this.reject = reject;
                 this.resolve = resolve;
+            });
+            this.authorized = new Promise((resolve: Function, reject: Function) => {
+                this.resolveAuth = resolve;
             });
         }
 
@@ -62,7 +65,8 @@ export class WS {
           if(this.pwd){
               const token = await this.getToken();
               this.token = token;
-              this.authorized = true;
+              this.resolveAuth(true);
+              this.resolveAuth = null;
               await this.saveCache();
           }
           this.resolve(true);
@@ -113,6 +117,10 @@ export class WS {
 
     whenReady() {
         return this.ready;
+    }
+
+    whenAuthorized() {
+        return this.authorized;
     }
 
     subscribe(entityType:string, ids: string[], handler: Function): Promise<string>{
@@ -235,7 +243,9 @@ export class WS {
                     const token = await this.getToken();
                     if(token){
                         this.token = token;
-                        this.authorized = true;
+                        if(this.resolveAuth){
+                            this.resolveAuth(true);
+                        }
                         await this.saveCache();
                         resolve(true);
                     }else{
@@ -473,7 +483,7 @@ export class WS {
         }
     }
 
-    async getLocal(){
+    async getLocal(): Promise<{[key: string]: any}> {
         let localCache = window.localStorage.getItem('localSettings');
         localCache = JSON.parse(localCache);
         const mutableSettings = this.token ? await this.getGUISettings() : localCache;

@@ -14,10 +14,6 @@ const channelStatusDescription = {
 
 export default class ContractStatus extends React.Component<any, any> {
 
-    constructor(props: any) {
-        super(props);
-    }
-
     get classes() {
         return {
             pending: 'primary',

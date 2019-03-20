@@ -33,14 +33,14 @@ import { Role } from 'typings/mode';
 
 const MemoryHistory = createMemoryHistory();
 
-interface Props {
+interface IProps {
     mode: Role;
     dispatch?: any;
 }
 
-class App extends React.Component<Props, any> {
+class App extends React.Component<IProps, {}> {
 
-    constructor(props: Props) {
+    constructor(props: IProps) {
         super(props);
     }
 
@@ -87,4 +87,4 @@ class App extends React.Component<Props, any> {
     }
 }
 
-export default connect<Props>((state:State) => ({ mode: state.mode}))(withRouter(App));
+export default connect<IProps>((state:State) => ({ mode: state.mode}))(withRouter(App));

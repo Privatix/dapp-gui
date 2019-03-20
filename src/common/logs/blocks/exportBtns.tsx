@@ -18,9 +18,13 @@ interface IProps {
     exportControllerLogsToFile(evt:any): void;
 }
 
+interface IState {
+    disabledBtn: boolean;
+}
+
 @translate('logs/logsList')
 
-class ExportBtns extends React.Component<IProps, any> {
+class ExportBtns extends React.Component<IProps, IState> {
 
     archiveName = 'dump.zip';
     detectedOS = null;
@@ -58,12 +62,13 @@ class ExportBtns extends React.Component<IProps, any> {
     }
 
     saveUbuntuLogs() {
-        const settings = this.props.localSettings;
-        const util = path.join(settings.collectLogsPath.linux, 'dump_ubuntu.py');
-        const archive = path.join(settings.collectLogsPath.linux, this.archiveName);
+        const appPath = app.getAppPath();
+        const utilPath = path.join(appPath, '../../../util/dump/');
+        const util = path.join(utilPath, 'dump_ubuntu.sh');
+        const archivePath = path.join(appPath, '../../../../');
 
-        exec(`sudo python ${util} ${archive}`, () => {
-            this.saveDialogHandler(archive);
+        exec(`sudo ${util} ${archivePath}`, () => {
+            this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
         });
     }
 
@@ -71,7 +76,7 @@ class ExportBtns extends React.Component<IProps, any> {
         const utilPath = path.join(process.cwd(), '\\..\\util\\dump\\');
         const archivePath = path.join(process.cwd(), '\\..');
         const archiveName = 'dump_' + Date.now() + '.zip';
-        const archive = path.join(archivePath, '\\dump\\', archiveName);
+        const archive = path.join(archivePath, '\\util\\dump\\', archiveName);
 
         exec(`"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`, () => {
             this.saveDialogHandler(archive, archiveName);
@@ -97,8 +102,8 @@ class ExportBtns extends React.Component<IProps, any> {
             title: t('SavingAllLogs'),
             defaultPath: archiveName,
             filters: [{
-                name: 'zip',
-                extensions: ['zip']
+                name: this.detectedOS === 'linux' ? 'tar.gz' : 'zip',
+                extensions: ['zip', 'tar.gz']
             }]
         }, (pathToArchive: string) => {
             if (pathToArchive !== null && typeof pathToArchive !== 'undefined') {

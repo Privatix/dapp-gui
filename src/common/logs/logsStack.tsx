@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-export default class LogsStack extends React.Component <any, any> {
+interface IProps {
+    context: any;
+}
 
-    constructor(props: any) {
-        super(props);
-    }
+export default class LogsStack extends React.Component <IProps, {}> {
 
     render() {
         return <div>

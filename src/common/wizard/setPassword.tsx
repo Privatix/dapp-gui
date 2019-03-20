@@ -20,7 +20,6 @@ interface IProps {
 }
 
 interface IState {
-    [key: string]: string; // !
     pwd: string;
     conf: string;
 }
@@ -69,16 +68,21 @@ class SetPassword extends React.Component<IProps, IState>{
         return max.substr(0, min.length) === min ? 'correct' : 'wrong';
     }
 
-    onUserInput = (evt:any) => {
-        this.setState({[evt.target.dataset.payloadValue as string]: evt.target.value.trim()});
+    onUserInput(field: keyof IState, evt: any){
+
+        // https://github.com/Microsoft/TypeScript/issues/13948
+        this.setState({[field]: String(evt.target.value).trim()} as Pick<IState, keyof IState>);
     }
+
+    onPasswordChanged = this.onUserInput.bind(this, 'pwd');
+    onConfirmationChanged = this.onUserInput.bind(this, 'conf');
 
     onSubmit = async (evt: any) => {
 
         evt.preventDefault();
 
         const { t, ws } = this.props;
-        const {pwd, conf} = this.state;
+        const { pwd, conf } = this.state;
 
         this.submitted = true;
         let msg = '';
@@ -123,6 +127,7 @@ class SetPassword extends React.Component<IProps, IState>{
     render(){
 
         const { t } = this.props;
+        const { pwd, conf } = this.state;
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -150,11 +155,10 @@ class SetPassword extends React.Component<IProps, IState>{
                                     <input
                                         className={[this.equality(), 'form-control'].join(' ')}
                                         type='password'
-                                        data-payload-value='pwd'
                                         required={true}
                                         placeholder={t('Password')}
-                                        onChange={this.onUserInput}
-                                        value={this.state.pwd}
+                                        onChange={this.onPasswordChanged}
+                                        value={pwd}
                                     />
                                 </div>
                             </div>
@@ -163,11 +167,10 @@ class SetPassword extends React.Component<IProps, IState>{
                                     <input
                                         className={[this.equality(), 'form-control'].join(' ')}
                                         type='password'
-                                        data-payload-value='conf'
                                         required={true}
                                         placeholder={t('Confirmation')}
-                                        onChange={this.onUserInput}
-                                        value={this.state.conf}
+                                        onChange={this.onConfirmationChanged}
+                                        value={conf}
                                     />
                                 </div>
                             </div>

@@ -2,11 +2,29 @@ import * as React from 'react';
 import Modal from 'react-awesome-modal-perfected';
 import CopyToClipboard from './copyToClipboard';
 
-export default class ModalWindow extends React.Component<any, any> {
+interface IProps {
+    customClass: string;
+    modalTitle: string;
+    text: string;
+    visible?: boolean;
+    component: any;
+    copyToClipboard?: boolean;
+    // TODO copyToClipboard component should receive child component
+}
+
+interface IState {
+    visible: boolean;
+    props: IProps;
+    modalTitle: string;
+    component: any;
+    contentChanged: boolean;
+}
+
+export default class ModalWindow extends React.Component<IProps, IState> {
 
     private content = React.createRef<HTMLDivElement>();
 
-    constructor(props: any) {
+    constructor(props: IProps) {
 
         super(props);
         this.state = {
@@ -19,7 +37,6 @@ export default class ModalWindow extends React.Component<any, any> {
     }
 
     skip = (event: any) => {
-        console.log(event);
         if(['A', 'BUTTON'].includes(event.srcElement.tagName)){
             return;
         }
@@ -114,7 +131,7 @@ export default class ModalWindow extends React.Component<any, any> {
             </div>
             : <div></div>;
 
-        const copyToClipboard = !props.copyToClipboard ? '' :
+        const copyToClipboard = !props.copyToClipboard ? null :
             <CopyToClipboard text={props.text} />;
 
         return (

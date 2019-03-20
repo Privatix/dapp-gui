@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { Dispatch } from 'redux';
 import { translate } from 'react-i18next';
 
 import {asyncProviders} from 'redux/actions';
@@ -11,18 +12,22 @@ import {Offering} from 'typings/offerings';
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import notice from 'utils/notice';
 
-interface Props {
+interface OwnProps {
     offering: Offering;
-    lastProcessedBlock?: number;
-    removePeriod?: number;
-    gasPrice?: string;
-    dispatch: any;
-    t: any;
-    ws: WS;
-    closeModal?: Function;
+    closeModal: Function;
 }
 
-@translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice'])
+interface Props extends OwnProps {
+    lastProcessedBlock: number;
+    removePeriod: number;
+    gasPrice: string;
+    dispatch: Dispatch<any>;
+    t: any;
+    ws: WS;
+}
+
+const translated = translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice']);
+
 class RemoveOfferingButton extends React.Component<Props, any>{
 
     constructor(props:any){
@@ -97,7 +102,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
                     title={t('Remove')}
                     text={<span>{t('removeInfo')}<br />
                         {t('WouldYouLikeToProceed')}</span>}
-                    class={'btn btn-danger btn-custom btn-block'}
+                    className={'btn btn-danger btn-custom btn-block'}
                     swalType='danger'
                     swalConfirmBtnText={t('YesRemoveIt')}
                     swalTitle={t('confirmPopupSwal:AreYouSure')}
@@ -109,12 +114,19 @@ class RemoveOfferingButton extends React.Component<Props, any>{
     }
 }
 
-export default connect( (state: State) => {
+const mapStateToProps = (state: State, ownProps: OwnProps) => {
     const settings = state.settings;
-    return {
-        ws: state.ws
-       ,lastProcessedBlock: settings['eth.event.lastProcessedBlock']
-       ,removePeriod: settings['psc.periods.remove']
-       ,gasPrice: settings['eth.default.gasprice']
-    };
-} )(RemoveOfferingButton);
+    return Object.assign({},
+        {
+            ws: state.ws
+           ,lastProcessedBlock: settings['eth.event.lastProcessedBlock']
+           ,removePeriod: settings['psc.periods.remove']
+           ,gasPrice: settings['eth.default.gasprice']
+        },
+        ownProps
+    );
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ dispatch});
+
+export default connect(mapStateToProps, mapDispatchToProps)(translated(RemoveOfferingButton));

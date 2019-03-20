@@ -87,7 +87,7 @@ export const OfferingStatus = {
     headerStyle: {textAlign: 'center'},
     key: 'offerStatus',
     dataProps: {className: 'text-center'},
-    render: (offerStatus) => { return <OfferingStatusComponent status={offerStatus} />; }
+    render: (offerStatus) => { return <OfferingStatusComponent offeringStatus={offerStatus} />; }
 };
 
 export const ContractStatus = {
@@ -114,7 +114,7 @@ export const JobStatus = {
     render: (job) => {
         const jobTimeRaw = new Date(Date.parse(job.createdAt));
         const jobTime = jobTimeRaw.getHours() + ':' + (jobTimeRaw.getMinutes() < 10 ? '0' : '') + jobTimeRaw.getMinutes();
-        return <div className='noWrap'><JobName jobtype={job.jobtype} /><br /> (<JobStatusComponent status={job.status} /> {jobTime})</div>;
+        return <div className='noWrap'><JobName jobtype={job.jobtype} /><br /> (<JobStatusComponent jobStatus={job.status} /> {jobTime})</div>;
     }
 };
 

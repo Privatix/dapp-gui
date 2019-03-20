@@ -1,12 +1,18 @@
 import * as React from 'react';
 
-export default class Availability extends React.Component<any, any>{
+interface AvailabilityStatuses {
+    available: any;
+    unreachable: any;
+    unknown: any;
+}
 
-    constructor(props: any){
-        super(props);
-    }
+interface IProps {
+    availability: keyof AvailabilityStatuses;
+}
 
-    get classes() {
+export default class Availability extends React.Component<IProps, {}>{
+
+    get classes(): AvailabilityStatuses {
         return {
             available: {
                 label: 'success',
@@ -24,7 +30,8 @@ export default class Availability extends React.Component<any, any>{
     }
 
     render() {
-        const availability = this.props.availability;
+
+        const { availability } = this.props;
 
         return <span className={`label label-table label-${this.classes[availability].label ? this.classes[availability].label : 'inverse'}`} >
                 {this.classes[availability].alias}

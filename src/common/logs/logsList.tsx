@@ -15,6 +15,7 @@ import LogsStack from './logsStack';
 import LogsContext from './logsContext';
 
 import {State} from 'typings/state';
+import { Log } from 'typings/logs';
 
 import ExportBtns from './blocks/exportBtns';
 import Search from './blocks/search';
@@ -22,11 +23,33 @@ import LevelsFilter from './blocks/levelsFilter';
 import TimeFilter from './blocks/timeFilter';
 import LogsTable from './blocks/table';
 
+interface IProps {
+    t?: any;
+    localSettings: State['localSettings'];
+    ws: State['ws'];
+}
+
+interface IState {
+    logsData: Log[];
+    logsDataExport: any;
+    logsDataArr: any[];
+    dateFrom: any;
+    dateTo: any;
+    searchText: string;
+    logsPerPage: number;
+    activePage: number;
+    pages: number;
+    offset: number;
+    totalItems: number;
+    levels: string[];
+    lang: string;
+}
+
 @translate(['logs/logsList', 'common'])
+class Logs extends React.Component <IProps, IState> {
 
-class Logs extends React.Component <any,any> {
+    constructor(props:IProps) {
 
-    constructor(props:any) {
         super(props);
 
         this.state = {
@@ -58,7 +81,7 @@ class Logs extends React.Component <any,any> {
 
     async getLogsData(dateFrom:any = null, dateTo:any = null, levels:string[] = []) {
 
-        const { localSettings, t } = await this.props;
+        const { localSettings, t, ws } = this.props;
 
         const dateFromData = dateFrom === null ? this.state.dateFrom : dateFrom;
         const dateToData = dateTo === null ? this.state.dateTo : dateTo;
@@ -71,12 +94,12 @@ class Logs extends React.Component <any,any> {
         const logsPerPage = localSettings.logsCountPerPage;
         const offset = this.state.activePage > 1 ? (this.state.activePage - 1) * logsPerPage : this.state.offset;
 
-        const logs = await this.props.ws.getLogs(levelsData, searchText, isoDateFrom, isoDateTo, offset, logsPerPage);
+        const logs = await ws.getLogs(levelsData, searchText, isoDateFrom, isoDateTo, offset, logsPerPage);
 
         const logsDataArr = [];
         if (logs.totalItems > 0) {
-            (logs.items as any).map(log => {
-                let row = {
+            logs.items.map(log => {
+                const row = {
                     level: log.level,
                     date: [log.time, this.state.lang],
                     message: log.message,

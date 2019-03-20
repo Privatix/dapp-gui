@@ -1,10 +1,10 @@
 import * as React from 'react';
 
-export default class JobStatus extends React.Component<any, any>{
+interface IProps {
+    jobStatus: string;
+}
 
-    constructor(props: any){
-        super(props);
-    }
+export default class JobStatus extends React.Component<IProps, {}>{
 
     get classes() {
         return {
@@ -28,10 +28,11 @@ export default class JobStatus extends React.Component<any, any>{
     }
 
     render() {
-        const status = this.props.status;
 
-        return <span className={`label label-table label-${this.classes[status].label ? this.classes[status].label : 'inverse'}`} >
-                {this.classes[status].alias}
+        const { jobStatus } = this.props;
+
+        return <span className={`label label-table label-${this.classes[jobStatus].label ? this.classes[jobStatus].label : 'inverse'}`} >
+                {this.classes[jobStatus].alias}
             </span>;
     }
 }

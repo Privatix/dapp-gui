@@ -2,14 +2,14 @@ import {Account} from './accounts';
 import {Role} from './mode';
 import {Product} from './products';
 import {OfferingAvailabilityResponse} from './offerings';
-import {DbSetting, LocalSettings} from './settings';
+import {LocalSettings} from './settings';
 import { WS } from '../utils/ws';
 
 interface State {
   [s: string]: any;
     accounts: Account[];
     products: Product[];
-    settings: DbSetting[];
+    settings: {[key: string]: string};
     localSettings: LocalSettings;
     channel: string;
     mode: Role;
@@ -24,7 +24,7 @@ interface State {
 const StateDefault: State = {
     accounts: [],
     products: [],
-    settings: [],
+    settings: {},
     localSettings: null,
     channel: '',
     mode: Role.CLIENT,

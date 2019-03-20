@@ -21,9 +21,10 @@ export interface LocalSettings {
     elementsPerPage: number;
     lang: string;
     release: string;
+    target: string;
     releasesEndpoint: string;
     platformsEndpoint: string;
-    releases: {[key:string]: any};
+    latestReleaseChecked: any;
     updateCheckFreq: number;
     collectLogsPath: {
         linux: string;

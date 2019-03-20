@@ -45,12 +45,11 @@ class FinishServiceButton extends React.Component<any, any>{
                             : t('RemainingDepositWillBeReturned')
                         }
                     </span>}
-                class={'btn btn-primary btn-custom btn-block'}
+                className={'btn btn-primary btn-custom btn-block'}
                 swalType='warning'
                 swalConfirmBtnText={t('YesFinishIt')}
                 swalTitle={t('AreYouSure')}
                 disabledBtn={true}
-                awaitForDone={true}
             />
         </div>;
     }

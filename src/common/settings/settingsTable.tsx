@@ -16,19 +16,20 @@ interface IProps {
     options: any;
 }
 
+interface IState {
+    data: any;
+    payload: any;
+}
+
 @translate(['settings', 'utils/notice'])
+class SettingsTable extends React.Component<IProps, IState> {
 
-class SettingsTable extends React.Component<IProps, any> {
-
-    constructor(props: any) {
+    constructor(props: IProps) {
         super(props);
         this.state = {
           data: this.props.options,
           payload: {}
-          // filtered: [],
-          // filterAll: '',
         };
-        // this.filterAll = this.filterAll.bind(this);
     }
 
     static getDerivedStateFromProps(props:any, state:any) {

@@ -22,9 +22,6 @@ class UpdateChecker {
             const versions = releases.map(release => release.tag_name);
 
             versions.forEach(async (version) => {
-                if(version in settings.releases && 'platforms' in settings.releases[version]){
-                    return;
-                }
 
                 const endpoint = settings.platformsEndpoint.replace(/\$\{([a-zA-Z]+)\}/, ((subs, newSub, name) => {
                     return name in subs ? subs[name] : '';
