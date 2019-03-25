@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { translate, Trans } from 'react-i18next';
 import Countdown from 'react-countdown-now';
 
 import ActiveConnection from 'client/connections/active';
@@ -150,13 +150,17 @@ class Connecting extends React.Component<any, any>{
 
     waiting(){
 
-        const { t } = this.props;
+        const { t, serviceName } = this.props;
 
         return <div className='container-fluid'>
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text'>{t('AfterTheConnectionIsReady')}</p>
+                        <p className='card-text'>
+                            <Trans i18nKey='AfterTheConnectionIsReady' values={{serviceName}} >
+                                After the connection is ready, you can start using the { {serviceName} }
+                            </Trans>
+                        </p>
                         <button className='btn btn-inverse btn-block btn-lg disabled'>
                             <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>{t('Synchronizing')}...
                         </button>
@@ -168,7 +172,7 @@ class Connecting extends React.Component<any, any>{
 
     getTransitionView(status: string){
 
-        const { t } = this.props;
+        const { t, serviceName } = this.props;
 
         const titles = {
             pending: 'TheServiceHasAPendingStatus',
@@ -182,7 +186,11 @@ class Connecting extends React.Component<any, any>{
             <div className='row m-t-20'>
                 <div className='col-5'>
                     <div className='card m-b-20 card-body'>
-                        <p className='card-text'>{t(titles[status])}</p>
+                        <p className='card-text'>
+                            <Trans i18nKey={titles[status]} values={{serviceName, status}} >
+                                the service { {serviceName} } has a {{status}} status
+                            </Trans>
+                        </p>
                         <button className='btn btn-inverse btn-block btn-lg disabled'>
                             <span className='loadingIconBl'><i className='fa fa-spin fa-refresh'></i></span>{t('Synchronizing')}...
                         </button>
@@ -210,7 +218,7 @@ class Connecting extends React.Component<any, any>{
     }
 
     suspended(){
-        const { t } = this.props;
+        const { t, serviceName } = this.props;
 
         const countryAlert = this.state.countryAlert === '' ? '' :
             <div className='alert alert-warning clientCountryAlert'>{this.state.countryAlert}</div>;
@@ -219,7 +227,11 @@ class Connecting extends React.Component<any, any>{
             <div className='row m-t-20'>
                 <div className='col-6 col-xl-5 clientConnectionBl'>
                     <div className='card m-b-20 card-body buttonBlock'>
-                        <p className='card-text m-t-5'><strong>{t('YouCanStartUsingVPN')}</strong></p>
+                        <p className='card-text m-t-5'><strong>
+                            <Trans i18nKey='YouCanStartUsingService' values={{serviceName}} >
+                                You can start using { {serviceName} }
+                            </Trans>
+                        </strong></p>
                         {countryAlert}
 
                         <button className='btn btn-primary btn-custom btn-block' onClick={this.connectHandler.bind(this)}>{t('Connect')}</button>
@@ -240,7 +252,7 @@ class Connecting extends React.Component<any, any>{
 
     active(){
 
-        const { t, ws } = this.props;
+        const { t, ws, serviceName } = this.props;
 
         const done = () => {
             ws.changeChannelStatus(this.state.channel.id, 'pause');
@@ -255,13 +267,21 @@ class Connecting extends React.Component<any, any>{
                 </div>
                 <div className='col-4 col-xl-4 buttonBlock'>
                     <div className='card m-b-20 card-body buttonBlock'>
-                        <p className='card-text'>{t('ThisOperationWillPauseVPNUsage')}</p>
+                        <p className='card-text'>
+                            <Trans i18nKey='ThisOperationWillPauseServiceUsage' values={{serviceName}} >
+                                This operation will pause { {serviceName} } usage.
+                            </Trans>
+                        </p>
                         <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: maxSuspendTimeMinutes})}</p>
                         <ConfirmPopupSwal
                             done={done}
                             title={t('Pause')}
-                            text={<span>{t('ThisOperationWillPauseVPNUsage')}<br />
-                            {t('ForThisContractMaxSuspendTimeIs', {minutes: maxSuspendTimeMinutes})}</span>}
+                            text={<span>
+                                      <Trans i18nKey='ThisOperationWillPauseServiceUsage' values={{serviceName}} >
+                                          This operation will pause { {serviceName} } usage.
+                                      </Trans><br />
+                                      {t('ForThisContractMaxSuspendTimeIs', {minutes: maxSuspendTimeMinutes})}
+                                  </span>}
                             className={'btn btn-primary btn-custom btn-block'}
                             swalType='warning'
                             swalConfirmBtnText={t('YesPauseIt')}
@@ -312,4 +332,4 @@ class Connecting extends React.Component<any, any>{
     }
 }
 
-export default connect((state: State) => ({ws: state.ws}))(withRouter(Connecting));
+export default connect((state: State) => ({ws: state.ws, serviceName: state.serviceName}))(withRouter(Connecting));

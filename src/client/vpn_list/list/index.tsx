@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { translate, Trans } from 'react-i18next';
 import { connect } from 'react-redux';
 import Pagination from 'react-js-pagination';
 
@@ -34,6 +34,7 @@ interface IProps {
     dispatch?: any;
     offeringsAvailability?: State['offeringsAvailability'];
     localSettings?: State['localSettings'];
+    serviceName: string;
 }
 
 interface Filter {
@@ -129,9 +130,14 @@ class VPNList extends React.Component<IProps, IState> {
     }
 
     onRefresh = async () => {
-        const { t } = this.props;
+        const { t, serviceName } = this.props;
         await this.refresh();
-        notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('SuccessUpdateMsg')});
+        notice({level: 'info'
+               ,header: t('utils/notice:Congratulations!')
+               ,msg: <Trans i18nKey='SuccessUpdateMsg' values={{serviceName}} >
+                         { {serviceName} } list was successfully updated!
+                     </Trans>
+        });
     }
 
     updateFilter(filter: UpdateFilter, cb: () => void){
@@ -456,4 +462,9 @@ class VPNList extends React.Component<IProps, IState> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, offeringsAvailability: state.offeringsAvailability, localSettings: state.localSettings}) )(VPNList);
+export default connect( (state: State) => (
+    {ws: state.ws
+    ,offeringsAvailability: state.offeringsAvailability
+    ,localSettings: state.localSettings
+    ,serviceName: state.serviceName
+    }) )(VPNList);

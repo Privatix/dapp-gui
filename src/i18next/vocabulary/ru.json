@@ -64,7 +64,7 @@
         "NoteWeEncryptThisFile": "Внимание: Мы зашифруем этот файл используя Ваш пароль для приложения.",
         "Browse": "Выбрать"
     },
-    "auth/getPrix":{
+    "auth/getPrix": {
         "WeAreCurrentlyOnTestnet": "На данный момент мы работаем в тестовой сети Ethereum.",
         "YouShouldGetPRIXandETH": "Вам нужно получить PRIX и ETH у бота privatix.",
         "CopyTheAddress": "Скопируйте адрес ниже в буфер обмена",
@@ -81,8 +81,7 @@
         "Password": "Пароль",
         "Import": "Импорт ключей",
         "Account": "Аккаунт",
-        "Backup": "Резервное копирование",
-        "currentStep": "текущий этап"
+        "Backup": "Резервное копирование"
     },
     "auth/utils": {
         "Next": "Далее",
@@ -165,7 +164,8 @@
         "cantBeEmpty_plural": "не могут быть пустыми.",
         "MaxSuspendTimeMustBeMoreOrEquals10Min": "Максимальное время приостановки должно быть равно или больше 10 минут.",
         "MaxInactiveTimeSecMustBeMoreOrEquals10Min": "Максимальное неактивное время должно быть равно или больше 10 минут.",
-        "unlimited": "не ограничено"
+        "unlimited": "не ограничено",
+        "ChangeCountryHelpTextServers": "Servers"
     },
     "offerings/offeringTools": {
         "WarningArea": "Внимание!",
@@ -248,15 +248,6 @@
         "TerminateService": "Завершить сервис",
         "TerminateContract": "Расторгнуть контракт"
     },
-    "channels/channelsListSortTable": {
-        "Server": "Сервер",
-        "Client": "Клиент",
-        "ContractStatus": "Статус контракта",
-        "ServiceStatus": "Статус сервиса",
-        "Usage": "Использовано",
-        "Income": "Доход (PRIX)",
-        "ServiceChangedTime": "Время последнего изменения сервиса"
-    },
     "sessions/sessionsList": {
         "TotalStatistics": "Общая статистика",
         "TotalUsage": "Всего использовано",
@@ -277,13 +268,9 @@
     "header": {
         "Accounts": "Аккаунты",
         "Help": "Помощь",
-        "SwitchToClient": "В режим Клиент",
-        "SwitchToAgent": "В режим Агент",
         "Settings": "Настройки",
         "Logs": "Логи",
-        "SomethingWentWrong": "Что-то пошло не так!",
-        "UserWasSwitchedToAGENT": "Успешно переключено в режим Агент",
-        "UserWasSwitchedToCLIENT": "Успешно переключено в режим Клиент"
+        "SomethingWentWrong": "Что-то пошло не так!"
     },
     "navigation": {
         "Dashboard": "Главная",
@@ -294,7 +281,7 @@
         "Offerings": "Предложения",
         "Servers": "Серверы",
         "ClientDashboard": "Главная",
-        "VPNList": "Список VPN"
+        "ServiceList": "Список сервисов {{serviceName}}"
     },
     "topPanel": {
         "ETHBalance": "Баланс ETH",
@@ -393,19 +380,19 @@
         "AreYouSure": "Вы уверены?"
     },
     "client/dashboard/connecting": {
-        "AfterTheConnectionIsReady": "После того как соединение будет готовы Вы сможете начать использовать VPN.",
-        "TheServiceHasAPendingStatus": "Соединение находится в статусе ожидания. После того как соединение будет готово Вы сможете начать использовать VPN.",
-        "TheServiceHasAnActivatingStatus": "Соединение находится в статусе активации. После того как соединение будет готово Вы сможете начать использовать VPN.",
+        "AfterTheConnectionIsReady": "После того как соединение будет готовы Вы сможете начать использовать {{seviceName}}.",
+        "TheServiceHasAPendingStatus": "Соединение находится в статусе ожидания. После того как соединение будет готово Вы сможете начать использовать {{serviceName}}.",
+        "TheServiceHasAnActivatingStatus": "Соединение находится в статусе активации. После того как соединение будет готово Вы сможете начать использовать {{serviceName}}.",
         "TheServiceHasASuspendingStatus": "Соединение находится в статусе остановки. После того как соединение будет остановлено Вы можете возобновить его либо завершить",
         "TheServiceHasATerminatingStatus": "Соединение находится в статусе завершения. После того как соединение будет завершено Вы можете также завершить контракт.",
         "WaitingTimeIsOver": "Время ожидания истекло. Процедура завершения будет вызвана автоматически.",
         "FailedToAcceptOffering": "Не удалось принять предложение. Пожалуйста, попробуйте другое.",
         "Synchronizing": "Синхронизация",
-        "YouCanStartUsingVPN": "Вы можете начать использовать VPN",
+        "YouCanStartUsingService": "Вы можете начать использовать {{serviceName}}",
         "Connect": "Подключение",
         "YesConnectIt": "Да, подключиться!",
         "Pause": "Приостановить",
-        "ThisOperationWillPauseVPNUsage": "Эта операция приостановить использование VPN.",
+        "ThisOperationWillPauseServiceUsage": "Эта операция приостановит использование {{ serviceName}}.",
         "ForThisContractMaxSuspendTimeIs": "Для этого контракта максимальноe время ожидания составляет {{minutes}} мин.",
         "YesPauseIt": "Да, поставить на паузу!",
         "Remaining": "Осталось",
@@ -416,7 +403,7 @@
         "CountryAlertUnknown": "Приложение не смогло определить страну предложения. IP адрес {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "Начать использование VPN"
+        "StartUsingService": "Начать использовать {{serviceName}}"
     },
     "agent/dashboard": {
         "TotalIncome": "Доход:",
@@ -428,18 +415,17 @@
         "Availability": "Доступность",
         "Block": "Блок",
         "Hash": "Хеш",
-        "Agent": "Агент",
         "Country": "Страна",
         "Price": "Цена (PRIX/MB)",
         "SupplyTotal": "Предложения (всего)",
         "AvailableSupply": "Доступных предложений",
-        "SuccessUpdateMsg": "Список VPN был успешно обновлен!",
+        "SuccessUpdateMsg": "Список {{seviceName}} был успешно обновлен!",
         "AcceptOffering": "Принять предложение",
         "ShowAllBtn": "показать все...",
         "HideBtn": "скрыть",
         "Search": "поиск",
         "WaitForDownloading": "Пожалуйста, дождитесь загрузки....",
-        "CurrentlyWeAreDownloading": "В настоящее время мы загружаем список VPN.",
+        "CurrentlyWeAreDownloading": "В настоящее время мы загружаем список {{serviceName}}.",
         "TakesTimeOnFirstRun": "Это занимает время только при первом запуске.",
         "AverageTimeForDownloading": "Среднее время для загрузки 2-5 мин.",
         "Refresh": "Обновить",
@@ -454,14 +440,14 @@
     },
     "client/acceptOffering": {
         "Accept": "Принять",
-        "CanHaveOneVPNConnection": "У Вас может быть только одно VPN-соединение. Чтобы принять другое, завершите текущее соединение.",
+        "CanHaveOneServiceConnection": "У Вас может быть только одно {{serviceName}}-соединение. Чтобы принять другое, завершите текущее соединение.",
         "DepositMustBeMoreThan": "Депозит должен быть больше, чем",
         "DepositMustBeLessOrEqualThan": "Депозит должен быть меньше или равен",
         "NotEnoughPrixForDeposit": "Недостаточно средств (PRIX) для депозита. Выберите другую учетную запись.",
         "NotEnoughToPublishTransaction": "Недостаточно средств (ETH) для публикации транзакции. Выберите другую учетную запись.",
         "ErrorAcceptingOffering": "Что-то пошло не так. Попробуйте принять другое предложение!",
         "OfferingAccepted": "Предложение принято!",
-        "VPNInfo": "Информация",
+        "ServiceInfo": "Информация",
         "Country": "Страна:",
         "BillingInfo": "Информация о платеже",
         "PricePerMB": "Цена за 1 MB:",
@@ -476,15 +462,13 @@
         "Account": "Аккаунт:",
         "Balance": "Баланс:",
         "Deposit": "Депозит:",
-        "UnusedPrixWillBeReturnedSmallText": "По окончании использования VPN будут возвращены неиспользованные PRIX.",
+        "UnusedPrixWillBeReturnedSmallText": "По окончании использования {{serviceName}} будут возвращены неиспользованные PRIX.",
         "AcceptancePrice": "Стоимость:",
         "unlimited": "не ограничено"
     },
     "client/history": {
         "Service": "Сервис",
         "of": "с",
-        "Id": "Id",
-        "Agent": "Агент",
         "ContractStatus": "Статус контракта",
         "ServiceStatus": "Статус сервиса",
         "JobStatus": "Job статус",
@@ -525,9 +509,7 @@
     "client/connections/active": {
         "Connection": "Соединение",
         "ActiveConnection": "Активное соединение:",
-        "Id": "Id",
         "Offering": "Предложение",
-        "Agent": "Агент",
         "ContractStatus": "Статус контракта",
         "ServiceStatus": "Статус сервиса",
         "JobStatus": "Job статус",
@@ -547,9 +529,6 @@
     },
     "client/connections/connection": {
         "Offering": "Предложение",
-        "Id": "Id",
-        "Agent": "Агент",
-        "Server": "Сервер",
         "Started": "Начато",
         "Stopped": "Закончено",
         "Usage": "Использовано",
@@ -567,11 +546,11 @@
         "LastUsageTimeT": "Время последнего использования:",
         "Sessions": "Сессии"
     },
-    "client/increaseDepositButton":{
-        "ThisOperationWillIncrease": "Эта операция увеличит Ваш VPN баланc путем увеличения размера депозита",
+    "client/increaseDepositButton": {
+        "ThisOperationWillIncrease": "Эта операция увеличит Ваш {{serviceName}} баланc путем увеличения размера депозита",
         "IncreaseDeposit": "Увеличить депозит"
     },
-    "client/connections/increaseDepositView":{
+    "client/connections/increaseDepositView": {
         "DepositInfo": "Информация о депозите",
         "Deposit": "Депозит",
         "IncreaseDeposit": "Увеличение депозита",
@@ -585,7 +564,9 @@
         "SuccessMessage": "Добавление депозита успешно инициировано!",
         "SomethingWentWrong": "Что то пошло не так! Попробуйте позже!",
         "ErrorNotEnoughPublishFunds": "Недостаточно средств для публикации транзакции.",
-        "ErrorNotEnoughPRIX": "Недостаточно PRIX для пополнения депозита."
+        "ErrorNotEnoughPRIX": "Недостаточно PRIX для пополнения депозита.",
+        "MaxUnitsHint": "Maximum for this offering are {{maxUnits}} {{unitName}}. So, you can add not more than {{maxDepositAddValue}} {{unitName}}",
+        "ErrorDepositGreaterThanMaxUnits": "You can't add to deposit more, than {{units}} {{unitName}}"
     },
     "electronMenu": {
         "File": "Файл",
@@ -670,7 +651,8 @@
         "psc_periods_popup_Description": "Число блоков блокчейна необходимых для повторного поднятия офферинга",
         "psc_periods_remove_Description": "Число блоков блокчейна с момента последнего обновления офферинга после которых можно удалить офферинг",
         "client_somc_transports_Description": "Эта опция указывает какой тип SOMC необходимо использовать для передачи офферинга",
-        "updateDismissVersion_Description": "Версия последнего отклоненного обновления"
+        "updateDismissVersion_Description": "Версия последнего отклоненного обновления",
+        "client_somc_transports_Name": "allowed SOMC transport"
     },
     "copyToClipboard": {
         "Copied": "Скопировано!",
@@ -679,43 +661,43 @@
     "jobName": {
         "clientPreChannelCreate": "размещение депозита сервиса",
         "clientAfterChannelCreate": "обновление данных сервиса",
-        "clientPreChannelTopUp" : "увеличение депозита",
-        "clientAfterChannelTopUp" : "обновление депозита",
-        "clientPreUncooperativeCloseRequest" : "отправка запроса на открытие спора",
-        "clientAfterUncooperativeCloseRequest" : "открытие спора по контракту",
+        "clientPreChannelTopUp": "увеличение депозита",
+        "clientAfterChannelTopUp": "обновление депозита",
+        "clientPreUncooperativeCloseRequest": "отправка запроса на открытие спора",
+        "clientAfterUncooperativeCloseRequest": "открытие спора по контракту",
         "clientPreUncooperativeClose": "возвращение депозита после окончания испытательного срока",
         "clientAfterUnCooperativeClose": "завершение спора и закрытие контракта",
-        "clientAfterCooperativeClose" : "завершение закрытия контракта",
-        "clientPreServiceSuspend" : "приостановка сервиса",
-        "clientPreServiceUnsuspend" : "возобновление сервиса",
-        "clientPreServiceTerminate" : "завершение использования сервиса",
-        "clientEndpointRestore" : "получение данных для доступа",
-        "clientAfterOfferingMsgBCPublish" : "получение данных предложения",
-        "clientAfterOfferingPopUp" : "обновление позиции предложения",
-        "clientAfterOfferingDelete" : "удаление предложения",
+        "clientAfterCooperativeClose": "завершение закрытия контракта",
+        "clientPreServiceSuspend": "приостановка сервиса",
+        "clientPreServiceUnsuspend": "возобновление сервиса",
+        "clientPreServiceTerminate": "завершение использования сервиса",
+        "clientEndpointRestore": "получение данных для доступа",
+        "clientAfterOfferingMsgBCPublish": "получение данных предложения",
+        "clientAfterOfferingPopUp": "обновление позиции предложения",
+        "clientAfterOfferingDelete": "удаление предложения",
         "completeServiceTransition": "завершение изменения сервиса",
         "agentAfterChannelCreate": "создание сервиса",
-        "agentAfterUncooperativeCloseRequest" : "реакция на открытие спора по контракту",
-        "agentAfterCooperativeClose" : "завершение закрытия контракта",
-        "agentPreServiceSuspend" : "приостановка сервиса",
-        "agentPreServiceUnsuspend" : "возобновление сервиса",
-        "agentPreServiceTerminate" : "закрытие сервиса и запрос на вывод средств",
-        "agentPreEndpointMsgCreate" : "подготовка доступа к сервису",
-        "agentPreEndpointMsgSOMCPublish" : "публикация данных доступа к сервису",
-        "agentAfterEndpointMsgSOMCPublish" : "активация сервиса",
-        "agentPreOfferingMsgBCPublish" : "отправка депозита предложения",
-        "agentAfterOfferingMsgBCPublish" : "размещение депозита предложения",
-        "agentPreOfferingMsgSOMCPublish" : "публикация предложения",
-        "agentPreOfferingDelete" : "запрос на удаление предложения и возврат депозита",
-        "agentPreOfferingPopUp" : "запрос на обновление предложения",
-        "agentAfterOfferingPopUp" : "завершение обновления предложения",
-        "agentAfterOfferingDelete" : "завершение удаления предложения",
-        "preAccountAddBalanceApprove" : "подтверждение трансфера токенов на аккаунт сервиса",
-        "preAccountAddBalance" : "пополнение баланса аккаунта сервиса",
-        "afterAccountAddBalance" : "обновление баланса аккаунта сервиса",
-        "preAccountReturnBalance" : "запрос трансфера токенов на ERC20 аккаунт",
-        "afterAccountReturnBalance" : "обновление баланса на ERC20 аккаунте",
-        "accountUpdateBalances" : "проверка и обновление информации аккаунта",
+        "agentAfterUncooperativeCloseRequest": "реакция на открытие спора по контракту",
+        "agentAfterCooperativeClose": "завершение закрытия контракта",
+        "agentPreServiceSuspend": "приостановка сервиса",
+        "agentPreServiceUnsuspend": "возобновление сервиса",
+        "agentPreServiceTerminate": "закрытие сервиса и запрос на вывод средств",
+        "agentPreEndpointMsgCreate": "подготовка доступа к сервису",
+        "agentPreEndpointMsgSOMCPublish": "публикация данных доступа к сервису",
+        "agentAfterEndpointMsgSOMCPublish": "активация сервиса",
+        "agentPreOfferingMsgBCPublish": "отправка депозита предложения",
+        "agentAfterOfferingMsgBCPublish": "размещение депозита предложения",
+        "agentPreOfferingMsgSOMCPublish": "публикация предложения",
+        "agentPreOfferingDelete": "запрос на удаление предложения и возврат депозита",
+        "agentPreOfferingPopUp": "запрос на обновление предложения",
+        "agentAfterOfferingPopUp": "завершение обновления предложения",
+        "agentAfterOfferingDelete": "завершение удаления предложения",
+        "preAccountAddBalanceApprove": "подтверждение трансфера токенов на аккаунт сервиса",
+        "preAccountAddBalance": "пополнение баланса аккаунта сервиса",
+        "afterAccountAddBalance": "обновление баланса аккаунта сервиса",
+        "preAccountReturnBalance": "запрос трансфера токенов на ERC20 аккаунт",
+        "afterAccountReturnBalance": "обновление баланса на ERC20 аккаунте",
+        "accountUpdateBalances": "проверка и обновление информации аккаунта",
         "decrementCurrentSupply": "уменьшение числа свободных сервисов",
         "incrementCurrentSupply": "увеличение числа свободных сервисов"
     },

@@ -174,7 +174,6 @@
         "Hash": "해시",
         "ServiceName": "서비스 이름",
         "Server": "서버",
-        "MessageStatus": "메시지 상태",
         "Status": "상태",
         "AvailableSupply": "사용 가능한 공급",
         "Supply": "공급"
@@ -231,15 +230,6 @@
         "TerminateService": "서비스 종료",
         "TerminateContract": "계약 종료"
     },
-    "channels/channelsListSortTable": {
-        "Server": "서버",
-        "Client": "클라이언트",
-        "ContractStatus": "계약 상태",
-        "ServiceStatus": "서비스 상태",
-        "Usage": "사용",
-        "Income": "수익(PRIX)",
-        "ServiceChangedTime": "서비스 변경 시간"
-    },
     "sessions/sessionsList": {
         "TotalStatistics": "총 통계",
         "TotalUsage": "총 사용",
@@ -260,14 +250,9 @@
     "header": {
         "Accounts": "계정",
         "Help": "도움말",
-        "SwitchToClient": "클라이언트로 전환",
-        "SwitchToAgent": "에이전트로 전환",
         "Settings": "설정",
         "Logs": "로그",
-        "user": "사용자",
-        "SomethingWentWrong": "문제가 발생했습니다!",
-        "UserWasSwitchedToAGENT": "사용자 모드가 에이전트로 전환되었습니다.",
-        "UserWasSwitchedToCLIENT": "사용자 모드가 클라이언트로 전환되었습니다."
+        "SomethingWentWrong": "문제가 발생했습니다!"
     },
     "navigation": {
         "Dashboard": "대시보드",
@@ -278,7 +263,7 @@
         "Offerings": "오퍼링",
         "Servers": "서버",
         "ClientDashboard": "클라이언트 대시보드",
-        "VPNList": "VPN 목록"
+        "ServiceList": "{{serviceName}} 목록"
     },
     "topPanel": {
         "ETHBalance": "ETH 잔액",
@@ -295,7 +280,6 @@
     },
     "logs/logsList": {
         "LogsHeader": "로그 목록",
-        "ExportBtn": "파일로 내보내기",
         "LogsFilterFrom": "시작:",
         "LogsFilterTo": "종료:",
         "LogsFilterTime": "시간",
@@ -348,16 +332,7 @@
         "ServiceBalanceOption": "서비스 잔액",
         "Amount": "금액:",
         "TransferConfirmBtn": "예, 송금합니다!",
-        "TransferSwalTitle": "계속하시겠습니까?",
-        "ServiceSwalBalanceFrom": "서비스 잔액",
-        "ExchangeSwalBalanceFrom": "거래 잔액",
-        "ServiceSwalBalance": "서비스 잔액",
-        "ExchangeSwalBalance": "거래 잔액",
-        "TransferSwalText1": "이 작업은 귀하의 토큰을",
-        "TransferSwalText2": "에서",
-        "TransferSwalText3": "(으)로 송금합니다.",
-        "TransferSwalText4": "이 작업에는 시간과 가스가 필요합니다.",
-        "TransferSwalText5": "트랜잭션 로그에서 트랜잭션 상태를 모니터링할 수 있습니다."
+        "TransferSwalTitle": "계속하시겠습니까?"
     },
     "utils/gasRange": {
         "GasPrice": "가스 가격",
@@ -376,30 +351,29 @@
         "AreYouSure": "계속하시겠습니까?"
     },
     "client/dashboard/connecting": {
-        "TheServiceHasAPendingStatus": "서비스가 보류 상태입니다. 연결이 준비되면 VPN 사용을 시작할 수 있습니다.",
-        "TheServiceHasAnActivatingStatus": "서비스가 활성화 상태입니다. 연결이 준비되면 VPN 사용을 시작할 수 있습니다.",
+        "TheServiceHasAPendingStatus": "서비스가 보류 상태입니다. 연결이 준비되면 {{serviceName}} 사용을 시작할 수 있습니다.",
+        "TheServiceHasAnActivatingStatus": "서비스가 활성화 상태입니다. 연결이 준비되면 {{serviceName}} 사용을 시작할 수 있습니다.",
         "TheServiceHasASuspendingStatus": "이 서비스는 일시 중단 상태입니다. 연결이 일시 중단된 후 다시 시작하거나 종료할 수 있습니다.",
         "TheServiceHasATerminatingStatus": "서비스가 종료 상태입니다. 연결이 종료된 후에 계약도 종료될 수 있습니다.",
         "WaitingTimeIsOver": "대기 시간이 끝났습니다. 마침 절차가 자동으로 호출됩니다.",
         "FailedToAcceptOffering": "오퍼링을 수락하지 못했습니다. 다른 오퍼링을 시도해보십시오.",
         "Synchronizing": "동기화 중",
-        "YouCanStartUsingVPN": "VPN 사용을 시작할 수 있습니다.",
+        "YouCanStartUsingService": "{{serviceName}} 사용을 시작할 수 있습니다.",
         "Connect": "연결",
         "YesConnectIt": "예, 연결합니다!",
         "Pause": "일시 중지",
-        "ThisOperationWillPauseVPNUsage": "이 작업은 VPN 사용을 일시 중지합니다.",
+        "ThisOperationWillPauseServiceUsage": "이 작업은 {{serviceName}} 사용을 일시 중지합니다.",
         "ForThisContractMaxSuspendTimeIs": "이 계약의 최대 일시 중단 시간은 {{minutes}}분입니다.",
         "YesPauseIt": "예, 일시 중지합니다!",
         "Remaining": "나머지",
         "AfterMaxInactivityTimeHasBeenReached": "최대 비활성 시간에 도달하면 \"절차 마침\"이 자동으로 호출됩니다.",
         "Resume": "다시 시작",
         "YesResumeIt": "예, 다시 시작합니다!",
-        "min": "분",
         "CountryAlertInvalid": "오퍼링의 국가가 IP 주소를 기준으로 검색된 국가와 일치하지 않습니다. IP 주소 {{ip}}",
         "CountryAlertUnknown": "오퍼링의 국가를 검색할 수 없습니다. IP 주소 {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "VPN 사용 시작"
+        "StartUsingService": "{{serviceName}} 사용 시작"
     },
     "agent/dashboard": {
         "TotalIncome": "총 수익:",
@@ -410,18 +384,17 @@
     "client/vpnList": {
         "Block": "블록",
         "Hash": "해시",
-        "Agent": "에이전트",
         "Country": "국가",
         "Price": "가격(PRIX/MB)",
         "SupplyTotal": "공급(합계)",
         "AvailableSupply": "사용 가능한 공급",
-        "SuccessUpdateMsg": "VPN 목록이 업데이트되었습니다.",
+        "SuccessUpdateMsg": "{{serviceName}} 목록이 업데이트되었습니다.",
         "AcceptOffering": "오퍼링 수락",
         "ShowAllBtn": "모두 표시...",
         "HideBtn": "숨기기",
         "Search": "검색",
         "WaitForDownloading": "다운로드되는 동안 기다리십시오...",
-        "CurrentlyWeAreDownloading": "현재, VPN 목록을 다운로드하는 중입니다.",
+        "CurrentlyWeAreDownloading": "현재, {{serviceName}} 목록을 다운로드하는 중입니다.",
         "TakesTimeOnFirstRun": "첫 번째 실행에만 시간이 걸립니다.",
         "AverageTimeForDownloading": "평균 다운로드 시간은 2-5분 정도입니다.",
         "Refresh": "새로 고침",
@@ -435,13 +408,13 @@
     },
     "client/acceptOffering": {
         "Accept": "수락",
-        "CanHaveOneVPNConnection": "참고: VPN 연결은 하나만 사용할 수 있습니다. 다른 연결을 수락하려면 현재 연결을 종료하십시오.",
+        "CanHaveOneServiceConnection": "참고: {{serviceName}} 연결은 하나만 사용할 수 있습니다. 다른 연결을 수락하려면 현재 연결을 종료하십시오.",
         "DepositMustBeMoreThan": "예치금은 다음보다 많아야 합니다:",
         "DepositMustBeLessOrEqualThan": "예치금은 다음 이하여야 합니다:",
         "NotEnoughPrixForDeposit": "예치금용으로 PRIX가 충분하지 않습니다. 다른 계정을 선택하십시오.",
         "NotEnoughToPublishTransaction": "게시 트랜잭션을 위한 자금이 부족합니다. 다른 계정을 선택하십시오.",
         "OfferingAccepted": "오퍼링이 수락되었습니다!",
-        "VPNInfo": "VPN 정보",
+        "ServiceInfo": "{{serviceName}} 정보",
         "Country": "국가:",
         "BillingInfo": "청구 정보",
         "PricePerMB": "MB당 가격:",
@@ -460,8 +433,6 @@
     "client/history": {
         "Service": "서비스",
         "of": "/",
-        "Id": "ID",
-        "Agent": "에이전트",
         "ContractStatus": "계약 상태",
         "ServiceStatus": "서비스 상태",
         "JobStatus": "작업 상태",
@@ -474,7 +445,6 @@
     "client/serviceView": {
         "CommonInfo": "일반 정보",
         "IdTd": "ID:",
-        "Offering": "오퍼링:",
         "ContractStatusTd": "계약 상태:",
         "ServiceStatusTd": "서비스 상태:",
         "Transferred": "송금됨:",
@@ -501,9 +471,7 @@
     "client/connections/active": {
         "Connection": "연결",
         "ActiveConnection": "활성 연결:",
-        "Id": "ID",
         "Offering": "오퍼링",
-        "Agent": "에이전트",
         "ContractStatus": "계약 상태",
         "ServiceStatus": "서비스 상태",
         "JobStatus": "작업 상태",
@@ -523,9 +491,6 @@
     },
     "client/connections/connection": {
         "Offering": "오퍼링",
-        "Id": "ID",
-        "Agent": "에이전트",
-        "Server": "서버",
         "Started": "시작됨",
         "Stopped": "중지됨",
         "Usage": "사용",
@@ -544,7 +509,7 @@
         "Sessions": "세션"
     },
     "client/increaseDepositButton": {
-        "ThisOperationWillIncrease": "이 작업은 예치금을 늘려서 VPN 잔액을 증가시킵니다.",
+        "ThisOperationWillIncrease": "이 작업은 예치금을 늘려서 {{serviceName}} 잔액을 증가시킵니다.",
         "IncreaseDeposit": "예치금 늘리기"
     },
     "client/connections/increaseDepositView": {

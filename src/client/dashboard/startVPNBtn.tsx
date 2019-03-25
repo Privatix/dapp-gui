@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { translate, Trans } from 'react-i18next';
 
-import { State } from '../../typings/state';
+import { State } from 'typings/state';
 
 @translate('client/dashboard/start')
 
@@ -27,21 +27,24 @@ class StartVPN extends React.Component <any,any> {
         }
     }
 
-    startVPNBtnHandler(evt: any) {
+    startVPNBtnHandler = (evt: any) => {
         evt.preventDefault();
         this.props.history.push('/client-vpn-list');
     }
 
     render() {
-        const { t } = this.props;
+
+        const { serviceName } = this.props;
 
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-t-20'>
                     <button type='button'
                             className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light'
-                            onClick={this.startVPNBtnHandler.bind(this)}>
-                        {t('StartUsingVPN')}
+                            onClick={this.startVPNBtnHandler}>
+                        <Trans i18nKey='StartUsingService' values={{serviceName}} >
+                                Start using { {serviceName} }
+                        </Trans>
                     </button>
                 </div>
             </div>
@@ -49,4 +52,4 @@ class StartVPN extends React.Component <any,any> {
     }
 }
 
-export default connect((state: State) => ({ws: state.ws}))(withRouter(StartVPN));
+export default connect((state: State) => ({ws: state.ws, serviceName: state.serviceName}))(withRouter(StartVPN));
