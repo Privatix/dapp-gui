@@ -315,8 +315,8 @@ export class WS {
         return this.send('ui_getAccounts') as Promise<Account[]>;
     }
 
-    generateAccount(payload: any){
-        return this.send('ui_generateAccount', [payload]);
+    generateAccount(payload: any): Promise<string>{
+        return this.send('ui_generateAccount', [payload]) as Promise<string>;
     }
 
     importAccountFromHex(payload: any): Promise<any>{

@@ -20,6 +20,7 @@ import SessionsList from 'agent/sessions/sessionsList';
 
 import AccountsList from './accounts/accountsList';
 import ClientDashboardStart from 'client/dashboard/startVPNBtn';
+import LightClient from 'client/lightweightMode/';
 import ClientDashboardConnecting from 'client/dashboard/connecting';
 import VPNList from 'client/vpn_list/list/';
 import AcceptOffering from 'client/vpn_list/acceptOffering';
@@ -35,6 +36,7 @@ const MemoryHistory = createMemoryHistory();
 
 interface IProps {
     mode: Role;
+    advancedMode: boolean;
     dispatch?: any;
 }
 
@@ -46,7 +48,11 @@ class App extends React.Component<IProps, {}> {
 
     render(){
 
-        const { mode } = this.props;
+        const { mode, advancedMode } = this.props;
+
+        if(mode === Role.CLIENT && !advancedMode){
+            return <LightClient />;
+        }
 
         const app = (
             <Router history={MemoryHistory}>
@@ -68,7 +74,7 @@ class App extends React.Component<IProps, {}> {
                                 <Route path='/channels' component={ChannelsList} />
                                 <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                                 <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
-                                <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} />} />
+                                <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} mode='advanced' />} />
                                 <Route path='/logs' component={Logs} />
 
                                 <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
@@ -87,4 +93,4 @@ class App extends React.Component<IProps, {}> {
     }
 }
 
-export default connect<IProps>((state:State) => ({ mode: state.mode}))(withRouter(App));
+export default connect<IProps>((state:State) => ({ mode: state.mode, advancedMode: state.advancedMode}))(withRouter(App));

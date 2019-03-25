@@ -27,7 +27,7 @@ class StartVPN extends React.Component <any,any> {
         }
     }
 
-    startVPNBtnHandler(evt: any) {
+    startVPNBtnHandler = (evt: any) => {
         evt.preventDefault();
         this.props.history.push('/client-vpn-list');
     }
@@ -40,7 +40,7 @@ class StartVPN extends React.Component <any,any> {
                 <div className='col-sm-12 m-t-20'>
                     <button type='button'
                             className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light'
-                            onClick={this.startVPNBtnHandler.bind(this)}>
+                            onClick={this.startVPNBtnHandler}>
                         {t('StartUsingVPN')}
                     </button>
                 </div>

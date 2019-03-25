@@ -6,7 +6,7 @@ import ExternalLink from 'common/etc/externalLink';
 import CopyToClipboard from 'common/copyToClipboard';
 
 import { WS, ws } from 'utils/ws';
-// import notice from 'utils/notice';
+import notice from 'utils/notice';
 
 import Steps from './steps';
 import { PreviousButton, FinishButton, back } from './utils';
@@ -21,28 +21,52 @@ interface IProps{
 }
 
 interface IState {
+    accountId: string;
     ethAddr: string;
     didIt: boolean;
     getPrix: boolean;
     done: boolean;
 }
 
-@translate(['auth/getPrix', 'auth/utils'])
+@translate(['auth/getPrix', 'auth/generateKey', 'auth/utils'])
 class GetPrix extends React.Component<IProps, IState>{
 
     observerId = null;
 
     constructor(props:IProps){
         super(props);
-        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false};
+        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false, accountId: props.accountId};
     }
 
-    componentDidMount(){
-        const { ws, accountId } = this.props;
-        ws.getAccount(accountId)
-          .then(account => {
-              this.setState({ethAddr: `0x${account.ethAddr}`});
-          });
+    async componentDidMount(){
+
+        const { ws, t, accountId } = this.props;
+
+        if(accountId){
+            ws.getAccount(accountId)
+              .then(account => {
+                  this.setState({ethAddr: `0x${account.ethAddr}`});
+              });
+        }else{
+            // simple mode!
+            const payload = {
+                isDefault: true
+               ,inUse: true
+               ,name: 'main'
+            };
+
+            try {
+                const accountId = await ws.generateAccount(payload);
+                await ws.setGUISettings({accountCreated:true});
+                ws.getAccount(accountId)
+                  .then(account => {
+                      this.setState({accountId, ethAddr: `0x${account.ethAddr}`});
+                  });
+            } catch (e){
+                const msg = t('auth/generateKey:SomethingWentWrong');
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            }
+        }
     }
 
     componentWillUnmount() {
@@ -53,7 +77,8 @@ class GetPrix extends React.Component<IProps, IState>{
 
     startObserveAccountBalance = async () => {
 
-        const { ws, accountId } = this.props;
+        const { ws } = this.props;
+        const { accountId } = this.state;
 
         const account = await ws.getAccount(accountId);
         if(account.ptcBalance !== 0 && account.ethBalance !== 0){
@@ -66,7 +91,8 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 
     transferTokens = async () => {
-        const { ws, accountId } = this.props;
+        const { ws } = this.props;
+        const { accountId  } = this.state;
 
         const account = await ws.getAccount(accountId);
         const settings = await ws.getSettings();
@@ -77,7 +103,8 @@ class GetPrix extends React.Component<IProps, IState>{
 
      startObserveServiceBalance = async () => {
 
-        const { ws, accountId } = this.props;
+        const { ws } = this.props;
+        const { accountId } = this.state;
 
         const account = await ws.getAccount(accountId);
         if(account.pscBalance !== 0 ){
@@ -107,7 +134,7 @@ class GetPrix extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t } = this.props;
+        const { t, accountId } = this.props;
         const { ethAddr, didIt, getPrix, done } = this.state;
 
         return <div className='card-box'>
@@ -116,7 +143,7 @@ class GetPrix extends React.Component<IProps, IState>{
             </div>
             <div className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={6} prix={true} />
+                    <Steps step={accountId ? 6 : 3} prix={true} mode={accountId ? 'advanced' : 'simple' } />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('WeAreCurrentlyOnTestnet')}</p>
