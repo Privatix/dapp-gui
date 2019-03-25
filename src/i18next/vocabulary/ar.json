@@ -263,7 +263,7 @@
         "Offerings": "العروض",
         "Servers": "الخوادم",
         "ClientDashboard": "لوحة تحكم العميل",
-        "ServiceList": "<0>قائمة {{serviceName}}</0>"
+        "ServiceList": "قائمة {{serviceName}}"
     },
     "topPanel": {
         "ETHBalance": "رصيد ETH",
@@ -373,7 +373,7 @@
         "CountryAlertUnknown": "لن يتمكن التطبيق من اكتشاف دولة العرض. عنوان IP هو {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingService": "<0>البدء في استخدام {{serviceName}}</0>"
+        "StartUsingService": "البدء في استخدام {{serviceName}}"
     },
     "agent/dashboard": {
         "TotalIncome": "إجمالي الدخل:",

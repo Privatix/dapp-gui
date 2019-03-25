@@ -132,9 +132,11 @@ class Navigation extends React.Component<Props, any> {
                         <li className=''>
                             <NavLink exact to='/client-vpn-list' activeClassName='active' className='waves-effect'>
                                 <i className='md md-toc'></i>
-                                <Trans i18nKey='ServiceList' values={{serviceName}} >
-                                    <span>{ {serviceName} }</span>list
-                                </Trans>
+                                <span>
+                                    <Trans i18nKey='ServiceList' values={{serviceName}} >
+                                        { {serviceName} } list
+                                    </Trans>
+                                </span>
                             </NavLink>
                         </li>
                         <li className=''>

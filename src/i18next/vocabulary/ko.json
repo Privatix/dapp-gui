@@ -263,7 +263,7 @@
         "Offerings": "오퍼링",
         "Servers": "서버",
         "ClientDashboard": "클라이언트 대시보드",
-        "ServiceList": "<0>{{serviceName}} 목록</0>"
+        "ServiceList": "{{serviceName}} 목록"
     },
     "topPanel": {
         "ETHBalance": "ETH 잔액",
@@ -373,7 +373,7 @@
         "CountryAlertUnknown": "오퍼링의 국가를 검색할 수 없습니다. IP 주소 {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingService": "<0>{{serviceName}} 사용 시작</0>"
+        "StartUsingService": "{{serviceName}} 사용 시작"
     },
     "agent/dashboard": {
         "TotalIncome": "총 수익:",

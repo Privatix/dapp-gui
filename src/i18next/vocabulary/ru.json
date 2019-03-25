@@ -281,7 +281,7 @@
         "Offerings": "Предложения",
         "Servers": "Серверы",
         "ClientDashboard": "Главная",
-        "ServiceList": "<0>Список сервисов {{serviceName}}</0>"
+        "ServiceList": "Список сервисов {{serviceName}}"
     },
     "topPanel": {
         "ETHBalance": "Баланс ETH",
@@ -403,7 +403,7 @@
         "CountryAlertUnknown": "Приложение не смогло определить страну предложения. IP адрес {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingService": "<0>Начать использовать {{serviceName}}</0>"
+        "StartUsingService": "Начать использовать {{serviceName}}"
     },
     "agent/dashboard": {
         "TotalIncome": "Доход:",

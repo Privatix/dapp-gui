@@ -263,7 +263,7 @@
         "Offerings": "オファー",
         "Servers": "サーバー",
         "ClientDashboard": "クライアントダッシュボード",
-        "ServiceList": "<0>{{serviceName}} リスト</0>"
+        "ServiceList": "{{serviceName}} リスト"
     },
     "topPanel": {
         "ETHBalance": "ETH 残高",
@@ -373,7 +373,7 @@
         "CountryAlertUnknown": "アプリケーションはオファー元の国を検出できません。IPアドレス {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingService": "<0>{{serviceName}} を使用開始</0>"
+        "StartUsingService": "{{serviceName}} を使用開始"
     },
     "agent/dashboard": {
         "TotalIncome": "合計収入：",

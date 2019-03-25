@@ -263,7 +263,7 @@
         "Offerings": "产品",
         "Servers": "服务器",
         "ClientDashboard": "客户端仪表板",
-        "ServiceList": "<0>{{serviceName}} 列表</0>"
+        "ServiceList": "{{serviceName}} 列表"
     },
     "topPanel": {
         "ETHBalance": "ETH 余额",
@@ -373,7 +373,7 @@
         "CountryAlertUnknown": "应用程序将无法检测到产品的国家/地区。IP 地址：{{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingService": "<0>开始使用 {{serviceName}}</0>"
+        "StartUsingService": "开始使用 {{serviceName}}"
     },
     "agent/dashboard": {
         "TotalIncome": "总收入：",

@@ -263,7 +263,7 @@
         "Offerings": "Angebote",
         "Servers": "Server",
         "ClientDashboard": "Client-Dashboard",
-        "ServiceList": "<0>{{serviceName}}-Liste</0>"
+        "ServiceList": "{{serviceName}}-Liste"
     },
     "topPanel": {
         "ETHBalance": "ETH-Guthaben",
@@ -373,7 +373,7 @@
         "CountryAlertUnknown": "Das Land des Angebots kann von der Anwendung nicht erkannt werden. IP-Adresse {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingService": "<0>Verwendung von {{serviceName}} starten</0>"
+        "StartUsingService": "Verwendung von {{serviceName}} starten"
     },
     "agent/dashboard": {
         "TotalIncome": "Gesamteinkommen:",

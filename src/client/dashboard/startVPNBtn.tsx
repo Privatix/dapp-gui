@@ -39,13 +39,13 @@ class StartVPN extends React.Component <any,any> {
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-t-20'>
-                    <Trans i18nKey='StartUsingService' values={{serviceName}} >
-                        <button type='button'
+                    <button type='button'
                             className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light'
                             onClick={this.startVPNBtnHandler}>
-                            { {serviceName} }
-                        </button>
-                    </Trans>
+                        <Trans i18nKey='StartUsingService' values={{serviceName}} >
+                                Start using { {serviceName} }
+                        </Trans>
+                    </button>
                 </div>
             </div>
         </div>;

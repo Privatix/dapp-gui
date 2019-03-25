@@ -263,7 +263,7 @@
         "Offerings": "Offres",
         "Servers": "Serveurs",
         "ClientDashboard": "Tableau de bord du client",
-        "ServiceList": "<0>Liste {{serviceName}}</0>"
+        "ServiceList": "Liste {{serviceName}}"
     },
     "topPanel": {
         "ETHBalance": "Solde ETH",
@@ -373,7 +373,7 @@
         "CountryAlertUnknown": "L'application ne pourra pas détecter le pays de l'offre. Adresse IP {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingService": "<0>Commencer à utiliser le {{serviceName}}</0>"
+        "StartUsingService": "Commencer à utiliser le {{serviceName}}"
     },
     "agent/dashboard": {
         "TotalIncome": "Revenu total :",

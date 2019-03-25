@@ -255,7 +255,7 @@
         "Offerings": "Ofertas",
         "Servers": "Servidores",
         "ClientDashboard": "Panel de cliente",
-        "ServiceList": "<0>Lista de {{serviceName}}</0>"
+        "ServiceList": "Lista de {{serviceName}}"
     },
     "topPanel": {
         "ETHBalance": "Saldo de ETH",
@@ -342,7 +342,7 @@
         "CountryAlertUnknown": "La aplicación no podrá detectar el país de la oferta. Dirección IP {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingService": "<0>Comenzar a usar la {{serviceName}}</0>"
+        "StartUsingService": "Comenzar a usar la {{serviceName}}"
     },
     "agent/dashboard": {
         "TotalIncome": "Ingresos totales:",
