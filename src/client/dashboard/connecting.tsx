@@ -10,6 +10,7 @@ import IncreaseDepositButton from 'client/connections/increaseDepositButton';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import notice from 'utils/notice';
+
 import { State } from 'typings/state';
 
 const countdownRender = ( { hours, minutes, seconds, completed } ) => {

@@ -14,6 +14,7 @@ interface State {
     localSettings: LocalSettings;
     channel: string;
     mode: Role;
+    advancedMode: boolean;
     ws: WS;
     totalIncome: number;
     offeringsAvailability: {
@@ -30,6 +31,7 @@ const StateDefault: State = {
     localSettings: null,
     channel: '',
     mode: Role.CLIENT,
+    advancedMode: false,
     ws: null,
     totalIncome: 0,
     offeringsAvailability: {

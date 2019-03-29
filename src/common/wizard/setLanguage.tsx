@@ -7,6 +7,7 @@ import {NextButton} from './utils';
 import SelectLanguage from 'i18next/selectLanguage';
 
 interface IProps {
+    mode: string;
     t?: any;
     history?: any;
 }
@@ -34,7 +35,7 @@ class SetLanguage extends React.Component<IProps, {}>{
 
     render() {
 
-        const { t } = this.props;
+        const { t, mode } = this.props;
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -42,7 +43,7 @@ class SetLanguage extends React.Component<IProps, {}>{
             </div>
 
             <div className='p-20 wizard clearfix'>
-                <Steps step={1} />
+                <Steps step={1} mode={mode} />
                 <div className='content clearfix text-center'>
                     <div className='col-6 selectLangStep'>
                         <span className='col-4 col-form-label'>{t('PleaseSelectLanguage')}</span>

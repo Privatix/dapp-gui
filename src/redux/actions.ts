@@ -9,6 +9,7 @@ import { Role } from 'typings/mode';
 export const enum actions {
     REFRESH_ACCOUNTS,
     SET_MODE,
+    SET_ADVANCED_MODE,
     UPDATE_PRODUCTS,
     UPDATE_SETTINGS,
     UPDATE_LOCAL_SETTINGS,
@@ -35,6 +36,7 @@ const handlers: ReduxHandlers = {
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     updateServiceName          : function(serviceName: string){ return { type: actions.UPDATE_SERVICE_NAME, value: serviceName };},
     setMode                    : function(mode: Role){ return { type: actions.SET_MODE, value: mode };},
+    setAdvancedMode            : function(advancedMode: boolean){ return { type: actions.SET_ADVANCED_MODE, value: advancedMode };},
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
     setOfferingsAvailability   : function(offeringsAvailability: Object[]){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};},

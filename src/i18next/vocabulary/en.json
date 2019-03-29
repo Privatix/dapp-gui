@@ -744,5 +744,22 @@
         "ServiceBalance": "Service Balance",
         "IsDefault": "Is Default",
         "Actions": "Actions"
+    },
+    "client/simpleMode" : {
+        "disconnected": "Disconnected",
+        "connecting": "Connecting",
+        "connected": "Connected",
+        "disconnecting": "Disconnecting",
+        "Disconnect": "Disconnect",
+        "TIME": "TIME",
+        "TRAFFIC": "TRAFFIC",
+        "SPENT": "SPENT",
+        "Connecting": "Connecting...",
+        "Disconnecting": "Disconnecting...",
+        "Connect": "Connect",
+        "Balance": "Balance",
+        "Address": "Address",
+        "LighweightMode": "Simple Mode",
+        "AdvancedMode": "Advanced Mode"
     }
 }

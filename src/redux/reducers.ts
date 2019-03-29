@@ -22,6 +22,7 @@ export default function reducer(state: State = StateDefault, action: Action = {t
         [actions.UPDATE_LOCAL_SETTINGS]         : (state: State, action: Action) => _.assign({}, state, {localSettings: action.value}),
         [actions.UPDATE_TOTAL_INCOME]           : (state: State, action: Action) => _.assign({}, state, {totalIncome: action.value}),
         [actions.SET_MODE]                      : (state: State, action: Action) => _.assign({}, state, {mode: action.value}),
+        [actions.SET_ADVANCED_MODE]             : (state: State, action: Action) => _.assign({}, state, {advancedMode: action.value}),
         [actions.SET_CHANNEL]                   : (state: State, action: Action) => _.assign({}, state, {channel: action.value}),
         [actions.SET_WS]                        : (state: State, action: Action) => _.assign({}, state, {ws: action.value}),
         [actions.SET_OFFERINGS_AVAILABILITY]    : (state: State, action: Action) => _.assign({}, state, {offeringsAvailability: Object.assign({}, {counter: state.offeringsAvailability.counter - action.value.length}, {statuses: (Object.assign({}, state.offeringsAvailability.statuses, ...action.value))})}),
