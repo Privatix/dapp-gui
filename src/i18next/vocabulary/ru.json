@@ -762,5 +762,22 @@
         "ServiceBalance": "Баланс сервиса",
         "IsDefault": "По умолчанию",
         "Actions": "Действия"
+    },
+    "client/simpleMode" : {
+        "disconnected": "Отключен",
+        "connecting": "Подключение",
+        "connected": "Подключен",
+        "disconnecting": "Отключение",
+        "Disconnect": "Отключиться",
+        "TIME": "Время",
+        "TRAFFIC": "Траффик",
+        "SPENT": "Потрачено",
+        "Connecting": "Подключение...",
+        "Disconnecting": "Отключение...",
+        "Connect": "Подключиться",
+        "Balance": "Баланс",
+        "Address": "Адрес",
+        "LighweightMode": "Простой режим",
+        "AdvancedMode": "Продвинутый режим"
     }
 }

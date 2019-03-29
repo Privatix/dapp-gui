@@ -1,5 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
+import { translate } from 'react-i18next';
 
 import handlers from 'redux/actions';
 
@@ -9,22 +10,23 @@ import { State } from 'typings/state';
 interface IProps {
     advancedMode: boolean;
     setAdvancedMode?(mode:boolean): void;
+    t?: any;
 }
 
+@translate(['client/simpleMode'])
 class SwitchAdvancedModeButton extends React.Component<IProps, {}> {
 
     onClick = (evt) => {
         evt.preventDefault();
-        console.log('ADVANCED!!!');
         const { setAdvancedMode, advancedMode } = this.props;
         setAdvancedMode(!advancedMode);
     }
 
     render(){
 
-        const { advancedMode } = this.props;
+        const { t, advancedMode } = this.props;
 
-        return <a href='' onClick={this.onClick}>{advancedMode ? 'Lighweight Mode' : 'Advanced Mode'}</a>;
+        return <a href='' style={ {margin: '10px'} } onClick={this.onClick}>{advancedMode ? t('LighweightMode') : t('AdvancedMode')}</a>;
     }
 }
 
