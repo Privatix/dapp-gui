@@ -467,10 +467,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                             <CopyToClipboard text={ethAddr} />
                         </h5>
                         <h5>{t('Balance')}: { balance } PRIX</h5>
-                        <img src='images/logo_big.png' alt='image' className='img-fluid' width='200' />
-                        <br />
-                        <br />
-                        <img src='images/PrivatixNetwork.png' width='400px' height='100px' />
+                        <img src='images/Privatix_logo.png' alt='image' className='img-fluid' width='250' />
                         <h1>{t(status)}</h1>
                         <br/>
                         { this[this.state.status]() }
