@@ -23,10 +23,15 @@ class SelectCountryOption extends React.Component<any, any> {
     }
 
     render(){
-        const { label, cost } = this.props.option;
+        const { label, value, cost } = this.props.option;
         return (
             <div onClick={this.onClick} style={ {display: 'flex', justifyContent: 'space-between'} } >
-                <span style={ {margin: '5px'} } >{label}</span><span style={ {margin: '5px'} } >{cost}</span>
+                <img src={`images/country/${value}.png`}
+                     width='30px'
+                     height='20px'
+                     style={ {alignSelf: 'center', marginLeft: '5px'} }
+                 />
+                 <span style={ {margin: '5px'} } >{label}</span><span style={ {margin: '5px'} } >{cost}</span>
             </div>
         );
     }
