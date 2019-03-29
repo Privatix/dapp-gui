@@ -281,7 +281,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                 <h6 className='text-muted'>IP: {ip}</h6>
                 <br/>
                 <div className='content clearfix content-center'>
-                    <div className='col-3' style={ {margin: 'auto'} }>
+                    <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
                                 searchable={false}
@@ -341,7 +341,7 @@ class LightWeightClient extends React.Component<IProps, any> {
         return (
             <>
                 <div className='content clearfix content-center'>
-                    <div className='col-3' style={ {margin: 'auto'} }>
+                    <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
                                 searchable={false}
@@ -379,7 +379,7 @@ class LightWeightClient extends React.Component<IProps, any> {
         return (
             <>
                 <div className='content clearfix content-center'>
-                    <div className='col-3' style={ {margin: 'auto'} }>
+                    <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
                                 searchable={false}
@@ -419,7 +419,7 @@ class LightWeightClient extends React.Component<IProps, any> {
         return (
             <>
                 <div className='content clearfix content-center'>
-                    <div className='col-3' style={ {margin: 'auto'} }>
+                    <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
                                 searchable={false}
