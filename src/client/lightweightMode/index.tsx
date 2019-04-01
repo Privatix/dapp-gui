@@ -126,7 +126,7 @@ class LightWeightClient extends React.Component<IProps, any> {
             }
         }else{
             if(this.state.status !== 'connecting'){
-                this.setState({status: 'disconnected'});
+                this.setState({status: 'disconnected', channel: null});
                 const clientOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
                 this.setState({offerings: clientOfferings.items.filter(offering => offering.currentSupply !== 0)});
             }else{
