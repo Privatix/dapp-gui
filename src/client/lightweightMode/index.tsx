@@ -271,7 +271,7 @@ class LightWeightClient extends React.Component<IProps, any> {
 
         const offerings = this.getLocations();
         const selectedOffering = this.getCurrentLocation();
-        const secondsTotal = Math.floor((Date.now() - Date.parse(channel.job.createdAt))/1000);
+        const secondsTotal = Math.floor((Date.now() - (new Date().getTimezoneOffset()*60*1000)- Date.parse(channel.job.createdAt))/1000);
         const seconds = secondsTotal%60;
         const minutes = ((secondsTotal - seconds)/60)%60;
         const hours = (secondsTotal - minutes*60 - seconds)/(60*60);
