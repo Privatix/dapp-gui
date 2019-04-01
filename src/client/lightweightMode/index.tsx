@@ -100,6 +100,7 @@ class LightWeightClient extends React.Component<IProps, any> {
             this.subscription = await ws.subscribe('channel', ids, this.refresh);
             const channel = channels[0];
             this.setState({channel});
+            this.updateCurrentCountry(channel);
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
                     this.setState({status: 'connected'});
@@ -133,6 +134,17 @@ class LightWeightClient extends React.Component<IProps, any> {
                 setTimeout(this.refresh, 1000);
             }
 
+        }
+    }
+
+    async updateCurrentCountry(channel: any){
+
+        const { ws } = this.props;
+
+        if(!this.state.optimalLocation){
+            const offering = await ws.getOffering(channel.offering);
+            const country = offering.country.toLowerCase();
+            this.setState({optimalLocation: {value: country, label: countryByISO(country)}});
         }
     }
 
@@ -189,6 +201,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                 this.refresh();
             }
         } catch (e) {
+            this.setState({status: 'disconnected'});
             msg = t('ErrorAcceptingOffering');
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }
