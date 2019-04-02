@@ -117,7 +117,7 @@ class SetPassword extends React.Component<IProps, IState>{
                 registerBugsnag(ws);
                 const role = await ws.getUserRole();
                 this.props.dispatch(handlers.setMode(role));
-                this.props.history.push(mode === 'advanced' ? '/setAccount' : '/getPrix/');
+                this.props.history.push(mode === 'advanced' ? '/setAccount' : '/getPrix/generate');
             }catch(e){
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('AccessDenied')});
                 this.submitted = false;

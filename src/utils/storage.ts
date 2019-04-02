@@ -1,7 +1,7 @@
 import * as api from './api';
 import { createStore, applyMiddleware } from 'redux';
 import thunkMiddleware from 'redux-thunk';
-import {valid, gt } from 'semver';
+import {valid as isValid, gt } from 'semver';
 
 import reducers from 'redux/reducers';
 import { asyncProviders, default as handlers } from 'redux/actions';
@@ -23,13 +23,16 @@ const ws = new WS();
 storage.dispatch(handlers.setWS(ws));
 storage.dispatch(asyncProviders.updateLocalSettings());
 const checkVersion = function(releases: any, currentRelease: string, target: string){
+    if(!currentRelease){
+        return '0.0.0';
+    }
     const versions = Object.keys(releases);
     if(!versions.length){
         return currentRelease;
     }
 
     const max = versions.reduce((max, version) => {
-        if(!valid(version)){
+        if(!isValid(version)){
            return max;
         }
         if(!gt(version, max)){
@@ -49,20 +52,24 @@ const checkVersion = function(releases: any, currentRelease: string, target: str
 
 
 api.on('releases', async function(event: any, data: any){
+
     await ws.whenAuthorized();
     const guiSettings = await ws.getGUISettings();
     const settings = await ws.getLocal();
-    const latestReleaseChecked = checkVersion(data, settings.release, settings.target);
-    if(!gt(latestReleaseChecked, settings.release)
-       || ((guiSettings as any).latestReleaseChecked
-           && !gt(latestReleaseChecked, (guiSettings as any).latestReleaseChecked.version)
-          )
-    ){
-        return;
-    }
 
-    const updated = Object.assign({}, guiSettings, {latestReleaseChecked: data[latestReleaseChecked]});
-    await ws.setGUISettings(updated);
+    if(settings.release && isValid(settings.release)){
+        const latestReleaseChecked = checkVersion(data, settings.release, settings.target);
+        if(!gt(latestReleaseChecked, settings.release)
+           || ((guiSettings as any).latestReleaseChecked
+               && !gt(latestReleaseChecked, (guiSettings as any).latestReleaseChecked.version)
+              )
+        ){
+            return;
+        }
+
+        const updated = Object.assign({}, guiSettings, {latestReleaseChecked: data[latestReleaseChecked]});
+        await ws.setGUISettings(updated);
+    }
 });
 
 const refresh = async function(){

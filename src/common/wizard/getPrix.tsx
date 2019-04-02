@@ -42,7 +42,7 @@ class GetPrix extends React.Component<IProps, IState>{
 
         const { ws, t, accountId } = this.props;
 
-        if(accountId){
+        if(accountId && accountId !== 'generate'){
             ws.getAccount(accountId)
               .then(account => {
                   this.setState({ethAddr: `0x${account.ethAddr}`});
@@ -136,6 +136,7 @@ class GetPrix extends React.Component<IProps, IState>{
 
         const { t, accountId } = this.props;
         const { ethAddr, didIt, getPrix, done } = this.state;
+        const advancedMode = accountId && accountId !== 'generate';
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -143,7 +144,7 @@ class GetPrix extends React.Component<IProps, IState>{
             </div>
             <div className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={accountId ? 6 : 3} prix={true} mode={accountId ? 'advanced' : 'simple' } />
+                    <Steps step={advancedMode ? 6 : 3} prix={true} mode={advancedMode ? 'advanced' : 'simple' } />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('WeAreCurrentlyOnTestnet')}</p>
