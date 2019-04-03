@@ -146,6 +146,8 @@ class LightWeightClient extends React.Component<IProps, any> {
                         if(channel.channelStatus.serviceStatus === 'suspended'){
                             ws.changeChannelStatus(channel.id, 'resume');
                         }
+                    }else{
+                        this.setState({status: 'suspended'});
                     }
                     break;
                 case 'terminating':
@@ -241,6 +243,14 @@ class LightWeightClient extends React.Component<IProps, any> {
 
         ws.changeChannelStatus(channel.id, 'terminate');
         this.setState({status: 'disconnecting', ip: ''});
+    }
+
+    onResume = () => {
+
+        const { ws } = this.props;
+        const { channel } = this.state;
+        ws.changeChannelStatus(channel.id, 'resume');
+        this.setState({status: 'connecting'});
     }
 
     changeLocation = (optimalLocation: any) => {
@@ -407,6 +417,36 @@ class LightWeightClient extends React.Component<IProps, any> {
                 />
 
                 {channel ? <JobName className='text-muted' jobtype={channel.job.jobtype} /> : null }
+            </>
+        );
+    }
+
+    suspended(){
+
+        const { t } = this.props;
+
+        const offerings = this.getLocations();
+        const selectedOffering = this.getCurrentLocation();
+
+        return (
+            <>
+                <div className='content clearfix content-center'>
+                    <div style={ {margin: 'auto', width: '300px'} }>
+                        <Select className='form-control btn btn-white'
+                                value={selectedOffering}
+                                valueRenderer={SelectCountryValueRenderer}
+                                searchable={false}
+                                clearable={false}
+                                options={offerings}
+                                disabled={true}
+                        />
+                    </div>
+                </div>
+                <br/>
+                <br/>
+                <button type='button' onClick={this.onResume} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                    {t('Resume')}
+                </button>
             </>
         );
     }

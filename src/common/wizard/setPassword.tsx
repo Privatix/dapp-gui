@@ -19,7 +19,10 @@ interface IProps {
     ws?: WS;
     dispatch?: any;
     history?: any;
-    mode: string;
+}
+
+interface IOwnProps extends IProps {
+    mode: 'simple' | 'advanced';
 }
 
 interface IState {
@@ -29,11 +32,11 @@ interface IState {
 
 
 @translate(['auth/setPassword', 'utils/notice'])
-class SetPassword extends React.Component<IProps, IState>{
+class SetPassword extends React.Component<IOwnProps, IState>{
 
     private submitted = false;
 
-    constructor(props: IProps){
+    constructor(props: IOwnProps){
         super(props);
         this.state = {pwd: '', conf: ''};
     }
@@ -192,4 +195,6 @@ class SetPassword extends React.Component<IProps, IState>{
     }
 }
 
-export default withRouter(connect<IProps>((state:State) => state)(SetPassword));
+export default withRouter(connect<IProps>((state:State) => ({
+    ws: state.ws
+}))(SetPassword));
