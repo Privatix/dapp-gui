@@ -389,6 +389,9 @@ class LightWeightClient extends React.Component<IProps, any> {
             return i !== -1 ? i + 1 : 0;
         };
 
+        const step = channel ? currentStep(channel.job.jobtype) : 0;
+        const percentage = Math.floor(step * 100/steps.length);
+
         return (
             <>
                 <div className='content clearfix content-center'>
@@ -410,12 +413,12 @@ class LightWeightClient extends React.Component<IProps, any> {
                 <br />
                 <br />
                 <progress
-                    style={ {margin: 'auto', width: '300px'} }
-                    className='progress-bar progress-bar-primary wow animated progress-animated'
-                    value={channel ? currentStep(channel.job.jobtype) : 0}
-                    max={steps.length}
+                    style={ {margin: 'auto', width: '300px', height: '10px'} }
+                    className='wow animated progress-animated'
+                    value={percentage}
+                    max={100}
                 />
-
+                <br />
                 {channel ? <JobName className='text-muted' jobtype={channel.job.jobtype} /> : null }
             </>
         );
@@ -499,6 +502,9 @@ class LightWeightClient extends React.Component<IProps, any> {
             return i !== -1 ? i + 1 : 0;
         };
 
+        const step = channel ? currentStep(channel.job.jobtype) : 0;
+        const percentage = Math.floor(step * 100/steps.length);
+
         return (
             <>
                 <div className='content clearfix content-center'>
@@ -520,12 +526,12 @@ class LightWeightClient extends React.Component<IProps, any> {
                 <br />
                 <br />
                 <progress
-                    style={ {margin: 'auto', width: '300px'} }
-                    className='progress-bar progress-bar-primary wow animated progress-animated'
-                    value={channel ? currentStep(channel.job.jobtype) : 0}
-                    max={steps.length}
+                    style={ {margin: 'auto', width: '300px', height: '10px'} }
+                    className='wow animated progress-animated'
+                    value={percentage}
+                    max={100}
                 />
-
+                <br />
                 <JobName className='text-muted' jobtype={channel.job.jobtype} />
             </>
         );
