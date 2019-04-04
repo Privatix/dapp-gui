@@ -251,7 +251,6 @@
         "Accounts": "계정",
         "Help": "도움말",
         "Settings": "설정",
-        "Logs": "로그",
         "SomethingWentWrong": "문제가 발생했습니다!"
     },
     "navigation": {
@@ -262,6 +261,7 @@
         "Sessions": "세션",
         "Offerings": "오퍼링",
         "Servers": "서버",
+        "Logs": "로그",
         "ClientDashboard": "클라이언트 대시보드",
         "ServiceList": "{{serviceName}} 목록"
     },

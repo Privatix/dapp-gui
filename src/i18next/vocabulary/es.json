@@ -243,7 +243,6 @@
         "Accounts": "Cuentas",
         "Help": "Ayuda",
         "Settings": "Configuración",
-        "Logs": "Registros",
         "SomethingWentWrong": "¡Se ha producido un error!"
     },
     "navigation": {
@@ -254,6 +253,7 @@
         "Sessions": "Sesiones",
         "Offerings": "Ofertas",
         "Servers": "Servidores",
+        "Logs": "Registros",
         "ClientDashboard": "Panel de cliente",
         "ServiceList": "Lista de {{serviceName}}"
     },

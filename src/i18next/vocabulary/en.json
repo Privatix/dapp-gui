@@ -269,7 +269,6 @@
         "Accounts": "Accounts",
         "Help": "Help",
         "Settings": "Settings",
-        "Logs": "Logs",
         "SomethingWentWrong": "Something went wrong!"
     },
     "navigation": {
@@ -280,6 +279,7 @@
         "Sessions": "Sessions",
         "Offerings": "Offerings",
         "Servers": "Servers",
+        "Logs": "Logs",
         "ClientDashboard": "Client dashboard",
         "ServiceList": "{{serviceName}} list"
     },

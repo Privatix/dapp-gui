@@ -251,7 +251,6 @@
         "Accounts": "アカウント",
         "Help": "ヘルプ",
         "Settings": "設定",
-        "Logs": "ログ",
         "SomethingWentWrong": "不明なエラーが発生しました！"
     },
     "navigation": {
@@ -262,6 +261,7 @@
         "Sessions": "セッション",
         "Offerings": "オファー",
         "Servers": "サーバー",
+        "Logs": "ログ",
         "ClientDashboard": "クライアントダッシュボード",
         "ServiceList": "{{serviceName}} リスト"
     },

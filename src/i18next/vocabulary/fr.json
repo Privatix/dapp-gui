@@ -251,7 +251,6 @@
         "Accounts": "Comptes",
         "Help": "Aide",
         "Settings": "Paramètres",
-        "Logs": "Logs",
         "SomethingWentWrong": "Quelque chose s'est mal passé !"
     },
     "navigation": {
@@ -262,6 +261,7 @@
         "Sessions": "Sessions",
         "Offerings": "Offres",
         "Servers": "Serveurs",
+        "Logs": "Logs",
         "ClientDashboard": "Tableau de bord du client",
         "ServiceList": "Liste {{serviceName}}"
     },

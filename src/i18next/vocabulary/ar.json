@@ -251,7 +251,6 @@
         "Accounts": "الحسابات",
         "Help": "المساعدة",
         "Settings": "الإعدادات",
-        "Logs": "السجلات",
         "SomethingWentWrong": "حدث خطأ ما!"
     },
     "navigation": {
@@ -262,6 +261,7 @@
         "Sessions": "الجلسات",
         "Offerings": "العروض",
         "Servers": "الخوادم",
+        "Logs": "السجلات",
         "ClientDashboard": "لوحة تحكم العميل",
         "ServiceList": "قائمة {{serviceName}}"
     },

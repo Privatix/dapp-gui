@@ -251,7 +251,6 @@
         "Accounts": "Konten",
         "Help": "Hilfe",
         "Settings": "Einstellungen",
-        "Logs": "Protokolle",
         "SomethingWentWrong": "Ein Fehler ist aufgetreten!"
     },
     "navigation": {
@@ -262,6 +261,7 @@
         "Sessions": "Sitzungen",
         "Offerings": "Angebote",
         "Servers": "Server",
+        "Logs": "Protokolle",
         "ClientDashboard": "Client-Dashboard",
         "ServiceList": "{{serviceName}}-Liste"
     },

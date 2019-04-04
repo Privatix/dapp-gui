@@ -251,7 +251,6 @@
         "Accounts": "帐户",
         "Help": "帮助",
         "Settings": "设置",
-        "Logs": "日志",
         "SomethingWentWrong": "出现错误！"
     },
     "navigation": {
@@ -262,6 +261,7 @@
         "Sessions": "会话",
         "Offerings": "产品",
         "Servers": "服务器",
+        "Logs": "日志",
         "ClientDashboard": "客户端仪表板",
         "ServiceList": "{{serviceName}} 列表"
     },

@@ -269,7 +269,6 @@
         "Accounts": "Аккаунты",
         "Help": "Помощь",
         "Settings": "Настройки",
-        "Logs": "Логи",
         "SomethingWentWrong": "Что-то пошло не так!"
     },
     "navigation": {
@@ -280,6 +279,7 @@
         "Sessions": "Сессии",
         "Offerings": "Предложения",
         "Servers": "Серверы",
+        "Logs": "Логи",
         "ClientDashboard": "Главная",
         "ServiceList": "Список сервисов {{serviceName}}"
     },
