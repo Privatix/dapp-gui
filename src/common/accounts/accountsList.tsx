@@ -2,6 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { translate } from 'react-i18next';
+import { remote } from 'electron';
 
 import SortableTable from 'react-sortable-table-vilan';
 
@@ -9,34 +10,57 @@ import ModalWindow from 'common/modalWindow';
 import Account from './accountView';
 
 import notice from 'utils/notice';
-import { WS } from 'utils/ws';
+import * as api from 'utils/api';
 
 import {State} from 'typings/state';
-import {Account as AccountType} from 'typings/accounts';
 
 import { Name, EthereumAddress, ETH, ExchangeBalance, ServiceBalance, IsDefault, Actions } from 'common/tables/';
 
 interface IProps {
-    accounts?: AccountType[];
+    accounts?: State['accounts'];
     t?: any;
-    ws?: WS;
+    ws?: State['ws'];
 }
 
-@translate(['accounts/accountsList', 'utils/notice'])
+@translate(['accounts/accountsList', 'auth/backup', 'utils/notice'])
 class Accounts extends React.Component<IProps, {}> {
 
-    async onRefresh(accountId:any, evt: any){
+    async onRefresh(accountId:string, evt: any){
+
         evt.preventDefault();
+
         const { t, ws } = this.props;
+
         await ws.updateBalance(accountId);
         notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
+    }
+
+    async onBackup(accountId:string, evt: any){
+
+        evt.preventDefault();
+
+        const { t, ws } = this.props;
+        const fileName = remote.dialog.showSaveDialog({});
+
+        if(fileName){
+            ws.exportAccount(accountId, (res: any) => {
+                api.fs.saveAs(fileName, atob(res.result))
+                    .then((res:any) => {
+                        if(res.err){
+                            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('auth/backup:SomeErrorOccured')});
+                        }else{
+                            notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('BackupSuccessMsg')});
+                        }
+                    });
+            });
+        }
     }
 
     render(){
 
         const { t, accounts } = this.props;
 
-        const accountsDataArr = accounts.map((account: AccountType) => {
+        const accountsDataArr = accounts.map(account => {
 
             const isDefault = account.isDefault === true ? 'on' : 'off';
             const ethereumAddress = `0x${account.ethAddr}`;
@@ -56,12 +80,21 @@ class Accounts extends React.Component<IProps, {}> {
                 isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault}>
                                <i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i>
                            </span>,
-                actions: <Link to={'#'}
-                               onClick={this.onRefresh.bind(this, account.id)}
-                               className='btn btn-default btn-custom waves-effect waves-light'
-                         >
-                             {t('CheckBalanceBtn')}
-                         </Link>
+                actions: <>
+                             <Link to={'#'}
+                                   onClick={this.onRefresh.bind(this, account.id)}
+                                   className='btn btn-default btn-custom waves-effect waves-light'
+                             >
+                                 {t('CheckBalanceBtn')}
+                             </Link>
+                             <Link to={'#'}
+                                   onClick={this.onBackup.bind(this, account.id)}
+                                   className='btn btn-default btn-custom waves-effect waves-light'
+                                   style={ {marginLeft: '5px'} }
+                             >
+                                 {t('BackupBtn')}
+                             </Link>
+                         </>
             };
 
         });

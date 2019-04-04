@@ -334,6 +334,8 @@
         "IsDefault": "Is Default",
         "Actions": "Actions",
         "CheckBalanceBtn": "Check balance",
+        "BackupBtn": "Backup",
+        "BackupSuccessMsg": "Private key successfully saved.",
         "ModalTitle": "Account",
         "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes."
     },

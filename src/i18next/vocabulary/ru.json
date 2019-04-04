@@ -334,6 +334,8 @@
         "IsDefault": "По умолчанию",
         "Actions": "Действия",
         "CheckBalanceBtn": "Проверить баланс",
+        "BackupBtn": "Сохранить",
+        "BackupSuccessMsg": "Приватный ключ успешно сохранен.",
         "ModalTitle": "Аккаунт",
         "RefreshingAccountBalanceMsg": "Обновление баланса счета. Подождите 1-2 минуты."
     },

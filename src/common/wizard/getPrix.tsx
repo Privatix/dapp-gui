@@ -31,7 +31,7 @@ interface IState {
 @translate(['auth/getPrix', 'auth/generateKey', 'auth/utils'])
 class GetPrix extends React.Component<IProps, IState>{
 
-    observerId = null;
+    private observerId = null;
 
     constructor(props:IProps){
         super(props);
@@ -75,7 +75,7 @@ class GetPrix extends React.Component<IProps, IState>{
         }
     }
 
-    startObserveAccountBalance = async () => {
+    private startObserveAccountBalance = async () => {
 
         const { ws } = this.props;
         const { accountId } = this.state;
@@ -90,7 +90,7 @@ class GetPrix extends React.Component<IProps, IState>{
         }
     }
 
-    transferTokens = async () => {
+    private transferTokens = async () => {
         const { ws } = this.props;
         const { accountId  } = this.state;
 
@@ -101,7 +101,7 @@ class GetPrix extends React.Component<IProps, IState>{
         this.startObserveServiceBalance();
     }
 
-     startObserveServiceBalance = async () => {
+    private startObserveServiceBalance = async () => {
 
         const { ws } = this.props;
         const { accountId } = this.state;
@@ -115,16 +115,16 @@ class GetPrix extends React.Component<IProps, IState>{
         }
     }
 
-    back = back(`/backup/${this.props.accountId}/generateKey`).bind(this);
+    private back = back(`/backup/${this.props.accountId}/generateKey`).bind(this);
 
-    onSubmit = (evt: any) => {
+    private onSubmit = (evt: any) => {
 
         evt.preventDefault();
         this.setState({didIt: true});
         this.startObserveAccountBalance();
     }
 
-    onFinish = (evt: any) => {
+    private onFinish = (evt: any) => {
 
         const { entryPoint } = this.props;
         evt.preventDefault();
@@ -204,7 +204,7 @@ class GetPrix extends React.Component<IProps, IState>{
                                 </li>
                             </ol>
                             <div className='form-group text-right m-t-40'>
-                                <PreviousButton onSubmit={this.back} />
+                                {advancedMode ? <PreviousButton onSubmit={this.back} /> : null }
                                 {done
                                     ? <FinishButton onSubmit={this.onFinish} />
                                     : <button className='btn btn-default text-uppercase waves-effect waves-light pull-right m-l-5 btnCustomDisabled disabled' >
