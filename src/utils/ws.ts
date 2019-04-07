@@ -351,6 +351,10 @@ export class WS {
         this.socket.send(JSON.stringify(req));
     }
 
+    updateAccount(accountId: string, name: string, isDefault: boolean, inUse: boolean){
+        return this.send('ui_updateAccount', [accountId, name, isDefault, inUse]);
+    }
+
     updateBalance(accountId: string){
         return this.send('ui_updateBalance', [accountId]);
     }

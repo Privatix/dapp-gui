@@ -56,6 +56,17 @@ class Accounts extends React.Component<IProps, {}> {
         }
     }
 
+    async onSetAsDefault(account: any){
+
+        const { ws } = this.props;
+
+        try{
+            await ws.updateAccount(account.id, account.name, true, account.inUse);
+        }catch(e){
+            // 
+        }
+    }
+
     render(){
 
         const { t, accounts } = this.props;
@@ -77,7 +88,7 @@ class Accounts extends React.Component<IProps, {}> {
                 eth: (account.ethBalance/1e18).toFixed(3),
                 exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
                 serviceBalance: (account.pscBalance/1e8).toFixed(3),
-                isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault}>
+                isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault} onClick={account.isDefault ? null : this.onSetAsDefault.bind(this, account)}>
                                <i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i>
                            </span>,
                 actions: <>
