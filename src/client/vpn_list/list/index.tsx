@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate, Trans } from 'react-i18next';
+import { translate } from 'react-i18next';
 import { connect } from 'react-redux';
 import Pagination from 'react-js-pagination';
 
@@ -34,7 +34,6 @@ interface IProps {
     dispatch?: any;
     offeringsAvailability?: State['offeringsAvailability'];
     localSettings?: State['localSettings'];
-    serviceName: string;
 }
 
 interface Filter {
@@ -75,6 +74,8 @@ class VPNList extends React.Component<IProps, IState> {
 
     checkAvailabilityBtn = null;
     handler = null;
+    newOfferingSubscription = null;
+
     get defaultFilter(){
         return {
             price: {
@@ -118,26 +119,21 @@ class VPNList extends React.Component<IProps, IState> {
     }
 
     componentWillUnmount(){
+
+        const { ws } = this.props;
+
         if (this.handler !== null) {
             clearTimeout(this.handler);
             this.handler = null;
+        }
+        if(this.newOfferingSubscription){
+            ws.unsubscribe(this.newOfferingSubscription);
         }
     }
 
     refresh = async () => {
 
         await this.getClientOfferings();
-    }
-
-    onRefresh = async () => {
-        const { t, serviceName } = this.props;
-        await this.refresh();
-        notice({level: 'info'
-               ,header: t('utils/notice:Congratulations!')
-               ,msg: <Trans i18nKey='SuccessUpdateMsg' values={{serviceName}} >
-                         { {serviceName} } list was successfully updated!
-                     </Trans>
-        });
     }
 
     updateFilter(filter: UpdateFilter, cb: () => void){
@@ -208,11 +204,16 @@ class VPNList extends React.Component<IProps, IState> {
             clearInterval(this.handler);
             this.handler = null;
         }
+
         // Show loader when downloading VPN list
         if (clientOfferings.length === 0 && !this.isFiltered()) {
             this.setState({spinner: true});
             this.handler = setTimeout(this.refresh, 5000);
             return;
+        }
+
+        if(!this.newOfferingSubscription){
+            this.newOfferingSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish'], this.refresh, this.refresh);
         }
 
         this.setState({
@@ -410,11 +411,6 @@ class VPNList extends React.Component<IProps, IState> {
                     <div className='col-12 m-b-20'>
                         <button
                             className='btn btn-default btn-custom waves-effect waves-light'
-                            onClick={this.onRefresh}>
-                            {t('Refresh')}
-                        </button>
-                        <button
-                            className='btn btn-default btn-custom waves-effect waves-light ml-3'
                             ref={this.checkAvailabilityBtn}
                             onClick={this.onCheckStatus}>
                             {t('CheckAvailability')}
@@ -466,5 +462,4 @@ export default connect( (state: State) => (
     {ws: state.ws
     ,offeringsAvailability: state.offeringsAvailability
     ,localSettings: state.localSettings
-    ,serviceName: state.serviceName
     }) )(VPNList);

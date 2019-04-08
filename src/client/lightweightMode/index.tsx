@@ -78,7 +78,8 @@ interface IProps {
 class LightWeightClient extends React.Component<IProps, any> {
 
     subscription: string;
-    usageSubscription = undefined;
+    usageSubscription = null;
+    offeringsSubscription = null;
     acceptBtn = null;
     optimalLocations: any[];
     optimalLocation: any;
@@ -158,6 +159,11 @@ class LightWeightClient extends React.Component<IProps, any> {
             if(this.state.status !== 'connecting'){
                 this.setState({status: 'disconnected', channel: null});
                 const clientOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
+                const ids = clientOfferings.items.map(offering => offering.id);
+                if(this.offeringsSubscription){
+                    ws.unsubscribe(this.offeringsSubscription);
+                }
+                this.offeringsSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish', ...ids], this.refresh, this.refresh);
                 this.setState({offerings: clientOfferings.items.filter(offering => offering.currentSupply !== 0)});
             }else{
                 setTimeout(this.refresh, 1000);
@@ -269,24 +275,22 @@ class LightWeightClient extends React.Component<IProps, any> {
             return {};
         }
 
-        if(!this.optimalLocations || Object.keys(this.optimalLocations).length === 0){
-            let countries = offerings.reduce((registry: any, offering: any) => {
-                const countries = offering.country.split(',').map(country => country.trim().toLowerCase());
-                countries.forEach(country => {
-                    if(! (country in registry)){
-                        registry[country] = [];
-                    }
-                    registry[country].push(offering);
-                });
-                return registry;
-            }, {});
-
-            Object.keys(countries).forEach(country => {
-                countries[country] = this.getOptimalLocation(countries[country]);
+        let countries = offerings.reduce((registry: any, offering: any) => {
+            const countries = offering.country.split(',').map(country => country.trim().toLowerCase());
+            countries.forEach(country => {
+                if(! (country in registry)){
+                    registry[country] = [];
+                }
+                registry[country].push(offering);
             });
+            return registry;
+        }, {});
 
-            this.optimalLocations = countries;
-        }
+        Object.keys(countries).forEach(country => {
+            countries[country] = this.getOptimalLocation(countries[country]);
+        });
+
+        this.optimalLocations = countries;
 
         return Object.keys(this.optimalLocations).map(country => {
             const offering = this.optimalLocations[country];
@@ -297,12 +301,21 @@ class LightWeightClient extends React.Component<IProps, any> {
     }
 
     getCurrentLocation(){
+
         if(this.state.optimalLocation){
-            return this.state.optimalLocation;
+            const country = this.state.optimalLocation.value.toLowerCase();
+            if(country in this.optimalLocations){
+                return this.optimalLocation;
+            }
         }
+
         if(this.optimalLocation){
-            return this.optimalLocation;
+            const country = this.optimalLocation.value.toLowerCase();
+            if(country in this.optimalLocations){
+                return this.optimalLocation;
+            }
         }
+
         const countries = Object.keys(this.optimalLocations);
         if(countries.length){
             const country = countries[Math.floor(Math.random()*countries.length)];
