@@ -261,6 +261,10 @@ class Connecting extends React.Component<any, any>{
 
         const maxSuspendTimeMinutes = Math.ceil(this.state.offering.maxSuspendTime / 60);
 
+        const pauseMsg = <Trans i18nKey='client/dashboard/connecting:ThisOperationWillPauseServiceUsage' values={{serviceName}} >
+                              This operation will pause { {serviceName} } usage.
+                          </Trans>;
+
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
                 <div className='col-4 col-xl-4 buttonBlock'>
@@ -269,20 +273,17 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-4 col-xl-4 buttonBlock'>
                     <div className='card m-b-20 card-body buttonBlock'>
                         <p className='card-text'>
-                            <Trans i18nKey='ThisOperationWillPauseServiceUsage' values={{serviceName}} >
-                                This operation will pause { {serviceName} } usage.
-                            </Trans>
+                            {pauseMsg}
                         </p>
                         <p className='card-text'>{t('ForThisContractMaxSuspendTimeIs', {minutes: maxSuspendTimeMinutes})}</p>
                         <ConfirmPopupSwal
                             done={done}
                             title={t('Pause')}
-                            text={<span>
-                                      <Trans i18nKey='ThisOperationWillPauseServiceUsage' values={{serviceName}} >
-                                          This operation will pause { {serviceName} } usage.
-                                      </Trans><br />
+                            text={<>
+                                      {pauseMsg}
+                                      <br />
                                       {t('ForThisContractMaxSuspendTimeIs', {minutes: maxSuspendTimeMinutes})}
-                                  </span>}
+                                  </>}
                             className={'btn btn-primary btn-custom btn-block'}
                             swalType='warning'
                             swalConfirmBtnText={t('YesPauseIt')}
