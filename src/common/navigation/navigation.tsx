@@ -12,6 +12,7 @@ interface Props {
     mode: Role;
     t: any;
     serviceName: string;
+    location: any;
 }
 
 @translate(['navigation'])
@@ -85,8 +86,11 @@ class Navigation extends React.Component<Props, any> {
     }
 
     render() {
-        const { t, serviceName } = this.props;
+        const { t, serviceName, location } = this.props;
         const { activeSub } = this.state;
+
+        const headerNavigationItems = ['/accounts', '/settings'];
+        const useSub = headerNavigationItems.includes(location.pathname) ? null : activeSub;
 
         return this.props.mode === Role.AGENT ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
@@ -98,9 +102,9 @@ class Navigation extends React.Component<Props, any> {
                             </NavLink>
                         </li>
 
-                        <Submenu submenuData={this.channelsSubmenuData} active={activeSub} onClick={this.changeActive}/>
+                        <Submenu submenuData={this.channelsSubmenuData} active={useSub} onClick={this.changeActive}/>
 
-                        <Submenu submenuData={this.offeringsSubmenuData} active={activeSub} onClick={this.changeActive} />
+                        <Submenu submenuData={this.offeringsSubmenuData} active={useSub} onClick={this.changeActive} />
 
                         <li onClick={this.handleClickFalse} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
