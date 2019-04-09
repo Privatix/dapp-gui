@@ -88,7 +88,7 @@ class Header extends React.Component<any, any>{
 
     render(){
 
-        const { t } = this.props;
+        const { t, mode } = this.props;
 
         const style = {
             padding: '5px',
@@ -130,9 +130,12 @@ class Header extends React.Component<any, any>{
                                 <NavLink to='/settings' className='dropdown-item notify-item'>
                                     <i className='md md-settings'></i> <span>{t('Settings')}</span>
                                 </NavLink>
-                                <a onClick={this.setLighweightMode} className='dropdown-item notify-item cursorPoiner'>
-                                    <i className='md md-swap-horiz'></i> <span>Simple Mode</span>
-                                </a>
+                                { mode === Role.CLIENT
+                                    ? <a onClick={this.setLighweightMode} className='dropdown-item notify-item cursorPoiner'>
+                                          <i className='md md-swap-horiz'></i> <span>Simple Mode</span>
+                                      </a>
+                                    : null
+                                }
                             </div>
                     </li>
 
