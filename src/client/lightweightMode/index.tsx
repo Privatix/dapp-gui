@@ -80,6 +80,8 @@ class LightWeightClient extends React.Component<IProps, any> {
     subscription: string;
     usageSubscription = null;
     offeringsSubscription = null;
+    getIpSubscription = null;
+
     acceptBtn = null;
     optimalLocations: any[];
     optimalLocation: any;
@@ -104,12 +106,25 @@ class LightWeightClient extends React.Component<IProps, any> {
         if(this.usageSubscription){
             clearTimeout(this.usageSubscription);
         }
+        if(this.offeringsSubscription){
+            ws.unsubscribe(this.offeringsSubscription);
+        }
+        if(this.getIpSubscription){
+            clearTimeout(this.getIpSubscription);
+        }
     }
 
-    async getIp(){
-        const res = await fetch('https://api.ipify.org?format=json');
-        const json = await res.json();
-        this.setState({ip: json.ip});
+    async getIp(attempt?: number){
+        const counter = !attempt ? 0 : attempt;
+        if(counter < 5){
+            try{
+                const res = await fetch('https://api.ipify.org?format=json');
+                const json = await res.json();
+                this.setState({ip: json.ip});
+            }catch(e){
+                this.getIpSubscription = setTimeout(this.getIp.bind(this, counter+1), 3000);
+            }
+        }
     }
 
     refresh = async () => {
