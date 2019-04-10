@@ -158,6 +158,11 @@ class LightWeightClient extends React.Component<IProps, any> {
             }
         }else{
             if(this.state.status !== 'connecting'){
+                if(this.state.channel){
+                    if(this.state.usage && this.state.usage.current === 0){
+                        await ws.changeChannelStatus(this.state.channel.id, 'close');
+                    }
+                }
                 this.setState({status: 'disconnected', channel: null});
             }else{
                 setTimeout(this.refresh, 1000);
@@ -244,7 +249,7 @@ class LightWeightClient extends React.Component<IProps, any> {
             }
         } catch (e) {
             this.setState({status: 'disconnected'});
-            msg = t('ErrorAcceptingOffering');
+            msg = t('client/acceptOffering:ErrorAcceptingOffering');
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }
     }
