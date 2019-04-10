@@ -122,6 +122,7 @@ class LightWeightClient extends React.Component<IProps, any> {
             await ws.unsubscribe(this.subscription);
         }
 
+        this.updateOfferings();
         if(channels.length){
 
             const ids = channels.map(channel => channel.id);
@@ -158,18 +159,24 @@ class LightWeightClient extends React.Component<IProps, any> {
         }else{
             if(this.state.status !== 'connecting'){
                 this.setState({status: 'disconnected', channel: null});
-                const clientOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
-                const ids = clientOfferings.items.map(offering => offering.id);
-                if(this.offeringsSubscription){
-                    ws.unsubscribe(this.offeringsSubscription);
-                }
-                this.offeringsSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish', ...ids], this.refresh, this.refresh);
-                this.setState({offerings: clientOfferings.items.filter(offering => offering.currentSupply !== 0)});
             }else{
                 setTimeout(this.refresh, 1000);
             }
 
         }
+    }
+
+    async updateOfferings(){
+
+        const { ws } = this.props;
+
+        const clientOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
+        const ids = clientOfferings.items.map(offering => offering.id);
+        if(this.offeringsSubscription){
+            ws.unsubscribe(this.offeringsSubscription);
+        }
+        this.offeringsSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish', ...ids], this.refresh, this.refresh);
+        this.setState({offerings: clientOfferings.items.filter(offering => offering.currentSupply !== 0)});
     }
 
     async updateCurrentCountry(channel: any){
@@ -305,7 +312,7 @@ class LightWeightClient extends React.Component<IProps, any> {
         if(this.state.optimalLocation){
             const country = this.state.optimalLocation.value.toLowerCase();
             if(country in this.optimalLocations){
-                return this.optimalLocation;
+                return this.state.optimalLocation;
             }
         }
 
