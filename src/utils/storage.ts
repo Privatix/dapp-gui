@@ -21,8 +21,11 @@ const storage = createStore(reducers, applyMiddleware(
 
 const ws = new WS();
 storage.dispatch(handlers.setWS(ws));
-storage.dispatch(asyncProviders.updateLocalSettings());
-storage.dispatch(asyncProviders.setMode());
+(async () => {
+    await ws.whenReady();
+    storage.dispatch(asyncProviders.updateLocalSettings());
+    storage.dispatch(asyncProviders.setMode());
+})();
 
 const checkVersion = function(releases: any, currentRelease: string, target: string){
     if(!currentRelease){

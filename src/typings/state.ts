@@ -30,7 +30,7 @@ const StateDefault: State = {
     settings: {},
     localSettings: null,
     channel: '',
-    mode: Role.CLIENT,
+    mode: null,
     advancedMode: false,
     ws: null,
     totalIncome: 0,
