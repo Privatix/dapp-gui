@@ -5,6 +5,7 @@ import Select from 'react-select';
 
 import JobName from 'common/badges/jobName';
 import CopyToClipboard from 'common/copyToClipboard';
+import DotProgress from 'common/etc/dotProgress';
 
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
 
@@ -448,7 +449,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                 </div>
                 <br />
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
-                    {t('Connecting')}
+                    {t('Connecting')} <DotProgress />
                 </button>
                 <br />
                 <br />
@@ -561,7 +562,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                 </div>
                 <br />
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
-                    {t('Disconnecting')}
+                    {t('Disconnecting')} <DotProgress />
                 </button>
                 <br />
                 <br />
