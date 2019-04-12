@@ -114,7 +114,7 @@ export const asyncProviders: AsyncProviders = {
                 });
         };
     },
-    setMode: function(mode:Role, history: any, t: any){
+    setMode: function(){
         return function(dispatch: any, getState: Function){
             const { ws } = getState();
             ws.getUserRole()

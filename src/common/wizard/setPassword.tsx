@@ -9,7 +9,6 @@ import Steps from './steps';
 
 import { registerBugsnag } from 'utils/bugsnag';
 import {default as notice, closeNotice } from 'utils/notice';
-import handlers from 'redux/actions';
 import { WS } from 'utils/ws';
 
 import { State } from 'typings/state';
@@ -118,8 +117,6 @@ class SetPassword extends React.Component<IOwnProps, IState>{
                 await ws.setPassword(pwd);
                 await ws.setGUISettings({firstStart:false});
                 registerBugsnag(ws);
-                const role = await ws.getUserRole();
-                this.props.dispatch(handlers.setMode(role));
                 this.props.history.push(mode === 'advanced' ? '/setAccount' : '/getPrix/generate');
             }catch(e){
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('AccessDenied')});

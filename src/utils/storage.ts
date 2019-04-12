@@ -21,7 +21,12 @@ const storage = createStore(reducers, applyMiddleware(
 
 const ws = new WS();
 storage.dispatch(handlers.setWS(ws));
-storage.dispatch(asyncProviders.updateLocalSettings());
+(async () => {
+    await ws.whenReady();
+    storage.dispatch(asyncProviders.updateLocalSettings());
+    storage.dispatch(asyncProviders.setMode());
+})();
+
 const checkVersion = function(releases: any, currentRelease: string, target: string){
     if(!currentRelease){
         return '0.0.0';
@@ -74,11 +79,14 @@ api.on('releases', async function(event: any, data: any){
 
 const refresh = async function(){
 
-    const { ws, mode, serviceName } = storage.getState();
+    const { ws, mode, advancedMode, serviceName } = storage.getState();
 
     if(ws) {
 
         storage.dispatch(asyncProviders.updateLocalSettings());
+        if(mode === Role.AGENT && !advancedMode){
+            storage.dispatch(handlers.setAdvancedMode(true));
+        }
 
         await ws.whenAuthorized();
 

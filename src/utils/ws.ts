@@ -42,6 +42,12 @@ export class WS {
     private resolveAuth: Function = null;
 
     constructor() {
+        this.ready = new Promise((resolve: Function, reject: Function) => {
+            this.resolve = resolve;
+        });
+        this.authorized = new Promise((resolve: Function, reject: Function) => {
+            this.resolveAuth = resolve;
+        });
         api.settings.getLocal()
            .then(settings => {
                 this.reconnect(settings.wsEndpoint);
@@ -52,6 +58,8 @@ export class WS {
     reconnect(endpoint: string) {
 
         const socket = new WebSocket(endpoint);
+        this.socket = socket;
+
         if(!this.resolve){
             this.ready = new Promise((resolve: Function, reject: Function) => {
                 this.resolve = resolve;
@@ -114,7 +122,6 @@ export class WS {
           // console.log('Error ' + error.message);
         };
 
-        this.socket = socket;
     }
 
     whenReady() {
@@ -206,7 +213,7 @@ export class WS {
     send(method: string, params: any[] = []){
 
         const uuid = uuidv4();
-        if(!['ui_updatePassword'].includes(method)){
+        if(!['ui_updatePassword', 'ui_getUserRole'].includes(method)){
             params.unshift(this.token);
         }
         const req = {

@@ -6,7 +6,6 @@ import { registerBugsnag } from 'utils/bugsnag';
 import { WS } from 'utils/ws';
 import {default as notice, closeNotice } from 'utils/notice';
 import { translate } from 'react-i18next';
-import handlers from 'redux/actions';
 import {State} from 'typings/state';
 
 interface IOwnProps {
@@ -75,8 +74,6 @@ class Login extends React.Component<IProps, IState> {
                     await ws.setPassword(pwd);
                     // TODO notice if server returns error (not implemented on dappctrl yet)
                     registerBugsnag(ws);
-                    const role = await ws.getUserRole();
-                    this.props.dispatch(handlers.setMode(role));
                     this.props.history.push(entryPoint);
                 } catch(e) {
                     notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});

@@ -28,11 +28,11 @@ const login = <Switch>
         <Route path='/app' component={App} />
     </Switch>;
 
-const wizardFirstStart = <Wizard currentState={'firstStart'} app={App} mode='simple' />;
+const wizardFirstStart = <Wizard currentState={'firstStart'} app={App} />;
 
 const wizardCreateAcc = <Switch>
         <Route exact path='/' render={() => <Login entryPoint={'/app'} />} />
-        <Route path='/app' render={() => <Wizard currentState={'setAccount'} app={App} mode='simple' />} />
+        <Route path='/app' render={() => <Wizard currentState={'setAccount'} app={App} />} />
     </Switch>;
 
 export default class Start extends React.Component<IProps, IState> {

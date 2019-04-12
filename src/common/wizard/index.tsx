@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 
@@ -13,20 +14,30 @@ import GetPrix from './getPrix';
 
 import Login from 'common/auth/login';
 
+import {State} from 'typings/state';
+import { Role } from 'typings/mode';
+
 type WizardState = 'firstStart' | 'setAccount' | 'createAccount';
 
 interface IProps {
-    mode: string;
+    mode?: string;
     currentState: WizardState;
     app: React.ComponentType;
+    role: Role;
 }
 
-export default class Wizard extends React.Component<IProps, {}> {
+class Wizard extends React.Component<IProps, {}> {
 
     render(){
 
-        const { currentState, app, mode } = this.props;
+        const { currentState, app, mode: _mode, role } = this.props;
+
+        if(!role){
+            return null;
+        }
         const MemoryHistory = createMemoryHistory();
+
+        const mode = _mode ? _mode : (role === Role.AGENT ? 'advanced' : 'simple');
 
         if( mode === 'advanced'){
             let routes = [
@@ -130,3 +141,5 @@ export default class Wizard extends React.Component<IProps, {}> {
         }
     }
 }
+
+export default connect( (state: State) => ({role: state.mode}) )(Wizard);
