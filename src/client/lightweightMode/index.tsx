@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import Select from 'react-select';
 
+import { asyncProviders } from 'redux/actions';
+
 import JobName from 'common/badges/jobName';
 import CopyToClipboard from 'common/copyToClipboard';
 import DotProgress from 'common/etc/dotProgress';
@@ -44,6 +46,30 @@ class SelectCountryOption extends React.Component<any, any> {
     }
 }
 
+class OfferingInfo extends React.Component<any, {}> {
+
+    render(){
+
+        const { offering } = this.props;
+
+        return (offering
+            ? <table className='table table-sm' style={ {margin: 'auto',  width: '300px'} }>
+                <tbody>
+                <tr>
+                    <td style={ {border: '0'} }>Price per MB: </td>
+                    <td style={ {border: '0'} }>{`${toFixed({number: offering.unitPrice/1e8, fixed: 8})} PRIX`}</td>
+                </tr>
+                <tr>
+                    <td>Max. traffic:</td>
+                    <td>{offering.maxUnit ? `${offering.maxUnit} MB` : 'unlimited' }</td>
+                </tr>
+                </tbody>
+            </table>
+            : null
+        );
+    }
+}
+
 const SelectCountryValueRenderer = function(props: any){
 
     const { label, value } = props;
@@ -69,10 +95,12 @@ const SelectCountryValueRenderer = function(props: any){
 interface IProps {
     ws: State['ws'];
     localSettings: State['localSettings'];
+    offeringsAvailability: State['offeringsAvailability'];
     t?: any;
     gasPrice: number;
     account: Account;
     balance: string;
+    dispatch?: any;
 }
 
 @translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
@@ -90,7 +118,7 @@ class LightWeightClient extends React.Component<IProps, any> {
     constructor(props: IProps){
         super(props);
         this.acceptBtn = React.createRef();
-        this.state = { status: 'disconnected', offerings: [], ip: '' };
+        this.state = { status: 'disconnected', offerings: [], ip: '', ping: '' };
     }
 
     componentDidMount() {
@@ -226,11 +254,7 @@ class LightWeightClient extends React.Component<IProps, any> {
 
     }
 
-    onConnect = async (evt: any) => {
-
-        evt.preventDefault();
-
-        this.setState({status: 'connecting'});
+    async connect(){
 
         const { t, ws, localSettings, gasPrice, account } = this.props;
 
@@ -270,6 +294,34 @@ class LightWeightClient extends React.Component<IProps, any> {
         }
     }
 
+    onConnect = (evt: any) => {
+
+        evt.preventDefault();
+
+        this.setState({status: 'connecting', ping: 'inProgress'});
+
+        const { dispatch } = this.props;
+        const { offerings } = this.state;
+
+        const ids = offerings.filter(offering => offering.country.toLowerCase() === this.getCurrentLocation().value).map(offering => offering.id);
+        dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
+
+            const { offeringsAvailability } = this.props;
+            const { ping } = this.state;
+
+            const ids = Object.keys(offeringsAvailability.statuses);
+            const offering = this.getOffering();
+            if(ping === 'inProgress' && ids.includes(offering.id)){
+                if(offeringsAvailability.statuses[offering.id]){
+                    this.setState({ping: ''});
+                    this.connect();
+                }else{
+                    this.setState({status: 'disconnected', ping: 'failed'});
+                }
+            }
+        }));
+    }
+
     onDisconnect = () => {
 
         const { ws } = this.props;
@@ -288,7 +340,7 @@ class LightWeightClient extends React.Component<IProps, any> {
     }
 
     changeLocation = (optimalLocation: any) => {
-        this.setState({optimalLocation});
+        this.setState({optimalLocation, ping: ''});
     }
 
     getOptimalLocation(locations: any[]){
@@ -414,10 +466,11 @@ class LightWeightClient extends React.Component<IProps, any> {
     connecting(){
 
         const { t } = this.props;
-        const { channel } = this.state;
+        const { channel, ping } = this.state;
 
         const offerings = this.getLocations();
         const selectedOffering = this.getCurrentLocation();
+        const offering = this.getOffering();
 
         const steps = ['clientPreChannelCreate'
                       ,'clientAfterChannelCreate'
@@ -445,22 +498,34 @@ class LightWeightClient extends React.Component<IProps, any> {
                                 options={offerings}
                                 disabled={true}
                         />
+                        <OfferingInfo offering={offering} />
                     </div>
                 </div>
                 <br />
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
-                    {t('Connecting')} <DotProgress />
-                </button>
-                <br />
-                <br />
-                <progress
-                    style={ {margin: 'auto', width: '300px', height: '10px'} }
-                    className='wow animated progress-animated'
-                    value={percentage}
-                    max={100}
-                />
-                <br />
-                {channel ? <JobName className='text-muted' jobtype={channel.job.jobtype} /> : null }
+                {ping === 'inProgress'
+                    ? <div>
+                        <div style={ {margin: '10px'} }>{t('SearchingTheOptimalNode')} <DotProgress /></div>
+                        <div style={ {margin: '10px'} }>
+                            <i className='fa fa-circle-o-notch fa-spin' style={ {fontSize: '28px'} }></i>
+                        </div>
+                    </div>
+                    :
+                    <>
+                        <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                            {t('Connecting')} <DotProgress />
+                        </button>
+                        <br />
+                        <br />
+                        <progress
+                            style={ {margin: 'auto', width: '300px', height: '10px'} }
+                            className='wow animated progress-animated'
+                            value={percentage}
+                            max={100}
+                        />
+                        <br />
+                        {channel ? <JobName className='text-muted' jobtype={channel.job.jobtype} /> : null }
+                    </>
+                }
             </>
         );
     }
@@ -471,6 +536,7 @@ class LightWeightClient extends React.Component<IProps, any> {
 
         const offerings = this.getLocations();
         const selectedOffering = this.getCurrentLocation();
+        const offering = this.getOffering();
 
         return (
             <>
@@ -484,6 +550,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                                 options={offerings}
                                 disabled={true}
                         />
+                        <OfferingInfo offering={offering} />
                     </div>
                 </div>
                 <br/>
@@ -498,9 +565,11 @@ class LightWeightClient extends React.Component<IProps, any> {
     disconnected(){
 
         const { t } = this.props;
+        const { ping } = this.state;
 
         const offerings = this.getLocations();
         const selectedOffering = this.getCurrentLocation();
+        const offering = this.getOffering();
 
         return (
             <>
@@ -515,6 +584,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                                 onChange={this.changeLocation}
                                 optionComponent={SelectCountryOption}
                         />
+                        <OfferingInfo offering={offering} />
                     </div>
                 </div>
                 <br/>
@@ -522,6 +592,10 @@ class LightWeightClient extends React.Component<IProps, any> {
                 <button type='button' onClick={this.onConnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
                     {t('Connect')}
                 </button>
+                { ping === 'failed'
+                    ? <div style={ {margin: '10px'} }>{t('NoAvailableOfferings')}</div>
+                    : null
+                }
             </>
         );
     }
@@ -533,6 +607,7 @@ class LightWeightClient extends React.Component<IProps, any> {
 
         const offerings = this.getLocations();
         const selectedOffering = this.getCurrentLocation();
+        const offering = this.getOffering();
 
         const steps = ['completeServiceTransition'
                       ,'clientPreServiceTerminate'
@@ -558,6 +633,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                                 options={offerings}
                                 disabled={true}
                         />
+                        <OfferingInfo offering={offering} />
                     </div>
                 </div>
                 <br />
@@ -617,5 +693,6 @@ export default connect((state: State) => {
        ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
        ,account
        ,balance: account ? toFixed({number: account.pscBalance/1e8, fixed: 2}) : ''
+       ,offeringsAvailability: state.offeringsAvailability
     };
 })(LightWeightClient);

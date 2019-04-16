@@ -124,7 +124,7 @@ export const asyncProviders: AsyncProviders = {
                });
         };
     },
-    setOfferingsAvailability: function(offeringsIds:string[]){
+    setOfferingsAvailability: function(offeringsIds:string[], cb?: Function){
         return function(dispatch: any, getState: Function){
             const { ws } = getState();
 
@@ -134,6 +134,9 @@ export const asyncProviders: AsyncProviders = {
                 ws.pingOfferings([offeringId])
                     .then(offeringsAvailability => {
                         dispatch(handlers.setOfferingsAvailability([offeringsAvailability]));
+                        if(cb){
+                            cb();
+                        }
                     });
             });
 

@@ -762,6 +762,8 @@
         "Balance": "Balance",
         "Address": "Address",
         "LighweightMode": "Simple Mode",
-        "AdvancedMode": "Advanced Mode"
+        "AdvancedMode": "Advanced Mode",
+        "SearchingTheOptimalNode": "Searching the optimal node",
+        "NoAvailableOfferings": "No available offerings. Please choose another country."
     }
 }

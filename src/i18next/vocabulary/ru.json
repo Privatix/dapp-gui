@@ -762,6 +762,8 @@
         "Balance": "Баланс",
         "Address": "Адрес",
         "LighweightMode": "Простой режим",
-        "AdvancedMode": "Продвинутый режим"
+        "AdvancedMode": "Продвинутый режим",
+        "SearchingTheOptimalNode": "Поиск оптимальной ноды.",
+        "NoAvailableOfferings": "Нет доступных офферингов. Выберите, пожалуйста, другую страну."
     }
 }

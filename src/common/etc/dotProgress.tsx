@@ -9,6 +9,7 @@ interface IProps {
 interface IState {
     tick: number;
 }
+
 export default class DotProgress extends React.Component<IProps, IState> {
 
     handler = null;
