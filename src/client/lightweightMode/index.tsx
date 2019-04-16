@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
-import Select from 'react-select';
 
 import { asyncProviders } from 'redux/actions';
 
@@ -10,9 +9,7 @@ import CopyToClipboard from 'common/copyToClipboard';
 import DotProgress from 'common/etc/dotProgress';
 
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
-import SelectCountryOption from './selectCountryOption';
-import SelectCountryValue from './selectCountryValue';
-import OfferingInfo from './offeringInfo';
+import SelectCountry from './selectCountry';
 
 import toFixed from 'utils/toFixedN';
 import notice from 'utils/notice';
@@ -338,7 +335,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     connected(){
 
         const { t } = this.props;
-        const { usage, ip, channel, locations, selectedLocation } = this.state;
+        const { usage, ip, channel, selectedLocation } = this.state;
 
         const secondsTotal = Math.floor((Date.now() - (new Date().getTimezoneOffset()*60*1000)- Date.parse(channel.job.createdAt))/1000);
         const seconds = secondsTotal%60;
@@ -350,16 +347,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 <h6 className='text-muted'>IP: {ip}</h6>
                 <br/>
                 <div className='content clearfix content-center'>
-                    <div style={ {margin: 'auto', width: '300px'} }>
-                        <Select className='form-control btn btn-white'
-                                value={selectedLocation}
-                                valueRenderer={SelectCountryValue}
-                                searchable={false}
-                                clearable={false}
-                                options={locations}
-                                disabled={true}
-                        />
-                    </div>
+                    <SelectCountry onSelect={this.onChangeLocation}
+                                   selectedLocation={selectedLocation}
+                                   disabled={true}
+                    />
                 </div>
                 <br/>
                 <br/>
@@ -392,7 +383,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     connecting(){
 
         const { t } = this.props;
-        const { channel, locations, selectedLocation, ping } = this.state;
+        const { channel, selectedLocation, ping } = this.state;
 
         const steps = ['clientPreChannelCreate'
                       ,'clientAfterChannelCreate'
@@ -411,17 +402,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return (
             <>
                 <div className='content clearfix content-center'>
-                    <div style={ {margin: 'auto', width: '300px'} }>
-                        <Select className='form-control btn btn-white'
-                                value={selectedLocation}
-                                valueRenderer={SelectCountryValue}
-                                searchable={false}
-                                clearable={false}
-                                options={locations}
-                                disabled={true}
-                        />
-                        <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
-                    </div>
+                    <SelectCountry onSelect={this.onChangeLocation}
+                                   selectedLocation={selectedLocation}
+                                   disabled={true}
+                    />
                 </div>
                 <br />
                 {ping === 'inProgress'
@@ -455,22 +439,15 @@ class LightWeightClient extends React.Component<IProps, IState> {
     suspended(){
 
         const { t } = this.props;
-        const { locations, selectedLocation } = this.state;
+        const { selectedLocation } = this.state;
 
         return (
             <>
                 <div className='content clearfix content-center'>
-                    <div style={ {margin: 'auto', width: '300px'} }>
-                        <Select className='form-control btn btn-white'
-                                value={selectedLocation}
-                                valueRenderer={SelectCountryValue}
-                                searchable={false}
-                                clearable={false}
-                                options={locations}
-                                disabled={true}
-                        />
-                        <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
-                    </div>
+                    <SelectCountry onSelect={this.onChangeLocation}
+                                   selectedLocation={selectedLocation}
+                                   disabled={true}
+                    />
                 </div>
                 <br/>
                 <br/>
@@ -486,21 +463,21 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const { t } = this.props;
         const { locations, selectedLocation, ping } = this.state;
 
+        if(!locations || !locations.length){
+            return (
+                <div className='text-center m-t-15 m-b-15'>
+                    <div className='lds-dual-ring'></div>
+                </div>
+            );
+        }
+
         return (
             <>
                 <div className='content clearfix content-center'>
-                    <div style={ {margin: 'auto', width: '300px'} }>
-                        <Select className='form-control btn btn-white'
-                                value={selectedLocation}
-                                valueRenderer={SelectCountryValue}
-                                searchable={false}
-                                clearable={false}
-                                options={locations}
-                                onChange={this.onChangeLocation}
-                                optionComponent={SelectCountryOption}
-                        />
-                        <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
-                    </div>
+                    <SelectCountry onSelect={this.onChangeLocation}
+                                   selectedLocation={selectedLocation}
+                                   locations={locations}
+                    />
                 </div>
                 <br/>
                 <br/>
@@ -518,7 +495,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     disconnecting(){
 
         const { t } = this.props;
-        const { channel, locations, selectedLocation } = this.state;
+        const { channel, selectedLocation } = this.state;
 
         const steps = ['completeServiceTransition'
                       ,'clientPreServiceTerminate'
@@ -535,17 +512,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return (
             <>
                 <div className='content clearfix content-center'>
-                    <div style={ {margin: 'auto', width: '300px'} }>
-                        <Select className='form-control btn btn-white'
-                                value={selectedLocation}
-                                valueRenderer={SelectCountryValue}
-                                searchable={false}
-                                clearable={false}
-                                options={locations}
-                                disabled={true}
-                        />
-                        <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
-                    </div>
+                    <SelectCountry onSelect={this.onChangeLocation}
+                                   selectedLocation={selectedLocation}
+                                   disabled={true}
+                    />
                 </div>
                 <br />
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
