@@ -12,39 +12,16 @@ import DotProgress from 'common/etc/dotProgress';
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
 import SelectCountryOption from './selectCountryOption';
 import SelectCountryValue from './selectCountryValue';
+import OfferingInfo from './offeringInfo';
 
 import toFixed from 'utils/toFixedN';
 import notice from 'utils/notice';
 import countryByISO from 'utils/countryByIso';
 
 import { State } from 'typings/state';
-import {Account} from 'typings/accounts';
-
-
-
-class OfferingInfo extends React.Component<any, {}> {
-
-    render(){
-
-        const { offering } = this.props;
-
-        return (offering
-            ? <table className='table table-sm' style={ {margin: 'auto',  width: '300px'} }>
-                <tbody>
-                <tr>
-                    <td style={ {border: '0'} }>Price per MB: </td>
-                    <td style={ {border: '0'} }>{`${toFixed({number: offering.unitPrice/1e8, fixed: 8})} PRIX`}</td>
-                </tr>
-                <tr>
-                    <td>Max. traffic:</td>
-                    <td>{offering.maxUnit ? `${offering.maxUnit} MB` : 'unlimited' }</td>
-                </tr>
-                </tbody>
-            </table>
-            : null
-        );
-    }
-}
+import { Account } from 'typings/accounts';
+import { Offering } from 'typings/offerings';
+import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 
 interface IProps {
     ws: State['ws'];
@@ -57,22 +34,44 @@ interface IProps {
     dispatch?: any;
 }
 
+interface SelectItem {
+    value: string;
+    label: string;
+    cost: string;
+    offering?: Offering;
+}
+
+interface IState {
+    status: string;
+    ip: string;
+    ping: string;
+    selectedLocation: SelectItem;
+    locations: SelectItem[];
+    channel: ClientChannel;
+    usage: ClientChannelUsage;
+}
+
 @translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
-class LightWeightClient extends React.Component<IProps, any> {
+class LightWeightClient extends React.Component<IProps, IState> {
 
     subscription: string;
     usageSubscription = null;
     offeringsSubscription = null;
     getIpSubscription = null;
 
-    acceptBtn = null;
-    optimalLocations: any[];
-    optimalLocation: any;
+    offerings: Offering[];
 
     constructor(props: IProps){
         super(props);
-        this.acceptBtn = React.createRef();
-        this.state = { status: 'disconnected', offerings: [], ip: '', ping: '' };
+        this.state = {
+            status: 'disconnected'
+           ,ip: ''
+           ,ping: ''
+           ,selectedLocation: null
+           ,locations: null
+           ,channel: null
+           ,usage: null
+        };
     }
 
     componentDidMount() {
@@ -110,7 +109,7 @@ class LightWeightClient extends React.Component<IProps, any> {
         }
     }
 
-    refresh = async () => {
+    private refresh = async () => {
 
         const { ws } = this.props;
 
@@ -162,6 +161,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                     }
                 }
                 this.setState({status: 'disconnected', channel: null});
+                this.updateOfferings();
             }else{
                 setTimeout(this.refresh, 1000);
             }
@@ -175,44 +175,49 @@ class LightWeightClient extends React.Component<IProps, any> {
 
         const clientOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
         const ids = clientOfferings.items.map(offering => offering.id);
+
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
         }
+
         this.offeringsSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish', ...ids], this.refresh, this.refresh);
-        this.setState({offerings: clientOfferings.items.filter(offering => offering.currentSupply !== 0)});
+        this.offerings = clientOfferings.items.filter(offering => offering.currentSupply !== 0);
+
+        if(!this.state.selectedLocation){
+            const locations = this.getLocations(this.offerings);
+            const selectedLocation = this.getOptimalLocation(locations);
+            selectedLocation.offering = this.getOfferingForLocation(selectedLocation);
+            this.setState({locations, selectedLocation});
+        }
     }
 
     async updateCurrentCountry(channel: any){
 
         const { ws } = this.props;
 
-        if(!this.state.optimalLocation){
+        if(!this.state.selectedLocation){
             const offering = await ws.getOffering(channel.offering);
             const country = offering.country.toLowerCase();
-            this.setState({optimalLocation: {value: country, label: countryByISO(country)}});
+            this.setState({selectedLocation: {value: country, label: countryByISO(country), cost: '', offering}});
         }
     }
 
     subscribeUsage = async () => {
+
         const { ws } = this.props;
         const { channel } = this.state;
 
         const usage = await ws.getChannelsUsage([channel.id]);
+
         this.setState({usage: usage[channel.id]});
         this.usageSubscription = setTimeout(this.subscribeUsage, 3000);
-    }
-
-    getOffering(){
-        const currentLocation = this.getCurrentLocation();
-        return this.optimalLocations[currentLocation.value];
-
     }
 
     async connect(){
 
         const { t, ws, localSettings, gasPrice, account } = this.props;
+        const { selectedLocation: { offering } } = this.state;
 
-        const offering = this.getOffering();
         const deposit = offering.unitPrice * offering.minUnits;
         const customDeposit = deposit;
 
@@ -255,16 +260,15 @@ class LightWeightClient extends React.Component<IProps, any> {
         this.setState({status: 'connecting', ping: 'inProgress'});
 
         const { dispatch } = this.props;
-        const { offerings } = this.state;
+        const { selectedLocation } = this.state;
 
-        const ids = offerings.filter(offering => offering.country.toLowerCase() === this.getCurrentLocation().value).map(offering => offering.id);
+        const ids = this.offerings.filter(offering => offering.country.toLowerCase() === selectedLocation.value).map(offering => offering.id);
         dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
 
             const { offeringsAvailability } = this.props;
-            const { ping } = this.state;
+            const { selectedLocation: { offering }, ping } = this.state;
 
             const ids = Object.keys(offeringsAvailability.statuses);
-            const offering = this.getOffering();
             if(ping === 'inProgress' && ids.includes(offering.id)){
                 if(offeringsAvailability.statuses[offering.id]){
                     this.setState({ping: ''});
@@ -276,7 +280,7 @@ class LightWeightClient extends React.Component<IProps, any> {
         }));
     }
 
-    onDisconnect = () => {
+    private onDisconnect = () => {
 
         const { ws } = this.props;
         const { channel } = this.state;
@@ -285,7 +289,7 @@ class LightWeightClient extends React.Component<IProps, any> {
         this.setState({status: 'disconnecting', ip: ''});
     }
 
-    onResume = () => {
+    private onResume = () => {
 
         const { ws } = this.props;
         const { channel } = this.state;
@@ -293,24 +297,15 @@ class LightWeightClient extends React.Component<IProps, any> {
         this.setState({status: 'connecting'});
     }
 
-    changeLocation = (optimalLocation: any) => {
-        this.setState({optimalLocation, ping: ''});
+    private onChangeLocation = (selectedLocation: SelectItem) => {
+        this.setState({selectedLocation, ping: ''});
     }
 
-    getOptimalLocation(locations: any[]){
-        if(this.optimalLocation && locations.find(location => location.country.toLowerCase() === this.optimalLocation.value)){
-            return this.optimalLocations[this.optimalLocation.value];
-        }
+    private getOptimalLocation(locations: any[]){
         return locations[Math.floor(Math.random()*locations.length)];
     }
 
-    getLocations(){
-
-        const { offerings } = this.state;
-
-        if(!offerings){
-            return {};
-        }
+    private getLocations(offerings: Offering[]): SelectItem[] {
 
         let countries = offerings.reduce((registry: any, offering: any) => {
             const countries = offering.country.split(',').map(country => country.trim().toLowerCase());
@@ -327,50 +322,24 @@ class LightWeightClient extends React.Component<IProps, any> {
             countries[country] = this.getOptimalLocation(countries[country]);
         });
 
-        this.optimalLocations = countries;
-
-        return Object.keys(this.optimalLocations).map(country => {
-            const offering = this.optimalLocations[country];
+        return Object.keys(countries).map(country => {
+            const offering = countries[country];
             const price = toFixed({number: offering.unitPrice/1e8, fixed: 8});
             const unitName = offering.unitName;
-            return {value: country, label: countryByISO(country), cost: `${price} / ${unitName}`};
+            return {value: country, label: countryByISO(country), cost: `${price} / ${unitName}`, offering};
         });
     }
 
-    getCurrentLocation(){
-
-        if(this.state.optimalLocation){
-            const country = this.state.optimalLocation.value.toLowerCase();
-            if(country in this.optimalLocations){
-                return this.state.optimalLocation;
-            }
-        }
-
-        if(this.optimalLocation){
-            const country = this.optimalLocation.value.toLowerCase();
-            if(country in this.optimalLocations){
-                return this.optimalLocation;
-            }
-        }
-
-        const countries = Object.keys(this.optimalLocations);
-        if(countries.length){
-            const country = countries[Math.floor(Math.random()*countries.length)];
-            const optimalLocation =  {value: country, label: countryByISO(country)};
-            this.optimalLocation = optimalLocation;
-            return optimalLocation;
-        }else{
-            return {};
-        }
+    getOfferingForLocation(location: SelectItem){
+        const offerings = this.offerings.filter(offering => offering.country.toLowerCase() === location.value);
+        return offerings[Math.floor(Math.random()*offerings.length)];
     }
 
     connected(){
 
         const { t } = this.props;
-        const { usage, ip, channel } = this.state;
+        const { usage, ip, channel, locations, selectedLocation } = this.state;
 
-        const offerings = this.getLocations();
-        const selectedOffering = this.getCurrentLocation();
         const secondsTotal = Math.floor((Date.now() - (new Date().getTimezoneOffset()*60*1000)- Date.parse(channel.job.createdAt))/1000);
         const seconds = secondsTotal%60;
         const minutes = ((secondsTotal - seconds)/60)%60;
@@ -383,11 +352,11 @@ class LightWeightClient extends React.Component<IProps, any> {
                 <div className='content clearfix content-center'>
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
-                                value={selectedOffering}
+                                value={selectedLocation}
                                 valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
-                                options={offerings}
+                                options={locations}
                                 disabled={true}
                         />
                     </div>
@@ -423,11 +392,7 @@ class LightWeightClient extends React.Component<IProps, any> {
     connecting(){
 
         const { t } = this.props;
-        const { channel, ping } = this.state;
-
-        const offerings = this.getLocations();
-        const selectedOffering = this.getCurrentLocation();
-        const offering = this.getOffering();
+        const { channel, locations, selectedLocation, ping } = this.state;
 
         const steps = ['clientPreChannelCreate'
                       ,'clientAfterChannelCreate'
@@ -448,14 +413,14 @@ class LightWeightClient extends React.Component<IProps, any> {
                 <div className='content clearfix content-center'>
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
-                                value={selectedOffering}
+                                value={selectedLocation}
                                 valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
-                                options={offerings}
+                                options={locations}
                                 disabled={true}
                         />
-                        <OfferingInfo offering={offering} />
+                        <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
                     </div>
                 </div>
                 <br />
@@ -490,24 +455,21 @@ class LightWeightClient extends React.Component<IProps, any> {
     suspended(){
 
         const { t } = this.props;
-
-        const offerings = this.getLocations();
-        const selectedOffering = this.getCurrentLocation();
-        const offering = this.getOffering();
+        const { locations, selectedLocation } = this.state;
 
         return (
             <>
                 <div className='content clearfix content-center'>
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
-                                value={selectedOffering}
+                                value={selectedLocation}
                                 valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
-                                options={offerings}
+                                options={locations}
                                 disabled={true}
                         />
-                        <OfferingInfo offering={offering} />
+                        <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
                     </div>
                 </div>
                 <br/>
@@ -522,26 +484,22 @@ class LightWeightClient extends React.Component<IProps, any> {
     disconnected(){
 
         const { t } = this.props;
-        const { ping } = this.state;
-
-        const offerings = this.getLocations();
-        const selectedOffering = this.getCurrentLocation();
-        const offering = this.getOffering();
+        const { locations, selectedLocation, ping } = this.state;
 
         return (
             <>
                 <div className='content clearfix content-center'>
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
-                                value={selectedOffering}
+                                value={selectedLocation}
                                 valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
-                                options={offerings}
-                                onChange={this.changeLocation}
+                                options={locations}
+                                onChange={this.onChangeLocation}
                                 optionComponent={SelectCountryOption}
                         />
-                        <OfferingInfo offering={offering} />
+                        <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
                     </div>
                 </div>
                 <br/>
@@ -560,11 +518,7 @@ class LightWeightClient extends React.Component<IProps, any> {
     disconnecting(){
 
         const { t } = this.props;
-        const { channel } = this.state;
-
-        const offerings = this.getLocations();
-        const selectedOffering = this.getCurrentLocation();
-        const offering = this.getOffering();
+        const { channel, locations, selectedLocation } = this.state;
 
         const steps = ['completeServiceTransition'
                       ,'clientPreServiceTerminate'
@@ -583,14 +537,14 @@ class LightWeightClient extends React.Component<IProps, any> {
                 <div className='content clearfix content-center'>
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
-                                value={selectedOffering}
+                                value={selectedLocation}
                                 valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
-                                options={offerings}
+                                options={locations}
                                 disabled={true}
                         />
-                        <OfferingInfo offering={offering} />
+                        <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
                     </div>
                 </div>
                 <br />
