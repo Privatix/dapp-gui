@@ -10,6 +10,8 @@ import CopyToClipboard from 'common/copyToClipboard';
 import DotProgress from 'common/etc/dotProgress';
 
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
+import SelectCountryOption from './selectCountryOption';
+import SelectCountryValue from './selectCountryValue';
 
 import toFixed from 'utils/toFixedN';
 import notice from 'utils/notice';
@@ -19,32 +21,6 @@ import { State } from 'typings/state';
 import {Account} from 'typings/accounts';
 
 
-class SelectCountryOption extends React.Component<any, any> {
-
-    onClick = () => {
-        this.props.onSelect(this.props.option);
-    }
-
-    render(){
-        const { label, value, cost } = this.props.option;
-        return (
-            <div onClick={this.onClick} style={ {display: 'flex', justifyContent: 'space-between'} } >
-                <img src={`images/country/${value}.png`}
-                     width='30px'
-                     height='20px'
-                     style={ {alignSelf: 'center', marginLeft: '5px'} }
-                 />
-                 <span style={ {margin: '5px',
-                                maxWidth: '150px',
-                                display: 'inline-block',
-                                textOverflow: 'ellipsis',
-                                overflow: 'hidden',
-                                whiteSpace: 'nowrap'
-                 } } >{label}</span><span style={ {margin: '5px'} } >{cost}</span>
-            </div>
-        );
-    }
-}
 
 class OfferingInfo extends React.Component<any, {}> {
 
@@ -69,28 +45,6 @@ class OfferingInfo extends React.Component<any, {}> {
         );
     }
 }
-
-const SelectCountryValueRenderer = function(props: any){
-
-    const { label, value } = props;
-
-    return (
-        <span style={ {display: 'flex', justifyContent: 'flex-start', 'lineHeight': 'normal'} } >
-            <img src={`images/country/${value}.png`}
-                 width='30px'
-                 height='20px'
-                 style={ {alignSelf: 'center', marginLeft: '5px'} }
-             />
-             <span style={ {margin: '5px',
-                            maxWidth: '150px',
-                            display: 'inline-block',
-                            textOverflow: 'ellipsis',
-                            overflow: 'hidden',
-                            whiteSpace: 'nowrap'
-             } } >{label}</span>
-        </span>
-    );
-};
 
 interface IProps {
     ws: State['ws'];
@@ -344,6 +298,9 @@ class LightWeightClient extends React.Component<IProps, any> {
     }
 
     getOptimalLocation(locations: any[]){
+        if(this.optimalLocation && locations.find(location => location.country.toLowerCase() === this.optimalLocation.value)){
+            return this.optimalLocations[this.optimalLocation.value];
+        }
         return locations[Math.floor(Math.random()*locations.length)];
     }
 
@@ -427,7 +384,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
-                                valueRenderer={SelectCountryValueRenderer}
+                                valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
                                 options={offerings}
@@ -492,7 +449,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
-                                valueRenderer={SelectCountryValueRenderer}
+                                valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
                                 options={offerings}
@@ -544,7 +501,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
-                                valueRenderer={SelectCountryValueRenderer}
+                                valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
                                 options={offerings}
@@ -577,7 +534,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
-                                valueRenderer={SelectCountryValueRenderer}
+                                valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
                                 options={offerings}
@@ -627,7 +584,7 @@ class LightWeightClient extends React.Component<IProps, any> {
                     <div style={ {margin: 'auto', width: '300px'} }>
                         <Select className='form-control btn btn-white'
                                 value={selectedOffering}
-                                valueRenderer={SelectCountryValueRenderer}
+                                valueRenderer={SelectCountryValue}
                                 searchable={false}
                                 clearable={false}
                                 options={offerings}
