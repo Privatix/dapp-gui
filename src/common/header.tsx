@@ -10,15 +10,15 @@ import UpdateInformer from './updateInformer/';
 import { asyncProviders } from 'redux/actions';
 
 import { Dispatch } from 'redux';
-import { Role } from 'typings/mode';
+import { Role, Mode } from 'typings/mode';
 import {State} from 'typings/state';
 
 declare var window: any;
 
 interface IProps {
-    mode: Role;
-    advancedMode: boolean;
-    setAdvancedMode?(mode:boolean): void;
+    role: Role;
+    mode: Mode;
+    setSimpleMode?(): void;
 }
 
 @translate(['header', 'utils/notice'])
@@ -81,14 +81,14 @@ class Header extends React.Component<any, any>{
     }
 
     setLighweightMode = (evt:any) => {
-        const { advancedMode, setAdvancedMode } = this.props;
+        const { setSimpleMode } = this.props;
         evt.preventDefault();
-        setAdvancedMode(!advancedMode);
+        setSimpleMode();
     }
 
     render(){
 
-        const { t, mode } = this.props;
+        const { t, role } = this.props;
 
         const style = {
             padding: '5px',
@@ -130,7 +130,7 @@ class Header extends React.Component<any, any>{
                                 <NavLink to='/settings' className='dropdown-item notify-item'>
                                     <i className='md md-settings'></i> <span>{t('Settings')}</span>
                                 </NavLink>
-                                { mode === Role.CLIENT
+                                { role === Role.CLIENT
                                     ? <a onClick={this.setLighweightMode} className='dropdown-item notify-item cursorPoiner'>
                                           <i className='md md-swap-horiz'></i> <span>Simple Mode</span>
                                       </a>
@@ -159,13 +159,13 @@ class Header extends React.Component<any, any>{
 }
 
 const mapStateToProps = (state: State) => {
-    const { mode, advancedMode } = state;
-    return { mode, advancedMode };
+    const { role, mode } = state;
+    return { role, mode };
 };
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ 
-    setAdvancedMode: (mode: boolean) => {
-        dispatch(asyncProviders.setAdvancedMode(mode));
+    setSimpleMode: () => {
+        dispatch(asyncProviders.setMode(Mode.SIMPLE));
     }
 });
 

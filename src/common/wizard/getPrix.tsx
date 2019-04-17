@@ -2,6 +2,9 @@ import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 
+import { asyncProviders } from 'redux/actions';
+import { Mode } from 'typings/mode';
+
 import ExternalLink from 'common/etc/externalLink';
 import CopyToClipboard from 'common/copyToClipboard';
 
@@ -15,6 +18,7 @@ import Spinner from './spinner';
 interface IProps{
     ws?: WS;
     t?: any;
+    dispatch?: any;
     history?: any;
     accountId: string;
     entryPoint: string;
@@ -38,11 +42,16 @@ class GetPrix extends React.Component<IProps, IState>{
         this.state = {ethAddr: '', didIt: false, getPrix: false, done: false, accountId: props.accountId};
     }
 
+    isSimpleMode(){
+        const { accountId } = this.props;
+        return !accountId || accountId === 'generate';
+    }
+
     async componentDidMount(){
 
         const { ws, t, accountId } = this.props;
 
-        if(accountId && accountId !== 'generate'){
+        if(!this.isSimpleMode()){
             ws.getAccount(accountId)
               .then(account => {
                   this.setState({ethAddr: `0x${account.ethAddr}`});
@@ -126,8 +135,13 @@ class GetPrix extends React.Component<IProps, IState>{
 
     private onFinish = (evt: any) => {
 
-        const { entryPoint } = this.props;
+        const { entryPoint, dispatch } = this.props;
         evt.preventDefault();
+        if(this.isSimpleMode()){
+            dispatch(asyncProviders.setMode(Mode.SIMPLE));
+        }else{
+            dispatch(asyncProviders.setMode(Mode.ADVANCED));
+        }
         this.props.history.push(entryPoint);
 
     }

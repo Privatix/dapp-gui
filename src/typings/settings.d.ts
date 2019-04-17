@@ -1,3 +1,5 @@
+import { Mode } from './mode';
+
 export interface GasConsumption {
     acceptOffering: number;
     createOffering: number;
@@ -26,12 +28,8 @@ export interface LocalSettings {
     platformsEndpoint: string;
     latestReleaseChecked: any;
     updateCheckFreq: number;
-    widndow: {
-        advancedMode: {
-            width: number;
-            height: number;
-        }
-        simpleMode: {
+    window: {
+        [key: Mode ] : {
             width: number;
             height: number;
         }

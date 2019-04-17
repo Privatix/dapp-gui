@@ -1,13 +1,14 @@
 import * as api from './api';
-import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk';
+import { createStore, applyMiddleware, AnyAction } from 'redux';
+import { default as thunk, ThunkMiddleware } from 'redux-thunk';
 import {valid as isValid, gt } from 'semver';
 
 import reducers from 'redux/reducers';
 import { asyncProviders, default as handlers } from 'redux/actions';
 
 import { WS } from 'utils/ws';
-import { Role } from 'typings/mode';
+import { Role, Mode } from 'typings/mode';
+import { State } from 'typings/state';
 
 const localCache = window.localStorage.getItem('localSettings');
 if(!localCache){
@@ -15,17 +16,25 @@ if(!localCache){
 }
 
 const storage = createStore(reducers, applyMiddleware(
-    thunkMiddleware, // lets us dispatch() functions
+    thunk as ThunkMiddleware<State, AnyAction> // lets us dispatch() functions
   ));
 
 const ws = new WS();
 storage.dispatch(handlers.setWS(ws));
 (async () => {
     await ws.whenReady();
-    storage.dispatch(asyncProviders.updateLocalSettings());
-    storage.dispatch(asyncProviders.setMode());
-    const role = await ws.getUserRole();
-    storage.dispatch(asyncProviders.setAdvancedMode(role === Role.AGENT));
+    storage.dispatch(asyncProviders.updateLocalSettings(
+        async () => {
+            storage.dispatch(asyncProviders.setRole());
+            const role = await ws.getUserRole();
+            const { firstStart, accountCreated } = await ws.getLocal();
+            const mode = (firstStart || !accountCreated) ? Mode.WIZARD
+                         : role === Role.AGENT ? Mode.ADVANCED : Mode.SIMPLE;
+            storage.dispatch(asyncProviders.setMode(mode));
+            storage.dispatch(asyncProviders.setRole());
+        }
+    ));
+
 })();
 
 const checkVersion = function(releases: any, currentRelease: string, target: string){
@@ -80,7 +89,7 @@ api.on('releases', async function(event: any, data: any){
 
 const refresh = async function(){
 
-    const { ws, mode, serviceName } = storage.getState();
+    const { ws, role, serviceName } = storage.getState();
 
     if(ws) {
 
@@ -90,7 +99,7 @@ const refresh = async function(){
         storage.dispatch(asyncProviders.updateProducts());
         storage.dispatch(asyncProviders.updateSettings());
 
-        if(mode === Role.AGENT){
+        if(role === Role.AGENT){
             storage.dispatch(asyncProviders.updateTotalIncome());
         }
 

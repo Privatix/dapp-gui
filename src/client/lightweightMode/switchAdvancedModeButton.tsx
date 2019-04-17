@@ -5,11 +5,12 @@ import { translate } from 'react-i18next';
 import { asyncProviders } from 'redux/actions';
 
 import { Dispatch } from 'redux';
+
 import { State } from 'typings/state';
+import { Mode } from 'typings/mode';
 
 interface IProps {
-    advancedMode: boolean;
-    setAdvancedMode?(mode:boolean): void;
+    setAdvancedMode?(): void;
     t?: any;
 }
 
@@ -18,26 +19,23 @@ class SwitchAdvancedModeButton extends React.Component<IProps, {}> {
 
     onClick = (evt) => {
         evt.preventDefault();
-        const { setAdvancedMode, advancedMode } = this.props;
-        setAdvancedMode(!advancedMode);
+        const { setAdvancedMode } = this.props;
+        setAdvancedMode();
     }
 
     render(){
 
-        const { t, advancedMode } = this.props;
+        const { t } = this.props;
 
-        return <a href='' style={ {margin: '10px'} } onClick={this.onClick}>{advancedMode ? t('LighweightMode') : t('AdvancedMode')}</a>;
+        return <a href='' style={ {margin: '10px'} } onClick={this.onClick}>{t('AdvancedMode')}</a>;
     }
 }
 
-const mapStateToProps = (state: State) => {
-    const { advancedMode } = state;
-    return { advancedMode };
-};
+const mapStateToProps = (state: State) => ({});
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ 
-    setAdvancedMode: (mode: boolean) => {
-        dispatch(asyncProviders.setAdvancedMode(mode));
+    setAdvancedMode: () => {
+        dispatch(asyncProviders.setMode(Mode.ADVANCED));
     }
 });
 

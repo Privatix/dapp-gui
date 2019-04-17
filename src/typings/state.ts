@@ -1,9 +1,10 @@
+import { WS } from 'utils/ws';
+
 import {Account} from './accounts';
-import {Role} from './mode';
+import {Role, Mode} from './mode';
 import {Product} from './products';
 import {OfferingAvailabilityResponse} from './offerings';
 import {LocalSettings} from './settings';
-import { WS } from '../utils/ws';
 
 interface State {
   [s: string]: any;
@@ -13,8 +14,8 @@ interface State {
     settings: {[key: string]: string};
     localSettings: LocalSettings;
     channel: string;
-    mode: Role;
-    advancedMode: boolean;
+    role: Role;
+    mode: Mode;
     ws: WS;
     totalIncome: number;
     offeringsAvailability: {
@@ -30,8 +31,8 @@ const StateDefault: State = {
     settings: {},
     localSettings: null,
     channel: '',
+    role: null,
     mode: null,
-    advancedMode: false,
     ws: null,
     totalIncome: 0,
     offeringsAvailability: {

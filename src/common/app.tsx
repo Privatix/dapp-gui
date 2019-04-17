@@ -29,28 +29,24 @@ import ClientHistory from 'client/vpn_list/history';
 
 import Logs from 'common/logs/logsList';
 
-import {State} from 'typings/state';
-import { Role } from 'typings/mode';
+import { State } from 'typings/state';
+import { Role, Mode } from 'typings/mode';
 
 const MemoryHistory = createMemoryHistory();
 
 interface IProps {
-    mode: Role;
-    advancedMode: boolean;
+    role: Role;
+    mode: Mode;
     dispatch?: any;
 }
 
 class App extends React.Component<IProps, {}> {
 
-    constructor(props: IProps) {
-        super(props);
-    }
-
     render(){
 
-        const { mode, advancedMode } = this.props;
+        const { role, mode } = this.props;
 
-        if(mode === Role.CLIENT && !advancedMode){
+        if(role === Role.CLIENT && mode === Mode.SIMPLE){
             return <LightClient />;
         }
 
@@ -62,7 +58,7 @@ class App extends React.Component<IProps, {}> {
                     <div className='content-page'>
                         <div className='content'>
                             <Switch>
-                                <Route exact path='/' render={(props: any) => mode === Role.CLIENT ? <ClientDashboardStart /> : <Main /> } />
+                                <Route exact path='/' render={(props: any) => role === Role.CLIENT ? <ClientDashboardStart /> : <Main /> } />
                                 <Route path='/settings' component={Settings} />
                                 <Route path='/products' render={() => <Products />} />
                                 <Route path='/accounts' component={AccountsList} />
@@ -74,7 +70,7 @@ class App extends React.Component<IProps, {}> {
                                 <Route path='/channels' component={ChannelsList} />
                                 <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                                 <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
-                                <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} mode='advanced' />} />
+                                <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} mode={Mode.ADVANCED} />} />
                                 <Route path='/logs' component={Logs} />
 
                                 <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
@@ -93,4 +89,4 @@ class App extends React.Component<IProps, {}> {
     }
 }
 
-export default connect<IProps>((state:State) => ({ mode: state.mode, advancedMode: state.advancedMode}))(withRouter(App));
+export default connect<IProps>((state:State) => ({ role: state.role, mode: state.mode}))(withRouter(App));

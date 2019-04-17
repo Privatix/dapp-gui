@@ -21,7 +21,8 @@
    "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/${version}/versions.txt",
    "updateCheckFreq": 480,
    "window": {
-       "advancedMode": {"width": 1024, "height": 800},
-       "simpleMode": {"width": 600, "height": 800}
+       "advanced": {"width": 1024, "height": 800},
+       "simple": {"width": 600, "height": 800},
+       "wizard": {"width": 1024, "height": 800}
    }
 }

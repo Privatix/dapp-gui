@@ -9,7 +9,7 @@ import Submenu from './submenu';
 import './navigation.css';
 
 interface Props {
-    mode: Role;
+    role: Role;
     t: any;
     serviceName: string;
     location: any;
@@ -86,13 +86,13 @@ class Navigation extends React.Component<Props, any> {
     }
 
     render() {
-        const { t, serviceName, location } = this.props;
+        const { t, role, serviceName, location } = this.props;
         const { activeSub } = this.state;
 
         const headerNavigationItems = ['/accounts', '/settings'];
         const useSub = headerNavigationItems.includes(location.pathname) ? null : activeSub;
 
-        return this.props.mode === Role.AGENT ? <div className='left side-menu'>
+        return role === Role.AGENT ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
                 <div id='sidebar-menu'>
                     <ul>
@@ -161,4 +161,4 @@ class Navigation extends React.Component<Props, any> {
     }
 }
 
-export default withRouter(connect( (state: State) => ({mode: state.mode, serviceName: state.serviceName}) )(Navigation));
+export default withRouter(connect( (state: State) => ({role: state.role, serviceName: state.serviceName}) )(Navigation));

@@ -5,12 +5,12 @@ import {Account} from 'typings/accounts';
 import {Product} from 'typings/products';
 import {DbSetting as Setting, LocalSettings} from 'typings/settings';
 import {Offering} from 'typings/offerings';
-import { Role } from 'typings/mode';
+import { Role, Mode } from 'typings/mode';
 
 export const enum actions {
     REFRESH_ACCOUNTS,
+    SET_ROLE,
     SET_MODE,
-    SET_ADVANCED_MODE,
     UPDATE_PRODUCTS,
     UPDATE_SETTINGS,
     UPDATE_LOCAL_SETTINGS,
@@ -23,12 +23,7 @@ export const enum actions {
     INCREMENT_OFFERINGS_AVAILABILITY_COUNTER
 }
 
-
-interface ReduxHandlers {
-    [key: string]: Function;
-}
-
-const handlers: ReduxHandlers = {
+const handlers  = {
     updateAccounts             : function(accounts: Account[]){ return { type: actions.REFRESH_ACCOUNTS, value: accounts };},
     updateProducts             : function(products: Product[]){ return { type: actions.UPDATE_PRODUCTS, value: products };},
     updateSettings             : function(settings: Setting[]){ return { type: actions.UPDATE_SETTINGS, value: settings };},
@@ -36,19 +31,15 @@ const handlers: ReduxHandlers = {
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     updateServiceName          : function(serviceName: string){ return { type: actions.UPDATE_SERVICE_NAME, value: serviceName };},
-    setMode                    : function(mode: Role){ return { type: actions.SET_MODE, value: mode };},
-    setAdvancedMode            : function(advancedMode: boolean){ return { type: actions.SET_ADVANCED_MODE, value: advancedMode };},
+    setRole                    : function(role: Role){ return { type: actions.SET_ROLE, value: role };},
+    setMode                    : function(mode: Mode){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
     setOfferingsAvailability   : function(offeringsAvailability: Object[]){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};},
     incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};},
 };
 
-interface AsyncProviders {
-    [key: string] : Function;
-}
-
-export const asyncProviders: AsyncProviders = {
+export const asyncProviders = {
     updateAccounts: function(){
         return function(dispatch: any, getState: Function){
             const { ws } = getState();
@@ -84,16 +75,19 @@ export const asyncProviders: AsyncProviders = {
                     dispatch(handlers.updateSettings(Object.keys(settings).reduce((acc, key) => {
                         acc[key] = settings[key].value;
                         return acc;
-                    }, {})));
+                    }, {} as any)));
                 });
         };
     },
-    updateLocalSettings: function(){
+    updateLocalSettings: function(cb?: Function){
         return function(dispatch: any, getState: Function){
             const { ws } = getState();
             ws.getLocal()
                 .then(localSettings => {
                     dispatch(handlers.updateLocalSettings(localSettings));
+                    if(cb){
+                        cb();
+                    }
                 });
         };
     },
@@ -115,22 +109,23 @@ export const asyncProviders: AsyncProviders = {
                 });
         };
     },
-    setMode: function(){
+    setRole: function(){
         return function(dispatch: any, getState: Function){
             const { ws } = getState();
             ws.getUserRole()
                .then(role => {
                    // TODO check if error
-                   dispatch(handlers.setMode(role));
+                   dispatch(handlers.setRole(role));
                });
         };
     },
-    setAdvancedMode: function(advancedMode: boolean){
-        return function(dispatch: any, getState: Function){
-            const { localSettings: { window } } = getState();
-            const { width, height } = advancedMode ? window.advancedMode : window.simpleMode;
+    setMode: function(mode: Mode){
+        return async function(dispatch: any, getState: Function){
+            const { window } = await api.settings.getLocal();
+            console.log('SET MODE!!!', mode, window);
+            const { width, height } = window[mode];
             api.app.resizeWindow(width, height);
-            dispatch(handlers.setAdvancedMode(advancedMode));
+            dispatch(handlers.setMode(mode));
         };
     },
     setOfferingsAvailability: function(offeringsIds:string[], cb?: Function){

@@ -14,13 +14,13 @@ import GetPrix from './getPrix';
 
 import Login from 'common/auth/login';
 
-import {State} from 'typings/state';
-import { Role } from 'typings/mode';
+import { State } from 'typings/state';
+import { Role, Mode } from 'typings/mode';
 
 type WizardState = 'firstStart' | 'setAccount' | 'createAccount';
 
 interface IProps {
-    mode?: string;
+    mode?: Mode;
     currentState: WizardState;
     app: React.ComponentType;
     role: Role;
@@ -37,9 +37,9 @@ class Wizard extends React.Component<IProps, {}> {
         }
         const MemoryHistory = createMemoryHistory();
 
-        const mode = _mode ? _mode : (role === Role.AGENT ? 'advanced' : 'simple');
+        const mode = _mode ? _mode : (role === Role.AGENT ? Mode.ADVANCED : Mode.SIMPLE);
 
-        if( mode === 'advanced'){
+        if( mode === Mode.ADVANCED){
             let routes = [
                 <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />,
                 <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />,
@@ -92,7 +92,7 @@ class Wizard extends React.Component<IProps, {}> {
             );
         }
 
-        if( mode === 'simple'){
+        if( mode === Mode.SIMPLE){
             let routes = [
                 <Route path='/getPrix/:accountId'
                        render={(props: any) => <GetPrix entryPoint={'/app'}
@@ -142,4 +142,4 @@ class Wizard extends React.Component<IProps, {}> {
     }
 }
 
-export default connect( (state: State) => ({role: state.mode}) )(Wizard);
+export default connect( (state: State) => ({role: state.role}) )(Wizard);
