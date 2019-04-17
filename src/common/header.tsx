@@ -7,7 +7,7 @@ import { NavLink } from 'react-router-dom';
 import TopPanel from './topPanel';
 import UpdateInformer from './updateInformer/';
 
-import handlers from 'redux/actions';
+import { asyncProviders } from 'redux/actions';
 
 import { Dispatch } from 'redux';
 import { Role } from 'typings/mode';
@@ -165,7 +165,7 @@ const mapStateToProps = (state: State) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ 
     setAdvancedMode: (mode: boolean) => {
-        dispatch(handlers.setAdvancedMode(mode));
+        dispatch(asyncProviders.setAdvancedMode(mode));
     }
 });
 

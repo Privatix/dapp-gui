@@ -2,7 +2,7 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-import handlers from 'redux/actions';
+import { asyncProviders } from 'redux/actions';
 
 import { Dispatch } from 'redux';
 import { State } from 'typings/state';
@@ -37,7 +37,7 @@ const mapStateToProps = (state: State) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ 
     setAdvancedMode: (mode: boolean) => {
-        dispatch(handlers.setAdvancedMode(mode));
+        dispatch(asyncProviders.setAdvancedMode(mode));
     }
 });
 

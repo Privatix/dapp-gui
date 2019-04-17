@@ -7,3 +7,6 @@ export const on = ipcRenderer.on.bind(ipcRenderer);
 
 import * as FS from './api/fs';
 export const fs = FS;
+
+import * as App from './api/app';
+export const app = App;

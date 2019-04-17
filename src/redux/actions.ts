@@ -1,4 +1,5 @@
 import { WS } from 'utils/ws';
+import * as api from 'utils/api';
 
 import {Account} from 'typings/accounts';
 import {Product} from 'typings/products';
@@ -122,6 +123,14 @@ export const asyncProviders: AsyncProviders = {
                    // TODO check if error
                    dispatch(handlers.setMode(role));
                });
+        };
+    },
+    setAdvancedMode: function(advancedMode: boolean){
+        return function(dispatch: any, getState: Function){
+            const { localSettings: { window } } = getState();
+            const { width, height } = advancedMode ? window.advancedMode : window.simpleMode;
+            api.app.resizeWindow(width, height);
+            dispatch(handlers.setAdvancedMode(advancedMode));
         };
     },
     setOfferingsAvailability: function(offeringsIds:string[], cb?: Function){

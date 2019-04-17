@@ -7,7 +7,6 @@ import reducers from 'redux/reducers';
 import { asyncProviders, default as handlers } from 'redux/actions';
 
 import { WS } from 'utils/ws';
-
 import { Role } from 'typings/mode';
 
 const localCache = window.localStorage.getItem('localSettings');
@@ -25,6 +24,8 @@ storage.dispatch(handlers.setWS(ws));
     await ws.whenReady();
     storage.dispatch(asyncProviders.updateLocalSettings());
     storage.dispatch(asyncProviders.setMode());
+    const role = await ws.getUserRole();
+    storage.dispatch(asyncProviders.setAdvancedMode(role === Role.AGENT));
 })();
 
 const checkVersion = function(releases: any, currentRelease: string, target: string){
@@ -79,14 +80,9 @@ api.on('releases', async function(event: any, data: any){
 
 const refresh = async function(){
 
-    const { ws, mode, advancedMode, serviceName } = storage.getState();
+    const { ws, mode, serviceName } = storage.getState();
 
     if(ws) {
-
-        storage.dispatch(asyncProviders.updateLocalSettings());
-        if(mode === Role.AGENT && !advancedMode){
-            storage.dispatch(handlers.setAdvancedMode(true));
-        }
 
         await ws.whenAuthorized();
 

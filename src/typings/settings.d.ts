@@ -26,9 +26,16 @@ export interface LocalSettings {
     platformsEndpoint: string;
     latestReleaseChecked: any;
     updateCheckFreq: number;
-    collectLogsPath: {
-        linux: string;
-    };
+    widndow: {
+        advancedMode: {
+            width: number;
+            height: number;
+        }
+        simpleMode: {
+            width: number;
+            height: number;
+        }
+    }
 }
 
 export interface DbSetting {
