@@ -1,19 +1,23 @@
 import * as React from 'react';
+import { translate } from 'react-i18next';
 import Select from 'react-select';
 
 import SelectCountryOption from './selectCountryOption';
 import SelectCountryValue from './selectCountryValue';
 import OfferingInfo from './offeringInfo';
 
-export default class SelectCountry extends React.Component<any, any> {
+
+@translate(['client/simpleMode'])
+export default class SelectCountry extends React.Component<any, {}> {
 
     render(){
 
-        const {selectedLocation, locations, onSelect, disabled} = this.props;
+        const { t, selectedLocation, locations, onSelect, disabled} = this.props;
 
         return (
             <div style={ {margin: 'auto', width: '300px'} }>
                 <Select className='form-control btn btn-white'
+                        placeholder={t('selectCountry')}
                         value={selectedLocation}
                         valueRenderer={SelectCountryValue}
                         searchable={false}
