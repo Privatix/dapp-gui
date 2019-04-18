@@ -475,7 +475,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             <>
                 <div className='content clearfix content-center'>
                     <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={selectedLocation}
+                                   selectedLocation={ping === 'failed' ? null : selectedLocation}
                                    locations={locations}
                     />
                 </div>

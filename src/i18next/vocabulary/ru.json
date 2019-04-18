@@ -746,6 +746,7 @@
         "Actions": "Действия"
     },
     "client/simpleMode" : {
+        "selectCountry": "Выберите страну",
         "disconnected": "Отключен",
         "connecting": "Подключение",
         "connected": "Подключен",

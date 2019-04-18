@@ -746,6 +746,7 @@
         "Actions": "Actions"
     },
     "client/simpleMode" : {
+        "selectCountry": "Select country",
         "disconnected": "Disconnected",
         "connecting": "Connecting",
         "connected": "Connected",
