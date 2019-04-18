@@ -87,6 +87,25 @@ api.on('releases', async function(event: any, data: any){
     }
 });
 
+
+const refreshAccounts = function(){
+    storage.dispatch(asyncProviders.updateAccounts());
+};
+
+const subscribeAccounts = (async () => {
+
+    const { ws } = storage.getState();
+
+    if(ws) {
+        await ws.whenAuthorized();
+        ws.subscribe('account', ['accountUpdateBalances'], refreshAccounts, refreshAccounts);
+    }else{
+        setTimeout(subscribeAccounts, 1000);
+    }
+});
+
+subscribeAccounts();
+
 const refresh = async function(){
 
     const { ws, role, serviceName } = storage.getState();
@@ -95,11 +114,10 @@ const refresh = async function(){
 
         await ws.whenAuthorized();
 
-        storage.dispatch(asyncProviders.updateAccounts());
-        storage.dispatch(asyncProviders.updateProducts());
         storage.dispatch(asyncProviders.updateSettings());
 
         if(role === Role.AGENT){
+            storage.dispatch(asyncProviders.updateProducts());
             storage.dispatch(asyncProviders.updateTotalIncome());
         }
 

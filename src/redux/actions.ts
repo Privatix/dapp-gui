@@ -121,11 +121,13 @@ export const asyncProviders = {
     },
     setMode: function(mode: Mode){
         return async function(dispatch: any, getState: Function){
+
             const { window } = await api.settings.getLocal();
-            console.log('SET MODE!!!', mode, window);
             const { width, height } = window[mode];
+
             api.app.resizeWindow(width, height);
             dispatch(handlers.setMode(mode));
+
         };
     },
     setOfferingsAvailability: function(offeringsIds:string[], cb?: Function){
