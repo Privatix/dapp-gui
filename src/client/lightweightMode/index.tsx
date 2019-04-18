@@ -199,15 +199,20 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    subscribeUsage = async () => {
-
+    refreshUsage = async () => {
         const { ws } = this.props;
         const { channel } = this.state;
 
         const usage = await ws.getChannelsUsage([channel.id]);
 
         this.setState({usage: usage[channel.id]});
-        this.usageSubscription = setTimeout(this.subscribeUsage, 3000);
+        this.usageSubscription = setTimeout(this.refreshUsage, 3000);
+    }
+
+    subscribeUsage(){
+        if(!this.usageSubscription){
+            this.refreshUsage();
+        }
     }
 
     async connect(){
