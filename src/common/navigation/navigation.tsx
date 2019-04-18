@@ -98,7 +98,7 @@ class Navigation extends React.Component<Props, any> {
                     <ul>
                         <li onClick={this.handleClickFalse} className=''>
                             <NavLink exact to='/' activeClassName='active' className='waves-effect'>
-                                <i className='ti-home'></i><span> {t('Dashboard')} </span>
+                                <i className='ti-home'></i><span>{t('Dashboard')}</span>
                             </NavLink>
                         </li>
 
@@ -108,7 +108,7 @@ class Navigation extends React.Component<Props, any> {
 
                         <li onClick={this.handleClickFalse} className=''>
                             <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
-                                <i className='fa fa-server'></i><span> {t('Servers')} </span>
+                                <i className='fa fa-server'></i><span>{t('Servers')}</span>
                             </NavLink>
                         </li>
 
@@ -130,7 +130,7 @@ class Navigation extends React.Component<Props, any> {
                     <ul>
                         <li onClick={this.handleClickFalse} className=''>
                             <NavLink exact to='/client-dashboard-start' activeClassName='active' className='waves-effect'>
-                                <i className='ti-home'></i><span> {t('ClientDashboard')} </span>
+                                <i className='ti-home'></i><span>{t('ClientDashboard')}</span>
                             </NavLink>
                         </li>
                         <li className=''>
@@ -145,7 +145,7 @@ class Navigation extends React.Component<Props, any> {
                         </li>
                         <li className=''>
                             <NavLink exact to='/client-history' activeClassName='active' className='waves-effect'>
-                                <i className='fa fa-history'></i><span> {t('History')} </span>
+                                <i className='fa fa-history'></i><span>{t('History')}</span>
                             </NavLink>
                         </li>
                         <li onClick={this.handleClickFalse} className=''>
