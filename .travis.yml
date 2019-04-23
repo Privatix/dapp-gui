@@ -2,3 +2,27 @@ language: node_js
 
 node_js:
   - "stable"
+
+# https://electronjs.org/docs/tutorial/testing-on-headless-ci#travis-ci
+install:
+  - export DISPLAY=':99.0'
+  - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - npm i
+
+script:
+  - npm run build
+  - npm test
+
+cache:
+  directories:
+    - "node_modules"
+
+addons:
+  apt:
+    packages:
+      - xvfb
+
+notifications:
+  slack:
+    rooms:
+    - privatix:ntmw2wh4PAHoodqtMc95KFDt#dapp-tech
