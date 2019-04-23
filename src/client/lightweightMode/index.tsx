@@ -55,6 +55,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     usageSubscription = null;
     offeringsSubscription = null;
     getIpSubscription = null;
+    refreshSubscription = null;
 
     offerings: Offering[];
 
@@ -95,6 +96,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
         if(this.getIpSubscription){
             clearTimeout(this.getIpSubscription);
+        }
+        if(this.refreshSubscription){
+            clearTimeout(this.refreshSubscription);
         }
     }
 
@@ -165,7 +169,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 this.setState({status: 'disconnected', channel: null});
                 this.updateOfferings();
             }else{
-                setTimeout(this.refresh, 1000);
+                this.refreshSubscription = setTimeout(this.refresh, 1000);
             }
 
         }
