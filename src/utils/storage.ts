@@ -34,7 +34,8 @@ storage.dispatch(handlers.setWS(ws));
             storage.dispatch(asyncProviders.setRole());
         }
     ));
-
+    await ws.whenAuthorized();
+    storage.dispatch(asyncProviders.updateSettings());
 })();
 
 const checkVersion = function(releases: any, currentRelease: string, target: string){
@@ -114,8 +115,6 @@ const refresh = async function(){
     if(ws) {
 
         await ws.whenAuthorized();
-
-        storage.dispatch(asyncProviders.updateSettings());
 
         if(role === Role.AGENT){
             storage.dispatch(asyncProviders.updateProducts());

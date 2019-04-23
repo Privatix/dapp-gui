@@ -77,6 +77,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     componentWillUnmount(){
 
+        this.unsubscribe();
+
+    }
+
+    unsubscribe(){
         const { ws } = this.props;
 
         if(this.subscription){
@@ -127,7 +132,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
                     this.setState({status: 'connected'});
-                    this.subscribeUsage();
+                    this.subscribeUsage(channel);
                     if(!this.state.ip || this.state.ip === ''){
                         this.getIp();
                     }
@@ -199,19 +204,19 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    refreshUsage = async () => {
+    async refreshUsage(channel: ClientChannel){
+
         const { ws } = this.props;
-        const { channel } = this.state;
 
         const usage = await ws.getChannelsUsage([channel.id]);
 
         this.setState({usage: usage[channel.id]});
-        this.usageSubscription = setTimeout(this.refreshUsage, 3000);
+        this.usageSubscription = setTimeout(this.refreshUsage.bind(this, channel), 3000);
     }
 
-    subscribeUsage(){
+    subscribeUsage(channel: ClientChannel){
         if(!this.usageSubscription){
-            this.refreshUsage();
+            this.refreshUsage(channel);
         }
     }
 
@@ -288,6 +293,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const { channel } = this.state;
 
         ws.changeChannelStatus(channel.id, 'terminate');
+        this.unsubscribe();
         this.setState({status: 'disconnecting', ip: ''});
     }
 

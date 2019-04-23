@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { translate } from 'react-i18next';
 
+import { asyncProviders } from 'redux/actions';
+
 import notice from 'utils/notice';
 
 import SettingsItem from './settingsItem';
@@ -14,6 +16,7 @@ interface IProps {
     ws?: WS;
     t?: any;
     options: any;
+    dispatch?: any;
 }
 
 interface IState {
@@ -32,7 +35,7 @@ class SettingsTable extends React.Component<IProps, IState> {
         };
     }
 
-    static getDerivedStateFromProps(props:any, state:any) {
+    static getDerivedStateFromProps(props:IProps, state:IState) {
         return {data: props.options};
     }
 
@@ -42,13 +45,17 @@ class SettingsTable extends React.Component<IProps, IState> {
         this.setState({payload});
     }
 
-    onSubmit = async (evt: any) => {
-        const { ws, t } = this.props;
+    onSubmit = async evt => {
+
+        const { ws, t, dispatch } = this.props;
+
         evt.preventDefault();
+
         try {
-            ws.updateSettings(this.state.payload);
+            await ws.updateSettings(this.state.payload);
             notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('Success')});
             this.setState({payload: {}});
+            dispatch(asyncProviders.updateSettings());
         } catch (e) {
             notice({level: 'error', header: t('utils/notice:Error!'), msg: t('Error')});
         }
