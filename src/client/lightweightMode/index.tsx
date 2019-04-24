@@ -148,9 +148,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 case 'suspending':
                 case 'suspended':
                     if(this.state.status === 'connecting'){
-                        if(channel.channelStatus.serviceStatus === 'suspended'){
-                            ws.changeChannelStatus(channel.id, 'resume');
-                        }
+                        this.setState({status: 'resuming'});
+                        ws.changeChannelStatus(channel.id, 'resume');
                     }else{
                         this.setState({status: 'suspended'});
                     }
@@ -393,6 +392,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 </ul>
             </>
         );
+    }
+
+    resuming(){
+        return this.connecting();
     }
 
     connecting(){
