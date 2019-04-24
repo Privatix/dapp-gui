@@ -7,9 +7,9 @@ export default class SelectCountryOption extends React.Component<any, {}> {
     }
 
     render(){
-        const { label, value, cost } = this.props.option;
+        const { label, value } = this.props.option;
         return (
-            <div onClick={this.onClick} style={ {display: 'flex', justifyContent: 'space-between'} } >
+            <div onClick={this.onClick} style={ {paddingLeft: '10px', display: 'flex', justifyContent: 'flex-start'} } >
                 <img src={`images/country/${value}.png`}
                      width='30px'
                      height='20px'
@@ -21,7 +21,7 @@ export default class SelectCountryOption extends React.Component<any, {}> {
                                 textOverflow: 'ellipsis',
                                 overflow: 'hidden',
                                 whiteSpace: 'nowrap'
-                 } } >{label}</span><span style={ {margin: '5px'} } >{cost}</span>
+                 } } >{label}</span>
             </div>
         );
     }

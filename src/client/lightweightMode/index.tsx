@@ -34,7 +34,6 @@ interface IProps {
 interface SelectItem {
     value: string;
     label: string;
-    cost: string;
     offering?: Offering;
 }
 
@@ -208,7 +207,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if(!this.state.selectedLocation){
             const offering = await ws.getOffering(channel.offering);
             const country = offering.country.toLowerCase();
-            this.setState({selectedLocation: {value: country, label: countryByISO(country), cost: '', offering}});
+            this.setState({selectedLocation: {value: country, label: countryByISO(country), offering}});
         }
     }
 
@@ -341,9 +340,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         return Object.keys(countries).map(country => {
             const offering = countries[country];
-            const price = toFixed({number: offering.unitPrice/1e8, fixed: 8});
-            const unitName = offering.unitName;
-            return {value: country, label: countryByISO(country), cost: `${price} / ${unitName}`, offering};
+            return {value: country, label: countryByISO(country), offering};
         });
     }
 

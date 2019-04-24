@@ -5,7 +5,7 @@ export default function(props: any){
     const { label, value } = props;
 
     return (
-        <span style={ {display: 'flex', justifyContent: 'flex-start', 'lineHeight': 'normal'} } >
+        <span style={ {display: 'flex', justifyContent: 'flex-start', lineHeight: 'normal'} } >
             <img src={`images/country/${value}.png`}
                  width='30px'
                  height='20px'

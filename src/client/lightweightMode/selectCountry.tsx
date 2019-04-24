@@ -17,6 +17,7 @@ export default class SelectCountry extends React.Component<any, {}> {
         return (
             <div style={ {margin: 'auto', width: '300px'} }>
                 <Select className='form-control btn btn-white'
+                        wrapperStyle={ {padding: '0px'} }
                         placeholder={t('selectCountry')}
                         value={selectedLocation}
                         valueRenderer={SelectCountryValue}
