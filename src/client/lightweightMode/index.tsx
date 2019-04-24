@@ -87,18 +87,23 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(this.subscription){
             ws.unsubscribe(this.subscription);
+            this.subscription = null;
         }
         if(this.usageSubscription){
             clearTimeout(this.usageSubscription);
+            this.usageSubscription = null;
         }
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
+            this.offeringsSubscription = null;
         }
         if(this.getIpSubscription){
             clearTimeout(this.getIpSubscription);
+            this.getIpSubscription = null;
         }
         if(this.refreshSubscription){
             clearTimeout(this.refreshSubscription);
+            this.refreshSubscription = null;
         }
     }
 
@@ -297,7 +302,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         ws.changeChannelStatus(channel.id, 'terminate');
         this.unsubscribe();
-        this.setState({status: 'disconnecting', ip: ''});
+        this.refresh();
+        this.setState({ip: ''});
     }
 
     private onResume = () => {
