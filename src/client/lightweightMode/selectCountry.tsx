@@ -12,7 +12,7 @@ export default class SelectCountry extends React.Component<any, {}> {
 
     render(){
 
-        const { t, selectedLocation, locations, onSelect, disabled} = this.props;
+        const { t, selectedLocation, locations, offering, onSelect, disabled} = this.props;
 
         return (
             <div style={ {margin: 'auto', width: '300px'} }>
@@ -28,7 +28,7 @@ export default class SelectCountry extends React.Component<any, {}> {
                         optionComponent={SelectCountryOption}
                         disabled={disabled}
                 />
-                <OfferingInfo offering={selectedLocation ? selectedLocation.offering : null} />
+                <OfferingInfo offering={offering} />
             </div>
         );
     }
