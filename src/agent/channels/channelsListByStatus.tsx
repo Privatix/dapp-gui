@@ -123,12 +123,12 @@ class Channels extends React.Component<Props, any> {
 
         const { ws } = this.props;
 
-        this.setState({usage: await ws.getChannelsUsage(ids)});
-        if (this.polling) {
+        if(this.polling){
             clearTimeout(this.polling);
             this.polling = null;
         }
-        this.polling = setTimeout(this.updateUsage.bind(this, ids), 2000);
+        this.polling = setTimeout(this.updateUsage.bind(this, ids), 3000);
+        this.setState({usage: await ws.getChannelsUsage(ids)});
     }
 
     static getDerivedStateFromProps(props: any, state: any){

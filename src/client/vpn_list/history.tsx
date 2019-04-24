@@ -89,13 +89,18 @@ class ClientHistory extends React.Component<IProps, IState> {
         const { ws } = this.props;
         const { allTerminatedChannels } = this.state;
 
+        if(this.polling){
+            clearTimeout(this.polling);
+            this.polling = null;
+        }
+        this.polling = setTimeout(this.updateUsage, 3000);
+
         const ids = allTerminatedChannels.map(channel => channel.id);
         const usages = await ws.getChannelsUsage(ids);
         const updatedChannels = allTerminatedChannels.map(channel => Object.assign({}, channel, {usage: usages[channel.id]}));
 
         this.setState({allTerminatedChannels: updatedChannels});
 
-        this.polling = setTimeout(this.updateUsage, 2000);
     }
 
     render() {
