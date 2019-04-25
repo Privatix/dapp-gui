@@ -748,8 +748,11 @@
     "client/simpleMode" : {
         "selectCountry": "Select country",
         "disconnected": "Disconnected",
+        "pingFailed": "Disconnected",
         "connecting": "Connecting",
+        "resuming": "Connecting",
         "connected": "Connected",
+        "pingLocations": "Search node",
         "disconnecting": "Disconnecting",
         "suspended": "Suspended",
         "TIME": "TIME",

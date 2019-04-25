@@ -748,8 +748,11 @@
     "client/simpleMode" : {
         "selectCountry": "Выберите страну",
         "disconnected": "Отключен",
+        "pingFailed": "Отключен",
         "connecting": "Подключение",
+        "resuming": "Подключение",
         "connected": "Подключен",
+        "pingLocations": "Поиск ноды",
         "disconnecting": "Отключение",
         "suspended": "Остановлен",
         "TIME": "Время",

@@ -6,9 +6,24 @@ import SelectCountryOption from './selectCountryOption';
 import SelectCountryValue from './selectCountryValue';
 import OfferingInfo from './offeringInfo';
 
+import { Offering } from 'typings/offerings';
+
+interface SelectItem {
+    value: string;
+    label: string;
+}
+
+interface IProps {
+    t?: any;
+    selectedLocation?: SelectItem;
+    locations?: SelectItem[];
+    offering?: Offering;
+    onSelect: Function;
+    disabled?: boolean;
+}
 
 @translate(['client/simpleMode'])
-export default class SelectCountry extends React.Component<any, {}> {
+export default class SelectCountry extends React.Component<IProps, {}> {
 
     render(){
 

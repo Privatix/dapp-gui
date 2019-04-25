@@ -39,7 +39,6 @@ interface SelectItem {
 interface IState {
     status: string;
     ip: string;
-    ping: string;
     selectedLocation: SelectItem;
     locations: SelectItem[];
     channel: ClientChannel;
@@ -50,6 +49,7 @@ interface IState {
 @translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
 class LightWeightClient extends React.Component<IProps, IState> {
 
+    mounted: boolean;
     subscription: string;
     usageSubscription = null;
     offeringsSubscription = null;
@@ -57,13 +57,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
     refreshSubscription = null;
 
     offerings: Offering[];
+    optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
 
     constructor(props: IProps){
         super(props);
         this.state = {
             status: 'disconnected'
            ,ip: ''
-           ,ping: ''
            ,selectedLocation: null
            ,locations: null
            ,channel: null
@@ -73,11 +73,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
+        this.mounted = true;
         this.refresh();
     }
 
     componentWillUnmount(){
-
+        this.mounted = false;
         this.unsubscribe();
 
     }
@@ -113,7 +114,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
             try{
                 const res = await fetch('https://api.ipify.org?format=json');
                 const json = await res.json();
-                this.setState({ip: json.ip});
+                if(this.mounted){
+                    this.setState({ip: json.ip});
+                }
             }catch(e){
                 this.getIpSubscription = setTimeout(this.getIp.bind(this, counter+1), 3000);
             }
@@ -152,11 +155,15 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     break;
                 case 'suspending':
                 case 'suspended':
-                    if(this.state.status === 'connecting'){
-                        this.setState({status: 'resuming'});
-                        ws.changeChannelStatus(channel.id, 'resume');
-                    }else{
-                        this.setState({status: 'suspended'});
+                    switch(this.state.status){
+                        case 'connecting':
+                            this.setState({status: 'resuming'});
+                            ws.changeChannelStatus(channel.id, 'resume');
+                            break;
+                        case 'disconnecting':
+                            break;
+                        default:
+                            this.setState({status: 'suspended'});
                     }
                     break;
                 case 'terminating':
@@ -164,17 +171,19 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     break;
             }
         }else{
-            if(this.state.status !== 'connecting'){
-                if(this.state.channel){
-                    if(this.state.usage && this.state.usage.current === 0){
-                        await ws.changeChannelStatus(this.state.channel.id, 'close');
+            switch(this.state.status){
+                case 'connecting':
+                    this.refreshSubscription = setTimeout(this.refresh, 2000);
+                    break;
+                case 'disconnecting':
+                    if(this.state.channel){
+                        if(this.state.usage && this.state.usage.current === 0){
+                            await ws.changeChannelStatus(this.state.channel.id, 'close');
+                        }
                     }
-                }
-                this.setState({status: 'disconnected', channel: null});
-            }else{
-                this.refreshSubscription = setTimeout(this.refresh, 1000);
+                    this.setState({status: 'disconnected', channel: null});
+                    break;
             }
-
         }
     }
 
@@ -196,8 +205,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const locations = this.getLocations(this.offerings);
             this.setState({locations});
             if(!this.state.selectedLocation){
-                const selectedLocation = this.getOptimalLocation(locations);
-                this.setState({selectedLocation});
+                this.selectOptimalLocation();
             }
         }
     }
@@ -284,30 +292,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         evt.preventDefault();
 
-        this.setState({status: 'connecting', ping: 'inProgress'});
+        const { offering } = this.state;
 
-        const { dispatch } = this.props;
-        const { selectedLocation } = this.state;
-        const selectedCountry = selectedLocation.value;
-        const ids = this.getOfferingsIdsForCountry(selectedCountry);
+        this.setState({status: 'connecting'});
+        this.connect(offering);
 
-        dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
-
-            const { offeringsAvailability } = this.props;
-            const { ping } = this.state;
-
-            if(ping === 'inProgress'){
-                const offering = this.getAvailableOffering(offeringsAvailability, selectedCountry);
-                if(offering){
-                    this.setState({ping: '', offering});
-                    this.connect(offering);
-                }else{
-                    if(offeringsAvailability.counter === 0){
-                        this.setState({status: 'disconnected', ping: 'failed'});
-                    }
-                }
-            }
-        }));
     }
 
     private onDisconnect = () => {
@@ -318,7 +307,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         ws.changeChannelStatus(channel.id, 'terminate');
         this.unsubscribe();
         this.refresh();
-        this.setState({ip: '', offering: null});
+        this.setState({ip: ''});
     }
 
     private onResume = () => {
@@ -329,8 +318,95 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.setState({status: 'connecting'});
     }
 
+    makeLocation(country: string): SelectItem {
+        return {value: country, label: countryByISO(country)};
+    }
+
+    shuffle(a: Array<any>): Array<any> {
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+    }
+
+    async selectOptimalLocation(){
+        this.setState({status: 'pingLocations'});
+        const countries = this.shuffle(Object.keys(this.offerings.reduce((registry: any, offering: Offering) => {
+            registry[offering.country.trim().toLowerCase()] = 1;
+            return registry;
+        }, {})));
+
+        for(let i=0; i<countries.length; i++){
+            try{
+                const country = countries[i];
+                const offering = await this.pingLocation(country);
+                const selectedLocation = this.optimalLocation;
+                this.setState({status: 'disconnected', offering, selectedLocation});
+                return;
+            }catch(e){
+                continue;
+            }
+        }
+    }
+
+    private pingLocation(country: string): Promise<Offering> {
+
+        return new Promise((resolve, reject) => {
+            const { dispatch } = this.props;
+
+            const ids = this.getOfferingsIdsForCountry(country);
+
+            dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
+
+                const { offeringsAvailability } = this.props;
+                const { status } = this.state;
+
+                if(this.mounted && status === 'pingLocations'){
+                    const offering = this.getAvailableOffering(offeringsAvailability, country);
+                    if(offering){
+                        resolve(offering);
+                    }else{
+                        if(offeringsAvailability.counter === 0){
+                            reject();
+                        }
+                    }
+                }
+            }));
+        });
+    }
+
     private onChangeLocation = (selectedLocation: SelectItem) => {
-        this.setState({selectedLocation, ping: ''});
+
+        this.setState({selectedLocation, status: 'pingLocations'});
+
+        if(selectedLocation.value === this.optimalLocation.value){
+            this.selectOptimalLocation();
+            return;
+        }
+
+
+        const { dispatch } = this.props;
+
+        const selectedCountry = selectedLocation.value;
+        const ids = this.getOfferingsIdsForCountry(selectedCountry);
+
+        dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
+
+            const { offeringsAvailability } = this.props;
+            const { status } = this.state;
+
+            if(this.mounted && status === 'pingLocations'){
+                const offering = this.getAvailableOffering(offeringsAvailability, selectedCountry);
+                if(offering){
+                    this.setState({status: 'disconnected', offering});
+                }else{
+                    if(offeringsAvailability.counter === 0){
+                        this.setState({status: 'pingFailed'});
+                    }
+                }
+            }
+        }));
     }
 
     private getOptimalLocation(locations: SelectItem[]){
@@ -354,8 +430,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
             countries[country] = this.getOptimalLocation(countries[country]);
         });
 
-        return Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
-
+        const res = Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
+        res.unshift(this.optimalLocation);
+        return res;
     }
 
     connected(){
@@ -414,7 +491,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     connecting(){
 
         const { t } = this.props;
-        const { channel, selectedLocation, ping, offering } = this.state;
+        const { channel, selectedLocation, offering } = this.state;
 
         const steps = ['clientPreChannelCreate'
                       ,'clientAfterChannelCreate'
@@ -440,30 +517,19 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     />
                 </div>
                 <br />
-                {ping === 'inProgress'
-                    ? <div>
-                        <div style={ {margin: '10px'} }>{t('SearchingTheOptimalNode')} <DotProgress /></div>
-                        <div style={ {margin: '10px'} }>
-                            <i className='fa fa-circle-o-notch fa-spin' style={ {fontSize: '28px'} }></i>
-                        </div>
-                    </div>
-                    :
-                    <>
-                        <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
-                            {t('Connecting')} <DotProgress />
-                        </button>
-                        <br />
-                        <br />
-                        <progress
-                            style={ {margin: 'auto', width: '300px', height: '10px'} }
-                            className='wow animated progress-animated'
-                            value={percentage}
-                            max={100}
-                        />
-                        <br />
-                        {channel ? <JobName className='text-muted' jobtype={channel.job.jobtype} /> : null }
-                    </>
-                }
+                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                    {t('Connecting')} <DotProgress />
+                </button>
+                <br />
+                <br />
+                <progress
+                    style={ {margin: 'auto', width: '300px', height: '10px'} }
+                    className='wow animated progress-animated'
+                    value={percentage}
+                    max={100}
+                />
+                <br />
+                {channel ? <JobName className='text-muted' jobtype={channel.job.jobtype} /> : null }
             </>
         );
     }
@@ -491,10 +557,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         );
     }
 
-    disconnected(){
+    pingLocations(){
 
         const { t } = this.props;
-        const { locations, selectedLocation, ping } = this.state;
+        const { locations, selectedLocation } = this.state;
 
         if(!locations || !locations.length){
             return (
@@ -508,19 +574,75 @@ class LightWeightClient extends React.Component<IProps, IState> {
             <>
                 <div className='content clearfix content-center'>
                     <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={ping === 'failed' ? null : selectedLocation}
+                                   selectedLocation={selectedLocation}
                                    locations={locations}
                     />
                 </div>
                 <br/>
                 <br/>
-                <button type='button' onClick={this.onConnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
                     {t('Connect')}
                 </button>
-                { ping === 'failed'
-                    ? <div style={ {margin: '10px'} }>{t('NoAvailableOfferings')}</div>
-                    : null
-                }
+                <div>
+                    <div style={ {margin: '10px'} }>{t('SearchingTheOptimalNode')} <DotProgress /></div>
+                    <div style={ {margin: '10px'} }>
+                        <i className='fa fa-circle-o-notch fa-spin' style={ {fontSize: '28px'} }></i>
+                    </div>
+                </div>
+            </>
+        );
+    }
+
+    pingFailed(){
+
+        const { t } = this.props;
+        const { locations } = this.state;
+
+        return (
+            <>
+                <div className='content clearfix content-center'>
+                    <SelectCountry onSelect={this.onChangeLocation}
+                                   selectedLocation={null}
+                                   locations={locations}
+                    />
+                </div>
+                <br/>
+                <br/>
+                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                    {t('Connect')}
+                </button>
+                <div style={ {margin: '10px'} }>{t('NoAvailableOfferings')}</div>
+            </>
+        );
+    }
+
+    disconnected(){
+
+        const { t } = this.props;
+        const { locations, selectedLocation, offering } = this.state;
+
+        if(!locations || !locations.length){
+            return (
+                <div className='text-center m-t-15 m-b-15'>
+                    <div className='lds-dual-ring'></div>
+                </div>
+            );
+        }
+
+        return (
+            <>
+                <div className='content clearfix content-center'>
+                    <SelectCountry onSelect={this.onChangeLocation}
+                                   selectedLocation={selectedLocation}
+                                   locations={locations}
+                                   offering={offering}
+                    />
+                </div>
+                <br/>
+                <br/>
+                <button type='button' disabled={!offering} onClick={this.onConnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                    {t('Connect')}
+                </button>
             </>
         );
     }
