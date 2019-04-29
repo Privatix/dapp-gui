@@ -16,8 +16,8 @@ export default class OfferingInfo extends React.Component<any, {}> {
                     <td style={ {border: '0'} }>{`${toFixed({number: offering.unitPrice/1e8, fixed: 8})} PRIX`}</td>
                 </tr>
                 <tr>
-                    <td>Max. traffic:</td>
-                    <td>{offering.maxUnit ? `${offering.maxUnit} ${offering.unitName}` : 'unlimited' }</td>
+                    <td style={ {paddingBottom: '0px'} }>Max. traffic:</td>
+                    <td style={ {paddingBottom: '0px'} }>{offering.maxUnit ? `${offering.maxUnit} ${offering.unitName}` : 'unlimited' }</td>
                 </tr>
                 </tbody>
             </table>

@@ -447,35 +447,30 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         return (
             <>
-                <h6 className='text-muted'>IP: {ip}</h6>
-                <br/>
-                <div className='content clearfix content-center'>
+                <h6 className='text-muted spacing'>IP: {ip}</h6>
+                <div className='content clearfix content-center spacing'>
                     <SelectCountry onSelect={this.onChangeLocation}
                                    selectedLocation={selectedLocation}
                                    disabled={true}
                                    offering={offering}
                     />
                 </div>
-                <br/>
-                <br/>
-                <button type='button' onClick={this.onDisconnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                <button type='button' onClick={this.onDisconnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Disconnect')}
                 </button>
-
-
-                <ul className='list-inline m-t-15'>
+                <ul className='list-inline m-t-15 spacing'>
                     <li>
-                        <h6 className='text-muted m-t-20'>{t('TIME')}</h6>
+                        <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('TIME')}</h6>
                         <h2 className='m-t-20'>{hours}:{minutes}:{seconds}</h2>
                         <h4 className='text-muted  m-b-0'>hh:mm:ss</h4>
                     </li>
                     <li>
-                        <h6 className='text-muted m-t-20'>{t('TRAFFIC')}</h6>
+                        <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('TRAFFIC')}</h6>
                         <h2 className='m-t-20'>{usage ? usage.current : null}</h2>
                         <h4 className='text-muted m-b-0'>MB</h4>
                     </li>
                     <li>
-                        <h6 className='text-muted m-t-20'>{t('SPENT')}</h6>
+                        <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('SPENT')}</h6>
                         <h2 className='m-t-20'>{usage ? toFixed({number: usage.cost/1e8, fixed: 4}) : null}</h2>
                         <h4 className='text-muted m-b-0'>PRIX</h4>
                     </li>
@@ -509,27 +504,23 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         return (
             <>
-                <div className='content clearfix content-center'>
+                <div className='content clearfix content-center spacing'>
                     <SelectCountry onSelect={this.onChangeLocation}
                                    selectedLocation={selectedLocation}
                                    offering={offering}
                                    disabled={true}
                     />
                 </div>
-                <br />
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Connecting')} <DotProgress />
                 </button>
-                <br />
-                <br />
                 <progress
-                    style={ {margin: 'auto', width: '300px', height: '10px'} }
-                    className='wow animated progress-animated'
+                    style={ {marginLeft: 'auto', marginRight: 'auto', width: '300px', height: '10px', display: 'block'} }
+                    className='wow animated progress-animated spacing'
                     value={percentage}
                     max={100}
                 />
-                <br />
-                {channel ? <JobName className='text-muted' jobtype={channel.job.jobtype} /> : null }
+                {channel ? <JobName className='text-muted spacing' jobtype={channel.job.jobtype} /> : null }
             </>
         );
     }
@@ -541,16 +532,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         return (
             <>
-                <div className='content clearfix content-center'>
+                <div className='content clearfix content-center spacing'>
                     <SelectCountry onSelect={this.onChangeLocation}
                                    selectedLocation={selectedLocation}
                                    offering={offering}
                                    disabled={true}
                     />
                 </div>
-                <br/>
-                <br/>
-                <button type='button' onClick={this.onResume} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                <button type='button' onClick={this.onResume} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Resume')}
                 </button>
             </>
@@ -564,7 +553,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(!locations || !locations.length){
             return (
-                <div className='text-center m-t-15 m-b-15'>
+                <div className='text-center m-t-15 m-b-15 spacing'>
                     <div className='lds-dual-ring'></div>
                 </div>
             );
@@ -572,18 +561,16 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         return (
             <>
-                <div className='content clearfix content-center'>
+                <div className='content clearfix content-center spacing'>
                     <SelectCountry onSelect={this.onChangeLocation}
                                    selectedLocation={selectedLocation}
                                    locations={locations}
                     />
                 </div>
-                <br/>
-                <br/>
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Connect')}
                 </button>
-                <div>
+                <div className='spacing'>
                     <div style={ {margin: '10px'} }>{t('SearchingTheOptimalNode')} <DotProgress /></div>
                     <div style={ {margin: '10px'} }>
                         <i className='fa fa-circle-o-notch fa-spin' style={ {fontSize: '28px'} }></i>
@@ -600,15 +587,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         return (
             <>
-                <div className='content clearfix content-center'>
+                <div className='content clearfix content-center spacing'>
                     <SelectCountry onSelect={this.onChangeLocation}
                                    selectedLocation={null}
                                    locations={locations}
                     />
                 </div>
-                <br/>
-                <br/>
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Connect')}
                 </button>
                 <div style={ {margin: '10px'} }>{t('NoAvailableOfferings')}</div>
@@ -623,7 +608,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(!locations || !locations.length){
             return (
-                <div className='text-center m-t-15 m-b-15'>
+                <div className='text-center m-t-15 m-b-15 spacing'>
                     <div className='lds-dual-ring'></div>
                 </div>
             );
@@ -631,16 +616,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         return (
             <>
-                <div className='content clearfix content-center'>
+                <div className='content clearfix content-center spacing'>
                     <SelectCountry onSelect={this.onChangeLocation}
                                    selectedLocation={selectedLocation}
                                    locations={locations}
                                    offering={offering}
                     />
                 </div>
-                <br/>
-                <br/>
-                <button type='button' disabled={!offering} onClick={this.onConnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                <button type='button' disabled={!offering} onClick={this.onConnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Connect')}
                 </button>
             </>
@@ -666,21 +649,18 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         return (
             <>
-                <div className='content clearfix content-center'>
+                <div className='content clearfix content-center spacing'>
                     <SelectCountry onSelect={this.onChangeLocation}
                                    selectedLocation={selectedLocation}
                                    disabled={true}
                     />
                 </div>
-                <br />
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light'>
+                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Disconnecting')} <DotProgress />
                 </button>
-                <br />
-                <br />
                 <progress
-                    style={ {margin: 'auto', width: '300px', height: '10px'} }
-                    className='wow animated progress-animated'
+                    style={ {marginLeft: 'auto', marginRight: 'auto', width: '300px', height: '10px', display: 'block'} }
+                    className='wow animated progress-animated spacing'
                     value={percentage}
                     max={100}
                 />
@@ -710,9 +690,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
                             <CopyToClipboard text={ethAddr} />
                         </h5>
                         <h5>{t('Balance')}: { balance } PRIX</h5>
-                        <img src='images/Privatix_logo.png' alt='image' className='img-fluid' width='250' />
-                        <h1>{t(status)}</h1>
-                        <br/>
+                        <img src='images/Privatix_logo.png' alt='image' className='img-fluid spacing' width='250' />
+                        <h1 className='spacing'>{t(status)}</h1>
                         { this[this.state.status]() }
                     </div>
                 </div>
