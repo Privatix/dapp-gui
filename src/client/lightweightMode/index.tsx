@@ -4,12 +4,13 @@ import { translate } from 'react-i18next';
 
 import { asyncProviders } from 'redux/actions';
 
-import JobName from 'common/badges/jobName';
+// import JobName from 'common/badges/jobName';
 import CopyToClipboard from 'common/copyToClipboard';
-import DotProgress from 'common/etc/dotProgress';
+// import DotProgress from 'common/etc/dotProgress';
 
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
-import SelectCountry from './selectCountry';
+// import SelectCountry from './selectCountry';
+import States from './states';
 
 import toFixed from 'utils/toFixedN';
 import notice from 'utils/notice';
@@ -19,6 +20,8 @@ import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
 import { Offering } from 'typings/offerings';
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+
+type Status = 'disconnected' | 'disconnecting' | 'connected' | 'connecting' | 'resuming' | 'pingLocations' | 'pingFailed' | 'suspended';
 
 interface IProps {
     ws: State['ws'];
@@ -37,7 +40,7 @@ interface SelectItem {
 }
 
 interface IState {
-    status: string;
+    status: Status;
     ip: string;
     selectedLocation: SelectItem;
     locations: SelectItem[];
@@ -435,240 +438,68 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return res;
     }
 
-    connected(){
+    states: {[key in Status]: any} = {
 
-        const { t } = this.props;
-        const { usage, ip, channel, selectedLocation, offering } = this.state;
+        connected: () => {
 
-        const secondsTotal = Math.floor((Date.now() - (new Date().getTimezoneOffset()*60*1000)- Date.parse(channel.job.createdAt))/1000);
-        const seconds = secondsTotal%60;
-        const minutes = ((secondsTotal - seconds)/60)%60;
-        const hours = (secondsTotal - minutes*60 - seconds)/(60*60);
+            const { usage, ip, channel, selectedLocation, offering } = this.state;
+            const props = {usage, ip, channel, selectedLocation, offering, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect};
+            return <States.Connected {...props} />;
+            
+        },
 
-        return (
-            <>
-                <h6 className='text-muted spacing'>IP: {ip}</h6>
-                <div className='content clearfix content-center spacing'>
-                    <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={selectedLocation}
-                                   disabled={true}
-                                   offering={offering}
-                    />
-                </div>
-                <button type='button' onClick={this.onDisconnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
-                    {t('Disconnect')}
-                </button>
-                <ul className='list-inline m-t-15 spacing'>
-                    <li>
-                        <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('TIME')}</h6>
-                        <h2 className='m-t-20'>{hours}:{minutes}:{seconds}</h2>
-                        <h4 className='text-muted  m-b-0'>hh:mm:ss</h4>
-                    </li>
-                    <li>
-                        <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('TRAFFIC')}</h6>
-                        <h2 className='m-t-20'>{usage ? usage.current : null}</h2>
-                        <h4 className='text-muted m-b-0'>MB</h4>
-                    </li>
-                    <li>
-                        <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('SPENT')}</h6>
-                        <h2 className='m-t-20'>{usage ? toFixed({number: usage.cost/1e8, fixed: 4}) : null}</h2>
-                        <h4 className='text-muted m-b-0'>PRIX</h4>
-                    </li>
-                </ul>
-            </>
-        );
-    }
+        resuming: () => {
+            return this.states.connecting();
+        },
 
-    resuming(){
-        return this.connecting();
-    }
+        connecting: () => {
 
-    connecting(){
+            const { channel, selectedLocation, offering } = this.state;
+            const props = { channel, selectedLocation, offering, onChangeLocation: this.onChangeLocation };
+            return <States.Connecting {...props} />;
+            
+        },
 
-        const { t } = this.props;
-        const { channel, selectedLocation, offering } = this.state;
+        suspended: () => {
 
-        const steps = ['clientPreChannelCreate'
-                      ,'clientAfterChannelCreate'
-                      ,'clientEndpointRestore'
-                      ,'clientPreServiceUnsuspend'
-                      ,'completeServiceTransition'
-        ];
-        const currentStep = function(step: string){
-            const i = steps.indexOf(step);
-            return i !== -1 ? i + 1 : 0;
-        };
+            const { selectedLocation, offering } = this.state;
+            const props = { selectedLocation, offering, onResume: this.onResume };
+            return <States.Suspended {...props} />;
+            
+        },
 
-        const step = channel ? currentStep(channel.job.jobtype) : 0;
-        const percentage = Math.floor(step * 100/steps.length);
+        pingLocations: () => {
 
-        return (
-            <>
-                <div className='content clearfix content-center spacing'>
-                    <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={selectedLocation}
-                                   offering={offering}
-                                   disabled={true}
-                    />
-                </div>
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
-                    {t('Connecting')} <DotProgress />
-                </button>
-                <progress
-                    style={ {marginLeft: 'auto', marginRight: 'auto', width: '300px', height: '10px', display: 'block'} }
-                    className='wow animated progress-animated spacing'
-                    value={percentage}
-                    max={100}
-                />
-                {channel ? <JobName className='text-muted spacing' jobtype={channel.job.jobtype} /> : null }
-            </>
-        );
-    }
+            const { locations, selectedLocation } = this.state;
+            const props = { locations, selectedLocation, onChangeLocation: this.onChangeLocation };
+            return <States.PingLocations {...props} />;
+            
+        },
 
-    suspended(){
+        pingFailed: () => {
 
-        const { t } = this.props;
-        const { selectedLocation, offering } = this.state;
+            const { locations  } = this.state;
+            const props = { locations, onChangeLocation: this.onChangeLocation };
+            return <States.PingFailed {...props} />;
 
-        return (
-            <>
-                <div className='content clearfix content-center spacing'>
-                    <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={selectedLocation}
-                                   offering={offering}
-                                   disabled={true}
-                    />
-                </div>
-                <button type='button' onClick={this.onResume} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
-                    {t('Resume')}
-                </button>
-            </>
-        );
-    }
+        },
 
-    pingLocations(){
+        disconnected: () => {
 
-        const { t } = this.props;
-        const { locations, selectedLocation } = this.state;
+            const { locations, selectedLocation, offering } = this.state;
+            const props = { locations, selectedLocation, offering, onChangeLocation: this.onChangeLocation, onConnect: this.onConnect };
+            return <States.Disconnected {...props} />;
 
-        if(!locations || !locations.length){
-            return (
-                <div className='text-center m-t-15 m-b-15 spacing'>
-                    <div className='lds-dual-ring'></div>
-                </div>
-            );
+        },
+
+        disconnecting: () => {
+
+            const { channel, selectedLocation } = this.state;
+            const props = { channel, selectedLocation };
+            return <States.Disconnecting {...props} />;
+            
         }
-
-        return (
-            <>
-                <div className='content clearfix content-center spacing'>
-                    <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={selectedLocation}
-                                   locations={locations}
-                    />
-                </div>
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
-                    {t('Connect')}
-                </button>
-                <div className='spacing'>
-                    <div style={ {margin: '10px'} }>{t('SearchingTheOptimalNode')} <DotProgress /></div>
-                    <div style={ {margin: '10px'} }>
-                        <i className='fa fa-circle-o-notch fa-spin' style={ {fontSize: '28px'} }></i>
-                    </div>
-                </div>
-            </>
-        );
-    }
-
-    pingFailed(){
-
-        const { t } = this.props;
-        const { locations } = this.state;
-
-        return (
-            <>
-                <div className='content clearfix content-center spacing'>
-                    <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={null}
-                                   locations={locations}
-                    />
-                </div>
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
-                    {t('Connect')}
-                </button>
-                <div style={ {margin: '10px'} }>{t('NoAvailableOfferings')}</div>
-            </>
-        );
-    }
-
-    disconnected(){
-
-        const { t } = this.props;
-        const { locations, selectedLocation, offering } = this.state;
-
-        if(!locations || !locations.length){
-            return (
-                <div className='text-center m-t-15 m-b-15 spacing'>
-                    <div className='lds-dual-ring'></div>
-                </div>
-            );
-        }
-
-        return (
-            <>
-                <div className='content clearfix content-center spacing'>
-                    <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={selectedLocation}
-                                   locations={locations}
-                                   offering={offering}
-                    />
-                </div>
-                <button type='button' disabled={!offering} onClick={this.onConnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
-                    {t('Connect')}
-                </button>
-            </>
-        );
-    }
-
-    disconnecting(){
-
-        const { t } = this.props;
-        const { channel, selectedLocation } = this.state;
-
-        const steps = ['completeServiceTransition'
-                      ,'clientPreServiceTerminate'
-        ];
-
-        const currentStep = function(step: string){
-            const i = steps.indexOf(step);
-            return i !== -1 ? i + 1 : 0;
-        };
-
-        const step = channel ? currentStep(channel.job.jobtype) : 0;
-        const percentage = Math.floor(step * 100/steps.length);
-
-        return (
-            <>
-                <div className='content clearfix content-center spacing'>
-                    <SelectCountry onSelect={this.onChangeLocation}
-                                   selectedLocation={selectedLocation}
-                                   disabled={true}
-                    />
-                </div>
-                <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
-                    {t('Disconnecting')} <DotProgress />
-                </button>
-                <progress
-                    style={ {marginLeft: 'auto', marginRight: 'auto', width: '300px', height: '10px', display: 'block'} }
-                    className='wow animated progress-animated spacing'
-                    value={percentage}
-                    max={100}
-                />
-                <br />
-                <JobName className='text-muted' jobtype={channel.job.jobtype} />
-            </>
-        );
-    }
+    };
 
     render(){
 
@@ -692,7 +523,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         <h5>{t('Balance')}: { balance } PRIX</h5>
                         <img src='images/Privatix_logo.png' alt='image' className='img-fluid spacing' width='250' />
                         <h1 className='spacing'>{t(status)}</h1>
-                        { this[this.state.status]() }
+                        { this.states[this.state.status]() }
                     </div>
                 </div>
             </div>
