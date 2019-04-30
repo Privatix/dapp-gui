@@ -4,12 +4,9 @@ import { translate } from 'react-i18next';
 
 import { asyncProviders } from 'redux/actions';
 
-// import JobName from 'common/badges/jobName';
 import CopyToClipboard from 'common/copyToClipboard';
-// import DotProgress from 'common/etc/dotProgress';
 
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
-// import SelectCountry from './selectCountry';
 import States from './states';
 
 import toFixed from 'utils/toFixedN';
