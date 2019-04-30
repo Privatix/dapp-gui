@@ -11,6 +11,7 @@ interface SelectItem {
 interface IProps {
     t?: any;
     locations: SelectItem[];
+    selectedLocation: SelectItem;
     onChangeLocation: Function;
 }
 
@@ -19,13 +20,13 @@ export default class PingFailed extends React.Component<IProps, {}> {
 
     render(){
 
-        const { t, locations, onChangeLocation } = this.props;
+        const { t, locations, selectedLocation, onChangeLocation } = this.props;
 
         return (
             <>
                 <div className='content clearfix content-center spacing'>
                     <SelectCountry onSelect={onChangeLocation}
-                                   selectedLocation={null}
+                                   selectedLocation={selectedLocation}
                                    locations={locations}
                     />
                 </div>

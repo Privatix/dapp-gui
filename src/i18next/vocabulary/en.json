@@ -755,6 +755,7 @@
         "pingLocations": "Search node",
         "disconnecting": "Disconnecting",
         "suspended": "Suspended",
+        "jobFailed": "Disconnected",
         "TIME": "TIME",
         "TRAFFIC": "TRAFFIC",
         "SPENT": "SPENT",
@@ -768,6 +769,9 @@
         "LighweightMode": "Simple Mode",
         "AdvancedMode": "Advanced Mode",
         "SearchingTheOptimalNode": "Searching the optimal node",
-        "NoAvailableOfferings": "No available offerings. Please choose another country."
+        "NoAvailableOfferings": "No available offerings. Please choose another country.",
+        "AgentFailed": "Agent failed to provide the service.",
+        "HisRating": "His rating will register that.",
+        "PleaseTryAgain": "Please, try again."
     }
 }

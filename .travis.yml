@@ -1,12 +1,13 @@
 language: node_js
 
 node_js:
-  - "stable"
+  - 10.13.0
 
 # https://electronjs.org/docs/tutorial/testing-on-headless-ci#travis-ci
 install:
   - export DISPLAY=':99.0'
   - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+  - npm i --package-lock-only
   - npm i
 
 script:

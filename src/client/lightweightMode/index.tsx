@@ -18,7 +18,15 @@ import { Account } from 'typings/accounts';
 import { Offering } from 'typings/offerings';
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 
-type Status = 'disconnected' | 'disconnecting' | 'connected' | 'connecting' | 'resuming' | 'pingLocations' | 'pingFailed' | 'suspended';
+type Status = 'disconnected'
+            | 'disconnecting'
+            | 'connected'
+            | 'connecting'
+            | 'resuming'
+            | 'pingLocations'
+            | 'pingFailed'
+            | 'suspended'
+            ;
 
 interface IProps {
     ws: State['ws'];
@@ -54,10 +62,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
     usageSubscription = null;
     offeringsSubscription = null;
     getIpSubscription = null;
-    refreshSubscription = null;
+    firstJobSubscription = null;
 
-    offerings: Offering[];
-    optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
+    private offerings: Offering[];
+    private optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
+    private blackList: Offering[] = [];
 
     constructor(props: IProps){
         super(props);
@@ -102,9 +111,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
             clearTimeout(this.getIpSubscription);
             this.getIpSubscription = null;
         }
-        if(this.refreshSubscription){
-            clearTimeout(this.refreshSubscription);
-            this.refreshSubscription = null;
+        if(this.firstJobSubscription){
+            ws.unsubscribe(this.firstJobSubscription);
+            this.firstJobSubscription = null;
         }
     }
 
@@ -123,10 +132,34 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
+    checker = (event: any) => {
+        const unsubscribe = () => {
+                const { ws } = this.props;
+                ws.unsubscribe(this.firstJobSubscription);
+                this.firstJobSubscription = null;
+        };
+        switch(event.job.Status){
+            case 'failed':
+                unsubscribe();
+                this.failedJob();
+                break;
+            case 'done':
+                unsubscribe();
+                this.refresh();
+                break;
+        }
+    }
+
     private refresh = async () => {
 
         const { ws } = this.props;
 
+        const jobs = ['clientPreChannelCreate'
+              ,'clientAfterChannelCreate'
+              ,'clientEndpointRestore'
+              ,'clientPreServiceUnsuspend'
+              ,'completeServiceTransition'
+        ];
         const channels = await ws.getNotTerminatedClientChannels();
 
         if(this.subscription){
@@ -137,8 +170,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if(channels.length){
 
             const ids = channels.map(channel => channel.id);
-            this.subscription = await ws.subscribe('channel', ids, this.refresh);
+            this.subscription = await ws.subscribe('channel', [...ids, ...jobs], this.refresh, this.refresh);
             const channel = channels[0];
+
+            if(channel.job.status === 'failed'){
+                this.failedJob();
+                return;
+            }
+
             this.setState({channel});
             this.updateCurrentCountry(channel);
             switch(channel.channelStatus.serviceStatus){
@@ -173,7 +212,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }else{
             switch(this.state.status){
                 case 'connecting':
-                    this.refreshSubscription = setTimeout(this.refresh, 2000);
+                    if(!this.firstJobSubscription){
+                        this.firstJobSubscription = await ws.subscribe('channel', ['clientPreChannelCreate'], this.checker, this.refresh);
+                    }
                     break;
                 case 'disconnecting':
                     if(this.state.channel){
@@ -187,19 +228,39 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
+    addToBlackList(offering: Offering){
+        this.blackList.push(offering);
+    }
+
+    failedJob(){
+
+        const { t } = this.props;
+        const { offering, selectedLocation } = this.state;
+
+        const msg = <>{t('AgentFailed')}<br/>{t('HisRating')}<br/>{t('PleaseTryAgain')}</>;
+
+        notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+
+        this.addToBlackList(offering);
+        this.updateOfferings();
+        this.setState({offering: null});
+        this.onChangeLocation(selectedLocation);
+    }
+
     async updateOfferings(){
 
         const { ws } = this.props;
 
-        const clientOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
-        const ids = clientOfferings.items.map(offering => offering.id);
+        const allOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
+        const clientOfferings = allOfferings.items.filter(offering => this.blackList.findIndex(wreckOffering => wreckOffering.id === offering.id) === -1);
+        const ids = clientOfferings.map(offering => offering.id);
 
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
         }
 
         this.offeringsSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish', ...ids], this.refresh, this.refresh);
-        this.offerings = clientOfferings.items.filter(offering => offering.currentSupply !== 0);
+        this.offerings = clientOfferings.filter(offering => offering.currentSupply !== 0);
 
         if(!this.state.locations){
             const locations = this.getLocations(this.offerings);
@@ -475,8 +536,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         pingFailed: () => {
 
-            const { locations  } = this.state;
-            const props = { locations, onChangeLocation: this.onChangeLocation };
+            const { locations, selectedLocation  } = this.state;
+            const props = { locations, selectedLocation, onChangeLocation: this.onChangeLocation };
             return <States.PingFailed {...props} />;
 
         },
