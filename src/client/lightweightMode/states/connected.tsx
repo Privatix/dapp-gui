@@ -31,6 +31,8 @@ export default class Connected extends React.Component<IProps, {}> {
 
         const { t, usage, ip, channel, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
 
+        const padZero = (n: number) => n < 10 ? `0${n}` : `${n}`;
+
         const secondsTotal = Math.floor((Date.now() - (new Date().getTimezoneOffset()*60*1000)- Date.parse(channel.job.createdAt))/1000);
         const seconds = secondsTotal%60;
         const minutes = ((secondsTotal - seconds)/60)%60;
@@ -52,7 +54,7 @@ export default class Connected extends React.Component<IProps, {}> {
                 <ul className='list-inline m-t-15 spacing'>
                     <li>
                         <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('TIME')}</h6>
-                        <h2 className='m-t-20'>{hours}:{minutes}:{seconds}</h2>
+                        <h2 className='m-t-20'>{padZero(hours)}:{padZero(minutes)}:{padZero(seconds)}</h2>
                         <h4 className='text-muted  m-b-0'>hh:mm:ss</h4>
                     </li>
                     <li>
