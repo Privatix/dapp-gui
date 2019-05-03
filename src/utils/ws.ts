@@ -90,7 +90,7 @@ export class WS {
                 console.log('Connection interrupted.');
             }
             console.log('Code: ' + event.code + ' reason: ' + event.reason);
-            this.reconnect(endpoint);
+            setTimeout(this.reconnect.bind(this, endpoint), 1000);
         };
 
         socket.onmessage = function(event: any) {

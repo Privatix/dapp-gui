@@ -16,6 +16,7 @@ import countryByISO from 'utils/countryByIso';
 import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
 import { Offering } from 'typings/offerings';
+import { Product } from 'typings/products';
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 
 type Status = 'disconnected'
@@ -60,10 +61,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
     subscription: string;
     usageSubscription = null;
     offeringsSubscription = null;
+    newOfferingSubscription = null;
     getIpSubscription = null;
     firstJobSubscription = null;
 
     private offerings: Offering[];
+    private product: Product;
     private optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
     private blackList: Offering[] = [];
 
@@ -105,6 +108,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
             this.offeringsSubscription = null;
+        }
+        if(this.newOfferingSubscription){
+            ws.unsubscribe(this.newOfferingSubscription);
+            this.newOfferingSubscription = null;
         }
         if(this.getIpSubscription){
             clearTimeout(this.getIpSubscription);
@@ -241,7 +248,26 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.onChangeLocation(selectedLocation);
     }
 
-    async updateOfferings(){
+    onNewOffering = (event: any) => {
+        if(event.job.status !== 'done'){
+            return;
+        }
+        if(event.object.product !== this.product.id){
+            return;
+        }
+        if(event.object.supply >= 0){
+            return;
+        }
+
+        this.addOffering(event.object);
+    }
+
+
+    addOffering(offering: Offering){
+        this.offerings.push(offering);
+    }
+
+    updateOfferings = async () => {
 
         const { ws } = this.props;
 
@@ -253,8 +279,17 @@ class LightWeightClient extends React.Component<IProps, IState> {
             ws.unsubscribe(this.offeringsSubscription);
         }
 
-        this.offeringsSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish', ...ids], this.refresh, this.refresh);
-        this.offerings = clientOfferings.filter(offering => offering.currentSupply !== 0);
+        if(!this.product){
+            const products = await ws.getProducts();
+            const product = products.filter(product => product.isServer)[0];
+            this.product = product;
+        }
+
+        this.offeringsSubscription = await ws.subscribe('offering', ids, this.updateOfferings, this.updateOfferings);
+        if(!this.newOfferingSubscription){
+            this.newOfferingSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish'], this.onNewOffering, this.updateOfferings);
+        }
+        this.offerings = clientOfferings.filter(offering => offering.currentSupply > 0);
 
         if(!this.state.locations){
             const locations = this.getLocations(this.offerings);
