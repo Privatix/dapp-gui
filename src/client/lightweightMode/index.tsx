@@ -22,7 +22,6 @@ type Status = 'disconnected'
             | 'disconnecting'
             | 'connected'
             | 'connecting'
-            | 'resuming'
             | 'pingLocations'
             | 'pingFailed'
             | 'suspended'
@@ -173,7 +172,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             this.subscription = await ws.subscribe('channel', [...ids, ...jobs], this.refresh, this.refresh);
             const channel = channels[0];
 
-            if(channel.job.status === 'failed'){
+            if(['canceled', 'failed'].includes(channel.job.status)){
                 this.failedJob();
                 return;
             }
@@ -196,7 +195,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 case 'suspended':
                     switch(this.state.status){
                         case 'connecting':
-                            this.setState({status: 'resuming'});
                             ws.changeChannelStatus(channel.id, 'resume');
                             break;
                         case 'disconnecting':
@@ -504,10 +502,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const props = {usage, ip, channel, selectedLocation, offering, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect};
             return <States.Connected {...props} />;
             
-        },
-
-        resuming: () => {
-            return this.states.connecting();
         },
 
         connecting: () => {

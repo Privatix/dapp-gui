@@ -671,7 +671,7 @@
         "clientPreServiceSuspend" : "suspend service",
         "clientPreServiceUnsuspend" : "unsuspend service",
         "clientPreServiceTerminate" : "permanently stop using the service",
-        "clientEndpointRestore" : "get service access",
+        "clientEndpointGet" : "get service access",
         "clientAfterOfferingMsgBCPublish" : "get offering data",
         "clientAfterOfferingPopUp" : "update offering position",
         "clientAfterOfferingDelete" : "remove offering",
