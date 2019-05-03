@@ -2,7 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import SelectCountry from '../selectCountry';
-import DotProgress from 'common/etc/dotProgress';
+import DotProgress from 'common/progressBars/dotProgress';
 
 interface SelectItem {
     value: string;
