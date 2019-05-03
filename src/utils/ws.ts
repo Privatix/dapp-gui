@@ -133,9 +133,13 @@ export class WS {
     }
 
     private restoreSubscriptions(){
+        let i = 1;
         Object.keys(WS.subscribeRequests).forEach(uuid => {
-            const { entityType, ids, handler, onReconnect } = WS.subscribeRequests[uuid];
-            this._subscribe(uuid, entityType, ids, handler, onReconnect);
+            setTimeout(()=> {
+                const { entityType, ids, handler, onReconnect } = WS.subscribeRequests[uuid];
+                this._subscribe(uuid, entityType, ids, handler, onReconnect);
+            }, i*1000);
+            i++;
         });
     }
 
