@@ -132,6 +132,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     checker = (event: any) => {
+
         const unsubscribe = () => {
                 const { ws } = this.props;
                 ws.unsubscribe(this.firstJobSubscription);
@@ -139,6 +140,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         };
         switch(event.job.Status){
             case 'failed':
+            case 'canceled':
                 unsubscribe();
                 this.failedJob();
                 break;
@@ -153,12 +155,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const { ws } = this.props;
 
-        const jobs = ['clientPreChannelCreate'
-              ,'clientAfterChannelCreate'
-              ,'clientEndpointRestore'
-              ,'clientPreServiceUnsuspend'
-              ,'completeServiceTransition'
-        ];
         const channels = await ws.getNotTerminatedClientChannels();
 
         if(this.subscription){
@@ -169,7 +165,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if(channels.length){
 
             const ids = channels.map(channel => channel.id);
-            this.subscription = await ws.subscribe('channel', [...ids, ...jobs], this.refresh, this.refresh);
+            this.subscription = await ws.subscribe('channel', ids, this.refresh, this.refresh);
             const channel = channels[0];
 
             if(['canceled', 'failed'].includes(channel.job.status)){
