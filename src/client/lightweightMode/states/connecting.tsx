@@ -32,7 +32,6 @@ export default class Connecting extends React.Component<IProps, {}> {
         const steps = ['clientPreChannelCreate'
                       ,'clientAfterChannelCreate'
                       ,'clientEndpointGet'
-                      ,'clientServiceTerminatedIfPending'
                       ,'clientPreServiceUnsuspend'
                       ,'completeServiceTransition'
         ];
