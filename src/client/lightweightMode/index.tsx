@@ -149,7 +149,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             case 'failed':
             case 'canceled':
                 unsubscribe();
-                this.failedJob();
+                this.failedJob(null);
                 break;
             case 'done':
                 unsubscribe();
@@ -176,7 +176,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const channel = channels[0];
 
             if(['canceled', 'failed'].includes(channel.job.status)){
-                this.failedJob();
+                this.failedJob(channel);
                 return;
             }
 
@@ -217,7 +217,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         this.firstJobSubscription = await ws.subscribe('channel', ['clientPreChannelCreate'], this.checker, this.refresh);
                     }
                     break;
-                case 'disconnecting':
+                default:
                     if(this.state.channel){
                         if(this.state.usage && this.state.usage.current === 0){
                             await ws.changeChannelStatus(this.state.channel.id, 'close');
@@ -233,9 +233,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.blackList.push(offering);
     }
 
-    failedJob(){
+    async failedJob(channel: ClientChannel){
 
-        const { t } = this.props;
+        const { t, ws } = this.props;
         const { offering, selectedLocation } = this.state;
 
         const msg = <>{t('AgentFailed')}<br/>{t('HisRating')}<br/>{t('PleaseTryAgain')}</>;
@@ -246,6 +246,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.updateOfferings();
         this.setState({offering: null});
         this.onChangeLocation(selectedLocation);
+
+        if(channel){
+            await ws.changeChannelStatus(channel.id, 'terminate');
+            ws.changeChannelStatus(channel.id, 'close');
+        }
     }
 
     onNewOffering = (event: any) => {
@@ -263,8 +268,19 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
 
+    isNewCountry(offering: Offering, locations: SelectItem[]){
+        return locations.findIndex(location => location.value === offering.country.toLowerCase().trim()) !== -1;
+    }
+
     addOffering(offering: Offering){
+
+        const { locations } = this.state;
+
         this.offerings.push(offering);
+        if(this.isNewCountry(offering, locations)){
+            const country = offering.country.toLowerCase().trim();
+            this.setState({locations: locations.concat({value: country, label: countryByISO(country)})});
+        }
     }
 
     updateOfferings = async () => {
@@ -397,7 +413,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         ws.changeChannelStatus(channel.id, 'terminate');
         this.unsubscribe();
         this.refresh();
-        this.setState({ip: ''});
+        this.setState({ip: '', status: 'disconnecting'});
     }
 
     private onResume = () => {
