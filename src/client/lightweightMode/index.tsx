@@ -16,7 +16,7 @@ import countryByISO from 'utils/countryByIso';
 import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
 import { Offering } from 'typings/offerings';
-import { Product } from 'typings/products';
+
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 
 type Status = 'disconnected'
@@ -66,7 +66,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
     firstJobSubscription = null;
 
     private offerings: Offering[];
-    private product: Product;
     private optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
     private blackList: Offering[] = [];
 
@@ -254,13 +253,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     onNewOffering = (event: any) => {
-        if(event.job.status !== 'done'){
+
+        if(event.job.Status !== 'done'){
             return;
         }
-        if(event.object.product !== this.product.id){
-            return;
-        }
-        if(event.object.supply >= 0){
+
+        if(event.object.currentSupply <= 0){
             return;
         }
 
@@ -269,7 +267,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
 
     isNewCountry(offering: Offering, locations: SelectItem[]){
-        return locations.findIndex(location => location.value === offering.country.toLowerCase().trim()) !== -1;
+        return locations.findIndex(location => location.value === offering.country.toLowerCase().trim()) === -1;
     }
 
     addOffering(offering: Offering){
@@ -293,12 +291,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
-        }
-
-        if(!this.product){
-            const products = await ws.getProducts();
-            const product = products.filter(product => product.isServer)[0];
-            this.product = product;
         }
 
         this.offeringsSubscription = await ws.subscribe('offering', ids, this.updateOfferings, this.updateOfferings);
