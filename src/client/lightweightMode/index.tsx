@@ -454,7 +454,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     async selectOptimalLocation(){
-        this.setState({status: 'pingLocations'});
+
+        const selectedLocation = this.optimalLocation;
+        this.setState({status: 'pingLocations', selectedLocation});
+
         const countries = this.shuffle(Object.keys(this.offerings.reduce((registry: any, offering: Offering) => {
             registry[offering.country.trim().toLowerCase()] = 1;
             return registry;
@@ -464,8 +467,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             try{
                 const country = countries[i];
                 const offering = await this.pingLocation(country);
-                const selectedLocation = this.optimalLocation;
-                this.setState({status: 'disconnected', offering, selectedLocation});
+                this.setState({status: 'disconnected', offering});
                 return;
             }catch(e){
                 continue;
