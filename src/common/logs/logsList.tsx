@@ -1,18 +1,15 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
-import * as moment from 'moment';
 import Pagination from 'react-js-pagination';
-import {remote} from 'electron';
+
+import * as moment from 'moment';
+
+import { remote } from 'electron';
 const {dialog} = remote;
 
 import * as api from 'utils/api';
 import notice from 'utils/notice';
-
-import ModalWindow from 'common/modalWindow';
-
-import LogsStack from './logsStack';
-import LogsContext from './logsContext';
 
 import {State} from 'typings/state';
 import { Log } from 'typings/logs';
@@ -31,15 +28,13 @@ interface IProps {
 
 interface IState {
     logsData: Log[];
-    logsDataExport: any;
-    logsDataArr: any[];
     dateFrom: any;
     dateTo: any;
     searchText: string;
-    logsPerPage: number;
     activePage: number;
     pages: number;
     offset: number;
+    limit: number;
     totalItems: number;
     levels: string[];
     lang: string;
@@ -52,96 +47,61 @@ class Logs extends React.Component <IProps, IState> {
 
         super(props);
 
+        const { localSettings } = this.props;
+
         this.state = {
-            logsData: null,
-            logsDataExport: null,
-            logsDataArr: [],
+            logsData: [],
             dateFrom: moment().subtract(1, 'day'),
             dateTo: moment(),
             searchText: '',
-            logsPerPage: 10,
             activePage: 1,
             pages: 1,
             offset: 0,
+            limit: localSettings.logsCountPerPage,
             totalItems: 0,
             levels: [],
-            lang: null
+            lang: localSettings.lang
         };
     }
 
     componentDidMount() {
-        this.getLogsData();
-        this.getActiveLang();
+        const { levels, searchText, dateFrom, dateTo, offset, limit } = this.state;
+        this.getLogsData(levels, searchText, dateFrom, dateTo, offset, limit);
     }
 
-    async getActiveLang() {
-        const { localSettings } = this.props;
-        this.setState({lang: localSettings.lang});
-    }
+    async getLogsData(levels:string[], searchText: string, dateFrom:any, dateTo:any, offset: number, limit: number) {
 
-    async getLogsData(dateFrom:any = null, dateTo:any = null, levels:string[] = []) {
+        const { ws } = this.props;
 
-        const { localSettings, t, ws } = this.props;
+        const isoDateFrom = new Date(dateFrom).toISOString();
+        const isoDateTo = new Date(dateTo).toISOString();
 
-        const dateFromData = dateFrom === null ? this.state.dateFrom : dateFrom;
-        const dateToData = dateTo === null ? this.state.dateTo : dateTo;
+        const logs = await ws.getLogs(levels, searchText, isoDateFrom, isoDateTo, offset, limit);
 
-        // getLogs params
-        const isoDateFrom = new Date(dateFromData).toISOString();
-        const isoDateTo = new Date(dateToData).toISOString();
-        const searchText = this.state.searchText !== '' ? this.state.searchText : '';
-        const levelsData = this.state.levels.length > 0 ? this.state.levels : [];
-        const logsPerPage = localSettings.logsCountPerPage;
-        const offset = this.state.activePage > 1 ? (this.state.activePage - 1) * logsPerPage : this.state.offset;
-
-        const logs = await ws.getLogs(levelsData, searchText, isoDateFrom, isoDateTo, offset, logsPerPage);
-
-        const logsDataArr = [];
-        if (logs.totalItems > 0) {
-            logs.items.map(log => {
-                const row = {
-                    level: log.level,
-                    date: [log.time, this.state.lang],
-                    message: log.message,
-                    context: log.context !== '{}' ?
-                        <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('Context')}
-                                     text={t('ShowBtn')} component={<LogsContext context={log.context}/>}/> : '',
-                    stack: log.stack !== null ?
-                        <ModalWindow customClass='btn btn-link waves-effect' modalTitle={t('StackTrace')}
-                                     text={t('ShowBtn')} component={<LogsStack context={log.stack}/>}/> : ''
-                };
-
-                logsDataArr.push(row);
-            });
-        }
-
-        const pages = Math.ceil(logs.totalItems / logsPerPage);
-        const activePage = pages === 1 ? 1 : this.state.activePage;
-
+        const pages = Math.ceil(logs.totalItems / limit);
         this.setState({
-            logsData: logs.items,
-            logsDataArr,
-            logsPerPage,
+            logsData: logs.items ? logs.items : [],
             pages,
-            activePage,
             totalItems: logs.totalItems
         });
+
     }
 
     getLogsDataExport() {
-        if (this.state.logsData === null) {
-            return [];
-        }
 
-        return (this.state.logsData as any).map(log => {
-            return [
-                log.time,
-                log.level,
-                '"' + log.message.replace(/"/g, '\"\"') + '"',
-                '"' + JSON.stringify(log.context).replace(/"/g, '\"\"') + '"',
-                log.stack !== null ? '"' + log.stack.replace(/"/g, '\"\"') + '"' : ''
-            ];
-        });
+        const { logsData } = this.state;
+
+        return logsData === null
+            ? []
+            : logsData.map(log => (
+                [
+                    log.time,
+                    log.level,
+                    '"' + log.message.replace(/"/g, '\"\"') + '"',
+                    '"' + JSON.stringify(log.context).replace(/"/g, '\"\"') + '"',
+                    log.stack !== null ? '"' + log.stack.replace(/"/g, '\"\"') + '"' : ''
+                ]
+            ));
     }
 
     resetActivePage() {
@@ -149,59 +109,68 @@ class Logs extends React.Component <IProps, IState> {
     }
 
     handleChangeLevel = (evt:any) => {
-        const level = evt.target.dataset.level;
 
-        const levels = this.state.levels;
-        if (levels.indexOf(level) === -1) {
-            levels.push(level);
-        } else {
-            levels.splice(levels.indexOf(level), 1);
-        }
+        const evtLevel = evt.target.dataset.level;
+
+        const { levels, searchText, dateFrom, dateTo, limit } = this.state;
+
+        const modifiedLevels = levels.indexOf(evtLevel) === -1
+              ? levels.concat([evtLevel])
+              : levels.filter(level => level !== evtLevel);
 
         this.resetActivePage();
 
-        this.setState({levels});
-        this.getLogsData(null, null, levels);
+        this.setState({levels: modifiedLevels});
+        this.getLogsData(modifiedLevels, searchText, dateFrom, dateTo, 0, limit);
     }
 
-    handleChangeDateFrom = (date: any) => {
+    handleChangeDateFrom = (dateFrom: any) => {
+
+        const { levels, searchText, dateTo, limit } = this.state;
+
         this.resetActivePage();
-        this.alertOnBigDateRangeSelect(date, this.state.dateTo);
-        this.setState({
-            dateFrom: date
-        });
-        this.getLogsData(date);
+        this.alertOnBigDateRangeSelect(dateFrom, dateTo);
+
+        this.getLogsData(levels, searchText, dateFrom, dateTo, 0, limit);
+
+        this.setState({dateFrom});
     }
 
-    handleChangeDateTo = (date: any) => {
+    handleChangeDateTo = (dateTo: any) => {
+
+        const { levels, searchText, dateFrom, limit } = this.state;
+
         this.resetActivePage();
-        this.alertOnBigDateRangeSelect(this.state.dateFrom, date);
-        this.setState({
-            dateTo: date
-        });
-        this.getLogsData(null, date);
+        this.alertOnBigDateRangeSelect(dateFrom, dateTo);
+
+        this.getLogsData(levels, searchText, dateFrom, dateTo, 0, limit);
+
+        this.setState({dateTo});
     }
 
     handleNow = () => {
-        this.resetActivePage();
-        const date = moment();
-        this.setState({
-            dateTo: date
-        });
-        this.getLogsData(null, date);
+        this.handleChangeDateTo(moment());
     }
 
-    handlePageChange = (pageNumber:number) => {
-        this.setState({activePage: pageNumber});
-        this.getLogsData();
+    handlePageChange = (activePage:number) => {
+
+        const { levels, searchText, dateTo, dateFrom, limit } = this.state;
+
+        this.getLogsData(levels, searchText, dateFrom, dateTo, (activePage-1)*limit, limit);
+
+        this.setState({activePage});
     }
 
     handleSearch = (evt:any) => {
-        this.resetActivePage();
+
+        const { levels, dateFrom, dateTo, limit } = this.state;
+
+        const searchText = evt.target.value;
+
         if (evt.key === 'Enter') {
-            const searchText = evt.target.value;
+            this.getLogsData(levels, searchText, dateFrom, dateTo, 0, limit);
+            this.resetActivePage();
             this.setState({searchText});
-            this.getLogsData();
         }
     }
 
@@ -210,13 +179,12 @@ class Logs extends React.Component <IProps, IState> {
     }
 
     handleClearSearch = () => {
+
+        const { levels, dateFrom, dateTo, limit } = this.state;
+
         this.resetActivePage();
-        let searchText = this.state.searchText;
-        if (searchText !== '') {
-            searchText = '';
-            this.setState({searchText});
-            this.getLogsData();
-        }
+        this.setState({searchText: ''});
+        this.getLogsData(levels, '', dateFrom, dateTo, 0, limit);
     }
 
     exportControllerLogsToFile = () => {
@@ -247,19 +215,21 @@ class Logs extends React.Component <IProps, IState> {
 
         const { t } = this.props;
         const { totalItems
-              , logsPerPage
               , activePage
               , searchText
               , levels
               , dateFrom
               , dateTo
               , lang
-              , logsDataArr } = this.state;
+              , limit
+              , logsData
+              } = this.state;
 
-        const pagination = totalItems <= logsPerPage ? '' :
-            <Pagination
+        const pagination = totalItems <= limit
+            ? null
+            : <Pagination
                 activePage={activePage}
-                itemsCountPerPage={logsPerPage}
+                itemsCountPerPage={limit}
                 totalItemsCount={totalItems}
                 pageRangeDisplayed={10}
                 onChange={this.handlePageChange}
@@ -313,7 +283,7 @@ class Logs extends React.Component <IProps, IState> {
 
                             </div>
 
-                            <LogsTable lang={lang} logsDataArr={logsDataArr} />
+                            <LogsTable lang={lang} logs={logsData} />
 
                             <div>{pagination}</div>
 
