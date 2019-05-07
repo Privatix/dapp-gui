@@ -123,6 +123,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     async getIp(attempt?: number){
+        if(!this.mounted){
+            return;
+        }
         const counter = !attempt ? 0 : attempt;
         if(counter < 5){
             try{
@@ -158,6 +161,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     private refresh = async () => {
+
+        if(!this.mounted){
+            return;
+        }
 
         const { ws } = this.props;
 
@@ -234,6 +241,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     async failedJob(channel: ClientChannel){
 
+        if(!this.mounted){
+            return;
+        }
+
         const { t, ws } = this.props;
         const { offering, selectedLocation } = this.state;
 
@@ -253,6 +264,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     onNewOffering = (event: any) => {
+
+        if(!this.mounted){
+            return;
+        }
 
         if(event.job.Status !== 'done'){
             return;
@@ -282,6 +297,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     updateOfferings = async () => {
+
+        if(!this.mounted){
+            return;
+        }
 
         const { ws } = this.props;
 
@@ -320,6 +339,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     async refreshUsage(channel: ClientChannel){
+
+        if(!this.mounted){
+            return;
+        }
 
         const { ws } = this.props;
 
@@ -368,7 +391,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 this.refresh();
             }
         } catch (e) {
-            this.setState({status: 'disconnected'});
+            if(this.mounted){
+                this.setState({status: 'disconnected'});
+            }
             msg = t('client/acceptOffering:ErrorAcceptingOffering');
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }
