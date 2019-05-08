@@ -181,7 +181,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             this.subscription = await ws.subscribe('channel', ids, this.refresh, this.refresh);
             const channel = channels[0];
 
-            if(['canceled', 'failed'].includes(channel.job.status)){
+            if(['canceled', 'failed'].indexOf(channel.job.status) !== -1){
                 this.failedJob(channel);
                 return;
             }
