@@ -632,14 +632,16 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const { status } = this.state;
 
         const ethAddr = account ? `0x${account.ethAddr}` : '';
-
         return (
-            <div style={ {background: '#ffffff', height: '100vh'} }>
+            <>
+                <style dangerouslySetInnerHTML={{__html: `
+                   html { background: white; } body { background: white; }
+                `}} />
                 <div style={ {textAlign: 'right'} }>
                     <SwitchAdvancedModeButton />
                 </div>
                 <div className='widget-chart text-center'>
-                    <div id='sparkline3'>
+                    <div>
                         <h5 style={ {margin: 'auto', width: '300px'} }>
                             <span className='shortTableText' style={ {marginRight: '10px'} } >{t('Address')}: </span>
                             <span className='shortTableText' title={ethAddr}>{ethAddr}</span>
@@ -651,7 +653,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         { this.states[this.state.status]() }
                     </div>
                 </div>
-            </div>
+            </>
         );
     }
 }
