@@ -460,15 +460,22 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return a;
     }
 
-    async selectOptimalLocation(){
+    selectOptimalLocation = async () => {
+
+        if(!this.mounted){
+            return;
+        }
 
         const selectedLocation = this.optimalLocation;
         this.setState({status: 'pingLocations', selectedLocation});
+        const getCountries = () => {
+            return this.shuffle(Object.keys(this.offerings.reduce((registry: any, offering: Offering) => {
+                registry[offering.country.trim().toLowerCase()] = 1;
+                return registry;
+            }, {})));
+        };
 
-        const countries = this.shuffle(Object.keys(this.offerings.reduce((registry: any, offering: Offering) => {
-            registry[offering.country.trim().toLowerCase()] = 1;
-            return registry;
-        }, {})));
+        const countries = getCountries();
 
         for(let i=0; i<countries.length; i++){
             try{
@@ -480,6 +487,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 continue;
             }
         }
+
+        setTimeout(this.selectOptimalLocation, 3000);
+
     }
 
     private pingLocation(country: string): Promise<Offering> {
