@@ -65,7 +65,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     getIpSubscription = null;
     firstJobSubscription = null;
 
-    private offerings: Offering[];
+    private offerings: Offering[] = [];
     private optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
     private blackList: Offering[] = [];
 
@@ -237,7 +237,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     addToBlackList(offering: Offering){
-        this.blackList.push(offering);
+        if(offering){
+            this.blackList.push(offering);
+        }
     }
 
     async failedJob(channel: ClientChannel){
@@ -256,8 +258,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.addToBlackList(offering);
         this.updateOfferings();
         this.setState({offering: null});
-        this.onChangeLocation(selectedLocation);
-
+        this.onChangeLocation(selectedLocation ? selectedLocation : this.optimalLocation);
         if(channel){
             await ws.changeChannelStatus(channel.id, 'terminate');
             ws.changeChannelStatus(channel.id, 'close');
