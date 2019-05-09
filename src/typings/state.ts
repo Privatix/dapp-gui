@@ -7,7 +7,6 @@ import {OfferingAvailabilityResponse} from './offerings';
 import {LocalSettings} from './settings';
 
 interface State {
-  [s: string]: any;
     accounts: Account[];
     products: Product[];
     serviceName: string;

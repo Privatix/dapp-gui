@@ -12,7 +12,8 @@ interface IProps {
 }
 
 function search(props: IProps) {
-    const { t } = props;
+
+    const { t, searchText, handleSearch, handleChangeSearch, handleClearSearch } = props;
 
     return (
         <div className='form-group row'>
@@ -22,12 +23,12 @@ function search(props: IProps) {
                         <span className='input-group-text'><i className='fa fa-search'></i></span>
                     </div>
                     <input className='form-control logsSearchInput' type='search' name='query'
-                           placeholder={t('LogsSearchPlaceholder')} value={props.searchText}
-                           onKeyPress={props.handleSearch}
-                           onChange={props.handleChangeSearch} />
-                    <div className={'searchClear' + (props.searchText === '' ? ' hidden' : '')}>
+                           placeholder={t('LogsSearchPlaceholder')} value={searchText}
+                           onKeyPress={handleSearch}
+                           onChange={handleChangeSearch} />
+                    <div className={`searchClear${searchText === '' ? ' hidden' : ''}`}>
                         <button className='btn btn-icon waves-effect waves-light btn-danger'
-                                onClick={props.handleClearSearch}>
+                                onClick={handleClearSearch}>
                             <i className='fa fa-remove'></i>
                         </button>
                     </div>

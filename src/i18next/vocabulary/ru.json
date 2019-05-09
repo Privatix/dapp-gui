@@ -671,7 +671,7 @@
         "clientPreServiceSuspend": "приостановка сервиса",
         "clientPreServiceUnsuspend": "возобновление сервиса",
         "clientPreServiceTerminate": "завершение использования сервиса",
-        "clientEndpointRestore": "получение данных для доступа",
+        "clientEndpointGet": "получение данных для доступа",
         "clientAfterOfferingMsgBCPublish": "получение данных предложения",
         "clientAfterOfferingPopUp": "обновление позиции предложения",
         "clientAfterOfferingDelete": "удаление предложения",

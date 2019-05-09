@@ -41,45 +41,45 @@ class Wizard extends React.Component<IProps, {}> {
 
         if( mode === Mode.ADVANCED){
             let routes = [
-                <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />,
-                <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />,
-                <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />,
-                <Route path='/backup/:accountId/:from'
+                <Route key='/generateKey/' path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />,
+                <Route key='/importHexKey/' path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />,
+                <Route key='/importJsonKey/' path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />,
+                <Route key='/backup/' path='/backup/:accountId/:from'
                        render={(props: any) => <Backup entryPoint={'/app'}
                                                        accountId={props.match.params.accountId}
                                                        from={props.match.params.from}
                                                />
                               }
                 />,
-                <Route path='/getPrix/:accountId'
+                <Route key='/getPrix/' path='/getPrix/:accountId'
                        render={(props: any) => <GetPrix entryPoint={'/app'}
                                                         accountId={props.match.params.accountId}
                                                />
                               }
                 />,
-                <Route path='/app' component={app} />
+                <Route key='/app' path='/app' component={app} />
             ];
 
             if(currentState === 'firstStart'){
                 routes.push(
-                    <Route exact path='/' render={() => <SetLanguage mode={mode} />} />,
-                    <Route exact path='/setPassword' render={() => <SetPassword mode={mode} />} />,
-                    <Route path='/setAccount' render={() => <SetAccount isDefault={true} /> } />,
-                    <Route path='/login' component={Login} />
+                    <Route key='/' exact path='/' render={() => <SetLanguage mode={mode} />} />,
+                    <Route key='/setPassword' exact path='/setPassword' render={() => <SetPassword mode={mode} />} />,
+                    <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />,
+                    <Route key='/login' path='/login' component={Login} />
                 );
             }
 
             if(currentState === 'setAccount'){
                 routes.push(
-                    <Route exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />,
-                    <Route path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
+                    <Route key='/' exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />,
+                    <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
                 );
             }
 
             if(currentState === 'createAccount'){
                 routes.push(
-                    <Route exact path='/' render={() => <SetAccount isDefault={false} /> } />,
-                    <Route exact path='/setAccount' render={() => <SetAccount isDefault={false} /> } />
+                    <Route key='/' exact path='/' render={() => <SetAccount isDefault={false} /> } />,
+                    <Route key='/setAccount' exact path='/setAccount' render={() => <SetAccount isDefault={false} /> } />
                 );
             }
 
@@ -94,40 +94,40 @@ class Wizard extends React.Component<IProps, {}> {
 
         if( mode === Mode.SIMPLE){
             let routes = [
-                <Route path='/getPrix/:accountId'
+                <Route key='/getPrix/' path='/getPrix/:accountId'
                        render={(props: any) => <GetPrix entryPoint={'/app'}
                                                         accountId={props.match.params.accountId}
                                                />
                               }
                 />,
-                <Route path='/app' component={app} />
+                <Route key='/app' path='/app' component={app} />
             ];
 
             if(currentState === 'firstStart'){
                 routes.push(
-                    <Route exact path='/' render={() => <SetLanguage mode={mode} />} />,
-                    <Route exact path='/setPassword' render={() => <SetPassword mode={mode} />} />,
-                    <Route path='/setAccount' render={() => <SetAccount isDefault={true} /> } />,
-                    <Route path='/login' component={Login} />
+                    <Route key='/' exact path='/' render={() => <SetLanguage mode={mode} />} />,
+                    <Route key='/setPassword' exact path='/setPassword' render={() => <SetPassword mode={mode} />} />,
+                    <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />,
+                    <Route key='/login' path='/login' component={Login} />
                 );
             }
 
             if(currentState === 'setAccount'){
                 routes.push(
-                    <Route path='/'
+                    <Route key='/' path='/'
                            render={(props: any) => <GetPrix entryPoint={'/app'}
                                                             accountId=''
                                                    />
                                   }
                     />,
-                    <Route path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
+                    <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
                 );
             }
 
             if(currentState === 'createAccount'){
                 routes.push(
-                    <Route exact path='/' render={() => <SetAccount isDefault={false} /> } />,
-                    <Route exact path='/setAccount' render={() => <SetAccount isDefault={false} /> } />
+                    <Route key='/' exact path='/' render={() => <SetAccount isDefault={false} /> } />,
+                    <Route key='/setAccount' exact path='/setAccount' render={() => <SetAccount isDefault={false} /> } />
                 );
             }
 
