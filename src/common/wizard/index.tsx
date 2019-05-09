@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 
@@ -13,106 +14,132 @@ import GetPrix from './getPrix';
 
 import Login from 'common/auth/login';
 
+import { State } from 'typings/state';
+import { Role, Mode } from 'typings/mode';
+
 type WizardState = 'firstStart' | 'setAccount' | 'createAccount';
 
 interface IProps {
+    mode?: Mode;
     currentState: WizardState;
     app: React.ComponentType;
+    role: Role;
 }
 
-export default class Wizard extends React.Component<IProps, {}> {
+class Wizard extends React.Component<IProps, {}> {
 
     render(){
 
-        const { currentState, app } = this.props;
+        const { currentState, app, mode: _mode, role } = this.props;
+
+        if(!role){
+            return null;
+        }
         const MemoryHistory = createMemoryHistory();
 
-        if(currentState === 'firstStart'){
+        const mode = _mode ? _mode : (role === Role.AGENT ? Mode.ADVANCED : Mode.SIMPLE);
+
+        if( mode === Mode.ADVANCED){
+            let routes = [
+                <Route key='/generateKey/' path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />,
+                <Route key='/importHexKey/' path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />,
+                <Route key='/importJsonKey/' path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />,
+                <Route key='/backup/' path='/backup/:accountId/:from'
+                       render={(props: any) => <Backup entryPoint={'/app'}
+                                                       accountId={props.match.params.accountId}
+                                                       from={props.match.params.from}
+                                               />
+                              }
+                />,
+                <Route key='/getPrix/' path='/getPrix/:accountId'
+                       render={(props: any) => <GetPrix entryPoint={'/app'}
+                                                        accountId={props.match.params.accountId}
+                                               />
+                              }
+                />,
+                <Route key='/app' path='/app' component={app} />
+            ];
+
+            if(currentState === 'firstStart'){
+                routes.push(
+                    <Route key='/' exact path='/' render={() => <SetLanguage mode={mode} />} />,
+                    <Route key='/setPassword' exact path='/setPassword' render={() => <SetPassword mode={mode} />} />,
+                    <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />,
+                    <Route key='/login' path='/login' component={Login} />
+                );
+            }
+
+            if(currentState === 'setAccount'){
+                routes.push(
+                    <Route key='/' exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />,
+                    <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
+                );
+            }
+
+            if(currentState === 'createAccount'){
+                routes.push(
+                    <Route key='/' exact path='/' render={() => <SetAccount isDefault={false} /> } />,
+                    <Route key='/setAccount' exact path='/setAccount' render={() => <SetAccount isDefault={false} /> } />
+                );
+            }
+
             return (
                 <Router history={MemoryHistory}>
                     <Switch>
-                        <Route exact path='/' component={SetLanguage} />
-                        <Route exact path='/setPassword' component={SetPassword} />
-                        <Route path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
-                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/backup/:accountId/:from'
-                               render={(props: any) => <Backup entryPoint={'/app'}
-                                                               accountId={props.match.params.accountId}
-                                                               from={props.match.params.from}
-                                                       />
-                                      }
-                        />
-                        <Route path='/getPrix/:accountId'
-                               render={(props: any) => <GetPrix entryPoint={'/app'}
-                                                                accountId={props.match.params.accountId}
-                                                       />
-                                      }
-                        />
-                        <Route path='/login' component={Login} />
-                        <Route path='/app' component={app} />
+                        { routes }
                     </Switch>
                 </Router>
             );
         }
 
-        if(currentState === 'setAccount'){
+        if( mode === Mode.SIMPLE){
+            let routes = [
+                <Route key='/getPrix/' path='/getPrix/:accountId'
+                       render={(props: any) => <GetPrix entryPoint={'/app'}
+                                                        accountId={props.match.params.accountId}
+                                               />
+                              }
+                />,
+                <Route key='/app' path='/app' component={app} />
+            ];
+
+            if(currentState === 'firstStart'){
+                routes.push(
+                    <Route key='/' exact path='/' render={() => <SetLanguage mode={mode} />} />,
+                    <Route key='/setPassword' exact path='/setPassword' render={() => <SetPassword mode={mode} />} />,
+                    <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />,
+                    <Route key='/login' path='/login' component={Login} />
+                );
+            }
+
+            if(currentState === 'setAccount'){
+                routes.push(
+                    <Route key='/' path='/'
+                           render={(props: any) => <GetPrix entryPoint={'/app'}
+                                                            accountId=''
+                                                   />
+                                  }
+                    />,
+                    <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
+                );
+            }
+
+            if(currentState === 'createAccount'){
+                routes.push(
+                    <Route key='/' exact path='/' render={() => <SetAccount isDefault={false} /> } />,
+                    <Route key='/setAccount' exact path='/setAccount' render={() => <SetAccount isDefault={false} /> } />
+                );
+            }
+
             return (
                 <Router history={MemoryHistory}>
                     <Switch>
-                        <Route exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />
-                        <Route path='/setAccount' render={() => <SetAccount default={true} /> } />
-                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/backup/:accountId/:from'
-                               render={(props: any) => <Backup entryPoint={'/app'}
-                                                               accountId={props.match.params.accountId}
-                                                               from={props.match.params.from}
-                                                       />
-                                      }
-                        />
-                        <Route path='/getPrix/:accountId'
-                               render={(props: any) => <GetPrix entryPoint={'/app'}
-                                                                accountId={props.match.params.accountId}
-                                                       />
-                                      }
-                        />
-                        <Route path='/app' component={app} />
+                        { routes }
                     </Switch>
                 </Router>
             );
         }
-
-        if(currentState === 'createAccount'){
-            return (
-                <Router history={MemoryHistory}>
-                    <Switch>
-                        <Route exact path='/' render={() => <SetAccount default={false} /> } />
-                        <Route exact path='/setAccount' render={() => <SetAccount default={false} /> } />
-                        <Route path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/importJsonKey/:default' render={ (props:any) => <ImportJsonKey isDefault={props.match.params.default==='true'} /> } />
-                        <Route path='/backup/:accountId/:from'
-                               render={(props: any) => <Backup entryPoint={'/app'}
-                                                               accountId={props.match.params.accountId}
-                                                               from={props.match.params.from}
-                                                       />
-                                      }
-                        />
-                        <Route path='/getPrix/:accountId'
-                               render={(props: any) => <GetPrix entryPoint={'/app'}
-                                                                accountId={props.match.params.accountId}
-                                                       />
-                                      }
-                        />
-                        <Route path='/app' component={app} />
-                    </Switch>
-                </Router>
-            );
-        }
-
-        return null;
     }
 }
+
+export default connect( (state: State) => ({role: state.role}) )(Wizard);

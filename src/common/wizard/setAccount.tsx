@@ -54,7 +54,7 @@ class SetAccount extends React.Component<IProps, {}> {
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={3} />
+                    <Steps step={3} mode='advanced' />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('ForTokenTransfers')}</p>

@@ -30,6 +30,7 @@ export class WS {
     static byUUID = {}; // uuid -> subscribeID
     static bySubscription = {}; // subscribeId -> uuid
     static subscriptions = {};
+    static subscribeRequests = {};
 
     private socket: WebSocket;
     private pwd: string;
@@ -41,6 +42,12 @@ export class WS {
     private resolveAuth: Function = null;
 
     constructor() {
+        this.ready = new Promise((resolve: Function, reject: Function) => {
+            this.resolve = resolve;
+        });
+        this.authorized = new Promise((resolve: Function, reject: Function) => {
+            this.resolveAuth = resolve;
+        });
         api.settings.getLocal()
            .then(settings => {
                 this.reconnect(settings.wsEndpoint);
@@ -51,6 +58,8 @@ export class WS {
     reconnect(endpoint: string) {
 
         const socket = new WebSocket(endpoint);
+        this.socket = socket;
+
         if(!this.resolve){
             this.ready = new Promise((resolve: Function, reject: Function) => {
                 this.resolve = resolve;
@@ -68,6 +77,7 @@ export class WS {
               this.resolveAuth(true);
               this.resolveAuth = null;
               await this.saveCache();
+              this.restoreSubscriptions();
           }
           this.resolve(true);
           this.resolve = null;
@@ -80,7 +90,7 @@ export class WS {
                 console.log('Connection interrupted.');
             }
             console.log('Code: ' + event.code + ' reason: ' + event.reason);
-            this.reconnect(endpoint);
+            setTimeout(this.reconnect.bind(this, endpoint), 1000);
         };
 
         socket.onmessage = function(event: any) {
@@ -112,7 +122,6 @@ export class WS {
           // console.log('Error ' + error.message);
         };
 
-        this.socket = socket;
     }
 
     whenReady() {
@@ -123,20 +132,54 @@ export class WS {
         return this.authorized;
     }
 
-    subscribe(entityType:string, ids: string[], handler: Function): Promise<string>{
-        return new Promise((resolve: Function, reject: Function) => {
-            const uuid = uuidv4();
-            const req = {
-                jsonrpc: '2.0',
-                id: uuid,
-                method: 'ui_subscribe',
-                params: ['objectChange', this.token, entityType, ids]
+    private restoreSubscriptions(){
+        let i = 1;
+        Object.keys(WS.subscribeRequests).forEach(uuid => {
+            setTimeout(()=> {
+                const { entityType, ids, handler, onReconnect } = WS.subscribeRequests[uuid];
+                this._subscribe(uuid, entityType, ids, handler, onReconnect);
+            }, i*1000);
+            i++;
+        });
+    }
+
+    private _subscribe (uuid: string, entityType:string, ids: string[], handler: Function, onReconnect: Function, resolve?:Function){
+
+        const req = {
+            jsonrpc: '2.0',
+            id: uuid,
+            method: 'ui_subscribe',
+            params: ['objectChange', this.token, entityType, ids]
+        };
+
+        if(!WS.subscribeRequests[uuid]){
+
+            WS.subscribeRequests[uuid] = {
+                entityType, ids, handler, onReconnect
             };
+
             WS.subscriptions[uuid] = () => {
                 WS.listeners[uuid] = handler;
                 resolve(uuid);
             };
-            this.socket.send(JSON.stringify(req));
+
+        }else{
+
+            WS.subscriptions[uuid] = () => {
+                if(WS.subscribeRequests[uuid] && WS.subscribeRequests[uuid].onReconnect){
+                    WS.subscribeRequests[uuid].onReconnect();
+                }
+            };
+
+        }
+
+        this.socket.send(JSON.stringify(req));
+    }
+
+    subscribe(entityType:string, ids: string[], handler: Function, onReconnect?: Function): Promise<string>{
+        return new Promise((resolve: Function, reject: Function) => {
+            const uuid = uuidv4();
+            this._subscribe(uuid, entityType, ids, handler, onReconnect, resolve);
         }) as Promise<string>;
     }
 
@@ -166,6 +209,7 @@ export class WS {
                 delete WS.listeners[id];
                 delete WS.bySubscription[WS.byUUID[id]];
                 delete WS.byUUID[id];
+                delete WS.subscribeRequests[id];
             });
         }
     }
@@ -173,7 +217,7 @@ export class WS {
     send(method: string, params: any[] = []){
 
         const uuid = uuidv4();
-        if(!['ui_updatePassword'].includes(method)){
+        if(!['ui_updatePassword', 'ui_getUserRole'].includes(method)){
             params.unshift(this.token);
         }
         const req = {
@@ -282,8 +326,8 @@ export class WS {
         return this.send('ui_getAccounts') as Promise<Account[]>;
     }
 
-    generateAccount(payload: any){
-        return this.send('ui_generateAccount', [payload]);
+    generateAccount(payload: any): Promise<string>{
+        return this.send('ui_generateAccount', [payload]) as Promise<string>;
     }
 
     importAccountFromHex(payload: any): Promise<any>{
@@ -316,6 +360,10 @@ export class WS {
         };
 
         this.socket.send(JSON.stringify(req));
+    }
+
+    updateAccount(accountId: string, name: string, isDefault: boolean, inUse: boolean){
+        return this.send('ui_updateAccount', [accountId, name, isDefault, inUse]);
     }
 
     updateBalance(accountId: string){

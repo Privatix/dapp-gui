@@ -174,7 +174,6 @@
         "Hash": "ハッシュ",
         "ServiceName": "サービス名",
         "Server": "サーバー",
-        "MessageStatus": "メッセージの状態",
         "Status": "状態",
         "AvailableSupply": "利用可能な供給量",
         "Supply": "供給量"
@@ -231,15 +230,6 @@
         "TerminateService": "サービスの終了",
         "TerminateContract": "コントラクトの終了"
     },
-    "channels/channelsListSortTable": {
-        "Server": "サーバー",
-        "Client": "クライアント",
-        "ContractStatus": "コントラクトの状態",
-        "ServiceStatus": "サービスの状態",
-        "Usage": "使用量",
-        "Income": "収入 (PRIX)",
-        "ServiceChangedTime": "サービスの変更日時"
-    },
     "sessions/sessionsList": {
         "TotalStatistics": "全体的な統計",
         "TotalUsage": "合計使用量",
@@ -260,14 +250,8 @@
     "header": {
         "Accounts": "アカウント",
         "Help": "ヘルプ",
-        "SwitchToClient": "クライアントに切り替え",
-        "SwitchToAgent": "エージェントに切り替え",
         "Settings": "設定",
-        "Logs": "ログ",
-        "user": "ユーザー",
-        "SomethingWentWrong": "不明なエラーが発生しました！",
-        "UserWasSwitchedToAGENT": "ユーザーモードをエージェントに切り替えました",
-        "UserWasSwitchedToCLIENT": "ユーザーモードをクライアントに切り替えました"
+        "SomethingWentWrong": "不明なエラーが発生しました！"
     },
     "navigation": {
         "Dashboard": "ダッシュボード",
@@ -277,8 +261,9 @@
         "Sessions": "セッション",
         "Offerings": "オファー",
         "Servers": "サーバー",
+        "Logs": "ログ",
         "ClientDashboard": "クライアントダッシュボード",
-        "VPNList": "VPN リスト"
+        "ServiceList": "{{serviceName}} リスト"
     },
     "topPanel": {
         "ETHBalance": "ETH 残高",
@@ -295,7 +280,6 @@
     },
     "logs/logsList": {
         "LogsHeader": "ログ一覧",
-        "ExportBtn": "ファイルにエクスポート",
         "LogsFilterFrom": "開始：",
         "LogsFilterTo": "終了：",
         "LogsFilterTime": "時刻",
@@ -348,16 +332,7 @@
         "ServiceBalanceOption": "サービスの残高",
         "Amount": "量：",
         "TransferConfirmBtn": "はい、送金します！",
-        "TransferSwalTitle": "よろしいですか？",
-        "ServiceSwalBalanceFrom": "サービスの残高",
-        "ExchangeSwalBalanceFrom": "取引残高",
-        "ServiceSwalBalance": "サービスの残高",
-        "ExchangeSwalBalance": "取引残高",
-        "TransferSwalText1": "この操作を行うと、トークンが",
-        "TransferSwalText2": "から",
-        "TransferSwalText3": "に送金されます。",
-        "TransferSwalText4": "この操作には時間とガスが必要です。",
-        "TransferSwalText5": "取引ログで取引の状態を監視できます。"
+        "TransferSwalTitle": "よろしいですか？"
     },
     "utils/gasRange": {
         "GasPrice": "ガス代",
@@ -376,30 +351,29 @@
         "AreYouSure": "よろしいですか？"
     },
     "client/dashboard/connecting": {
-        "TheServiceHasAPendingStatus": "このサービスは保留状態です。接続準備ができたら、VPNを使い始めることができます。",
-        "TheServiceHasAnActivatingStatus": "このサービスは有効化状態です。接続準備ができたら、VPNを使い始めることができます。",
+        "TheServiceHasAPendingStatus": "このサービスは保留状態です。接続準備ができたら、{{serviceName}}を使い始めることができます。",
+        "TheServiceHasAnActivatingStatus": "このサービスは有効化状態です。接続準備ができたら、{{serviceName}}を使い始めることができます。",
         "TheServiceHasASuspendingStatus": "このサービスは中断状態です。接続を中断した後、接続を再開または終了できます。",
         "TheServiceHasATerminatingStatus": "このサービスは終了状態です。接続を終了した後、コントラクトも終了できます。",
         "WaitingTimeIsOver": "待機時間を経過しました。完了手続きが自動的に呼び出されます。",
         "FailedToAcceptOffering": "オファーを承認できませんでした。別のオファーをお試しください。",
         "Synchronizing": "同期中",
-        "YouCanStartUsingVPN": "VPN を使用できるようになりました",
+        "YouCanStartUsingService": "{{serviceName}} を使用できるようになりました",
         "Connect": "接続",
         "YesConnectIt": "はい、接続します！",
         "Pause": "一時停止",
-        "ThisOperationWillPauseVPNUsage": "この操作を行うと、VPN の使用を一時停止します。",
+        "ThisOperationWillPauseServiceUsage": "この操作を行うと、{{serviceName}} の使用を一時停止します。",
         "ForThisContractMaxSuspendTimeIs": "このコントラクトの最大中断時間は {{minutes}} 分です。",
         "YesPauseIt": "はい、一時停止します！",
         "Remaining": "残り",
         "AfterMaxInactivityTimeHasBeenReached": "最大非活動時間に達すると、「完了手続き」が自動的に呼び出されます。",
         "Resume": "再開",
         "YesResumeIt": "はい、再開します！",
-        "min": "分",
         "CountryAlertInvalid": "オファー元の国がIPアドレスを基に検出した国と一致しません。IPアドレス {{ip}}",
         "CountryAlertUnknown": "アプリケーションはオファー元の国を検出できません。IPアドレス {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "VPN を使用開始"
+        "StartUsingService": "{{serviceName}} を使用開始"
     },
     "agent/dashboard": {
         "TotalIncome": "合計収入：",
@@ -410,21 +384,18 @@
     "client/vpnList": {
         "Block": "ブロック",
         "Hash": "ハッシュ",
-        "Agent": "エージェント",
         "Country": "国",
         "Price": "価格 (PRIX/MB)",
         "SupplyTotal": "供給量 (合計)",
         "AvailableSupply": "利用可能な供給量",
-        "SuccessUpdateMsg": "VPN リストが更新されました！",
         "AcceptOffering": "オファーを承認",
         "ShowAllBtn": "すべて表示...",
         "HideBtn": "非表示",
         "Search": "検索",
         "WaitForDownloading": "ダウンロードをお待ちください...",
-        "CurrentlyWeAreDownloading": "現在、VPN リストをダウンロード中です。",
+        "CurrentlyWeAreDownloading": "現在、{{serviceName}} リストをダウンロード中です。",
         "TakesTimeOnFirstRun": "初回実行時のみ時間がかかります。",
         "AverageTimeForDownloading": "平均ダウンロード時間は約2～5分です。",
-        "Refresh": "再読み込み",
         "AgentAddress": "エージェントのアドレス",
         "OfferingHash": "オファーハッシュ",
         "PriceFilter": "価格 (PRIX/MB)：",
@@ -435,13 +406,13 @@
     },
     "client/acceptOffering": {
         "Accept": "承認",
-        "CanHaveOneVPNConnection": "ご注意ください。VPN 接続は1つしか使用できません。別の接続を承認するには、現在の接続を終了してください。",
+        "CanHaveOneServiceConnection": "ご注意ください。{{serviceName}} 接続は1つしか使用できません。別の接続を承認するには、現在の接続を終了してください。",
         "DepositMustBeMoreThan": "保証金は次の金額より多くする必要があります：",
         "DepositMustBeLessOrEqualThan": "保証金は次の金額以下にする必要があります：",
         "NotEnoughPrixForDeposit": "保証金用の PRIX が不足しています。別のアカウントを選択してください。",
         "NotEnoughToPublishTransaction": "取引を公開するための資金が不足しています。別のアカウントを選択してください。",
         "OfferingAccepted": "オファーが承認されました！",
-        "VPNInfo": "VPN 情報",
+        "ServiceInfo": "{{serviceName}} 情報",
         "Country": "国：",
         "BillingInfo": "請求情報",
         "PricePerMB": "MB 単価：",
@@ -460,8 +431,6 @@
     "client/history": {
         "Service": "サービス",
         "of": "/",
-        "Id": "Id",
-        "Agent": "エージェント",
         "ContractStatus": "コントラクトの状態",
         "ServiceStatus": "サービスの状態",
         "JobStatus": "ジョブの状態",
@@ -474,7 +443,6 @@
     "client/serviceView": {
         "CommonInfo": "一般情報",
         "IdTd": "Id：",
-        "Offering": "オファー：",
         "ContractStatusTd": "コントラクトの状態：",
         "ServiceStatusTd": "サービスの状態：",
         "Transferred": "送金済み：",
@@ -501,9 +469,7 @@
     "client/connections/active": {
         "Connection": "接続",
         "ActiveConnection": "有効な接続：",
-        "Id": "Id",
         "Offering": "オファー",
-        "Agent": "エージェント",
         "ContractStatus": "コントラクトの状態",
         "ServiceStatus": "サービスの状態",
         "JobStatus": "ジョブの状態",
@@ -523,9 +489,6 @@
     },
     "client/connections/connection": {
         "Offering": "オファー",
-        "Id": "Id",
-        "Agent": "エージェント",
-        "Server": "サーバー",
         "Started": "開始済み",
         "Stopped": "停止済み",
         "Usage": "使用量",
@@ -544,7 +507,7 @@
         "Sessions": "セッション"
     },
     "client/increaseDepositButton": {
-        "ThisOperationWillIncrease": "この操作を行うと保証金が増え、VPN の残高が増えます。",
+        "ThisOperationWillIncrease": "この操作を行うと保証金が増え、{{serviceName}} の残高が増えます。",
         "IncreaseDeposit": "保証金を増やす"
     },
     "client/connections/increaseDepositView": {

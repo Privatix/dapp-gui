@@ -9,14 +9,19 @@ import Steps from './steps';
 
 import { registerBugsnag } from 'utils/bugsnag';
 import {default as notice, closeNotice } from 'utils/notice';
-import handlers from 'redux/actions';
 import { WS } from 'utils/ws';
+
+import { State } from 'typings/state';
 
 interface IProps {
     t?: any;
     ws?: WS;
     dispatch?: any;
     history?: any;
+}
+
+interface IOwnProps extends IProps {
+    mode: 'simple' | 'advanced';
 }
 
 interface IState {
@@ -26,11 +31,11 @@ interface IState {
 
 
 @translate(['auth/setPassword', 'utils/notice'])
-class SetPassword extends React.Component<IProps, IState>{
+class SetPassword extends React.Component<IOwnProps, IState>{
 
     private submitted = false;
 
-    constructor(props: IProps){
+    constructor(props: IOwnProps){
         super(props);
         this.state = {pwd: '', conf: ''};
     }
@@ -81,7 +86,7 @@ class SetPassword extends React.Component<IProps, IState>{
 
         evt.preventDefault();
 
-        const { t, ws } = this.props;
+        const { t, ws, mode } = this.props;
         const { pwd, conf } = this.state;
 
         this.submitted = true;
@@ -112,9 +117,7 @@ class SetPassword extends React.Component<IProps, IState>{
                 await ws.setPassword(pwd);
                 await ws.setGUISettings({firstStart:false});
                 registerBugsnag(ws);
-                const role = await ws.getUserRole();
-                this.props.dispatch(handlers.setMode(role));
-                this.props.history.push('/setAccount');
+                this.props.history.push(mode === 'advanced' ? '/setAccount' : '/getPrix/generate');
             }catch(e){
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('AccessDenied')});
                 this.submitted = false;
@@ -126,7 +129,7 @@ class SetPassword extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t } = this.props;
+        const { t, mode } = this.props;
         const { pwd, conf } = this.state;
 
         return <div className='card-box'>
@@ -135,7 +138,7 @@ class SetPassword extends React.Component<IProps, IState>{
             </div>
             <form className='form-horizontal m-t-20' action='#' onSubmit={this.onSubmit} >
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={2} />
+                    <Steps step={2} mode={mode} />
                     <div className='content clearfix'>
                         <section className='setPasswordsBl'>
                             <p> {t('ThePasswordMustBeStrong')}</p>
@@ -189,4 +192,6 @@ class SetPassword extends React.Component<IProps, IState>{
     }
 }
 
-export default connect(state => state)(withRouter(SetPassword));
+export default withRouter(connect<IProps>((state:State) => ({
+    ws: state.ws
+}))(SetPassword));

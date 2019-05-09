@@ -5,7 +5,7 @@ import * as ReactDOM from 'react-dom';
 interface Notice {
     level: 'info' | 'warning' | 'error';
     header?: string;
-    msg: string;
+    msg: string|JSX.Element;
 }
 
 export default function(notice: Notice, delay?: number){

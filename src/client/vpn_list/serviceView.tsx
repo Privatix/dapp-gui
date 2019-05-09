@@ -76,16 +76,21 @@ class ServiceView extends React.Component <any,any> {
     }
 
     async componentDidMount(){
+
+        const { ws, service } = this.props;
+
         if (this.state.getSessions) {
             this.getSessions();
             this.setState({getSessions: false});
         }
+        const offering = await ws.getOffering(service.offering);
+        this.setState({offering});
     }
 
     render() {
 
-        const service = this.state.service;
         const { t } = this.props;
+        const { service, offering } = this.state;
 /*
         const sessionsColumns = [
             {
@@ -154,8 +159,12 @@ class ServiceView extends React.Component <any,any> {
                                         <td>{service.id}</td>
                                     </tr>
                                     <tr>
-                                        <td>{t('Offering')}</td>
+                                        <td>{t('OfferingID')}</td>
                                         <td>{service.offering}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>{t('OfferingHash')}</td>
+                                        <td>{offering ? `0x${offering.hash}` : null}</td>
                                     </tr>
                                     <tr>
                                         <td>{t('ContractStatusTd')}</td>

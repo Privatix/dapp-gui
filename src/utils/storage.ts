@@ -1,14 +1,14 @@
 import * as api from './api';
-import { createStore, applyMiddleware } from 'redux';
-import thunkMiddleware from 'redux-thunk';
-import {valid, gt } from 'semver';
+import { createStore, applyMiddleware, AnyAction } from 'redux';
+import { default as thunk, ThunkMiddleware } from 'redux-thunk';
+import {valid as isValid, gt } from 'semver';
 
 import reducers from 'redux/reducers';
 import { asyncProviders, default as handlers } from 'redux/actions';
 
 import { WS } from 'utils/ws';
-
-import { Role } from 'typings/mode';
+import { Role, Mode } from 'typings/mode';
+import { State } from 'typings/state';
 
 const localCache = window.localStorage.getItem('localSettings');
 if(!localCache){
@@ -16,21 +16,39 @@ if(!localCache){
 }
 
 const storage = createStore(reducers, applyMiddleware(
-    thunkMiddleware, // lets us dispatch() functions
+    thunk as ThunkMiddleware<State, AnyAction> // lets us dispatch() functions
   ));
 
 const ws = new WS();
 storage.dispatch(handlers.setWS(ws));
-storage.dispatch(asyncProviders.updateLocalSettings());
+(async () => {
+    await ws.whenReady();
+    storage.dispatch(asyncProviders.updateLocalSettings(
+        async () => {
+            storage.dispatch(asyncProviders.setRole());
+            const role = await ws.getUserRole();
+            const { firstStart, accountCreated } = await ws.getLocal();
+            const mode = (firstStart || !accountCreated) ? Mode.WIZARD
+                         : role === Role.AGENT ? Mode.ADVANCED : Mode.SIMPLE;
+            storage.dispatch(asyncProviders.setMode(mode));
+            storage.dispatch(asyncProviders.setRole());
+        }
+    ));
+    await ws.whenAuthorized();
+    storage.dispatch(asyncProviders.updateSettings());
+})();
 
 const checkVersion = function(releases: any, currentRelease: string, target: string){
+    if(!currentRelease){
+        return '0.0.0';
+    }
     const versions = Object.keys(releases);
     if(!versions.length){
         return currentRelease;
     }
 
     const max = versions.reduce((max, version) => {
-        if(!valid(version)){
+        if(!isValid(version)){
            return max;
         }
         if(!gt(version, max)){
@@ -50,40 +68,65 @@ const checkVersion = function(releases: any, currentRelease: string, target: str
 
 
 api.on('releases', async function(event: any, data: any){
+
     await ws.whenAuthorized();
     const guiSettings = await ws.getGUISettings();
     const settings = await ws.getLocal();
-    const latestReleaseChecked = checkVersion(data, settings.release, settings.target);
-    if(!gt(latestReleaseChecked, settings.release)
-       || ((guiSettings as any).latestReleaseChecked
-           && !gt(latestReleaseChecked, (guiSettings as any).latestReleaseChecked.version)
-          )
-    ){
-        return;
-    }
 
-    const updated = Object.assign({}, guiSettings, {latestReleaseChecked: data[latestReleaseChecked]});
-    await ws.setGUISettings(updated);
+    if(settings.release && isValid(settings.release)){
+        const latestReleaseChecked = checkVersion(data, settings.release, settings.target);
+        if(!gt(latestReleaseChecked, settings.release)
+           || ((guiSettings as any).latestReleaseChecked
+               && !gt(latestReleaseChecked, (guiSettings as any).latestReleaseChecked.version)
+              )
+        ){
+            return;
+        }
+
+        const updated = Object.assign({}, guiSettings, {latestReleaseChecked: data[latestReleaseChecked]});
+        await ws.setGUISettings(updated);
+    }
 });
 
-const refresh = function(){
 
-    const { ws, mode } = storage.getState();
+const refreshAccounts = function(){
+    storage.dispatch(asyncProviders.updateAccounts());
+};
+
+const subscribeAccounts = (async () => {
+
+    const { ws } = storage.getState();
 
     if(ws) {
-        storage.dispatch(asyncProviders.updateLocalSettings());
+        await ws.whenAuthorized();
+        refreshAccounts();
+        ws.subscribe('account', ['afterAccountAddBalance', 'accountUpdateBalances'], refreshAccounts, refreshAccounts);
+    }else{
+        setTimeout(subscribeAccounts, 1000);
     }
+});
 
-    if(ws && ws.authorized){
-        storage.dispatch(asyncProviders.updateAccounts());
-        storage.dispatch(asyncProviders.updateProducts());
-        storage.dispatch(asyncProviders.updateSettings());
+subscribeAccounts();
 
-        if(mode === Role.AGENT){
+const refresh = async function(){
+
+    const { ws, role, serviceName } = storage.getState();
+
+    if(ws) {
+
+        await ws.whenAuthorized();
+
+        if(role === Role.AGENT){
+            storage.dispatch(asyncProviders.updateProducts());
             storage.dispatch(asyncProviders.updateTotalIncome());
         }
 
+        if(serviceName === ''){
+            storage.dispatch(asyncProviders.updateServiceName());
+        }
+
         setTimeout(refresh, 3000);
+
     }else{
         setTimeout(refresh, 1000);
     }

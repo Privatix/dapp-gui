@@ -45,6 +45,10 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         });
     }else if(req.endpoint === '/localSettings'){
         event.sender.send('api-reply', JSON.stringify({req: msg, res: settings}));
+    }else if(req.endpoint === '/resizeWindow'){
+        const { width, height } = req.options;
+        win.setSize(width, height);
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
     }
   });
 

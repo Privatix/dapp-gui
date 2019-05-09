@@ -729,3 +729,23 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
         display: none;
     }
 }
+
+.Select-menu-outer {
+  z-index: 100 !important;
+}
+
+progress {
+   -webkit-appearance: none;
+   appearance: none;
+}
+
+progress::-webkit-progress-bar {
+    border-radius: 5px;
+    background-color: #ebeff2;
+    width: 100%;
+}
+progress::-webkit-progress-value {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+    background-color: #34d3eb; !important;
+}

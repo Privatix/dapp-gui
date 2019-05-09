@@ -109,7 +109,7 @@ class ImportHexKey extends React.Component<IProps, IState>{
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={4} />
+                    <Steps step={4} mode='advanced' />
                     <div className='content clearfix'>
                         <section>
                            <div className='form-group row'>

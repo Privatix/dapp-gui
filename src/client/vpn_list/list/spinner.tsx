@@ -1,5 +1,8 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { connect } from 'react-redux';
+import { translate, Trans } from 'react-i18next';
+
+import {State} from 'typings/state';
 
 const translated = translate(['client/vpnList']);
 
@@ -7,7 +10,7 @@ class Spinner extends React.Component<any,any> {
 
     render(){
 
-        const { t } = this.props;
+        const { t, serviceName } = this.props;
 
         return (
             <div className='container-fluid'>
@@ -20,7 +23,11 @@ class Spinner extends React.Component<any,any> {
                                     <div className='text-center m-t-15 m-b-15'>
                                         <div className='lds-dual-ring'></div>
                                     </div>
-                                    <p className='m-b-0'>{t('CurrentlyWeAreDownloading')}</p>
+                                    <p className='m-b-0'>
+                                        <Trans i18nKey='CurrentlyWeAreDownloading' values={{serviceName}} >
+                                             Currently, we are downloading {{serviceName}} list.
+                                         </Trans>
+                                    </p>
                                     <p>{t('TakesTimeOnFirstRun')}</p>
                                     <p className='m-t-15'>{t('AverageTimeForDownloading')}</p>
                                 </div>
@@ -33,5 +40,4 @@ class Spinner extends React.Component<any,any> {
     }
 }
 
-        
-export default translated(Spinner);
+export default connect((state: State) => ({serviceName: state.serviceName}))(translated(Spinner));

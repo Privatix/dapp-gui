@@ -1,3 +1,8 @@
+.spacing {
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
+
 /*
 Template Name: UBold Dashboard
 Author: Coderthemes
@@ -3361,9 +3366,9 @@ body.fixed-left .side-menu.left {
   -webkit-animation-duration: 5s;
   -webkit-animation-name: animationProgress;
   -webkit-transition: 5s all;
-  animation-duration: 5s;
+  animation-duration: 1s;
   animation-name: animationProgress;
-  transition: 5s all;
+  transition: 1s all;
 }
 
 /* Progressbar Vertical */

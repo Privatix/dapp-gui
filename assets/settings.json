@@ -19,5 +19,10 @@
    "lang": "en",
    "releasesEndpoint": "https://api.github.com/repos/Privatix/privatix/releases",
    "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/${version}/versions.txt",
-   "updateCheckFreq": 480
+   "updateCheckFreq": 480,
+   "window": {
+       "advanced": {"width": 1024, "height": 800},
+       "simple": {"width": 600, "height": 800},
+       "wizard": {"width": 1024, "height": 800}
+   }
 }

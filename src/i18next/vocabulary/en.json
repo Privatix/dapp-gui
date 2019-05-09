@@ -269,7 +269,6 @@
         "Accounts": "Accounts",
         "Help": "Help",
         "Settings": "Settings",
-        "Logs": "Logs",
         "SomethingWentWrong": "Something went wrong!"
     },
     "navigation": {
@@ -280,8 +279,9 @@
         "Sessions": "Sessions",
         "Offerings": "Offerings",
         "Servers": "Servers",
+        "Logs": "Logs",
         "ClientDashboard": "Client dashboard",
-        "VPNList": "VPN List"
+        "ServiceList": "{{serviceName}} list"
     },
     "topPanel": {
         "ETHBalance": "ETH balance",
@@ -334,6 +334,8 @@
         "IsDefault": "Is Default",
         "Actions": "Actions",
         "CheckBalanceBtn": "Check balance",
+        "BackupBtn": "Backup",
+        "BackupSuccessMsg": "Private key successfully saved.",
         "ModalTitle": "Account",
         "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes."
     },
@@ -380,19 +382,19 @@
         "AreYouSure": "Are you sure?"
     },
     "client/dashboard/connecting": {
-        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the VPN.",
-        "TheServiceHasAPendingStatus": "The service has a pending status. After the connection is ready, you can start using the VPN",
-        "TheServiceHasAnActivatingStatus": "The service has an activating status. After the connection is ready, you can start using the VPN",
+        "AfterTheConnectionIsReady": "After the connection is ready, you can start using the {{serviceName}}.",
+        "TheServiceHasAPendingStatus": "The service has a pending status. After the connection is ready, you can start using the {{serviceName}}",
+        "TheServiceHasAnActivatingStatus": "The service has an activating status. After the connection is ready, you can start using the {{serviceName}}",
         "TheServiceHasASuspendingStatus": "The service has a suspending status. After connections is suspended, you can resume or terminate it.",
         "TheServiceHasATerminatingStatus": "The service has a terminating status. After the connection is terminated, the contract can also be terminated.",
         "WaitingTimeIsOver": "Waiting time is over. Finish procedure will be called automatically.",
         "FailedToAcceptOffering": "Failed to accept offering. Please, try another one.",
         "Synchronizing": "Synchronizing",
-        "YouCanStartUsingVPN": "You can start using VPN",
+        "YouCanStartUsingService": "You can start using service {{serviceName}}",
         "Connect": "Connect",
         "YesConnectIt": "Yes, connect it!",
         "Pause": "Pause",
-        "ThisOperationWillPauseVPNUsage": "This operation will pause VPN usage.",
+        "ThisOperationWillPauseServiceUsage": "This operation will pause {{serviceName}} usage.",
         "ForThisContractMaxSuspendTimeIs": "For this contract, max suspend time is {{minutes}} min.",
         "YesPauseIt": "Yes, pause it!",
         "Remaining": "Remaining",
@@ -403,7 +405,7 @@
         "CountryAlertUnknown": "The application won't be able to detect the offering's country. IP address {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "Start using VPN"
+        "StartUsingService": "Start using {{serviceName}}"
     },
     "agent/dashboard": {
         "TotalIncome": "Total income:",
@@ -419,16 +421,14 @@
         "Price": "Price (PRIX/MB)",
         "SupplyTotal": "Supply (total)",
         "AvailableSupply": "Available supply",
-        "SuccessUpdateMsg": "VPN list was successfully updated!",
         "AcceptOffering": "Accept offering",
         "ShowAllBtn": "show all...",
         "HideBtn": "hide",
         "Search": "search",
         "WaitForDownloading": "Please, wait for downloading....",
-        "CurrentlyWeAreDownloading": "Currently, we are downloading VPN list.",
+        "CurrentlyWeAreDownloading": "Currently, we are downloading {{serviceName}} list.",
         "TakesTimeOnFirstRun": "It takes time only on the first run.",
         "AverageTimeForDownloading": "An average time for downloading ap. 2-5 min.",
-        "Refresh": "Refresh",
         "CheckAvailability": "Check availability",
         "AgentAddress": "Agent address",
         "OfferingHash": "Offering hash",
@@ -440,14 +440,14 @@
     },
     "client/acceptOffering": {
         "Accept": "Accept",
-        "CanHaveOneVPNConnection": "Note. You can have only one VPN connection. To accept another, terminate the current connection.",
+        "CanHaveOneServiceConnection": "Note. You can have only one {{serviceName}} connection. To accept another, terminate the current connection.",
         "DepositMustBeMoreThan": "The deposit must be more than",
         "DepositMustBeLessOrEqualThan": "The deposit must be less or equal than",
         "NotEnoughPrixForDeposit": "Not enough PRIXes for deposit. Please, select another account.",
         "NotEnoughToPublishTransaction": "Not enough funds for publish transaction. Please, select another account.",
         "ErrorAcceptingOffering": "Something went wrong. Try to accept another offering!",
         "OfferingAccepted": "Offering accepted!",
-        "VPNInfo": "VPN info",
+        "ServiceInfo": "{{serviceName}} info",
         "Country": "Country:",
         "BillingInfo": "Billing info",
         "PricePerMB": "Price per MB:",
@@ -481,7 +481,8 @@
     "client/serviceView": {
         "CommonInfo": "Common Info",
         "IdTd": "Id:",
-        "Offering": "Offering:",
+        "OfferingID": "Offering ID:",
+        "OfferingHash": "Offering Hash:",
         "ContractStatusTd": "Contract status:",
         "ServiceStatusTd": "Service status:",
         "Transferred": "Transferred:",
@@ -546,7 +547,7 @@
         "Sessions": "Sessions"
     },
     "client/increaseDepositButton":{
-        "ThisOperationWillIncrease": "This operation will increase your VPN balance by increasing the deposit.",
+        "ThisOperationWillIncrease": "This operation will increase your {{serviceName}} balance by increasing the deposit.",
         "IncreaseDeposit": "Increase deposit"
     },
     "client/connections/increaseDepositView":{
@@ -670,7 +671,7 @@
         "clientPreServiceSuspend" : "suspend service",
         "clientPreServiceUnsuspend" : "unsuspend service",
         "clientPreServiceTerminate" : "permanently stop using the service",
-        "clientEndpointRestore" : "get service access",
+        "clientEndpointGet" : "get service access",
         "clientAfterOfferingMsgBCPublish" : "get offering data",
         "clientAfterOfferingPopUp" : "update offering position",
         "clientAfterOfferingDelete" : "remove offering",
@@ -743,5 +744,34 @@
         "ServiceBalance": "Service Balance",
         "IsDefault": "Is Default",
         "Actions": "Actions"
+    },
+    "client/simpleMode" : {
+        "selectCountry": "Select country",
+        "disconnected": "Disconnected",
+        "pingFailed": "Disconnected",
+        "connecting": "Connecting",
+        "resuming": "Connecting",
+        "connected": "Connected",
+        "pingLocations": "Search node",
+        "disconnecting": "Disconnecting",
+        "suspended": "Suspended",
+        "jobFailed": "Disconnected",
+        "TIME": "TIME",
+        "TRAFFIC": "TRAFFIC",
+        "SPENT": "SPENT",
+        "Connecting": "Connecting",
+        "Disconnecting": "Disconnecting",
+        "Connect": "Connect",
+        "Disconnect": "Disconnect",
+        "Resume": "Resume",
+        "Balance": "Balance",
+        "Address": "Address",
+        "LighweightMode": "Simple Mode",
+        "AdvancedMode": "Advanced Mode",
+        "SearchingTheOptimalNode": "Searching the optimal node",
+        "NoAvailableOfferings": "No available offerings. Please choose another country.",
+        "AgentFailed": "Agent failed to provide the service.",
+        "HisRating": "His rating will register that.",
+        "PleaseTryAgain": "Please, try again."
     }
 }

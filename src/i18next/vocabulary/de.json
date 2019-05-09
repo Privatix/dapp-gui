@@ -174,7 +174,6 @@
         "Hash": "Hash",
         "ServiceName": "Servicename",
         "Server": "Server",
-        "MessageStatus": "Nachrichtenstatus",
         "Status": "Status",
         "AvailableSupply": "Verfügbares Angebot",
         "Supply": "Angebot"
@@ -231,15 +230,6 @@
         "TerminateService": "Service beenden",
         "TerminateContract": "Vertrag beenden"
     },
-    "channels/channelsListSortTable": {
-        "Server": "Server",
-        "Client": "Client",
-        "ContractStatus": "Vertragsstatus",
-        "ServiceStatus": "Service-Status",
-        "Usage": "Nutzung",
-        "Income": "Einkommen (PRIX)",
-        "ServiceChangedTime": "Zeit der Serviceänderung"
-    },
     "sessions/sessionsList": {
         "TotalStatistics": "Gesamtstatistik",
         "TotalUsage": "Gesamtnutzung",
@@ -260,14 +250,8 @@
     "header": {
         "Accounts": "Konten",
         "Help": "Hilfe",
-        "SwitchToClient": "Wechseln zu Client",
-        "SwitchToAgent": "Wechseln zu Agent",
         "Settings": "Einstellungen",
-        "Logs": "Protokolle",
-        "user": "Benutzer",
-        "SomethingWentWrong": "Ein Fehler ist aufgetreten!",
-        "UserWasSwitchedToAGENT": "Der Benutzermodus wurde erfolgreich zu AGENT gewechselt",
-        "UserWasSwitchedToCLIENT": "Der Benutzermodus wurde erfolgreich zu CLIENT gewechselt"
+        "SomethingWentWrong": "Ein Fehler ist aufgetreten!"
     },
     "navigation": {
         "Dashboard": "Dashboard",
@@ -277,8 +261,9 @@
         "Sessions": "Sitzungen",
         "Offerings": "Angebote",
         "Servers": "Server",
+        "Logs": "Protokolle",
         "ClientDashboard": "Client-Dashboard",
-        "VPNList": "VPN-Liste"
+        "ServiceList": "{{serviceName}}-Liste"
     },
     "topPanel": {
         "ETHBalance": "ETH-Guthaben",
@@ -295,7 +280,6 @@
     },
     "logs/logsList": {
         "LogsHeader": "Protokollliste",
-        "ExportBtn": "In Datei exportieren",
         "LogsFilterFrom": "Von:",
         "LogsFilterTo": "Bis:",
         "LogsFilterTime": "Zeit",
@@ -348,16 +332,7 @@
         "ServiceBalanceOption": "Service-Guthaben",
         "Amount": "Betrag:",
         "TransferConfirmBtn": "Ja, übertragen!",
-        "TransferSwalTitle": "Sind Sie sicher?",
-        "ServiceSwalBalanceFrom": "Service-Guthaben",
-        "ExchangeSwalBalanceFrom": "Exchange-Guthaben",
-        "ServiceSwalBalance": "Service-Guthaben",
-        "ExchangeSwalBalance": "Exchange-Guthaben",
-        "TransferSwalText1": "Mit dieser Aktion werden Ihre Token übertragen von",
-        "TransferSwalText2": "an",
-        "TransferSwalText3": ".",
-        "TransferSwalText4": "Dieser Vorgang erfordert Zeit und Energie.",
-        "TransferSwalText5": "Sie können den Transaktionsstatus im Transaktionsprotokoll überwachen."
+        "TransferSwalTitle": "Sind Sie sicher?"
     },
     "utils/gasRange": {
         "GasPrice": "GAS-Preis",
@@ -376,30 +351,29 @@
         "AreYouSure": "Sind Sie sicher?"
     },
     "client/dashboard/connecting": {
-        "TheServiceHasAPendingStatus": "Der Service befindet sich im ausstehenden Status. Nachdem die Verbindung hergestellt wurde, können Sie das VPN verwenden",
-        "TheServiceHasAnActivatingStatus": "Der Service befindet sich im Status der Aktivierung. Nachdem die Verbindung hergestellt wurde, können Sie das VPN verwenden",
+        "TheServiceHasAPendingStatus": "Der Service befindet sich im ausstehenden Status. Nachdem die Verbindung hergestellt wurde, können Sie das {{serviceName}} verwenden",
+        "TheServiceHasAnActivatingStatus": "Der Service befindet sich im Status der Aktivierung. Nachdem die Verbindung hergestellt wurde, können Sie das {{serviceName}} verwenden",
         "TheServiceHasASuspendingStatus": "Der Dienst befindet sich im Status des Aussetzens. Nachdem die Verbindung unterbrochen wurde, können Sie ihn fortsetzen oder beenden.",
         "TheServiceHasATerminatingStatus": "Der Service befindet sich im Status der Beendigung. Nachdem die Verbindung beendet wurde, kann auch der Vertrag beendet werden.",
         "WaitingTimeIsOver": "Die Wartezeit ist vorbei. Die Abschlussprozedur wird automatisch aufgerufen.",
         "FailedToAcceptOffering": "Fehler bei Akzeptieren des Angebots. Bitte anderes versuchen.",
         "Synchronizing": "Synchronisierung",
-        "YouCanStartUsingVPN": "Sie können VPN jetzt verwenden",
+        "YouCanStartUsingService": "Sie können {{serviceName}} jetzt verwenden",
         "Connect": "Verbinden",
         "YesConnectIt": "Ja, verbinden!",
         "Pause": "Pause",
-        "ThisOperationWillPauseVPNUsage": "Dieser Vorgang unterbricht die VPN-Nutzung.",
+        "ThisOperationWillPauseServiceUsage": "Dieser Vorgang unterbricht die {{serviceName}}-Nutzung.",
         "ForThisContractMaxSuspendTimeIs": "Für diesen Vertrag beträgt die maximale Sperrzeit {{minutes}} Min.",
         "YesPauseIt": "Ja, anhalten!",
         "Remaining": "Verbleibend",
         "AfterMaxInactivityTimeHasBeenReached": "Nachdem die max. Inaktivitätszeit erreicht ist, wird die \"Abschlussprozedur\" automatisch aufgerufen.",
         "Resume": "Fortsetzen",
         "YesResumeIt": "Ja, fortsetzen!",
-        "min": "Min.",
         "CountryAlertInvalid": "Das Land im Angebot stimmt nicht mit dem Land überein, das anhand der IP-Adresse erkannt wurde. IP-Adresse {{ip}}",
         "CountryAlertUnknown": "Das Land des Angebots kann von der Anwendung nicht erkannt werden. IP-Adresse {{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "Verwendung von VPN starten"
+        "StartUsingService": "Verwendung von {{serviceName}} starten"
     },
     "agent/dashboard": {
         "TotalIncome": "Gesamteinkommen:",
@@ -410,21 +384,18 @@
     "client/vpnList": {
         "Block": "Block",
         "Hash": "Hash",
-        "Agent": "Agent",
         "Country": "Land",
         "Price": "Preis (PRIX/MB)",
         "SupplyTotal": "Angebot (gesamt)",
         "AvailableSupply": "Verfügbares Angebot",
-        "SuccessUpdateMsg": "Die VPN-Liste wurde erfolgreich aktualisiert!",
         "AcceptOffering": "Angebot akzeptieren",
         "ShowAllBtn": "alle anzeigen...",
         "HideBtn": "ausblenden",
         "Search": "suchen",
         "WaitForDownloading": "Bitte warten Sie auf den Download....",
-        "CurrentlyWeAreDownloading": "Die VPN-Listen werden derzeit heruntergeladen.",
+        "CurrentlyWeAreDownloading": "Die {{serviceName}}-Listen werden derzeit heruntergeladen.",
         "TakesTimeOnFirstRun": "Dieser Vorgang dauert bei der ersten Ausführung etwas länger.",
         "AverageTimeForDownloading": "Die durchschnittliche Zeit für das Herunterladen beträgt ca. 2-5 Min.",
-        "Refresh": "Aktualisieren",
         "AgentAddress": "Agent-Adresse",
         "OfferingHash": "Hash des Angebots",
         "PriceFilter": "Preis (PRIX/MB):",
@@ -435,13 +406,13 @@
     },
     "client/acceptOffering": {
         "Accept": "Akzeptieren",
-        "CanHaveOneVPNConnection": "Hinweis. Sie haben nur eine VPN-Verbindung. Um eine weitere Verbindung zu akzeptieren, beenden Sie die aktuelle Verbindung.",
+        "CanHaveOneServiceConnection": "Hinweis. Sie haben nur eine {{serviceName}}-Verbindung. Um eine weitere Verbindung zu akzeptieren, beenden Sie die aktuelle Verbindung.",
         "DepositMustBeMoreThan": "Die Einzahlung muss höher sein als",
         "DepositMustBeLessOrEqualThan": "Die Einzahlung muss weniger oder gleich ** sein",
         "NotEnoughPrixForDeposit": "PRIX für Einzahlung nicht ausreichend. Bitte ein anderes Konto auswählen.",
         "NotEnoughToPublishTransaction": "Mittel für Veröffentlichung der Transaktion nicht ausreichend. Bitte wählen Sie ein anderes Konto aus.",
         "OfferingAccepted": "Angebot akzeptiert!",
-        "VPNInfo": "VPN-Info",
+        "ServiceInfo": "{{serviceName}}-Info",
         "Country": "Land:",
         "BillingInfo": "Rechnungsdaten",
         "PricePerMB": "Preis pro MB:",
@@ -460,8 +431,6 @@
     "client/history": {
         "Service": "Service",
         "of": "von",
-        "Id": "ID",
-        "Agent": "Agent",
         "ContractStatus": "Vertragsstatus",
         "ServiceStatus": "Service-Status",
         "JobStatus": "Jobstatus",
@@ -474,7 +443,6 @@
     "client/serviceView": {
         "CommonInfo": "Allgemeine Informationen",
         "IdTd": "ID:",
-        "Offering": "Angebot:",
         "ContractStatusTd": "Vertragsstatus:",
         "ServiceStatusTd": "Service-Status:",
         "Transferred": "Übertragen:",
@@ -501,9 +469,7 @@
     "client/connections/active": {
         "Connection": "Verbindung",
         "ActiveConnection": "Aktive Verbindung:",
-        "Id": "ID",
         "Offering": "Angebot",
-        "Agent": "Agent",
         "ContractStatus": "Vertragsstatus",
         "ServiceStatus": "Service-Status",
         "JobStatus": "Jobstatus",
@@ -523,9 +489,6 @@
     },
     "client/connections/connection": {
         "Offering": "Angebot",
-        "Id": "ID",
-        "Agent": "Agent",
-        "Server": "Server",
         "Started": "Gestartet",
         "Stopped": "Gestoppt",
         "Usage": "Nutzung",
@@ -544,7 +507,7 @@
         "Sessions": "Sitzungen"
     },
     "client/increaseDepositButton": {
-        "ThisOperationWillIncrease": "Durch diesen Vorgang wird Ihr VPN-Guthaben erhöht, indem die Einzahlung erhöht wird.",
+        "ThisOperationWillIncrease": "Durch diesen Vorgang wird Ihr {{serviceName}}-Guthaben erhöht, indem die Einzahlung erhöht wird.",
         "IncreaseDeposit": "Einzahlung erhöhen"
     },
     "client/connections/increaseDepositView": {

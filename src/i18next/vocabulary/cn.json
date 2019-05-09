@@ -174,7 +174,6 @@
         "Hash": "哈希",
         "ServiceName": "服务名称",
         "Server": "服务器",
-        "MessageStatus": "消息状态",
         "Status": "状态",
         "AvailableSupply": "可用供应",
         "Supply": "供应"
@@ -231,15 +230,6 @@
         "TerminateService": "终止服务",
         "TerminateContract": "终止合同"
     },
-    "channels/channelsListSortTable": {
-        "Server": "服务器",
-        "Client": "客户端",
-        "ContractStatus": "合同状态",
-        "ServiceStatus": "服务状态",
-        "Usage": "使用量",
-        "Income": "收入 (PRIX)",
-        "ServiceChangedTime": "服务变更时间"
-    },
     "sessions/sessionsList": {
         "TotalStatistics": "统计数据总计",
         "TotalUsage": "总使用量",
@@ -260,14 +250,8 @@
     "header": {
         "Accounts": "帐户",
         "Help": "帮助",
-        "SwitchToClient": "切换到客户端",
-        "SwitchToAgent": "切换到代理",
         "Settings": "设置",
-        "Logs": "日志",
-        "user": "用户",
-        "SomethingWentWrong": "出现错误！",
-        "UserWasSwitchedToAGENT": "用户模式已成功切换到“代理”",
-        "UserWasSwitchedToCLIENT": "用户模式已成功切换到“客户端”"
+        "SomethingWentWrong": "出现错误！"
     },
     "navigation": {
         "Dashboard": "仪表板",
@@ -277,8 +261,9 @@
         "Sessions": "会话",
         "Offerings": "产品",
         "Servers": "服务器",
+        "Logs": "日志",
         "ClientDashboard": "客户端仪表板",
-        "VPNList": "VPN 列表"
+        "ServiceList": "{{serviceName}} 列表"
     },
     "topPanel": {
         "ETHBalance": "ETH 余额",
@@ -295,7 +280,6 @@
     },
     "logs/logsList": {
         "LogsHeader": "日志列表",
-        "ExportBtn": "导出到文件",
         "LogsFilterFrom": "开始日期：",
         "LogsFilterTo": "结束日期：",
         "LogsFilterTime": "时间",
@@ -348,16 +332,7 @@
         "ServiceBalanceOption": "服务余额",
         "Amount": "金额：",
         "TransferConfirmBtn": "是的，转移！",
-        "TransferSwalTitle": "是否确定？",
-        "ServiceSwalBalanceFrom": "服务余额",
-        "ExchangeSwalBalanceFrom": "交易所余额",
-        "ServiceSwalBalance": "服务余额",
-        "ExchangeSwalBalance": "交易所余额",
-        "TransferSwalText1": "此操作将把您的代币从",
-        "TransferSwalText2": "转移至",
-        "TransferSwalText3": "。",
-        "TransferSwalText4": "此操作需要时间和 gas。",
-        "TransferSwalText5": "您可以在交易日志中监控交易状态。"
+        "TransferSwalTitle": "是否确定？"
     },
     "utils/gasRange": {
         "GasPrice": "Gas 价格",
@@ -376,30 +351,29 @@
         "AreYouSure": "是否确定？"
     },
     "client/dashboard/connecting": {
-        "TheServiceHasAPendingStatus": "该服务处于待定状态。在连接准备就绪后，即可开始使用 VPN",
-        "TheServiceHasAnActivatingStatus": "该服务处于激活状态。在连接准备就绪后，即可开始使用 VPN",
+        "TheServiceHasAPendingStatus": "该服务处于待定状态。在连接准备就绪后，即可开始使用 {{serviceName}}",
+        "TheServiceHasAnActivatingStatus": "该服务处于激活状态。在连接准备就绪后，即可开始使用 {{serviceName}}",
         "TheServiceHasASuspendingStatus": "该服务处于挂起状态。在连接挂起后，您可以恢复或终止连接。",
         "TheServiceHasATerminatingStatus": "该服务处于终止状态。在连接终止后，合同也可以终止。",
         "WaitingTimeIsOver": "等待时间结束。将自动调用完成过程。",
         "FailedToAcceptOffering": "无法接受该产品，请尝试其他产品。",
         "Synchronizing": "正在同步",
-        "YouCanStartUsingVPN": "您可以开始使用 VPN",
+        "YouCanStartUsingService": "您可以开始使用 {{serviceName}}",
         "Connect": "连接",
         "YesConnectIt": "是的，连接！",
         "Pause": "暂停",
-        "ThisOperationWillPauseVPNUsage": "此操作将暂停 VPN 使用。",
+        "ThisOperationWillPauseServiceUsage": "此操作将暂停 {{serviceName}} 使用。",
         "ForThisContractMaxSuspendTimeIs": "此合同的最大挂起时间为 {{minutes}} 分钟。",
         "YesPauseIt": "是的，暂停！",
         "Remaining": "剩余",
         "AfterMaxInactivityTimeHasBeenReached": "达到最长非活动时间后，将自动调用“完成程序”。",
         "Resume": "恢复",
         "YesResumeIt": "是的，恢复！",
-        "min": "分钟",
         "CountryAlertInvalid": "产品的国家/地区与根据 IP 地址检测到的国家/地区不匹配。IP 地址：{{ip}}",
         "CountryAlertUnknown": "应用程序将无法检测到产品的国家/地区。IP 地址：{{ip}}"
     },
     "client/dashboard/start": {
-        "StartUsingVPN": "开始使用 VPN"
+        "StartUsingService": "开始使用 {{serviceName}}"
     },
     "agent/dashboard": {
         "TotalIncome": "总收入：",
@@ -410,21 +384,18 @@
     "client/vpnList": {
         "Block": "区块",
         "Hash": "哈希",
-        "Agent": "代理",
         "Country": "国家/地区",
         "Price": "价格 (PRIX/MB)",
         "SupplyTotal": "供应（总计）",
         "AvailableSupply": "可用供应",
-        "SuccessUpdateMsg": "VPN 列表已成功更新！",
         "AcceptOffering": "接受产品",
         "ShowAllBtn": "显示所有…",
         "HideBtn": "隐藏",
         "Search": "搜索",
         "WaitForDownloading": "请稍候，正在下载…",
-        "CurrentlyWeAreDownloading": "正在下载 VPN 列表。",
+        "CurrentlyWeAreDownloading": "正在下载 {{serviceName}} 列表。",
         "TakesTimeOnFirstRun": "仅首次运行需要一些时间。",
         "AverageTimeForDownloading": "平均下载时间约为 2-5 分钟。",
-        "Refresh": "刷新",
         "AgentAddress": "代理地址",
         "OfferingHash": "产品哈希",
         "PriceFilter": "价格 (PRIX/MB)：",
@@ -435,13 +406,13 @@
     },
     "client/acceptOffering": {
         "Accept": "接受",
-        "CanHaveOneVPNConnection": "请注意，您只能拥有一个 VPN 连接。要接受另一个连接，请终止当前连接。",
+        "CanHaveOneServiceConnection": "请注意，您只能拥有一个 {{serviceName}} 连接。要接受另一个连接，请终止当前连接。",
         "DepositMustBeMoreThan": "押金必须超过",
         "DepositMustBeLessOrEqualThan": "押金必须小于或等于",
         "NotEnoughPrixForDeposit": "没有足够的 PRIX 可以作为押金。请选择其他帐户。",
         "NotEnoughToPublishTransaction": "资金不足，无法发布交易。请选择其他帐户。",
         "OfferingAccepted": "已接受产品！",
-        "VPNInfo": "VPN 信息",
+        "ServiceInfo": "{{serviceName}} 信息",
         "Country": "国家/地区：",
         "BillingInfo": "计费信息",
         "PricePerMB": "价格/MB：",
@@ -460,8 +431,6 @@
     "client/history": {
         "Service": "服务",
         "of": "/",
-        "Id": "ID",
-        "Agent": "代理",
         "ContractStatus": "合同状态",
         "ServiceStatus": "服务状态",
         "JobStatus": "作业状态",
@@ -474,7 +443,6 @@
     "client/serviceView": {
         "CommonInfo": "通用信息",
         "IdTd": "ID：",
-        "Offering": "产品：",
         "ContractStatusTd": "合同状态：",
         "ServiceStatusTd": "服务状态：",
         "Transferred": "已转账：",
@@ -501,9 +469,7 @@
     "client/connections/active": {
         "Connection": "连接",
         "ActiveConnection": "活动连接：",
-        "Id": "ID",
         "Offering": "产品",
-        "Agent": "代理",
         "ContractStatus": "合同状态",
         "ServiceStatus": "服务状态",
         "JobStatus": "作业状态",
@@ -523,9 +489,6 @@
     },
     "client/connections/connection": {
         "Offering": "产品",
-        "Id": "ID",
-        "Agent": "代理",
-        "Server": "服务器",
         "Started": "已开始",
         "Stopped": "已停止",
         "Usage": "使用量",
@@ -544,7 +507,7 @@
         "Sessions": "会话"
     },
     "client/increaseDepositButton": {
-        "ThisOperationWillIncrease": "此操作将通过增加押金来增加您的 VPN 余额。",
+        "ThisOperationWillIncrease": "此操作将通过增加押金来增加您的 {{serviceName}} 余额。",
         "IncreaseDeposit": "增加押金"
     },
     "client/connections/increaseDepositView": {

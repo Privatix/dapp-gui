@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { translate, Trans } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 
 import Select from 'react-select';
@@ -24,6 +24,7 @@ interface IProps{
     history?: any;
     offering: Offering;
     mode?: string;
+    serviceName?: string;
 }
 
 interface IState{
@@ -145,13 +146,17 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t, offering, accounts } = this.props;
+        const { t, offering, accounts, serviceName } = this.props;
         const { account, thereAreActiveChannels } = this.state;
 
         const acceptOfferingBtnBl = thereAreActiveChannels
             ? <div className='form-group row'>
                   <div className='col-md-12'>
-                      <div className='text-danger'>{t('CanHaveOneVPNConnection')}</div>
+                      <div className='text-danger'>
+                          <Trans i18nKey='CanHaveOneServiceConnection' values={{serviceName}} >
+                              Note. You can have only one {{serviceName}} connection. To accept another, terminate the current connection.
+                          </Trans>
+                      </div>
                   </div>
               </div>
             : <div className='form-group row'>
@@ -175,7 +180,11 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
         return <div className='col-lg-12 col-md-12'>
             <div className='card m-b-20'>
-                <h5 className='card-header'>{t('VPNInfo')}</h5>
+                <h5 className='card-header'>
+                    <Trans i18nKey='ServiceInfo' values={{serviceName}} >
+                        {{serviceName}} info
+                    </Trans>
+                </h5>
                 <div className='card-body'>
                     <div className='form-group row'>
                         <label className='col-3 col-form-label'>{t('Country')}</label>
@@ -278,7 +287,11 @@ class AcceptOffering extends React.Component<IProps, IState>{
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
                                     <span className='help-block'>
-                                        <small>{t('UnusedPrixWillBeReturnedSmallText')}</small>
+                                        <small>
+                                            <Trans i18nKey='UnusedPrixWillBeReturnedSmallText' values={{serviceName}} >
+                                                After the end of using, the unused PRIX will be returned.
+                                            </Trans>
+                                        </small>
                                     </span>
                                 </div>
                             </div>
@@ -306,4 +319,5 @@ export default connect( (state: State, ownProps: IProps) => {
    ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
    ,localSettings: state.localSettings
    ,accounts: state.accounts
+   ,serviceName: state.serviceName
 }, ownProps);} )(withRouter(AcceptOffering));

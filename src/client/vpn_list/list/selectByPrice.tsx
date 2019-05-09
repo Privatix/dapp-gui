@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
-import Slider from 'rc-slider';
+import { Range } from 'rc-slider';
 
 import toFixedN from 'utils/toFixedN';
 
@@ -23,17 +23,19 @@ const translated = translate(['client/vpnList']);
 
 class SelectByPrice extends React.Component<IProps, IState>{
 
-    Range = null;
+    private k = 1000;
 
-    constructor(props: IProps){
-        super(props);
-        const createSliderWithTooltip = Slider.createSliderWithTooltip;
-        this.Range = createSliderWithTooltip(Slider.Range);
+    onChangeRange = (value: any) => {
+
+        const { onChangeRange } = this.props;
+        const [ from, to ] = value;
+        onChangeRange([from/this.k, to/this.k]);
     }
 
     render () {
 
-        const { t, onChangeMinPrice, onChangeMaxPrice, onChangeRange, min, max, step, start, end } = this.props;
+        const { t, onChangeMinPrice, onChangeMaxPrice, min, max, step, start, end } = this.props;
+        const k = this.k;
 
         return (
             <div className='card m-b-20'>
@@ -75,11 +77,11 @@ class SelectByPrice extends React.Component<IProps, IState>{
                     </div>
                     <div className='row m-t-30'>
                         <div className='col-12'>
-                            <this.Range value={[start, end]}
-                                   min={min}
-                                   max={max}
-                                   step={step}
-                                   onChange={onChangeRange}
+                            <Range value={[start*k, end*k]}
+                                   min={min*k}
+                                   max={max*k}
+                                   step={step*k}
+                                   onChange={this.onChangeRange}
                                    allowCross={false}
                             />
                         </div>

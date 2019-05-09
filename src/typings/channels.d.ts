@@ -33,7 +33,7 @@ export interface ClientChannelUsage {
     unitType: string;
     cost: number;
 }
-// TODO remove
+
 export interface ClientChannel {
     id: string;
     agent: string;

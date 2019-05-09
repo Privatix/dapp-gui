@@ -7,9 +7,19 @@ import { NavLink } from 'react-router-dom';
 import TopPanel from './topPanel';
 import UpdateInformer from './updateInformer/';
 
+import { asyncProviders } from 'redux/actions';
+
+import { Dispatch } from 'redux';
+import { Role, Mode } from 'typings/mode';
 import {State} from 'typings/state';
 
 declare var window: any;
+
+interface IProps {
+    role: Role;
+    mode: Mode;
+    setSimpleMode?(): void;
+}
 
 @translate(['header', 'utils/notice'])
 class Header extends React.Component<any, any>{
@@ -65,14 +75,20 @@ class Header extends React.Component<any, any>{
         $('body').trigger('resize');
     }
 
-    openHelpLink(evt:any) {
+    openHelpLink = (evt:any) => {
         evt.preventDefault();
         require('electron').shell.openExternal('https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause');
     }
 
+    setLighweightMode = (evt:any) => {
+        const { setSimpleMode } = this.props;
+        evt.preventDefault();
+        setSimpleMode();
+    }
+
     render(){
 
-        const { t } = this.props;
+        const { t, role } = this.props;
 
         const style = {
             padding: '5px',
@@ -108,12 +124,18 @@ class Header extends React.Component<any, any>{
                                 <NavLink to='/accounts' className='dropdown-item notify-item'>
                                     <i className='md  md-account-child'></i> <span>{t('Accounts')}</span>
                                 </NavLink>
-                                <a onClick={this.openHelpLink.bind(this)} className='dropdown-item notify-item cursorPoiner'>
+                                <a onClick={this.openHelpLink} className='dropdown-item notify-item cursorPoiner'>
                                     <i className='md md-help'></i> <span>{t('Help')}</span>
                                 </a>
                                 <NavLink to='/settings' className='dropdown-item notify-item'>
                                     <i className='md md-settings'></i> <span>{t('Settings')}</span>
                                 </NavLink>
+                                { role === Role.CLIENT
+                                    ? <a onClick={this.setLighweightMode} className='dropdown-item notify-item cursorPoiner'>
+                                          <i className='md md-swap-horiz'></i> <span>Simple Mode</span>
+                                      </a>
+                                    : null
+                                }
                             </div>
                     </li>
 
@@ -136,4 +158,15 @@ class Header extends React.Component<any, any>{
     }
 }
 
-export default connect( (state: State) => ({mode: state.mode}) )(withRouter(Header));
+const mapStateToProps = (state: State) => {
+    const { role, mode } = state;
+    return { role, mode };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ 
+    setSimpleMode: () => {
+        dispatch(asyncProviders.setMode(Mode.SIMPLE));
+    }
+});
+
+export default connect<IProps>(mapStateToProps, mapDispatchToProps)(withRouter(Header));

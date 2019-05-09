@@ -1,3 +1,5 @@
+import { Mode } from './mode';
+
 export interface GasConsumption {
     acceptOffering: number;
     createOffering: number;
@@ -26,9 +28,12 @@ export interface LocalSettings {
     platformsEndpoint: string;
     latestReleaseChecked: any;
     updateCheckFreq: number;
-    collectLogsPath: {
-        linux: string;
-    };
+    window: {
+        [key: Mode ] : {
+            width: number;
+            height: number;
+        }
+    }
 }
 
 export interface DbSetting {
