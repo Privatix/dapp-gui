@@ -253,7 +253,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const msg = <>{t('AgentFailed')}<br/>{t('HisRating')}<br/>{t('PleaseTryAgain')}</>;
 
-        notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+        notice({level: 'error', header: t('utils/notice:Attention!'), msg}, 5000);
 
         this.addToBlackList(offering);
         this.updateOfferings();
