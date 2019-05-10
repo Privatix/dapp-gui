@@ -24,19 +24,54 @@ interface IProps {
     onDisconnect(event: any): void;
 }
 
+interface IState {
+    startPoint: number;
+    tick: number;
+}
+
 @translate(['client/simpleMode'])
-export default class Connected extends React.Component<IProps, {}> {
+export default class Connected extends React.Component<IProps, IState> {
+
+    private tickerHandler = null;
+
+    constructor(props: IProps){
+        super(props);
+        const { channel } = props;
+        const startPoint = Math.floor((Date.parse(channel.job.createdAt) + (new Date().getTimezoneOffset()*60*1000))/1000);
+        this.state = {startPoint, tick: 0};
+    }
+    componentDidMount(){
+        this.startTicker();
+    }
+
+    componentWillUnmount(){
+        this.stopTicker();
+    }
+
+    startTicker = () => {
+        const { startPoint } = this.state;
+        const tick = Math.floor(Date.now()/1000) - startPoint;
+        this.setState({tick});
+        this.tickerHandler = setTimeout(this.startTicker, 1000);
+    }
+
+    stopTicker(){
+        if(this.tickerHandler){
+            clearTimeout(this.tickerHandler);
+        }
+        this.tickerHandler = null;
+    }
 
     render(){
 
-        const { t, usage, ip, channel, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
+        const { t, usage, ip, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
+        const { tick } = this.state;
 
         const padZero = (n: number) => n < 10 ? `0${n}` : `${n}`;
 
-        const secondsTotal = Math.floor((Date.now() - (new Date().getTimezoneOffset()*60*1000)- Date.parse(channel.job.createdAt))/1000);
-        const seconds = secondsTotal%60;
-        const minutes = ((secondsTotal - seconds)/60)%60;
-        const hours = (secondsTotal - minutes*60 - seconds)/(60*60);
+        const seconds = tick%60;
+        const minutes = ((tick - seconds)/60)%60;
+        const hours = (tick - minutes*60 - seconds)/(60*60);
 
         return (
             <>
