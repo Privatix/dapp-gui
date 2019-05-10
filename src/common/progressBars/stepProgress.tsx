@@ -38,8 +38,8 @@ export default class StepsProgress extends React.Component<IProps, {}> {
         return(
             <>
                 <progress
+                    className={`wow animated progress-animated spacing ${percentage === 100 ? 'progressComplete' : ''}`}
                     style={ {marginLeft: 'auto', marginRight: 'auto', width: '300px', height: '10px', display: 'block'} }
-                    className='wow animated progress-animated spacing'
                     value={percentage}
                     max={100}
                 />

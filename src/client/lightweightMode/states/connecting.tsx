@@ -48,7 +48,7 @@ export default class Connecting extends React.Component<IProps, {}> {
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Connecting')} <DotProgress />
                 </button>
-                <StepProgress steps={steps} lastDoneStep={channel ? channel.job.jobtype : null} />
+                <StepProgress steps={steps} lastDoneStep={ channel ? channel.job.jobtype : null } />
             </>
         );
     }

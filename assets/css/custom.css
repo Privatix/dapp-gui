@@ -749,3 +749,7 @@ progress::-webkit-progress-value {
     border-bottom-left-radius: 5px;
     background-color: #34d3eb; !important;
 }
+.progressComplete::-webkit-progress-value {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
