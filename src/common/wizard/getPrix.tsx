@@ -181,7 +181,7 @@ class GetPrix extends React.Component<IProps, IState>{
                                 </li>
                                 <li>
                                     <Trans i18nKey='PostIntoBot'>
-                                        <p>Post it into <ExternalLink href='https://t.me/prixbot'>{'Privatix\'s bot chat'}</ExternalLink>.</p>
+                                        <p>Open Telegram and send this address to <ExternalLink href='https://t.me/prixbot'>{'@prixbot'}</ExternalLink> for airdrop (ETH/PRIX).</p>
                                     </Trans>
                                 </li>
                                 <li>

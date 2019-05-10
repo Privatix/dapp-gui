@@ -68,7 +68,7 @@
         "WeAreCurrentlyOnTestnet": "We are currently on testnet.",
         "YouShouldGetPRIXandETH": "You should get PRIX and ETH from privatix bot.",
         "CopyTheAddress": "Copy the address below to the clipboard",
-        "PostIntoBot": "<0>Post it into <1>Privatix's bot chat</1>.</0>",
+        "PostIntoBot": "<0>Open Telegram and send this address to <1>@prixbot</1> for airdrop (ETH/PRIX).</0>",
         "PressButton": "Press button \"I did it\".",
         "IdidIt": "I did it",
         "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
