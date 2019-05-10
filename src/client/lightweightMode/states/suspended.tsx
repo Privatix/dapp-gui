@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
 
-import SelectCountry from '../selectCountry';
+import SelectCountry from '../selectCountry/';
 
 import { Offering } from 'typings/offerings';
 

@@ -425,3 +425,8 @@
     -webkit-transform: rotate(1turn);
   }
 }
+
+.Select-value {
+    display: flex;
+    align-items: center;
+}
