@@ -32,7 +32,7 @@ export default class StepsProgress extends React.Component<IProps, {}> {
 
         const { steps, lastDoneStep } = this.props;
 
-        const currentStepIndex = lastDoneStep ? this.lastDoneStepIndex() + 1 : 1;
+        const currentStepIndex = lastDoneStep ? this.lastDoneStepIndex() : 0;
         const percentage = Math.floor(currentStepIndex * 100/steps.length);
 
         return(
