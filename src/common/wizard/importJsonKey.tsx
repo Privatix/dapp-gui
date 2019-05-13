@@ -99,15 +99,14 @@ class ImportJsonKey extends React.Component<IProps, IState>{
             ,name
         };
 
-        ws.importAccountFromJSON(payload, keyObject, pwd, async (res: any)=>{
-            if('error' in res){
-                msg = t('SomethingWentWrong');
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
-            }else{
-                await ws.setGUISettings({accountCreated:true});
-                this.props.history.push(`/backup/${res.result}/importJsonKey`);
-            }
-        });
+        try{
+            const acc = await ws.importAccountFromJSON(payload, keyObject, pwd);
+            await ws.setGUISettings({accountCreated:true});
+            this.props.history.push(`/backup/${acc}/importJsonKey`);
+        } catch(e){
+            msg = t('SomethingWentWrong');
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+        }
     }
 
     render(){

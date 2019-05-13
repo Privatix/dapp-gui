@@ -43,16 +43,16 @@ class Accounts extends React.Component<IProps, {}> {
         const fileName = remote.dialog.showSaveDialog({});
 
         if(fileName){
-            ws.exportAccount(accountId, (res: any) => {
-                api.fs.saveAs(fileName, atob(res.result))
-                    .then((res:any) => {
-                        if(res.err){
-                            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('auth/backup:SomeErrorOccured')});
-                        }else{
-                            notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('BackupSuccessMsg')});
-                        }
-                    });
-            });
+            try {
+                const acc = await ws.exportAccount(accountId);
+                const response = await api.fs.saveAs(fileName, atob(acc));
+                if(response.err){
+                    throw new Error();
+                }
+                notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('BackupSuccessMsg')});
+            }catch(e){
+                notice({level: 'error', header: t('utils/notice:Error!'), msg: t('auth/backup:SomeErrorOccured')});
+            }
         }
     }
 

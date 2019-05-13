@@ -57,7 +57,7 @@ class Backup extends React.Component<IProps, IState>{
         this.setState({fileName: 'string' === typeof fileName ? fileName : ''});
     }
 
-    onSubmit = (evt: any) => {
+    onSubmit = async (evt: any) => {
 
         const { t, ws, history, accountId, entryPoint, from } = this.props;
         const { fileName } = this.state;
@@ -69,16 +69,16 @@ class Backup extends React.Component<IProps, IState>{
             return;
         }
 
-        ws.exportAccount(accountId, (res: any) => {
-            api.fs.saveAs(fileName, atob(res.result))
-                .then((res:any) => {
-                    if(res.err){
-                        notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
-                    }else{
-                        history.push(from === 'generateKey' ? `/getPrix/${accountId}` : entryPoint);
-                    }
-                });
-        });
+        try{
+            const acc = await ws.exportAccount(accountId);
+            const response = await api.fs.saveAs(fileName, atob(acc));
+            if(response.err){
+                throw new Error();
+            }
+            history.push(from === 'generateKey' ? `/getPrix/${accountId}` : entryPoint);
+        }catch(e){
+            notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
+        }
     }
 
     render(){

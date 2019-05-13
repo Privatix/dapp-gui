@@ -24,13 +24,9 @@ type LogResponse = PaginatedResponse<Log[]>;
 
 export class WS {
 
-    static listeners = {}; // uuid -> listener
     static handlers = {}; // uuid -> handler
-
     static byUUID = {}; // uuid -> subscribeID
-    static bySubscription = {}; // subscribeId -> uuid
-    static subscriptions = {};
-    static subscribeRequests = {};
+    static subscribeRequests = {}; // subscribeId => descriptor
 
     private socket: WebSocket;
     private pwd: string;
@@ -100,17 +96,10 @@ export class WS {
                     const handler = WS.handlers[msg.id];
                     delete WS.handlers[msg.id];
                     handler(msg);
-                }else {
-                    if('result' in msg && 'string' === typeof msg.result){
-                        WS.byUUID[msg.id] = msg.result;
-                        WS.bySubscription[msg.result] = msg.id;
-                        WS.subscriptions[msg.id](msg.result);
-                        delete WS.subscriptions[msg.id];
-                    }
                 }
             }else if('method' in msg && msg.method === 'ui_subscription'){
-                if(msg.params.subscription in WS.bySubscription){
-                    WS.listeners[WS.bySubscription[msg.params.subscription]](msg.params.result);
+                if(msg.params.subscription in WS.subscribeRequests){
+                    WS.subscribeRequests[msg.params.subscription].handler(msg.params.result);
                 }
            } else {
                // ignore
@@ -132,14 +121,14 @@ export class WS {
         return this.authorized;
     }
 
-    private restoreSubscriptions(){
-        let i = 1;
-        Object.keys(WS.subscribeRequests).forEach(uuid => {
-            setTimeout(()=> {
-                const { entityType, ids, handler, onReconnect } = WS.subscribeRequests[uuid];
-                this._subscribe(uuid, entityType, ids, handler, onReconnect);
-            }, i*1000);
-            i++;
+    private async restoreSubscriptions(){
+        const toRestore = WS.subscribeRequests;
+        WS.subscribeRequests = {};
+
+        Object.keys(WS.byUUID).forEach(async uuid => {
+            const subscribeId = WS.byUUID[uuid];
+            const { entityType, ids, handler, onReconnect } = toRestore[subscribeId];
+            await this._subscribe(uuid, entityType, ids, handler, onReconnect);
         });
     }
 
@@ -152,47 +141,42 @@ export class WS {
             params: ['objectChange', this.token, entityType, ids]
         };
 
-        if(!WS.subscribeRequests[uuid]){
 
-            WS.subscribeRequests[uuid] = {
+        WS.handlers[uuid] = (msg: any) => {
+            console.log(msg);
+            WS.subscribeRequests[msg.result] = {
                 entityType, ids, handler, onReconnect
             };
-
-            WS.subscriptions[uuid] = () => {
-                WS.listeners[uuid] = handler;
-                resolve(uuid);
-            };
-
-        }else{
-
-            WS.subscriptions[uuid] = () => {
-                if(WS.subscribeRequests[uuid] && WS.subscribeRequests[uuid].onReconnect){
-                    WS.subscribeRequests[uuid].onReconnect();
-                }
-            };
-
-        }
+            WS.byUUID[uuid] = msg.result;
+            resolve(uuid);
+        };
 
         this.socket.send(JSON.stringify(req));
     }
 
     subscribe(entityType:string, ids: string[], handler: Function, onReconnect?: Function): Promise<string>{
-        return new Promise((resolve: Function, reject: Function) => {
-            const uuid = uuidv4();
-            this._subscribe(uuid, entityType, ids, handler, onReconnect, resolve);
-        }) as Promise<string>;
+        // console.log('WS', WS.byUUID);
+        switch(entityType){
+            case 'usage':
+            default:
+                return new Promise((resolve: Function, reject: Function) => {
+                    const uuid = uuidv4();
+                    this._subscribe(uuid, entityType, ids, handler, onReconnect, resolve);
+                }) as Promise<string>;
+        }
     }
 
     unsubscribe(id: string){
 
         const uuid = uuidv4();
+        const subscribeId = WS.byUUID[id];
 
-        if(WS.listeners[id]){
+        if(WS.subscribeRequests[subscribeId]){
             const req = {
                 jsonrpc: '2.0',
 	            id: uuid,
 	            method: 'ui_unsubscribe',
-	            params: [ WS.byUUID[id] ]
+	            params: [subscribeId]
             };
 
             return new Promise((resolve: Function, reject: Function) => {
@@ -206,10 +190,8 @@ export class WS {
 
                 WS.handlers[uuid] = handler;
                 this.socket.send(JSON.stringify(req));
-                delete WS.listeners[id];
-                delete WS.bySubscription[WS.byUUID[id]];
                 delete WS.byUUID[id];
-                delete WS.subscribeRequests[id];
+                delete WS.subscribeRequests[subscribeId];
             });
         }
     }
@@ -217,7 +199,7 @@ export class WS {
     send(method: string, params: any[] = []){
 
         const uuid = uuidv4();
-        if(!['ui_updatePassword', 'ui_getUserRole'].includes(method)){
+        if(!['ui_updatePassword', 'ui_getUserRole', 'ui_getToken'].includes(method)){
             params.unshift(this.token);
         }
         const req = {
@@ -247,27 +229,8 @@ export class WS {
 
 // auth
 
-    getToken(): Promise<string>{
-        const uuid = uuidv4();
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_getToken',
-            params: [this.pwd]
-        };
-
-        return new Promise((resolve: Function, reject: Function) => {
-            const handler = function(res: any){
-                if('error' in res){
-                    reject(res.error);
-                }else{
-                    resolve(res.result);
-                }
-            };
-
-            WS.handlers[uuid] = handler;
-            this.socket.send(JSON.stringify(req));
-        }) as Promise<string>;
+    private getToken(): Promise<string>{
+        return this.send('ui_getToken', [this.pwd]) as Promise<string>;
     }
 
     setPassword(pwd: string){
@@ -334,32 +297,12 @@ export class WS {
         return this.send('ui_importAccountFromHex', [payload]) as Promise<any>;
     }
 
-    importAccountFromJSON(payload: any, key: Object, pwd: string, handler: Function){
-        const uuid = uuidv4();
-        WS.handlers[uuid] = handler;
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_importAccountFromJSON',
-            params: [this.token, payload, key, pwd]
-        };
-
-        this.socket.send(JSON.stringify(req));
+    importAccountFromJSON(payload: any, key: Object, pwd: string){
+        return this.send('ui_importAccountFromJSON', [payload, key, pwd]) as Promise<any>;
     }
 
-    exportAccount(accountId: string, handler: Function){
-        const uuid = uuidv4();
-        WS.handlers[uuid] = handler;
-
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_exportPrivateKey',
-            params: [this.token, accountId]
-        };
-
-        this.socket.send(JSON.stringify(req));
+    exportAccount(accountId: string): Promise<string>{
+        return this.send('ui_exportPrivateKey', [accountId]) as Promise<string>;
     }
 
     updateAccount(accountId: string, name: string, isDefault: boolean, inUse: boolean){
