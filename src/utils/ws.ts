@@ -27,6 +27,8 @@ export class WS {
     static handlers = {}; // uuid -> handler
     static byUUID = {}; // uuid -> subscribeID
     static subscribeRequests = {}; // subscribeId => descriptor
+    static pollings = {};
+    static groups = {};
 
     private socket: WebSocket;
     private pwd: string;
@@ -126,73 +128,110 @@ export class WS {
         WS.subscribeRequests = {};
 
         Object.keys(WS.byUUID).forEach(async uuid => {
-            const subscribeId = WS.byUUID[uuid];
-            const { entityType, ids, handler, onReconnect } = toRestore[subscribeId];
-            await this._subscribe(uuid, entityType, ids, handler, onReconnect);
+            if(WS.byUUID[uuid]){
+                const subscribeId = WS.byUUID[uuid];
+                const { entityType, ids, handler, onReconnect } = toRestore[subscribeId];
+                await this._subscribe(uuid, entityType, ids, handler, onReconnect);
+            }else{
+                // polling
+                const subscribeId = uuid;
+                const { entityType, ids, handler, onReconnect } = WS.pollings[subscribeId];
+                await this._subscribe(uuid, entityType, ids, handler, onReconnect);
+            }
         });
     }
 
-    private _subscribe (uuid: string, entityType:string, ids: string[], handler: Function, onReconnect: Function, resolve?:Function){
+    private _subscribe (uuid: string, entityType:string, ids: string[], handler: Function, onReconnect: Function){
+        return new Promise((resolve: Function, reject: Function) => {
+            switch(entityType){
+                case 'usage':
+                    const usagePolling = async () => {
+                        const usage = await this.getChannelsUsage(ids);
+                        handler(usage);
+                        WS.pollings[uuid].workerId = setTimeout(usagePolling, 2000);
+                    };
+                    WS.pollings[uuid] = {entityType, ids, handler, onReconnect};
+                    resolve(uuid);
+                    usagePolling();
+                    break;
+                case 'channels':
+                    // подписываемся на все каналы и их usage
+                    const channelsUUID = uuidv4();
+                    this._subscribe(channelsUUID, 'channel', ids, handler, onReconnect)
+                        .then(channelsSubscribeId => {
+                            const usageUUID = uuidv4();
+                            this._subscribe(usageUUID, 'usage', ids, handler, onReconnect)
+                                .then(usageSubscribeId => {
+                                    WS.groups[uuid] = [channelsSubscribeId, usageSubscribeId];
+                                    resolve(uuid);
+                                });
+                        });
+                    break;
+                default:
+                    const req = {
+                        jsonrpc: '2.0',
+                        id: uuid,
+                        method: 'ui_subscribe',
+                        params: ['objectChange', this.token, entityType, ids]
+                    };
 
-        const req = {
-            jsonrpc: '2.0',
-            id: uuid,
-            method: 'ui_subscribe',
-            params: ['objectChange', this.token, entityType, ids]
-        };
 
+                    WS.handlers[uuid] = (msg: any) => {
+                        WS.subscribeRequests[msg.result] = {
+                            entityType, ids, handler, onReconnect
+                        };
+                        WS.byUUID[uuid] = msg.result;
+                        resolve(uuid);
+                    };
 
-        WS.handlers[uuid] = (msg: any) => {
-            console.log(msg);
-            WS.subscribeRequests[msg.result] = {
-                entityType, ids, handler, onReconnect
-            };
-            WS.byUUID[uuid] = msg.result;
-            resolve(uuid);
-        };
-
-        this.socket.send(JSON.stringify(req));
+                    this.socket.send(JSON.stringify(req));
+            }
+        }) as Promise<string>;
     }
 
     subscribe(entityType:string, ids: string[], handler: Function, onReconnect?: Function): Promise<string>{
-        // console.log('WS', WS.byUUID);
-        switch(entityType){
-            case 'usage':
-            default:
-                return new Promise((resolve: Function, reject: Function) => {
-                    const uuid = uuidv4();
-                    this._subscribe(uuid, entityType, ids, handler, onReconnect, resolve);
-                }) as Promise<string>;
-        }
+        const uuid = uuidv4();
+        return this._subscribe(uuid, entityType, ids, handler, onReconnect);
     }
 
     unsubscribe(id: string){
 
-        const uuid = uuidv4();
-        const subscribeId = WS.byUUID[id];
+        if(WS.byUUID[id]){
+            const uuid = uuidv4();
+            const subscribeId = WS.byUUID[id];
 
-        if(WS.subscribeRequests[subscribeId]){
-            const req = {
-                jsonrpc: '2.0',
-	            id: uuid,
-	            method: 'ui_unsubscribe',
-	            params: [subscribeId]
-            };
-
-            return new Promise((resolve: Function, reject: Function) => {
-                const handler = function(res: any){
-                    if('error' in res){
-                        reject(res.error);
-                    }else{
-                        resolve(res.result);
-                    }
+            if(WS.subscribeRequests[subscribeId]){
+                const req = {
+                    jsonrpc: '2.0',
+                    id: uuid,
+                    method: 'ui_unsubscribe',
+                    params: [subscribeId]
                 };
 
-                WS.handlers[uuid] = handler;
-                this.socket.send(JSON.stringify(req));
-                delete WS.byUUID[id];
-                delete WS.subscribeRequests[subscribeId];
-            });
+                return new Promise((resolve: Function, reject: Function) => {
+                    const handler = function(res: any){
+                        if('error' in res){
+                            reject(res.error);
+                        }else{
+                            resolve(res.result);
+                        }
+                    };
+
+                    WS.handlers[uuid] = handler;
+                    this.socket.send(JSON.stringify(req));
+                    delete WS.byUUID[id];
+                    delete WS.subscribeRequests[subscribeId];
+                });
+            }
+        }else if(id in WS.pollings){
+            // polling
+            clearTimeout(WS.pollings[id].workerId);
+            delete WS.pollings[id];
+        }else if(id in WS.groups){
+            WS.groups[id].forEach(uuid => this.unsubscribe(uuid));
+            delete WS.groups[id];
+        }else {
+            console.error('unsubscribe: unknown subscription', id);
         }
     }
 

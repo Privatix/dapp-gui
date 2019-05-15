@@ -28,7 +28,8 @@ interface IState {
 @translate('client/connections/active')
 class ActiveConnection extends React.Component<IProps, IState>{
 
-    polling = null;
+    subscribeId = null;
+    mounted = false;
 
     constructor(props: IProps){
         super(props);
@@ -43,30 +44,31 @@ class ActiveConnection extends React.Component<IProps, IState>{
     }
 
     componentDidMount() {
-
-        this.updateUsage();
-
+        this.mounted = true;
+        this.subscribeUsage();
     }
 
     componentWillUnmount(){
-
-        if(this.polling){
-            clearTimeout(this.polling);
-            this.polling = null;
-        }
-
+        this.mounted = false;
+        this.unsubscribeUsage();
     }
 
-    updateUsage = async () => {
-
+    async subscribeUsage(){
         const { ws, channels } = this.props;
-
         const ids = channels.map(channel => channel.id);
-        const usage = await ws.getChannelsUsage(ids);
+        this.subscribeId = await ws.subscribe('usage', ids, this.updateUsage);
+    }
 
-        this.setState({usage});
+    unsubscribeUsage(){
+        const { ws } = this.props;
+        ws.unsubscribe(this.subscribeId);
+        this.subscribeId = null;
+    }
 
-        this.polling = setTimeout(this.updateUsage, 2000);
+    updateUsage = (usage: IState['usage']) => {
+        if(this.mounted){
+            this.setState({usage});
+        }
     }
 
     private getColumns(){

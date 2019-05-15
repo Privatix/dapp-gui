@@ -59,7 +59,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     mounted: boolean;
     subscription: string;
-    usageSubscription = null;
     offeringsSubscription = null;
     newOfferingSubscription = null;
     getIpSubscription = null;
@@ -99,10 +98,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if(this.subscription){
             ws.unsubscribe(this.subscription);
             this.subscription = null;
-        }
-        if(this.usageSubscription){
-            clearTimeout(this.usageSubscription);
-            this.usageSubscription = null;
         }
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
@@ -160,6 +155,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
+    eventDispatcher(channelId: string, event: any){
+        if('job' in event){
+            this.refresh();
+        }else if(channelId in event){
+            this.setState({usage: event[channelId]});
+        }
+    }
+
     private refresh = async () => {
 
         if(!this.mounted){
@@ -172,14 +175,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(this.subscription){
             await ws.unsubscribe(this.subscription);
+            this.subscription = null;
         }
 
         this.updateOfferings();
         if(channels.length){
 
-            const ids = channels.map(channel => channel.id);
-            this.subscription = await ws.subscribe('channel', ids, this.refresh, this.refresh);
             const channel = channels[0];
+            this.subscription = await ws.subscribe('channels', [channel.id], this.eventDispatcher.bind(this, channel.id));
 
             if(['canceled', 'failed'].indexOf(channel.job.status) !== -1){
                 this.failedJob(channel);
@@ -191,7 +194,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
                     this.setState({status: 'connected'});
-                    this.subscribeUsage(channel);
                     if(!this.state.ip || this.state.ip === ''){
                         this.getIp();
                     }
@@ -229,7 +231,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
                             await ws.changeChannelStatus(this.state.channel.id, 'close');
                         }
                     }
-                    this.unsubscribeUsage();
                     this.setState({status: 'disconnected', channel: null, usage: null});
                     break;
             }
@@ -340,32 +341,15 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    async refreshUsage(channel: ClientChannel){
+    async refreshUsage(channelId: string, usage: ClientChannelUsage){
 
         if(!this.mounted){
             return;
         }
 
-        const { ws } = this.props;
-
-        const usage = await ws.getChannelsUsage([channel.id]);
-
-        this.setState({usage: usage[channel.id]});
-        this.usageSubscription = setTimeout(this.refreshUsage.bind(this, channel), 3000);
+        this.setState({usage: usage[channelId]});
     }
 
-    subscribeUsage(channel: ClientChannel){
-        if(!this.usageSubscription){
-            this.refreshUsage(channel);
-        }
-    }
-
-    unsubscribeUsage(){
-        if(this.usageSubscription){
-            clearTimeout(this.usageSubscription);
-            this.usageSubscription = null;
-        }
-    }
     async connect(offering: Offering){
 
         const { t, ws, localSettings, gasPrice, account } = this.props;
