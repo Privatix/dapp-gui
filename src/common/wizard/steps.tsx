@@ -68,7 +68,7 @@ class Steps extends React.Component<IProps, {}>{
             );
         }
 
-        if(mode === 'simple'){
+        if(mode === 'simple' || mode === 'wizard'){
             return (
                 <div className='steps clearfix'>
                     <ul role='tablist'>

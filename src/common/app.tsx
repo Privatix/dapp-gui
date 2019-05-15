@@ -70,7 +70,7 @@ class App extends React.Component<IProps, {}> {
                                 <Route path='/channels' component={ChannelsList} />
                                 <Route path='/channelsByStatus/:status' render={(props: any) => <ChannelsByStatus status={props.match.params.status} />} />
                                 <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
-                                <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} mode={Mode.ADVANCED} />} />
+                                <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} />} />
                                 <Route path='/logs' component={Logs} />
 
                                 <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />

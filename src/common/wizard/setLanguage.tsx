@@ -5,6 +5,10 @@ import { withRouter } from 'react-router-dom';
 import Steps from './steps';
 import {NextButton} from './utils';
 import SelectLanguage from 'i18next/selectLanguage';
+import SwitchAdvancedModeButton from 'client/lightweightMode/switchAdvancedModeButton';
+import SwitchSimpleModeButton from './switchSimpleModeButton';
+
+import { Mode } from 'typings/mode';
 
 interface IProps {
     mode: string;
@@ -38,6 +42,11 @@ class SetLanguage extends React.Component<IProps, {}>{
         const { t, mode } = this.props;
 
         return <div className='card-box'>
+            <div style={ {textAlign: 'right'} }>
+                { mode === Mode.SIMPLE || mode === Mode.WIZARD
+                    ? <SwitchAdvancedModeButton />
+                    : <SwitchSimpleModeButton /> }
+            </div>
             <div className='panel-heading'>
                 <h4 className='text-center'> {t('chooseTheLanguage')} </h4>
             </div>

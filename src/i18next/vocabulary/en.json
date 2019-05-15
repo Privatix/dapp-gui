@@ -766,7 +766,7 @@
         "Resume": "Resume",
         "Balance": "Balance",
         "Address": "Address",
-        "LighweightMode": "Simple Mode",
+        "SimpleMode": "Simple Mode",
         "AdvancedMode": "Advanced Mode",
         "SearchingTheOptimalNode": "Searching the optimal node",
         "NoAvailableOfferings": "No available offerings. Please choose another country.",
