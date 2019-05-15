@@ -285,7 +285,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
 
     isNewCountry(offering: Offering, locations: SelectItem[]){
-        return locations.findIndex(location => location.value === offering.country.toLowerCase().trim()) === -1;
+        const country = offering.country.toLowerCase().trim();
+        if(country === 'zz'){
+            return false;
+        }
+        return locations.findIndex(location => location.value === country) === -1;
     }
 
     addOffering(offering: Offering){
@@ -545,7 +549,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         let countries = offerings.reduce((registry: any, offering: any) => {
             const countries = offering.country.split(',').map(country => country.trim().toLowerCase());
             countries.forEach(country => {
-                if(! (country in registry)){
+                if(country !== 'zz' && ! (country in registry)){
                     registry[country] = [];
                 }
                 registry[country].push(offering);
