@@ -56,8 +56,7 @@ const electronRendererConfig = {
             /* {enforce: 'pre', test: /\.ts$/, loader: "tslint-loader", options: {configFile: './configs/tslint.json'}}
            , */ {test: /\.tsx?$/, exclude: /node_modules/, loader: 'ts-loader?' + JSON.stringify({configFile: __dirname + '/tsconfig.json'}) },
             {test: /\.node$/, use: 'node-loader'},
-            {test: /\.css$/, use: ['style-loader', 'css-loader']},
-            {test: /\.cssx$/, loader: 'style-loader!typings-for-css-modules-loader?namedExport&modules&camelCase'}
+            {test: /\.css$/, use: ['style-loader', 'css-loader']}
         ]
     }
 

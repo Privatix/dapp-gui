@@ -13,7 +13,7 @@
         "@types/react-redux": "^6.0.9",
         "@types/react-router": "^5.0.0",
         "@types/semver": "^5.5.0",
-        "css-loader": "^0.28.11",
+        "css-loader": "^2.1.1",
         "electron": "^1.8.8",
         "electron-packager": "^13.0.1",
         "electron-react-devtools": "^0.5.3",
@@ -26,7 +26,6 @@
         "tslint": "^5.9.1",
         "tslint-loader": "^3.5.3",
         "typescript": "^2.9.2",
-        "typings-for-css-modules-loader": "^1.7.0",
         "webpack": "^4.20.2",
         "webpack-cli": "^3.1.1",
         "xunit-file": "^1.0.0"
