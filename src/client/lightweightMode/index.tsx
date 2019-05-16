@@ -188,6 +188,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 this.failedJob(channel);
                 return;
             }
+            if(channel.job.jobtype === 'completeServiceTransition'
+               && channel.job.status === 'done'
+               && channel.channelStatus.serviceStatus === 'suspended'){
+                this.failedJob(channel);
+                return;
+            }
 
             this.setState({channel});
             this.updateCurrentCountry(channel);
