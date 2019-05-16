@@ -20,6 +20,7 @@ interface IProps {
     channel: ClientChannel;
     usage: ClientChannelUsage;
     offering: Offering;
+    sessionsDuration: number;
     onChangeLocation: Function;
     onDisconnect(event: any): void;
 }
@@ -36,10 +37,17 @@ export default class Connected extends React.Component<IProps, IState> {
 
     constructor(props: IProps){
         super(props);
-        const { channel } = props;
-        const startPoint = Math.floor((Date.parse(channel.job.createdAt) + (new Date().getTimezoneOffset()*60*1000))/1000);
-        this.state = {startPoint, tick: 0};
+        this.state = {startPoint: 0, tick: 0};
     }
+
+    static getDerivedStateFromProps(props: IProps, state: IState){
+        const { sessionsDuration } = props;
+        const { startPoint } = state;
+        return sessionsDuration !== 0 && startPoint === 0
+            ? {startPoint: Date.now() - sessionsDuration}
+            : null;
+    }
+
     componentDidMount(){
         this.startTicker();
     }
@@ -49,8 +57,10 @@ export default class Connected extends React.Component<IProps, IState> {
     }
 
     startTicker = () => {
+
         const { startPoint } = this.state;
-        const tick = Math.floor(Date.now()/1000) - startPoint;
+
+        const tick = startPoint === 0 ? 0 : Date.now() - startPoint;
         this.setState({tick});
         this.tickerHandler = setTimeout(this.startTicker, 1000);
     }
@@ -65,10 +75,11 @@ export default class Connected extends React.Component<IProps, IState> {
     render(){
 
         const { t, usage, ip, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
-        const { tick } = this.state;
+        const { tick: _tick } = this.state;
 
         const padZero = (n: number) => n < 10 ? `0${n}` : `${n}`;
 
+        const tick = Math.floor(_tick/1000);
         const seconds = tick%60;
         const minutes = ((tick - seconds)/60)%60;
         const hours = (tick - minutes*60 - seconds)/(60*60);

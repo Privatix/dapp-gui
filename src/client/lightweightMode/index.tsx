@@ -52,6 +52,7 @@ interface IState {
     channel: ClientChannel;
     usage: ClientChannelUsage;
     offering: Offering;
+    sessionsDuration: number;
 }
 
 @translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
@@ -78,6 +79,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
            ,channel: null
            ,usage: null
            ,offering: null
+           ,sessionsDuration: 0
         };
     }
 
@@ -190,7 +192,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
             }
             if(channel.job.jobtype === 'completeServiceTransition'
                && channel.job.status === 'done'
-               && channel.channelStatus.serviceStatus === 'suspended'){
+               && channel.channelStatus.serviceStatus === 'suspended'
+               && !(await this.hasSessions(channel.id))){
                 this.failedJob(channel);
                 return;
             }
@@ -203,6 +206,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     if(!this.state.ip || this.state.ip === ''){
                         this.getIp();
                     }
+                    this.getSessionsDuration(channel.id);
                     break;
                 case 'pending':
                 case 'activating':
@@ -241,6 +245,31 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     break;
             }
         }
+    }
+
+    async hasSessions(channelId: string){
+
+        const { ws } = this.props;
+
+        const sessions = await ws.getSessions(channelId);
+        return sessions.length > 0;
+
+    }
+    async getSessionsDuration(channelId: string){
+
+        const { ws } = this.props;
+
+        const sessions = await ws.getSessions(channelId);
+        const sessionsDuration = sessions.reduce((res, session) => {
+            if(session.started === null){
+                return res;
+            }
+            if(session.stopped === null){
+                return res + Date.now() - Date.parse(session.started) - (new Date().getTimezoneOffset()*60*1000);
+            }
+            return res + Date.parse(session.stopped) - Date.parse(session.started);
+        }, 0);
+        this.setState({sessionsDuration});
     }
 
     addToBlackList(offering: Offering){
@@ -576,8 +605,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         connected: () => {
 
-            const { usage, ip, channel, selectedLocation, offering } = this.state;
-            const props = {usage, ip, channel, selectedLocation, offering, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect};
+            const { usage, ip, channel, selectedLocation, offering, sessionsDuration } = this.state;
+            const props = {usage, ip, channel, selectedLocation, offering, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect, sessionsDuration};
             return <States.Connected {...props} />;
             
         },
