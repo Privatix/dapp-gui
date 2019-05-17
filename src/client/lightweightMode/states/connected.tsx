@@ -62,7 +62,7 @@ export default class Connected extends React.Component<IProps, IState> {
 
         const tick = startPoint === 0 ? 0 : Date.now() - startPoint;
         this.setState({tick});
-        this.tickerHandler = setTimeout(this.startTicker, 1000);
+        this.tickerHandler = setTimeout(this.startTicker, 400);
     }
 
     stopTicker(){
