@@ -36,8 +36,7 @@ class Routes extends React.Component<IProps, {}> {
         }
 
         const mode = _mode ? _mode : (role === Role.AGENT ? Mode.ADVANCED : Mode.SIMPLE);
-
-        if( mode === Mode.ADVANCED ){
+        if( role === Role.AGENT || mode === Mode.ADVANCED ){
             let routes = [
                 <Route key='/generateKey/' path='/generateKey/:default' render={ (props:any) => <GenerateKey isDefault={props.match.params.default==='true'} /> } />,
                 <Route key='/importHexKey/' path='/importHexKey/:default' render={ (props:any) => <ImportHexKey isDefault={props.match.params.default==='true'} /> } />,
@@ -60,7 +59,7 @@ class Routes extends React.Component<IProps, {}> {
 
             if(currentState === 'firstStart'){
                 routes.push(
-                    <Route key='/' exact path='/' render={() => <SetLanguage mode={mode} />} />,
+                    <Route key='/' exact path='/' render={() => <SetLanguage mode={mode} role={role} />} />,
                     <Route key='/setPassword' exact path='/setPassword' render={() => <SetPassword mode={mode} />} />,
                     <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />,
                     <Route key='/login' path='/login' component={Login} />
@@ -69,7 +68,7 @@ class Routes extends React.Component<IProps, {}> {
 
             if(currentState === 'setAccount'){
                 routes.push(
-                    <Route key='/' exact path='/' render={() => <Login entryPoint={'/setAccount'} />} />,
+                    <Route key='/' exact path='/' render={() => <SetAccount isDefault={true} />} />,
                     <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />
                 );
             }
@@ -101,7 +100,7 @@ class Routes extends React.Component<IProps, {}> {
 
             if(currentState === 'firstStart'){
                 routes.push(
-                    <Route key='/' exact path='/' render={() => <SetLanguage mode={mode} />} />,
+                    <Route key='/' exact path='/' render={() => <SetLanguage mode={mode} role={role} />} />,
                     <Route key='/setPassword' exact path='/setPassword' render={() => <SetPassword mode={mode} />} />,
                     <Route key='/setAccount' path='/setAccount' render={() => <SetAccount isDefault={true} /> } />,
                     <Route key='/login' path='/login' component={Login} />

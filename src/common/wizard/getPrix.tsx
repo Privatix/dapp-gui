@@ -158,7 +158,7 @@ class GetPrix extends React.Component<IProps, IState>{
             </div>
             <div className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={advancedMode ? 6 : 3} prix={true} mode={advancedMode ? 'advanced' : 'simple' } />
+                    <Steps step={advancedMode ? 6 : 3} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('WeAreCurrentlyOnTestnet')}</p>

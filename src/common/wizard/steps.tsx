@@ -8,16 +8,20 @@ interface IProps {
     t?: any;
     step: number;
     prix: boolean;
-    mode: 'simple' | 'advanced';
+    shape: 'simple' | 'advanced';
 }
 
 class Steps extends React.Component<IProps, {}>{
 
+    constructor(props: IProps){
+        super(props);
+    }
+
     render(){
 
-        const {step, t, prix, mode} = this.props;
+        const {step, t, prix, shape} = this.props;
 
-        if(mode === 'advanced'){
+        if(shape === 'advanced'){
             return (
                 <div className='steps clearfix'>
                     <ul role='tablist'>
@@ -68,7 +72,7 @@ class Steps extends React.Component<IProps, {}>{
             );
         }
 
-        if(mode === 'simple' || mode === 'wizard'){
+        if(shape === 'simple'){
             return (
                 <div className='steps clearfix'>
                     <ul role='tablist'>

@@ -92,7 +92,7 @@ class Backup extends React.Component<IProps, IState>{
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={5} prix={from === 'generateKey'} mode='advanced' />
+                    <Steps step={5} prix={from === 'generateKey'} shape='advanced' />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('ToPreventEthereumAddress')}</p>
