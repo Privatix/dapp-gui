@@ -772,6 +772,7 @@
         "NoAvailableOfferings": "No available offerings. Please choose another country.",
         "AgentFailed": "Agent failed to provide the service.",
         "HisRating": "His rating will register that.",
-        "PleaseTryAgain": "Please, try again."
+        "PleaseTryAgain": "Please, try again.",
+        "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. Service will be terminated and contract will be closed."
     }
 }

@@ -207,6 +207,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         this.getIp();
                     }
                     this.getSessionsDuration(channel.id);
+                    this.checkCountryAccordance(channel);
                     break;
                 case 'pending':
                 case 'activating':
@@ -284,7 +285,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return;
         }
 
-        const { t, ws } = this.props;
+        const { t } = this.props;
         const { offering, selectedLocation } = this.state;
 
         const msg = <>{t('AgentFailed')}<br/>{t('HisRating')}<br/>{t('PleaseTryAgain')}</>;
@@ -296,9 +297,30 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.setState({offering: null});
         this.onChangeLocation(selectedLocation ? selectedLocation : this.optimalLocation);
         if(channel){
-            await ws.changeChannelStatus(channel.id, 'terminate');
-            ws.changeChannelStatus(channel.id, 'close');
+            await this.uncooperativeClose(channel.id);
         }
+    }
+
+    async checkCountryAccordance(channel: ClientChannel){
+
+        const { t, ws } = this.props;
+
+        const endpoint = await ws.getEndpoints(channel.id);
+        if (endpoint[0]) {
+            const countryStatus = endpoint[0].countryStatus;
+            if (['invalid', 'unknown'].includes(countryStatus)) {
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('CountryAlertInvalid')}, 7000);
+                await this.uncooperativeClose(channel.id);
+            }
+        }
+    }
+
+    async uncooperativeClose(channelId: string){
+
+        const { ws } = this.props;
+
+        await ws.changeChannelStatus(channelId, 'terminate');
+        await ws.changeChannelStatus(channelId, 'close');
     }
 
     onNewOffering = (event: any) => {
