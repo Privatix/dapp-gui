@@ -286,22 +286,19 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
 
         const { t } = this.props;
-        const { offering, selectedLocation } = this.state;
 
         const msg = <>{t('AgentFailed')}<br/>{t('HisRating')}<br/>{t('PleaseTryAgain')}</>;
 
         notice({level: 'error', header: t('utils/notice:Attention!'), msg}, 5000);
+        await this.uncooperativeClose(channel);
 
-        this.addToBlackList(offering);
-        this.updateOfferings();
-        this.setState({offering: null});
-        this.onChangeLocation(selectedLocation ? selectedLocation : this.optimalLocation);
-        if(channel){
-            await this.uncooperativeClose(channel.id);
-        }
     }
 
     async checkCountryAccordance(channel: ClientChannel){
+
+        if(!this.mounted){
+            return;
+        }
 
         const { t, ws } = this.props;
 
@@ -310,17 +307,24 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const countryStatus = endpoint[0].countryStatus;
             if (['invalid', 'unknown'].includes(countryStatus)) {
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('CountryAlertInvalid')}, 7000);
-                await this.uncooperativeClose(channel.id);
+                await this.uncooperativeClose(channel);
             }
         }
     }
 
-    async uncooperativeClose(channelId: string){
+    async uncooperativeClose(channel: ClientChannel){
 
         const { ws } = this.props;
+        const { offering, selectedLocation } = this.state;
 
-        await ws.changeChannelStatus(channelId, 'terminate');
-        await ws.changeChannelStatus(channelId, 'close');
+        this.addToBlackList(offering);
+        this.updateOfferings();
+        this.setState({offering: null});
+        this.onChangeLocation(selectedLocation ? selectedLocation : this.optimalLocation);
+        if(channel){
+            await ws.changeChannelStatus(channel.id, 'terminate');
+            await ws.changeChannelStatus(channel.id, 'close');
+        }
     }
 
     onNewOffering = (event: any) => {
