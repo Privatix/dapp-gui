@@ -152,25 +152,27 @@ class IncreaseDepositView extends React.Component<IProps, any> {
 
     depositChanged = (evt: any) => {
 
+        const { offering, inputStr } = this.state;
+
         const cursor = evt.target.selectionStart;
 
         const chunks = evt.target.value.split('/');
         if(this.notValid(chunks)){
-            this.setState({inputStr: this.state.inputStr}, () => this.setCursor(cursor));
+            this.setState({inputStr}, () => this.setCursor(cursor));
             return;
         }
 
         const [depositStr, traficStr ] = chunks;
-        const prixStr = this.state.inputStr.split('/')[0].trim();
+        const prixStr = inputStr.split('/')[0].trim();
 
         if(depositStr.trim() === prixStr){
-            const MBSTR = traficStr.replace(new RegExp(`${this.state.offering.unitName}$`), '').trim();
-            const depositStr = MBSTR === '' ? '0' : toFixedN({number: (parseFloat(MBSTR)*this.state.offering.unitPrice)/1e8, fixed: 8});
-            const inputStr = `${depositStr} / ${MBSTR} ${this.state.offering.unitName}`;
+            const MBSTR = traficStr.replace(new RegExp(`${offering.unitName}$`), '').trim();
+            const depositStr = MBSTR === '' ? '0' : toFixedN({number: (parseFloat(MBSTR)*offering.unitPrice)/1e8, fixed: 8});
+            const inputStr = `${depositStr} / ${MBSTR} ${offering.unitName}`;
             this.setState({inputStr}, () => this.setCursor(cursor + (depositStr.length - prixStr.length)));
         }else{
-            const depositTrafic = toFixedN({number: parseFloat(depositStr)*1e8/this.state.offering.unitPrice, fixed: 2});
-            const depositMB = `${depositTrafic} ${this.state.offering.unitName}`;
+            const depositTrafic = toFixedN({number: parseFloat(depositStr)*1e8/offering.unitPrice, fixed: 2});
+            const depositMB = `${depositTrafic} ${offering.unitName}`;
             this.setState({inputStr: `${depositStr.trim()} / ${depositMB}`}, () => this.setCursor(cursor));
         }
     }
@@ -183,7 +185,7 @@ class IncreaseDepositView extends React.Component<IProps, any> {
         let value = '';
         if(offering){
             const trafic = toFixedN({number: channel.totalDeposit/offering.unitPrice, fixed: 2});
-            value = `${trafic} ${this.state.offering.unitName}`;
+            value = `${trafic} ${offering.unitName}`;
         }
 
         const channelDeposit = `${toFixedN({number: (this.state.channelDeposit/1e8), fixed: 8})} / ${value}`;
