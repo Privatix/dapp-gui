@@ -203,7 +203,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return;
         }
         const paidTotal = channel.totalDeposit/offering.unitPrice;
-        if(((paidTotal - usage.current)/paidTotal)*100 <= percentOfTraffic){
+        if(((paidTotal - usage.current)/paidTotal)*100 >= percentOfTraffic){
             this.increaseDeposit();
         }
     }

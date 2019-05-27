@@ -633,6 +633,9 @@
         "psc_periods_popup_Name": "Период обновления офферинга",
         "psc_periods_remove_Name": "период удаления офферинга",
         "updateDismissVersion_Name": "Версия отклоненного обновления",
+        "ui_simple_client_min_deposit_Name": "Минимальный депозит для автопополнения",
+        "ui_simple_deposit_autoincrement_percent_Name": "Порог использованного траффика (%) когда будет инициировано автопополнение депозита",
+        "ui_simple_autoincrement_deposit_Name": "Автопополнение депозита",
         "error_sendremote_Description": "Разрешить отчет об ошибках отправлять в Privatix.",
         "eth_challenge_period_Description": "Количество блоков, ожидающих от uncooperativeClose, инициированных Клиентом, чтобы дать Агенту возможность ответить с подтверждением баланса в случае, если Клиент обманывает. После периода запроса Клиент может установить и удалить канал. Количество блоков Агент будет ждать от registerServiceOffering или от createChannel, прежде чем он сможет удалить предложение сервиса и получить депозит агента.",
         "eth_default_gasprice_Description": "Цена по умолчанию GAS для транзакций.",
@@ -652,7 +655,10 @@
         "psc_periods_remove_Description": "Число блоков блокчейна с момента последнего обновления офферинга после которых можно удалить офферинг",
         "client_somc_transports_Description": "Эта опция указывает какой тип SOMC необходимо использовать для передачи офферинга",
         "updateDismissVersion_Description": "Версия последнего отклоненного обновления",
-        "client_somc_transports_Name": "allowed SOMC transport"
+        "client_somc_transports_Name": "allowed SOMC transport",
+        "ui_simple_client_min_deposit_Description": "В простом режиме это значение заменяет минимальный депозит предложенный Агентом (если включено автопополнение депозита) если оно больше предложенного Агентом.",
+        "ui_simple_deposit_autoincrement_percent_Description": "В простом режиме эта настройка определяет в какой момент времени пополнять депозит (если включено автопополнение) Депозит пополняется когда объем использованного траффика (в процентах от полностью оплаченного) равен либо больше указанного в настройке значения.",
+        "ui_simple_autoincrement_deposit_Description": "В простом режиме - включает или выключает режим автопополнения депозита. Только для Клиента."
     },
     "copyToClipboard": {
         "Copied": "Скопировано!",
