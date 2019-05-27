@@ -148,7 +148,7 @@ class Connection extends React.Component<IProps, any>{
                                         </tr>
                                         <tr>
                                             <td>{t('DepositT')}</td>
-                                            <td>{toFixedN({number: (channel.deposit / 1e8), fixed: 8})} PRIX</td>
+                                            <td>{toFixedN({number: (channel.totalDeposit / 1e8), fixed: 8})} PRIX</td>
                                         </tr>
                                         <tr>
                                             <td>{t('LastUsageTimeT')}</td>

@@ -202,7 +202,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if(!account.pscBalance || account.ethBalance < localSettings.gas.increaseDeposit*gasPrice){
             return;
         }
-        const paidTotal = channel.deposit/offering.unitPrice;
+        const paidTotal = channel.totalDeposit/offering.unitPrice;
         if(((paidTotal - usage.current)/paidTotal)*100 <= percentOfTraffic){
             this.increaseDeposit();
         }
@@ -213,7 +213,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const { ws, account, gasPrice } = this.props;
         const { channel, offering } = this.state;
 
-        const supposedAmount = Math.min(account.pscBalance, channel.deposit);
+        const supposedAmount = Math.min(account.pscBalance, channel.totalDeposit);
         const maxPossibleDeposit = offering.maxUnit ? offering.unitPrice * offering.maxUnit : Infinity;
         const approvedAmount = Math.min(maxPossibleDeposit - supposedAmount > 0 ? maxPossibleDeposit - supposedAmount : Infinity , supposedAmount);
 
