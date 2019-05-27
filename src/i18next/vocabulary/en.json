@@ -773,6 +773,10 @@
         "AgentFailed": "Agent failed to provide the service.",
         "HisRating": "His rating will register that.",
         "PleaseTryAgain": "Please, try again.",
-        "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. Service will be terminated and contract will be closed."
+        "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. Service will be terminated and contract will be closed.",
+        "PricePerMB": "Price per MB",
+        "MaxTraffic": "Max. traffic",
+        "FirstDeposit": "First deposit",
+        "unusedDepositTip": "Unused deposit will be returned after connection closed"
     }
 }

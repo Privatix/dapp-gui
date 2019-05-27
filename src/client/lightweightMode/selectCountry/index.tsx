@@ -43,7 +43,7 @@ export default class SelectCountry extends React.Component<IProps, {}> {
                         optionComponent={SelectCountryOption}
                         disabled={disabled}
                 />
-                <OfferingInfo offering={offering} />
+                <OfferingInfo offering={offering} withDeposit={!disabled} />
             </div>
         );
     }
