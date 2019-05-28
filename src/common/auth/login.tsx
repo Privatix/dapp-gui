@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 import { registerBugsnag } from 'utils/bugsnag';
 import { WS } from 'utils/ws';
-import {default as notice, closeNotice } from 'utils/notice';
+import {default as notice, clearNotices } from 'utils/notice';
 import { translate } from 'react-i18next';
 import {State} from 'typings/state';
 
@@ -66,9 +66,9 @@ class Login extends React.Component<IProps, IState> {
         const { t, ws, entryPoint } = this.props;
 
         if (this.pwdIsCorrect(pwd)) {
-            notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 0);
+            notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')});
             const ready = await ws.whenReady();
-            closeNotice();
+            clearNotices();
             if (ready) {
                 try {
                     await ws.setPassword(pwd);

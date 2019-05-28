@@ -1,6 +1,5 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-// declare var $: any;
 
 interface Notice {
     level: 'info' | 'warning' | 'error';
@@ -8,50 +7,71 @@ interface Notice {
     msg: string|JSX.Element;
 }
 
-export default function(notice: Notice, delay?: number){
+class Message extends React.Component<any, any>{
 
-    const target = document.getElementById('noticeHolder');
+    render(){
 
-    const fa = {
-       info: 'md md-album'
-      ,warning: 'fa fa-warning' 
-      ,error: 'fa fa-exclamation'
-    };
+        const { header, msg, level, onClose } = this.props;
 
-    const styles = {
-        info: 'notifyjs-metro-base notifyjs-metro-custom'
-       ,warning: 'notifyjs-metro-base notifyjs-metro-warning'
-       ,error: 'notifyjs-metro-base notifyjs-metro-error'
-    };
+        const fa = {
+           info: 'md md-album'
+          ,warning: 'fa fa-warning'
+          ,error: 'fa fa-exclamation'
+        };
 
-    const noticeEl = <div className='notifyjs-corner' style={{top: '0px', right: '0px'}}>
-        <div className='notifyjs-wrapper notifyjs-hidable'>
-            <div className='notifyjs-arrow'></div>
-            <div className='notifyjs-container'>
-                <div className={styles[notice.level]}>
-                    <div className='image' data-notify-html='image'>
-                        <i className={fa[notice.level]}></i>
-                    </div>
-                    <div className='text-wrapper'>
-                        <div className='title' data-notify-html='title'>{notice.header}</div>
-                        <div className='text' data-notify-html='text'>{notice.msg}</div>
+        const styles = {
+            info: 'notifyjs-metro-base notifyjs-metro-custom'
+           ,warning: 'notifyjs-metro-base notifyjs-metro-warning'
+           ,error: 'notifyjs-metro-base notifyjs-metro-error'
+        };
+
+        return (
+            <div className='notifyjs-wrapper notifyjs-hidable' onClick={onClose} >
+                <div className='notifyjs-arrow'></div>
+                <div className='notifyjs-container'>
+                    <div className={styles[level]}>
+                        <div className='close closeNotice'>×</div>
+                        <div className='image' data-notify-html='image'>
+                            <i className={fa[level]}></i>
+                        </div>
+                        <div className='text-wrapper'>
+                            <div className='title' data-notify-html='title'>{header}</div>
+                            <div className='text' data-notify-html='text'>{msg}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-    </div>;
-
-    ReactDOM.render(noticeEl, target);
-    if(delay !== 0){
-        setTimeout(() => {
-            ReactDOM.unmountComponentAtNode(target);
-        }, delay ? delay : 3000);
+        );
     }
 }
 
-export const closeNotice = function(){
+export default function(notice: Notice, delay?: number){
 
     const target = document.getElementById('noticeHolder');
-    ReactDOM.unmountComponentAtNode(target);
+    const holder = document.createElement('div');
 
+    const selfDestroy = () => {
+         ReactDOM.unmountComponentAtNode(holder);
+    };
+
+    const noticeEl = <Message header={notice.header} onClose={selfDestroy} msg={notice.msg} level={notice.level} />;
+
+    ReactDOM.render(noticeEl, holder);
+    target.insertBefore(holder, target.firstChild);
+
+    if(delay){
+        setTimeout(selfDestroy, delay);
+    }else{
+        if(notice.level === 'info'){
+            setTimeout(selfDestroy, 7000);
+        }
+    }
+}
+
+export const clearNotices = function(){
+
+    const target = document.getElementById('noticeHolder');
+    while(target.firstChild){
+        target.removeChild(target.firstChild);
+    }
 };

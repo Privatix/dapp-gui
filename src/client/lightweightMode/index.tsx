@@ -289,7 +289,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const msg = <>{t('AgentFailed')}<br/>{t('HisRating')}<br/>{t('PleaseTryAgain')}</>;
 
-        notice({level: 'error', header: t('utils/notice:Attention!'), msg}, 5000);
+        notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         await this.uncooperativeClose(channel);
 
     }
@@ -306,7 +306,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if (endpoint[0]) {
             const countryStatus = endpoint[0].countryStatus;
             if (['invalid', 'unknown'].includes(countryStatus)) {
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('CountryAlertInvalid')}, 7000);
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('CountryAlertInvalid')});
                 await this.uncooperativeClose(channel);
             }
         }

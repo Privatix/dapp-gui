@@ -8,7 +8,7 @@ import {NextButton, PreviousButton, back} from './utils';
 import Steps from './steps';
 
 import { registerBugsnag } from 'utils/bugsnag';
-import {default as notice, closeNotice } from 'utils/notice';
+import {default as notice, clearNotices } from 'utils/notice';
 import { WS } from 'utils/ws';
 
 import { Role, Mode } from 'typings/mode';
@@ -113,7 +113,7 @@ class SetPassword extends React.Component<IOwnProps, IState>{
 
         notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('TryToConnect')}, 60*60*1000);
         const ready = await ws.whenReady();
-        closeNotice();
+        clearNotices();
         if(ready){
             try {
                 await ws.setPassword(pwd);
