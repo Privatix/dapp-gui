@@ -262,7 +262,7 @@ export class WS {
         });
     }
 
-    topUp(channelId: string, deposit: number, gasPrice: number, handler: Function){
+    topUp(channelId: string, deposit: number, gasPrice: number){
         return this.send('ui_topUpChannel', [channelId, deposit, gasPrice]) as Promise<any>;
     }
 
