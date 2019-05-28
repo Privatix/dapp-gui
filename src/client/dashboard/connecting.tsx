@@ -151,7 +151,7 @@ class Connecting extends React.Component<any, any>{
     }
 
     getDeadLine(channelStatus: ClientChannel['channelStatus']){
-        return Date.parse(channelStatus.lastChanged) + channelStatus.maxInactiveTime*1000 + (new Date()).getTimezoneOffset()*60*1000;
+        return Date.parse(channelStatus.lastChanged) + channelStatus.maxInactiveTime*1000;
     }
 
     waiting(){

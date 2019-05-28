@@ -348,7 +348,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 return res;
             }
             if(session.stopped === null){
-                return res + Date.now() - Date.parse(session.started) - (new Date().getTimezoneOffset()*60*1000);
+                return res + Date.now() - Date.parse(session.started);
             }
             return res + Date.parse(session.stopped) - Date.parse(session.started);
         }, 0);
