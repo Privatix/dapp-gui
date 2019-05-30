@@ -57,12 +57,9 @@ export default class Connected extends React.Component<IProps, IState> {
     }
 
     startTicker = () => {
-
-        const { startPoint } = this.state;
-
-        const tick = startPoint === 0 ? 0 : Date.now() - startPoint;
-        this.setState({tick});
-        this.tickerHandler = setTimeout(this.startTicker, 400);
+        const el = document.getElementById('connectedTime');
+        el.innerHTML = this.getTime();
+        this.tickerHandler = setTimeout(this.startTicker, 1000);
     }
 
     stopTicker(){
@@ -72,10 +69,10 @@ export default class Connected extends React.Component<IProps, IState> {
         this.tickerHandler = null;
     }
 
-    render(){
+    getTime(){
+        const { startPoint } = this.state;
 
-        const { t, usage, ip, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
-        const { tick: _tick } = this.state;
+        const _tick = startPoint === 0 ? 0 : Date.now() - startPoint;
 
         const padZero = (n: number) => n < 10 ? `0${n}` : `${n}`;
 
@@ -83,6 +80,14 @@ export default class Connected extends React.Component<IProps, IState> {
         const seconds = tick%60;
         const minutes = ((tick - seconds)/60)%60;
         const hours = (tick - minutes*60 - seconds)/(60*60);
+        return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    }
+
+    render(){
+
+        const { t, usage, ip, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
+
+        const timer = this.getTime();
 
         return (
             <>
@@ -100,7 +105,7 @@ export default class Connected extends React.Component<IProps, IState> {
                 <ul className='list-inline m-t-15 spacing'>
                     <li>
                         <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('TIME')}</h6>
-                        <h2 className='m-t-20'>{padZero(hours)}:{padZero(minutes)}:{padZero(seconds)}</h2>
+                        <h2 className='m-t-20' id='connectedTime' >{timer}</h2>
                         <h4 className='text-muted  m-b-0'>hh:mm:ss</h4>
                     </li>
                     <li>
