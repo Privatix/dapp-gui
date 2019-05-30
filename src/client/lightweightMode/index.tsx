@@ -34,9 +34,6 @@ interface IProps {
     offeringsAvailability: State['offeringsAvailability'];
     t?: any;
     gasPrice: number;
-    autoIncreaseDeposit: boolean;
-    percentOfTraffic: number;
-    minFirstDeposit: number;
     account: Account;
     balance: string;
     dispatch?: any;
@@ -175,73 +172,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }else if(channelId in event){
             const usage = event[channelId];
             this.setState({usage});
-            this.checkDeposit(usage);
-        }
-    }
-
-    checkDeposit(usage: ClientChannelUsage){
-
-        const { account, gasPrice, localSettings, autoIncreaseDeposit, percentOfTraffic } = this.props;
-        const { channel, offering, topUpInProgress } = this.state;
-
-        if(!autoIncreaseDeposit){
-            return;
-        }
-
-        if(!channel || !offering){
-            return;
-        }
-
-        if(topUpInProgress){
-            if(!this.increaseSubscription){
-                this.watchIncreasing();
-            }
-            return;
-        }
-
-        if(!account.pscBalance || account.ethBalance < localSettings.gas.increaseDeposit*gasPrice){
-            return;
-        }
-        const paidTotal = channel.totalDeposit/offering.unitPrice;
-        if((usage.current/paidTotal)*100 >= percentOfTraffic){
-            this.increaseDeposit();
-        }
-    }
-
-    async increaseDeposit(){
-
-        const { ws, account, gasPrice } = this.props;
-        const { channel, offering } = this.state;
-
-        const supposedAmount = Math.min(account.pscBalance, channel.totalDeposit);
-        const maxPossibleDeposit = offering.maxUnit ? offering.unitPrice * offering.maxUnit : Infinity;
-        const approvedAmount = Math.min(maxPossibleDeposit - supposedAmount > 0 ? maxPossibleDeposit - supposedAmount : Infinity , supposedAmount);
-
-        await ws.topUp(channel.id, approvedAmount, gasPrice);
-        this.watchIncreasing();
-    }
-
-    async watchIncreasing(){
-
-        const { ws } = this.props;
-
-        this.setState({topUpInProgress: true});
-        this.increaseSubscription = await ws.subscribe('channel', ['clientAfterChannelTopUp'], this.onIncreaseDeposit);
-    }
-
-    onIncreaseDeposit = (evt: any) => {
-
-        const { ws } = this.props;
-        const { channel } = this.state;
-
-        if('job' in evt && evt.job.RelatedType === 'channel' && evt.job.RelatedID === channel.id){
-            if(evt.job.Type === 'clientAfterChannelTopUp' && evt.job.Status === 'done'){
-                ws.unsubscribe(this.increaseSubscription);
-                this.increaseDeposit = null;
-                if(this.mounted){
-                    this.setState({topUpInProgress: false});
-                }
-            }
         }
     }
 
@@ -499,16 +429,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     async connect(offering: Offering){
 
-        const { t, ws, localSettings, gasPrice, account, autoIncreaseDeposit, minFirstDeposit } = this.props;
+        const { t, ws, localSettings, gasPrice, account } = this.props;
 
-        const supposedDeposit = offering.unitPrice * offering.minUnits;
-        const maxPossibleDeposit = offering.maxUnit ? offering.unitPrice * offering.maxUnit : Infinity;
-        const approvedDeposit = autoIncreaseDeposit ? Math.min(maxPossibleDeposit, Math.max(supposedDeposit, minFirstDeposit)) : supposedDeposit;
+        const deposit = offering.unitPrice * offering.minUnits;
 
         let err = false;
         let msg = '';
 
-        if(account.pscBalance < approvedDeposit){
+        if(account.pscBalance < deposit){
             err=true;
             msg += ' ' + t('client/acceptOffering:NotEnoughPrixForDeposit');
         }
@@ -525,7 +453,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
 
         try {
-            const channelId = await ws.acceptOffering(account.ethAddr, offering.id, approvedDeposit, gasPrice);
+            const channelId = await ws.acceptOffering(account.ethAddr, offering.id, deposit, gasPrice);
             if (typeof channelId === 'string') {
                 notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('client/acceptOffering:OfferingAccepted')});
                 this.refresh();
@@ -807,9 +735,6 @@ export default connect((state: State) => {
         ws: state.ws
        ,localSettings: state.localSettings
        ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
-       ,autoIncreaseDeposit: state.settings['ui.simple.autoincrement.deposit'] === 'true'
-       ,percentOfTraffic: parseFloat(state.settings['ui.simple.deposit.autoincrement.percent'])
-       ,minFirstDeposit: parseFloat(state.settings['ui.simple.client.min.deposit'])
        ,account
        ,balance: account ? toFixed({number: account.pscBalance/1e8, fixed: 2}) : ''
        ,offeringsAvailability: state.offeringsAvailability
