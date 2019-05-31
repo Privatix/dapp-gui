@@ -52,6 +52,6 @@ class OfferingInfo extends React.Component<any, {}> {
 }
 
 export default connect((state: State) => ({
-    autoIncreaseDeposit: state.settings['ui.simple.autoincrement.deposit'] === 'true'
-   ,minFirstDeposit: parseFloat(state.settings['ui.simple.client.min.deposit'])
+    autoIncreaseDeposit: state.settings['client.autoincrease.deposit'] === 'true'
+   ,minFirstDeposit: parseFloat(state.settings['client.min.deposit'])
 }))(OfferingInfo);

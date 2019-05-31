@@ -634,9 +634,9 @@
         "psc_periods_popup_Name": "Popup period",
         "psc_periods_remove_Name": "Remove period",
         "updateDismissVersion_Name": "Dismissed update version",
-        "ui_simple_client_min_deposit_Name": "Min. deposit for auto-increase",
-        "ui_simple_deposit_autoincrement_percent_Name": "Percent of total usage for auto-increase",
-        "ui_simple_autoincrement_deposit_Name": "Auto-increase deposit.",
+        "client_min_deposit_Name": "Min. deposit for auto-increase",
+        "client_autoincrease_percent_Name": "Percent of total usage for auto-increase",
+        "client_autoincrease_deposit_Name": "Auto-increase deposit.",
         "error_sendremote_Description": "Allow error reporting to send logs to Privatix.",
         "eth_challenge_period_Description": "Number of blocks to wait from an uncooperativeClose initiated by the Client in order to give the Agent a chance to respond with a balance proof in case the Client cheats. After the challenge period, the Client can settle and delete the channel. Number of blocks Agent will wait from registerServiceOffering or from createChannel before he can delete service offering and recieve Agent's deposit back_",
         "eth_default_gasprice_Description": "Default GAS price for transactions.",
@@ -656,9 +656,9 @@
         "psc_periods_remove_Description": "Number of blocks to be mined from last offering update in blockchain to remove offering",
         "client_somc_transports_Description": "This setting defines what SOMC type should be used to display Offering",
         "updateDismissVersion_Description": "Last dismissed update version",
-        "ui_simple_client_min_deposit_Description": "In simple UI, this value will override min. deposit proposed by Agent in auto-increase mode, if greater than proposed.",
-        "ui_simple_deposit_autoincrement_percent_Description": "In simple UI, this setting specifies when to increase deposit. Increase deposit, when current usage is equal to this percent of total used units.",
-        "ui_simple_autoincrement_deposit_Description": "In simple UI. Enable or disable auto-increase mode. Only for client."
+        "client_min_deposit_Description": "This value will override min. deposit proposed by Agent in auto-increase mode, if greater than proposed.",
+        "client_autoincrease_percent_Description": "This setting specifies when to increase deposit. Increase deposit, when current usage is equal to this percent of total used units.",
+        "client_autoincrease_deposit_Description": "Enable or disable auto-increase mode. Only for client."
     },
     "copyToClipboard": {
         "Copied": "Copied!",
