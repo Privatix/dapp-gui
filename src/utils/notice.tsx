@@ -50,8 +50,8 @@ export default function(notice: Notice, delay?: number){
     const target = document.getElementById('noticeHolder');
     const holder = document.createElement('div');
 
-    const selfDestroy = () => {
-         ReactDOM.unmountComponentAtNode(holder);
+    const selfDestroy = (evt?:any) => {
+        ReactDOM.unmountComponentAtNode(holder);
     };
 
     const noticeEl = <Message header={notice.header} onClose={selfDestroy} msg={notice.msg} level={notice.level} />;
@@ -74,4 +74,8 @@ export const clearNotices = function(){
     while(target.firstChild){
         target.removeChild(target.firstChild);
     }
+};
+
+export const isNotice = function(elem:any){
+    return document.getElementById('noticeHolder').contains(elem);
 };

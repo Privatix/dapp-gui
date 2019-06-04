@@ -5,6 +5,7 @@ import SortableTable from 'react-sortable-table-vilan';
 
 import { WS, ws } from 'utils/ws';
 import {ClientChannel} from 'typings/channels';
+import { Offering as OfferingType } from 'typings/offerings';
 
 import { Id, Agent, Server, Offering as OfferingCol } from 'common/tables/';
 
@@ -29,10 +30,15 @@ interface IProps{
     render?: Function;
 }
 
-@translate('client/connections/connection')
-class Connection extends React.Component<IProps, any>{
+interface IState {
+    channel: ClientChannel;
+    offering: OfferingType;
+}
 
-    constructor(props:any) {
+@translate('client/connections/connection')
+class Connection extends React.Component<IProps, IState>{
+
+    constructor(props: IProps) {
         super(props);
         this.state = {
             channel: props.connection,
@@ -42,7 +48,7 @@ class Connection extends React.Component<IProps, any>{
         this.updateOffering(props.connection.offering);
     }
 
-    static getDerivedStateFromProps(props:any, state:any) {
+    static getDerivedStateFromProps(props: IProps, state: IState) {
         return {channel: props.connection};
     }
 
@@ -66,6 +72,10 @@ class Connection extends React.Component<IProps, any>{
 
         const { t, render, connection } = this.props;
         const { channel, offering } = this.state;
+
+        const { usage } = channel;
+        usage.cost = usage.cost ? usage.cost : 0;
+        channel.totalDeposit = channel.totalDeposit ? channel.totalDeposit : 0;
 
         if(offering && connection.offering !== offering.id){
             this.updateOffering(connection.offering);
@@ -140,7 +150,7 @@ class Connection extends React.Component<IProps, any>{
                                         </tr>
                                         <tr>
                                             <td>{t('TransferredT')}</td>
-                                            <td>{channel.usage.current} {channel.usage.unit}</td>
+                                            <td>{channel.usage.current} {channel.usage.unitName}</td>
                                         </tr>
                                         <tr>
                                             <td>{t('CostT')}</td>

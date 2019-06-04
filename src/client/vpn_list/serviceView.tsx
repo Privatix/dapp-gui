@@ -13,22 +13,40 @@ import notice from 'utils/notice';
 
 // import { Product } from 'typings/products';
 import { State } from 'typings/state';
+import { ClientChannel } from 'typings/channels';
+import { Offering } from 'typings/offerings';
+
+interface IProps {
+    service: ClientChannel;
+    visible: boolean;
+    ws?: State['ws'];
+    t?: any;
+    history: any;
+}
+
+interface IState {
+    service: ClientChannel;
+    sessions: any[];
+    getSessions: boolean;
+    offering: Offering;
+}
 
 @translate(['client/serviceView', 'utils/notice'])
 
-class ServiceView extends React.Component <any,any> {
+class ServiceView extends React.Component <IProps, IState> {
 
-    constructor(props:any) {
+    constructor(props: IProps) {
         super(props);
 
         this.state = {
             service: props.service,
             sessions: [],
-            getSessions: false
+            getSessions: false,
+            offering: null
         };
     }
 
-    static getDerivedStateFromProps(props:any, state:any) {
+    static getDerivedStateFromProps(props: IProps, state: IState) {
         let getSessions = false;
         if (props.visible) {
             getSessions = true;
@@ -176,7 +194,7 @@ class ServiceView extends React.Component <any,any> {
                                     </tr>
                                     <tr>
                                         <td>{t('Transferred')}</td>
-                                        <td>{service.usage.current} {service.usage.unit}</td>
+                                        <td>{service.usage.current} {service.usage.unitName}</td>
                                     </tr>
                                     <tr>
                                         <td>{t('Cost')}</td>
@@ -184,7 +202,7 @@ class ServiceView extends React.Component <any,any> {
                                     </tr>
                                     <tr>
                                         <td>{t('Deposit')}</td>
-                                        <td>{service.deposit / 1e8} PRIX</td>
+                                        <td>{service.totalDeposit / 1e8} PRIX</td>
                                     </tr>
                                     <tr>
                                         <td>{t('LastUsageTime')}</td>

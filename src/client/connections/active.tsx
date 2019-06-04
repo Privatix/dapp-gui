@@ -90,7 +90,9 @@ class ActiveConnection extends React.Component<IProps, IState>{
         const { t, channels } = this.props;
         const { usage } = this.state;
 
-        const connections = channels.map((channel: any) => {
+        const connections = channels.map((channel: ClientChannel) => {
+
+            channel.usage = usage[channel.id];
 
             return {
                 id: <ModalWindow

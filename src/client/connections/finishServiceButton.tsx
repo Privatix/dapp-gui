@@ -4,17 +4,17 @@ import { translate } from 'react-i18next';
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 
 import { WS, ws } from 'utils/ws';
-import { Channel } from 'typings/channels';
+import { ClientChannel } from 'typings/channels';
 
 interface IProps {
     ws?: WS;
     t?: any;
-    channel: Channel;
+    channel: ClientChannel;
 }
 
 @translate('client/connections/finishServiceButton')
 
-class FinishServiceButton extends React.Component<any, any>{
+class FinishServiceButton extends React.Component<IProps, {}>{
 
     done = async () => {
         const { ws, channel } = this.props;
