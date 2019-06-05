@@ -444,7 +444,7 @@ export class WS {
 
     async getNotTerminatedClientChannels(): Promise<ClientChannel[]>{
 
-        const statuses = ['pending', 'activating', 'active', 'suspending', 'suspended', 'terminating'];
+        const statuses = ['pending', 'activating', 'active', 'suspending', 'suspended'];
 
         const channels = await this.getClientChannels([], statuses, 0, 10);
         return channels.items;
