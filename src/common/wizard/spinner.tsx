@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-export default class Spinner extends React.Component<any,any> {
+export default class Spinner extends React.Component<{},{}> {
 
     render(){
 

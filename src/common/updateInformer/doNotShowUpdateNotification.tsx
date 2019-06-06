@@ -24,7 +24,11 @@ class DoNotShowUpdateNotification extends React.Component<IProps, {}>{
 
         return (
             <div style={ {padding: '15px'} } >
-                <button type='button' onClick={this.onSkip} className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light' >{t('DoNotShow')}</button>
+                <button type='button'
+                        onClick={this.onSkip}
+                        className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light' >
+                    {t('DoNotShow')}
+                </button>
             </div>
         );
     }

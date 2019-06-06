@@ -16,10 +16,11 @@ export default function(props: IProps){
         shell.openExternal(`https://etherscan.io/address/0x${transaction.ethAddr}`);
     };
 
-    const elem = <tr>
-        <td>{transaction.date}</td>
-        <td> <a href='#' onClick={etherscan}>0x{transaction.ethAddr}</a></td>
-    </tr>;
+    return (
+        <tr>
+            <td>{transaction.date}</td>
+            <td> <a href='#' onClick={etherscan}>0x{transaction.ethAddr}</a></td>
+        </tr>
+    );
 
-    return (elem);
 }
