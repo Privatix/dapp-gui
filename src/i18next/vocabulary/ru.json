@@ -481,8 +481,7 @@
     "client/serviceView": {
         "CommonInfo": "Общая информация",
         "IdTd": "Id:",
-        "OfferingID": "ID предложения:",
-        "OfferingHash": "Хэш предложения:",
+        "Offering": "Предложение:",
         "ContractStatusTd": "Статус контракта:",
         "ServiceStatusTd": "Статус сервиса:",
         "Transferred": "Передано:",
@@ -528,22 +527,12 @@
         "AreYouSure": "Вы уверены?"
     },
     "client/connections/connection": {
-        "Offering": "Предложение",
         "Started": "Начато",
         "Stopped": "Закончено",
         "Usage": "Использовано",
         "CostPRIX": "Стоимость (PRIX)",
         "LastUsageTime": "Время последнего использования",
         "ClientIP": "IP клиента",
-        "CommonInfo": "Общая информация",
-        "IdT": "Id:",
-        "OfferingT": "Предложение:",
-        "ContractStatusT": "Статус контракта:",
-        "ServiceStatusT": "Статус сервиса:",
-        "TransferredT": "Передано:",
-        "CostT": "Стоимость:",
-        "DepositT": "Депозит:",
-        "LastUsageTimeT": "Время последнего использования:",
         "Sessions": "Сессии"
     },
     "client/increaseDepositButton": {

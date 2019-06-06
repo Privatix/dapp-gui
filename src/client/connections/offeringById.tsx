@@ -19,12 +19,15 @@ class OfferingById extends React.Component<any, any>{
     }
 
     async componentDidMount(){
-        const offering = await this.props.ws.getOffering(this.props.offeringId);
+
+        const { ws, offeringId } = this.props;
+
+        const offering = await ws.getOffering(offeringId);
         this.setState({offering});
     }
 
     render(){
-        const offering = this.state.offering;
+        const { offering } = this.state;
         return <Offering mode='view' offering={offering} />;
     }
 }

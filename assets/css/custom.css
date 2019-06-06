@@ -705,6 +705,14 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     padding: 0 5px;
 }
 
+.shortOfferingHash{
+    max-width: 300px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .noWrap{
     white-space: nowrap;
 }

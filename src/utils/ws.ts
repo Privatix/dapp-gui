@@ -5,6 +5,7 @@ import * as uuidv4 from 'uuid/v4';
 import * as api from './api';
 
 import {Template, TemplateType} from 'typings/templates';
+import { Endpoint } from 'typings/endpoints';
 import {OfferStatus, Offering} from 'typings/offerings';
 import {Account} from 'typings/accounts';
 import {Transaction} from 'typings/transactions';
@@ -369,8 +370,8 @@ export class WS {
 
 // endpoints
 
-    getEndpoints(channelId: string, templateId: string = ''){
-        return this.send('ui_getEndpoints', [channelId, templateId]);
+    getEndpoints(channelId: string, templateId: string = '') : Promise<Endpoint[]>{
+        return this.send('ui_getEndpoints', [channelId, templateId]) as Promise<Endpoint[]>;
     }
 
 // products

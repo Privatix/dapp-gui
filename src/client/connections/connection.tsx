@@ -3,83 +3,37 @@ import { translate } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
 
-import { WS, ws } from 'utils/ws';
 import {ClientChannel} from 'typings/channels';
-import { Offering as OfferingType } from 'typings/offerings';
 
 import { Id, Agent, Server, Offering as OfferingCol } from 'common/tables/';
 
-import ChannelStatus from 'common/badges/channelStatus';
-import ContractStatus from 'common/badges/contractStatus';
-
+import ChannelCommonInfo from 'client/components/channelCommonInfo';
 import ClientAccessInfo from 'client/endpoints/clientAccessInfo';
-import Offering from 'client/vpn_list/acceptOffering';
-
-import PgTime from 'common/etc/pgTime';
-import toFixedN from 'utils/toFixedN';
 
 import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
 import IncreaseDepositButton from './increaseDepositButton';
 
 interface IProps{
-    ws?: WS;
     t?: any;
     history?: any;
-    connection: ClientChannel;
+    channel: ClientChannel;
     render?: Function;
 }
 
-interface IState {
-    channel: ClientChannel;
-    offering: OfferingType;
-}
-
 @translate('client/connections/connection')
-class Connection extends React.Component<IProps, IState>{
-
-    constructor(props: IProps) {
-        super(props);
-        this.state = {
-            channel: props.connection,
-            offering: null
-        };
-
-        this.updateOffering(props.connection.offering);
-    }
-
-    static getDerivedStateFromProps(props: IProps, state: IState) {
-        return {channel: props.connection};
-    }
-
-    async updateOffering(offeringId: string){
-
-        const{  ws } = this.props;
-
-        const offering = await ws.getOffering(offeringId);
-        if(offering){
-            this.setState({offering});
-        }
-    }
-
-    showOffering(evt:any){
-        evt.preventDefault();
-        const { t, render } = this.props;
-        render(t('Offering'), <Offering mode='view' offering={this.state.offering} />);
-    }
+class Connection extends React.Component<IProps, {}>{
 
     render(){
 
-        const { t, render, connection } = this.props;
-        const { channel, offering } = this.state;
+        const { t, render, channel } = this.props;
 
-        const { usage } = channel;
-        usage.cost = usage.cost ? usage.cost : 0;
-        channel.totalDeposit = channel.totalDeposit ? channel.totalDeposit : 0;
-
-        if(offering && connection.offering !== offering.id){
-            this.updateOffering(connection.offering);
+        if(!channel){
+            return null;
         }
+
+        channel.usage.cost = channel.usage.cost || 0;
+        channel.totalDeposit = channel.totalDeposit || 0;
 
         const sessionsColumns = [
             Id,
@@ -114,66 +68,13 @@ class Connection extends React.Component<IProps, IState>{
         const sessionsData = [];
 
         const serviceStatus = channel.channelStatus.serviceStatus;
-        const lastUsageTime = channel.channelStatus.lastChanged;
 
-        const isValidLastUsageTime = (lastUsageTime !== '' && typeof(lastUsageTime) !== 'undefined' && lastUsageTime !== null);
-
-        return <div>
+        return <>
             <div className='row'>
                 <div className='col-8'>
-                    <div className='card m-b-20'>
-                        <h5 className='card-header'>{t('CommonInfo')}</h5>
-                        <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
-                            <div className='card-body'>
-                                <table className='table table-bordered table-striped'>
-                                    <tbody>
-                                        <tr>
-                                            <td>{t('IdT')}</td>
-                                            <td>{channel.id}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{t('OfferingT')}</td>
-                                            <td>{offering
-                                                ? <a href='#' onClick={this.showOffering.bind(this)}>
-                                                    {offering.hash}
-                                                  </a>
-                                                : ''}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td>{t('ContractStatusT')}</td>
-                                            <td><ContractStatus contractStatus={channel.channelStatus.channelStatus} /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>{t('ServiceStatusT')}</td>
-                                            <td><ChannelStatus serviceStatus={serviceStatus} /></td>
-                                        </tr>
-                                        <tr>
-                                            <td>{t('TransferredT')}</td>
-                                            <td>{channel.usage.current} {channel.usage.unitName}</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{t('CostT')}</td>
-                                            <td>{toFixedN({number: (channel.usage.cost / 1e8), fixed: 8})} PRIX</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{t('DepositT')}</td>
-                                            <td>{toFixedN({number: (channel.totalDeposit / 1e8), fixed: 8})} PRIX</td>
-                                        </tr>
-                                        <tr>
-                                            <td>{t('LastUsageTimeT')}</td>
-                                            <td>{ isValidLastUsageTime ? <PgTime time={lastUsageTime} /> : ''}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
+                    <ChannelCommonInfo channel={channel} render={render} />
                     <ClientAccessInfo channel={channel} />
                 </div>
-
-
                 <div className='col-4'>
                     {serviceStatus === 'active' ? <IncreaseDepositButton channel={channel} render={render} /> : '' }
                     { !['terminating', 'terminated'].includes(serviceStatus) ? <FinishServiceButton channel={channel} /> : ''}
@@ -203,8 +104,8 @@ class Connection extends React.Component<IProps, IState>{
                     </div>
                 </div>
             </div>
-        </div>;
+        </>;
     }
 }
 
-export default ws<IProps>(withRouter(Connection));
+export default withRouter(Connection);

@@ -101,7 +101,7 @@ class ActiveConnection extends React.Component<IProps, IState>{
                     modalTitle={t('Connection')}
                     text={channel.id}
                     copyToClipboard={true}
-                    component={<Connection connection={channel} />}
+                    component={<Connection channel={channel} />}
                 />,
                 offering: <ModalWindow
                     visible={this.state.popup}

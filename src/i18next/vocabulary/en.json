@@ -481,8 +481,7 @@
     "client/serviceView": {
         "CommonInfo": "Common Info",
         "IdTd": "Id:",
-        "OfferingID": "Offering ID:",
-        "OfferingHash": "Offering Hash:",
+        "Offering": "Offering:",
         "ContractStatusTd": "Contract status:",
         "ServiceStatusTd": "Service status:",
         "Transferred": "Transferred:",
@@ -528,22 +527,12 @@
         "AreYouSure": "Are you sure?"
     },
     "client/connections/connection": {
-        "Offering": "Offering",
         "Started": "Started",
         "Stopped": "Stopped",
         "Usage": "Usage",
         "CostPRIX": "Cost (PRIX)",
         "LastUsageTime": "Last Usage time",
         "ClientIP": "Client IP",
-        "CommonInfo": "Common Info",
-        "IdT": "Id:",
-        "OfferingT": "Offering:",
-        "ContractStatusT": "Contract status:",
-        "ServiceStatusT": "Service status:",
-        "TransferredT": "Transferred:",
-        "CostT": "Cost:",
-        "DepositT": "Deposit:",
-        "LastUsageTimeT": "Last usage time:",
         "Sessions": "Sessions"
     },
     "client/increaseDepositButton":{

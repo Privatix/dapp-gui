@@ -59,12 +59,13 @@ class IncreaseDepositView extends React.Component<IProps, any> {
     async getOffering(id: string) {
 
         const { ws } = this.props;
+        const { deposit } = this.state;
 
         const offering = await ws.getOffering(id);
 
-        const depositTrafic = toFixedN({number: this.state.deposit/offering.unitPrice, fixed: 2});
+        const depositTrafic = toFixedN({number: deposit/offering.unitPrice, fixed: 2});
         const depositMB = `${depositTrafic} ${offering.unitName}`;
-        const inputStr = `${toFixedN({number: (this.state.deposit/1e8), fixed: 8})} / ${depositMB}`;
+        const inputStr = `${toFixedN({number: deposit/1e8, fixed: 8})} / ${depositMB}`;
         this.setState({offering, inputStr});
     }
 
