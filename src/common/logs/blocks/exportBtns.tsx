@@ -78,6 +78,7 @@ class ExportBtns extends React.Component<IProps, IState> {
         const archiveName = 'dump_' + Date.now() + '.zip';
         const archive = path.join(archivePath, '\\util\\dump\\', archiveName);
 
+        console.log('exec:', `"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`);
         exec(`"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`, () => {
             this.saveDialogHandler(archive, archiveName);
         });
