@@ -3,9 +3,11 @@ import { translate } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
 
+import { WS, ws } from 'utils/ws';
+
 import {ClientChannel} from 'typings/channels';
 
-import { Id, Agent, Server, Offering as OfferingCol } from 'common/tables/';
+import { Id, Agent, Server, Started, Stopped, LastUsed, ClientIP } from 'common/tables/';
 
 import ChannelCommonInfo from 'client/components/channelCommonInfo';
 import ClientAccessInfo from 'client/endpoints/clientAccessInfo';
@@ -15,18 +17,52 @@ import FinishServiceButton from './finishServiceButton';
 import IncreaseDepositButton from './increaseDepositButton';
 
 interface IProps{
+    ws?: WS;
     t?: any;
     history?: any;
     channel: ClientChannel;
     render?: Function;
 }
 
-@translate('client/connections/connection')
-class Connection extends React.Component<IProps, {}>{
+interface IState {
+    sessions: any[];
+}
+
+@translate('client/connections/connection', 'tables')
+class Connection extends React.Component<IProps, IState>{
+
+    constructor(props: IProps){
+        super(props);
+        this.state = {sessions: []};
+    }
+
+    async componentDidMount(){
+        const { ws, channel } = this.props;
+        const sessionsRaw = await ws.getSessions(channel.id);
+        const offering = await ws.getOffering(channel.offering);
+        if (!offering) {
+            return false;
+        }
+        const sessions = sessionsRaw.map(session => (
+            {
+                id: session.channel,
+                agent: channel.agent,
+                server: offering.serviceName,
+                started: session.started,
+                stopped: session.stopped,
+                usage: session.unitsUsed,
+                cost: (session.unitsUsed * offering.unitPrice)/1e8,
+                lastUsedTime: session.lastUsageTime,
+                clientIP: session.clientIP
+            })
+        );
+        this.setState({sessions});
+    }
 
     render(){
 
         const { t, render, channel } = this.props;
+        const { sessions } = this.state;
 
         if(!channel){
             return null;
@@ -39,33 +75,19 @@ class Connection extends React.Component<IProps, {}>{
             Id,
             Agent,
             Server,
-            OfferingCol,
-            {
-                header: t('Started'),
-                key: 'started'
-            },
-            {
-                header: t('Stopped'),
-                key: 'stopped'
-            },
+            Started,
+            Stopped,
             {
                 header: t('Usage'),
                 key: 'usage'
             },
             {
-                header: t('CostPRIX'),
+                header: t('tables:CostPRIX'),
                 key: 'cost'
             },
-            {
-                header: t('LastUsageTime'),
-                key: 'lastUsageTime'
-            },
-            {
-                header: t('ClientIP'),
-                key: 'clientIP'
-            }
+            LastUsed,
+            ClientIP
         ];
-        const sessionsData = [];
 
         const serviceStatus = channel.channelStatus.serviceStatus;
 
@@ -96,7 +118,7 @@ class Connection extends React.Component<IProps, {}>{
                             <div className='card-body'>
                                 <div className='bootstrap-table bootstrap-table-sortable table-responsive'>
                                     <SortableTable
-                                        data={sessionsData}
+                                        data={sessions}
                                         columns={sessionsColumns}/>
                                 </div>
                             </div>
@@ -108,4 +130,4 @@ class Connection extends React.Component<IProps, {}>{
     }
 }
 
-export default withRouter(Connection);
+export default ws<IProps>(withRouter(Connection));
