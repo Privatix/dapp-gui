@@ -61,6 +61,9 @@ function createWindow () {
           width: 600
          ,height: 800
          ,icon: path.join(__dirname, 'icon_64.png')
+         ,webPreferences: {
+              nodeIntegration: true
+          }
       };
   win = new BrowserWindow(options);
 
