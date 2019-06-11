@@ -73,8 +73,8 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 
     saveWindowsLogs() {
-        const utilPath = path.join(process.cwd(), '\\..\\util\\dump\\');
-        const archivePath = path.join(process.cwd(), '\\..');
+        const utilPath = path.join(process.execPath(), '\\..\\util\\dump\\');
+        const archivePath = path.join(process.execPath(), '\\..');
         const archiveName = 'dump_' + Date.now() + '.zip';
         const archive = path.join(archivePath, '\\util\\dump\\', archiveName);
 
