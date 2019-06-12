@@ -8,7 +8,7 @@ import { Id, Agent, ContractStatus, ServiceStatus, JobStatus, Usage, CostPRIX, L
 
 import ModalWindow from 'common/modalWindow';
 
-import { ClientChannel } from 'typings/channels';
+import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 
 import { ws, WS } from 'utils/ws';
 
@@ -24,7 +24,7 @@ interface IState {
 class ClientHistory extends React.Component<IProps, IState> {
 
     subscribeId = null;
-    polling = null;
+    mounted = false;
 
     constructor(props:IProps) {
 
@@ -34,31 +34,40 @@ class ClientHistory extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
-
+        this.mounted = true;
         this.refresh();
 
     }
 
     componentWillUnmount(){
-
+        this.mounted = false;
         const { ws } = this.props;
 
         if(this.subscribeId){
             ws.unsubscribe(this.subscribeId);
             this.subscribeId = null;
         }
-
-        if(this.polling){
-            clearTimeout(this.polling);
-            this.polling = null;
-        }
-
     }
 
-    refresh = () => {
+    refresh = async () => {
 
-        this.getHistoryData();
+        const { ws } = this.props;
+        const allTerminatedChannels = (await ws.getClientChannels([], ['terminated'], 0, 0)).items;
 
+        const allClientChannels = await ws.getClientChannels([], [], 0, 0);
+
+        if(this.mounted){
+            this.subscribe(allClientChannels.items);
+            this.setState({allTerminatedChannels});
+        }
+    }
+
+    eventDispatcher = (event: any) => {
+        if('job' in event){
+            this.refresh();
+        }else{
+            this.updateUsage(event);
+        }
     }
 
     async subscribe(channels: ClientChannel[]){
@@ -69,38 +78,18 @@ class ClientHistory extends React.Component<IProps, IState> {
             await ws.unsubscribe(this.subscribeId);
         }
         const ids = channels.map(channel => channel.id);
-        this.subscribeId = await ws.subscribe('channel', ids, this.refresh, this.refresh);
-        this.updateUsage();
+        this.subscribeId = await ws.subscribe('channels', ids, this.eventDispatcher);
     }
 
-    async getHistoryData() {
+    updateUsage(usages: {[key: string]: ClientChannelUsage}){
 
-        const { ws } = this.props;
-        const allTerminatedChannels = (await ws.getClientChannels([], ['terminated'], 0, 0)).items;
+        if(this.mounted){
+            const { allTerminatedChannels } = this.state;
 
-        const allClientChannels = await ws.getClientChannels([], [], 0, 0);
-        this.subscribe(allClientChannels.items);
+            const updatedChannels = allTerminatedChannels.map(channel => Object.assign({}, channel, {usage: usages[channel.id]}));
 
-        this.setState({allTerminatedChannels});
-    }
-
-    updateUsage = async () => {
-
-        const { ws } = this.props;
-        const { allTerminatedChannels } = this.state;
-
-        if(this.polling){
-            clearTimeout(this.polling);
-            this.polling = null;
+            this.setState({allTerminatedChannels: updatedChannels});
         }
-        this.polling = setTimeout(this.updateUsage, 3000);
-
-        const ids = allTerminatedChannels.map(channel => channel.id);
-        const usages = await ws.getChannelsUsage(ids);
-        const updatedChannels = allTerminatedChannels.map(channel => Object.assign({}, channel, {usage: usages[channel.id]}));
-
-        this.setState({allTerminatedChannels: updatedChannels});
-
     }
 
     render() {

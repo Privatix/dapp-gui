@@ -39,7 +39,8 @@ export interface ClientChannel {
     agent: string;
     client: string;
     offering: string;
-    deposit: number;
+    offeringHash: string;
+    totalDeposit: number;
     channelStatus: ClientChannelStatus;
     job: Job;
     usage: ClientChannelUsage;

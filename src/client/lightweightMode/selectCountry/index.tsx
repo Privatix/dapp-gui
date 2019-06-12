@@ -2,8 +2,8 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 import Select from 'react-select';
 
-import SelectCountryOption from './selectCountryOption';
-import SelectCountryValue from './selectCountryValue';
+import SelectCountryOption from './option';
+import SelectCountryValue from './value';
 import OfferingInfo from './offeringInfo';
 
 import { Offering } from 'typings/offerings';
@@ -43,7 +43,7 @@ export default class SelectCountry extends React.Component<IProps, {}> {
                         optionComponent={SelectCountryOption}
                         disabled={disabled}
                 />
-                <OfferingInfo offering={offering} />
+                <OfferingInfo offering={offering} withDeposit={!disabled} />
             </div>
         );
     }

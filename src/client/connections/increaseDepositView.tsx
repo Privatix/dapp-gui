@@ -9,41 +9,63 @@ import GasRange from 'common/etc/gasRange';
 import notice from 'utils/notice';
 import toFixedN from 'utils/toFixedN';
 
-import {asyncProviders} from 'redux/actions';
+import { asyncProviders } from 'redux/actions';
 
-import {State} from 'typings/state';
+import { State } from 'typings/state';
+import { ClientChannel } from 'typings/channels';
+
+interface IProps {
+    ws: State['ws'];
+    accounts: State['accounts'];
+    localSettings: State['localSettings'];
+    channel: ClientChannel;
+    gasPrice: number;
+    dispatch: any;
+    t?: any;
+    closeModal?: any;
+}
 
 @translate(['client/connections/increaseDepositView', 'utils/notice'])
-class IncreaseDepositView extends React.Component<any, any> {
+class IncreaseDepositView extends React.Component<IProps, any> {
 
-    constructor(props: any) {
+    constructor(props: IProps) {
+
         super(props);
+        const { gasPrice, channel, accounts } = props;
+
         this.state = {
-            gasPrice: props.gasPrice ? props.gasPrice : 0,
-            account: props.accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === props.channel.client.toLowerCase()),
-            deposit: props.channel.deposit,
+            gasPrice: gasPrice ? gasPrice : 0,
+            account: accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === channel.client.toLowerCase()),
+            deposit: channel.totalDeposit,
             offering: null,
-            channelDeposit: props.channel.deposit,
+            channelDeposit: channel.totalDeposit,
             inputStr: ''
         };
     }
 
     async componentDidMount(){
-        await this.getOffering(this.props.channel.offering );
 
-        this.props.dispatch(asyncProviders.updateSettings());
+        const { channel, dispatch } = this.props;
+
+        await this.getOffering(channel.offering );
+
+        dispatch(asyncProviders.updateSettings());
     }
 
-    static getDerivedStateFromProps(props: any, state: any) {
+    static getDerivedStateFromProps(props: IProps, state: any) {
         return state.gasPrice === 0 && props.gasPrice ? {gasPrice: props.gasPrice} : null;
     }
 
     async getOffering(id: string) {
-        const offering = await this.props.ws.getOffering(id);
 
-        const depositTrafic = toFixedN({number: this.state.deposit/offering.unitPrice, fixed: 2});
+        const { ws } = this.props;
+        const { deposit } = this.state;
+
+        const offering = await ws.getOffering(id);
+
+        const depositTrafic = toFixedN({number: deposit/offering.unitPrice, fixed: 2});
         const depositMB = `${depositTrafic} ${offering.unitName}`;
-        const inputStr = `${toFixedN({number: (this.state.deposit/1e8), fixed: 8})} / ${depositMB}`;
+        const inputStr = `${toFixedN({number: deposit/1e8, fixed: 8})} / ${depositMB}`;
         this.setState({offering, inputStr});
     }
 
@@ -53,27 +75,28 @@ class IncreaseDepositView extends React.Component<any, any> {
 
     checkUserInput = async () => {
 
-        const { t, localSettings } = this.props;
+        const { t, localSettings, channel } = this.props;
+        const { account, offering, gasPrice } = this.state;
 
         let err = false;
         let msg = [];
         const deposit = this.getDeposit();
 
-        if(!this.state.account || localSettings.gas.increaseDeposit*this.state.gasPrice > this.state.account.ethBalance) {
+        if(!account || localSettings.gas.increaseDeposit*gasPrice > account.ethBalance) {
             err = true;
             msg.push(t('ErrorNotEnoughPublishFunds'));
         }
 
-        if(!this.state.account || deposit > this.state.account.pscBalance){
+        if(!account || deposit > account.pscBalance){
             err = true;
             msg.push(t('ErrorNotEnoughPRIX'));
         }
 
-        const maxDepositAddValue = this.state.offering.maxUnit - this.props.channel.deposit / this.state.offering.unitPrice;
-        const depositInUnits = deposit / this.state.offering.unitPrice;
-        if (this.state.offering.maxUnit && (depositInUnits > maxDepositAddValue)) {
+        const maxDepositAddValue = offering.maxUnit - channel.totalDeposit / offering.unitPrice;
+        const depositInUnits = deposit / offering.unitPrice;
+        if (offering.maxUnit && (depositInUnits > maxDepositAddValue)) {
             err = true;
-            msg.push(t('ErrorDepositGreaterThanMaxUnits', {units: maxDepositAddValue, unitName: this.state.offering.unitName}));
+            msg.push(t('ErrorDepositGreaterThanMaxUnits', {units: maxDepositAddValue, unitName: offering.unitName}));
         }
 
         if(err){
@@ -90,11 +113,13 @@ class IncreaseDepositView extends React.Component<any, any> {
 
     onConfirm = async () => {
 
-        const { ws, t, closeModal } = this.props;
+        const { ws, t, closeModal, channel } = this.props;
+        const { gasPrice } = this.state;
+
         const deposit = this.getDeposit();
 
         try {
-            await ws.topUp(this.props.channel.id, deposit, this.state.gasPrice);
+            await ws.topUp(channel.id, deposit, gasPrice);
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
             closeModal();
         } catch ( e ) {
@@ -128,57 +153,61 @@ class IncreaseDepositView extends React.Component<any, any> {
 
     depositChanged = (evt: any) => {
 
+        const { offering, inputStr } = this.state;
+
         const cursor = evt.target.selectionStart;
 
         const chunks = evt.target.value.split('/');
         if(this.notValid(chunks)){
-            this.setState({inputStr: this.state.inputStr}, () => this.setCursor(cursor));
+            this.setState({inputStr}, () => this.setCursor(cursor));
             return;
         }
 
         const [depositStr, traficStr ] = chunks;
-        const prixStr = this.state.inputStr.split('/')[0].trim();
+        const prixStr = inputStr.split('/')[0].trim();
 
         if(depositStr.trim() === prixStr){
-            const MBSTR = traficStr.replace(new RegExp(`${this.state.offering.unitName}$`), '').trim();
-            const depositStr = MBSTR === '' ? '0' : toFixedN({number: (parseFloat(MBSTR)*this.state.offering.unitPrice)/1e8, fixed: 8});
-            const inputStr = `${depositStr} / ${MBSTR} ${this.state.offering.unitName}`;
+            const MBSTR = traficStr.replace(new RegExp(`${offering.unitName}$`), '').trim();
+            const depositStr = MBSTR === '' ? '0' : toFixedN({number: (parseFloat(MBSTR)*offering.unitPrice)/1e8, fixed: 8});
+            const inputStr = `${depositStr} / ${MBSTR} ${offering.unitName}`;
             this.setState({inputStr}, () => this.setCursor(cursor + (depositStr.length - prixStr.length)));
         }else{
-            const depositTrafic = toFixedN({number: parseFloat(depositStr)*1e8/this.state.offering.unitPrice, fixed: 2});
-            const depositMB = `${depositTrafic} ${this.state.offering.unitName}`;
+            const depositTrafic = toFixedN({number: parseFloat(depositStr)*1e8/offering.unitPrice, fixed: 2});
+            const depositMB = `${depositTrafic} ${offering.unitName}`;
             this.setState({inputStr: `${depositStr.trim()} / ${depositMB}`}, () => this.setCursor(cursor));
         }
     }
 
     render(){
 
-        const { t } = this.props;
+        const { t, channel, accounts } = this.props;
+        const { account, offering, gasPrice } = this.state;
+
         let value = '';
-        if(this.state.offering){
-            const trafic = toFixedN({number: this.props.channel.deposit/this.state.offering.unitPrice, fixed: 2});
-            value = `${trafic} ${this.state.offering.unitName}`;
+        if(offering){
+            const trafic = toFixedN({number: channel.totalDeposit/offering.unitPrice, fixed: 2});
+            value = `${trafic} ${offering.unitName}`;
         }
 
         const channelDeposit = `${toFixedN({number: (this.state.channelDeposit/1e8), fixed: 8})} / ${value}`;
 
         const selectAccount =  <Select className='form-control'
-                                       value={this.state.account.id}
+                                       value={account.id}
                                        searchable={false}
                                        clearable={false}
                                        disabled={true}
-                                       options={this.props.accounts.map((account:any) => ({value: account.id, label: account.name}))}
+                                       options={accounts.map((account:any) => ({value: account.id, label: account.name}))}
         />;
 
         let maxUnitsHint = '';
-        if (this.state.offering && this.state.offering.maxUnit !== null) {
-            const maxUnits = this.state.offering.maxUnit;
-            const maxDepositAddValue = maxUnits - this.props.channel.deposit / this.state.offering.unitPrice;
-            maxUnitsHint = t('MaxUnitsHint', {maxUnits, maxDepositAddValue, unitName: this.state.offering.unitName});
+        if (offering && offering.maxUnit !== null) {
+            const maxUnits = offering.maxUnit;
+            const maxDepositAddValue = maxUnits - channel.totalDeposit / offering.unitPrice;
+            maxUnitsHint = t('MaxUnitsHint', {maxUnits, maxDepositAddValue, unitName: offering.unitName});
         }
 
-        const ethBalance = this.state.account ? (toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8})) : 0;
-        const pscBalance = this.state.account ? (toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8})) : 0;
+        const ethBalance = account ? (toFixedN({number: (account.ethBalance / 1e18), fixed: 8})) : 0;
+        const pscBalance = account ? (toFixedN({number: (account.pscBalance / 1e8), fixed: 8})) : 0;
 
         return <div className='col-lg-9 col-md-9'>
             <div className='card m-b-20'>
@@ -217,7 +246,7 @@ class IncreaseDepositView extends React.Component<any, any> {
                             <span className='help-block'><small>{maxUnitsHint}</small></span>
                         </div>
                     </div>
-                    <GasRange onChange={this.onGasPriceChanged} value={this.state.gasPrice/1e9} averageTimeText={t('AverageTimeToAddTheDeposit')} />
+                    <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} averageTimeText={t('AverageTimeToAddTheDeposit')} />
                     <div className='form-group row'>
                         <div className='col-12'>
                             <ConfirmPopupSwal

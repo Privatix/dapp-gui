@@ -4,7 +4,7 @@ import { translate } from 'react-i18next';
 import DotProgress from 'common/progressBars/dotProgress';
 import StepProgress from 'common/progressBars/stepProgress';
 
-import SelectCountry from '../selectCountry';
+import SelectCountry from '../selectCountry/';
 
 import { ClientChannel } from 'typings/channels';
 

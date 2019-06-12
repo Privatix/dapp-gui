@@ -4,7 +4,7 @@ import { translate } from 'react-i18next';
 import DotProgress from 'common/progressBars/dotProgress';
 import StepProgress from 'common/progressBars/stepProgress';
 
-import SelectCountry from '../selectCountry';
+import SelectCountry from '../selectCountry/';
 
 import { Offering } from 'typings/offerings';
 import { ClientChannel } from 'typings/channels';
@@ -48,7 +48,7 @@ export default class Connecting extends React.Component<IProps, {}> {
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Connecting')} <DotProgress />
                 </button>
-                <StepProgress steps={steps} lastDoneStep={channel ? channel.job.jobtype : null} />
+                <StepProgress steps={steps} lastDoneStep={ channel ? channel.job.jobtype : null } />
             </>
         );
     }

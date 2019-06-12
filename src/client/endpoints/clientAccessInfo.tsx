@@ -2,7 +2,8 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import { WS, ws } from 'utils/ws';
-import {ClientChannel} from 'typings/channels';
+import { ClientChannel } from 'typings/channels';
+import { Endpoint } from 'typings/endpoints';
 
 interface IProps{
     ws?: WS;
@@ -10,14 +11,18 @@ interface IProps{
     channel: ClientChannel;
 }
 
+interface IState {
+    endpoint: Endpoint;
+}
+
 @translate('client/clientAccessInfo')
-class ClientAccessInfo extends React.Component <IProps, any> {
+class ClientAccessInfo extends React.Component <IProps, IState> {
 
     constructor(props:IProps) {
         super(props);
 
         this.state = {
-            endpoint: []
+            endpoint: null
         };
 
         this.getData();
@@ -28,16 +33,19 @@ class ClientAccessInfo extends React.Component <IProps, any> {
         const { ws, channel } = this.props;
 
         const endpoint = await ws.getEndpoints(channel.id);
-        this.setState({endpoint});
+        if(endpoint.length){
+            this.setState({endpoint: endpoint[0]});
+        }
     }
 
     render() {
-        if (!this.state.endpoint || !this.state.endpoint[0]) {
-            return <div></div>;
-        }
 
         const { t } = this.props;
-        const accessInfo = this.state.endpoint[0];
+        const { endpoint } = this.state;
+
+        if (!endpoint) {
+            return null;
+        }
 
         return <div className='card m-b-20'>
             <h5 className='card-header'>{t('AccessInfo')}</h5>
@@ -48,11 +56,11 @@ class ClientAccessInfo extends React.Component <IProps, any> {
                             <tbody>
                             <tr>
                                 <td>{t('ServiceAddress')}</td>
-                                <td>{accessInfo.serviceEndpointAddress}</td>
+                                <td>{endpoint.serviceEndpointAddress}</td>
                             </tr>
                             <tr>
                                 <td>{t('PaymentAddress')}</td>
-                                <td>{accessInfo.paymentReceiverAddress}</td>
+                                <td>{endpoint.paymentReceiverAddress}</td>
                             </tr>
                             </tbody>
                         </table>

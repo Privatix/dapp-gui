@@ -705,6 +705,14 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     padding: 0 5px;
 }
 
+.shortOfferingHash{
+    max-width: 300px;
+    display: inline-block;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
 .noWrap{
     white-space: nowrap;
 }
@@ -748,4 +756,8 @@ progress::-webkit-progress-value {
     border-top-left-radius: 5px;
     border-bottom-left-radius: 5px;
     background-color: #34d3eb; !important;
+}
+.progressComplete::-webkit-progress-value {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }

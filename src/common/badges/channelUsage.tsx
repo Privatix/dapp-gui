@@ -27,7 +27,7 @@ class Usage extends React.Component<IProps, {}>{
         return mode === 'unit'
             ? (usage
                 ? <span>{usage.current}&nbsp;{t('of')}&nbsp;{usage.maxUsage}&nbsp;{usage.unitName}</span>
-                : <span></span>
+                : null
               )
             : <span>{toFixedN({number: (usage.cost / 1e8), fixed: 8})}</span>;
     }

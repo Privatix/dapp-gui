@@ -12,6 +12,7 @@ import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import notice from 'utils/notice';
 
 import { State } from 'typings/state';
+import { ClientChannel } from 'typings/channels';
 
 const countdownRender = ( { hours, minutes, seconds, completed } ) => {
 
@@ -130,7 +131,7 @@ class Connecting extends React.Component<any, any>{
 
                     if (pendingTimeCounter >= 100) {
                         clearTimeout(this.state.handler);
-                        notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')}, 5000);
+                        notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('FailedToAcceptOffering')});
                         this.props.history.push('/client-dashboard-start');
                         return;
                     }
@@ -147,6 +148,10 @@ class Connecting extends React.Component<any, any>{
 
         }
 
+    }
+
+    getDeadLine(channelStatus: ClientChannel['channelStatus']){
+        return Date.parse(channelStatus.lastChanged) + channelStatus.maxInactiveTime*1000;
     }
 
     waiting(){
@@ -219,7 +224,10 @@ class Connecting extends React.Component<any, any>{
     }
 
     suspended(){
+
         const { t, serviceName } = this.props;
+        const { channel } = this.state;
+        const deadlineStamp = this.getDeadLine(channel.channelStatus);
 
         const countryAlert = this.state.countryAlert === '' ? '' :
             <div className='alert alert-warning clientCountryAlert'>{this.state.countryAlert}</div>;
@@ -228,6 +236,9 @@ class Connecting extends React.Component<any, any>{
             <div className='row m-t-20'>
                 <div className='col-6 col-xl-5 clientConnectionBl'>
                     <div className='card m-b-20 card-body buttonBlock'>
+                        <Countdown date={deadlineStamp}
+                                   renderer={countdownRender}
+                        />
                         <p className='card-text m-t-5'><strong>
                             <Trans i18nKey='YouCanStartUsingService' values={{serviceName}} >
                                 You can start using { {serviceName} }
@@ -242,12 +253,12 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-0 col-xl-2'></div>
 
                 <div className='col-6 col-xl-5 clientConnectionBl'>
-                    <FinishServiceButton channel={this.state.channel} />
+                    <FinishServiceButton channel={channel} />
                 </div>
 
             </div>
 
-            <ActiveConnection channels={[this.state.channel]}/>
+            <ActiveConnection channels={[channel]}/>
         </div>;
     }
 
@@ -305,7 +316,7 @@ class Connecting extends React.Component<any, any>{
         const { t } = this.props;
 
         const { channelStatus } = this.state.channel;
-        const deadlineStamp = Date.parse(channelStatus.lastChanged) + channelStatus.maxInactiveTime*1000 + (new Date()).getTimezoneOffset()*60*1000;
+        const deadlineStamp = this.getDeadLine(channelStatus);
 
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>

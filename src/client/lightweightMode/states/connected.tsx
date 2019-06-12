@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { translate } from 'react-i18next';
 
-import SelectCountry from '../selectCountry';
+import SelectCountry from '../selectCountry/';
 
 import toFixed from 'utils/toFixedN';
 
@@ -20,23 +20,74 @@ interface IProps {
     channel: ClientChannel;
     usage: ClientChannelUsage;
     offering: Offering;
+    sessionsDuration: number;
     onChangeLocation: Function;
     onDisconnect(event: any): void;
 }
 
+interface IState {
+    startPoint: number;
+    tick: number;
+}
+
 @translate(['client/simpleMode'])
-export default class Connected extends React.Component<IProps, {}> {
+export default class Connected extends React.Component<IProps, IState> {
 
-    render(){
+    private tickerHandler = null;
 
-        const { t, usage, ip, channel, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
+    constructor(props: IProps){
+        super(props);
+        this.state = {startPoint: 0, tick: 0};
+    }
+
+    static getDerivedStateFromProps(props: IProps, state: IState){
+        const { sessionsDuration } = props;
+        const { startPoint } = state;
+        return sessionsDuration !== 0 && startPoint === 0
+            ? {startPoint: Date.now() - sessionsDuration}
+            : null;
+    }
+
+    componentDidMount(){
+        this.startTicker();
+    }
+
+    componentWillUnmount(){
+        this.stopTicker();
+    }
+
+    startTicker = () => {
+        const el = document.getElementById('connectedTime');
+        el.innerHTML = this.getTime();
+        this.tickerHandler = setTimeout(this.startTicker, 1000);
+    }
+
+    stopTicker(){
+        if(this.tickerHandler){
+            clearTimeout(this.tickerHandler);
+        }
+        this.tickerHandler = null;
+    }
+
+    getTime(){
+        const { startPoint } = this.state;
+
+        const _tick = startPoint === 0 ? 0 : Date.now() - startPoint;
 
         const padZero = (n: number) => n < 10 ? `0${n}` : `${n}`;
 
-        const secondsTotal = Math.floor((Date.now() - (new Date().getTimezoneOffset()*60*1000)- Date.parse(channel.job.createdAt))/1000);
-        const seconds = secondsTotal%60;
-        const minutes = ((secondsTotal - seconds)/60)%60;
-        const hours = (secondsTotal - minutes*60 - seconds)/(60*60);
+        const tick = Math.floor(_tick/1000);
+        const seconds = tick%60;
+        const minutes = ((tick - seconds)/60)%60;
+        const hours = (tick - minutes*60 - seconds)/(60*60);
+        return `${padZero(hours)}:${padZero(minutes)}:${padZero(seconds)}`;
+    }
+
+    render(){
+
+        const { t, usage, ip, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
+
+        const timer = this.getTime();
 
         return (
             <>
@@ -54,7 +105,7 @@ export default class Connected extends React.Component<IProps, {}> {
                 <ul className='list-inline m-t-15 spacing'>
                     <li>
                         <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('TIME')}</h6>
-                        <h2 className='m-t-20'>{padZero(hours)}:{padZero(minutes)}:{padZero(seconds)}</h2>
+                        <h2 className='m-t-20' id='connectedTime' >{timer}</h2>
                         <h4 className='text-muted  m-b-0'>hh:mm:ss</h4>
                     </li>
                     <li>

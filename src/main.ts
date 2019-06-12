@@ -58,13 +58,11 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
 function createWindow () {
   // Create the browser window.
   let options = {
-          width: 800
-         ,height: 600
+          width: 600
+         ,height: 800
          ,icon: path.join(__dirname, 'icon_64.png')
       };
   win = new BrowserWindow(options);
-
-
 
   // and load the index.html of the app.
   win.loadURL(url.format({
@@ -77,7 +75,6 @@ function createWindow () {
   if (process.env.TARGET === 'dev') {
       win.webContents.openDevTools();
   }
-  win.maximize();
 
     // Emitted when the window is closed.
   win.on('closed', () => {

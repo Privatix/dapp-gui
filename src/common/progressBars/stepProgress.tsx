@@ -32,14 +32,14 @@ export default class StepsProgress extends React.Component<IProps, {}> {
 
         const { steps, lastDoneStep } = this.props;
 
-        const currentStepIndex = lastDoneStep ? this.lastDoneStepIndex() + 1 : 1;
+        const currentStepIndex = lastDoneStep ? this.lastDoneStepIndex() : 0;
         const percentage = Math.floor(currentStepIndex * 100/steps.length);
 
         return(
             <>
                 <progress
+                    className={`wow animated progress-animated spacing ${percentage === 100 ? 'progressComplete' : ''}`}
                     style={ {marginLeft: 'auto', marginRight: 'auto', width: '300px', height: '10px', display: 'block'} }
-                    className='wow animated progress-animated spacing'
                     value={percentage}
                     max={100}
                 />

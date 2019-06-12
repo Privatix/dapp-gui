@@ -99,15 +99,14 @@ class ImportJsonKey extends React.Component<IProps, IState>{
             ,name
         };
 
-        ws.importAccountFromJSON(payload, keyObject, pwd, async (res: any)=>{
-            if('error' in res){
-                msg = t('SomethingWentWrong');
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
-            }else{
-                await ws.setGUISettings({accountCreated:true});
-                this.props.history.push(`/backup/${res.result}/importJsonKey`);
-            }
-        });
+        try{
+            const acc = await ws.importAccountFromJSON(payload, keyObject, pwd);
+            await ws.setGUISettings({accountCreated:true});
+            this.props.history.push(`/backup/${acc}/importJsonKey`);
+        } catch(e){
+            msg = t('SomethingWentWrong');
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+        }
     }
 
     render(){
@@ -121,7 +120,7 @@ class ImportJsonKey extends React.Component<IProps, IState>{
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={4} mode='advanced' />
+                    <Steps step={4} shape='advanced' />
                     <div className='content clearfix'>
                         <section>
                            <div className='form-group row'>

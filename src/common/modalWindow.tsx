@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Modal from 'react-awesome-modal-perfected';
 import CopyToClipboard from './copyToClipboard';
+import { isNotice } from 'utils/notice';
 
 interface IProps {
     customClass: string;
@@ -36,8 +37,12 @@ export default class ModalWindow extends React.Component<IProps, IState> {
         };
     }
 
+    isNotTheCase(element: any){
+        return ['A', 'BUTTON'].includes(element.tagName) || !document.body.contains(element) || isNotice(element);
+    }
+
     skip = (event: any) => {
-        if(['A', 'BUTTON'].includes(event.srcElement.tagName)){
+        if(this.isNotTheCase(event.srcElement)){
             return;
         }
         event.preventDefault();
@@ -46,7 +51,7 @@ export default class ModalWindow extends React.Component<IProps, IState> {
 
     closeModalTop = (event: any) => {
 
-        if(['A', 'BUTTON'].includes(event.srcElement.tagName)){
+        if(this.isNotTheCase(event.srcElement)){
             return;
         }else{
             this.closeModal(event);
@@ -114,7 +119,7 @@ export default class ModalWindow extends React.Component<IProps, IState> {
                     effect='fadeInUp'
                     onClickAway={this.closeModal}
                 >
-                    <div ref={this.content} className='modal-content'>
+                    <div className='modal-content' ref={this.content}>
                         <div className='modal-header'>
                             <h4 className='modal-title'>{this.state.modalTitle}</h4>
                             <button type='button' className='close' onClick={this.closeModal}>×</button>
@@ -129,7 +134,7 @@ export default class ModalWindow extends React.Component<IProps, IState> {
                     </div>
                 </Modal>
             </div>
-            : <div></div>;
+            : null;
 
         const copyToClipboard = !props.copyToClipboard ? null :
             <CopyToClipboard text={props.text} />;

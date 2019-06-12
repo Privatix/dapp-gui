@@ -27,9 +27,9 @@ class TerminateContractButton extends React.Component<IProps, any>{
 
     render(){
 
-        const { t } = this.props;
+        const { t, status, payment } = this.props;
 
-        return this.props.status === 'disabled'
+        return status === 'disabled'
             ? <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <span>{t('ToOpenDisputeFinishService')}</span><br />
                 <button className='btn btnCustomDisabled btn-block disabled' >{t('TerminateContract')}</button>
@@ -38,22 +38,22 @@ class TerminateContractButton extends React.Component<IProps, any>{
                 <form>
                     <h5 className='card-title'>{t('WarningArea')}</h5>
                     <p className='card-text'>{t('RequestFullDepositReturn')}</p>
-                    {this.props.payment
+                    {payment
                         ? <p className='card-text'>
                             {t('UseIfAgentDoNotCloseContract')}<br />
                             {t('YouPayMultipleTransactionFees')}
                           </p>
-                        : ''
+                        : null
                     }
                     <ConfirmPopupSwal
                         title={t('TerminateContract')}
                         text={<span>{t('RequestFullDepositReturn')}<br />
-                            {this.props.payment
+                            {payment
                                 ? <span>
                                     {t('UseIfAgentDoNotCloseContract')}<br />
                                     {t('YouPayMultipleTransactionFees')}
                                 </span>
-                                : ''
+                                : null
                             }
                         </span>}
                         className={'btn btn-danger btn-custom btn-block'}

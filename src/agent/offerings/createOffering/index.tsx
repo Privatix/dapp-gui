@@ -11,9 +11,6 @@ import countries from 'utils/countries';
 import GasRange from 'common/etc/gasRange';
 import ExternalLink from 'common/etc/externalLink';
 
-import * as ubold from 'css/index.cssx';
-// import * as styles from './index.css';
-
 import { WS } from 'utils/ws';
 
 import { State } from 'typings/state';
@@ -428,9 +425,9 @@ class CreateOffering extends React.Component<IProps, IState>{
             </span>;
 
         return <div className='containerFluid'>
-            <div className={ubold.row}>
+            <div className='row'>
                 <div className='col-sm-12'>
-                        <div className={ubold.cardCardBodyMB20}>
+                        <div className='card card-body m-b-20'>
                             <div className='form-group row'>
                                 <label className='col-2 col-form-label'>{t('Server')}:</label>
                                 <div className='col-6'>
@@ -438,7 +435,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                 </div>
                             </div>
                         </div>
-                        <div className={ubold.cardMB20}>
+                        <div className='card m-b-20'>
                             <h5 className='card-header'>{t('GeneralInfo')}</h5>
                             <div className='card-body'>
                                 <div className='form-group row'>

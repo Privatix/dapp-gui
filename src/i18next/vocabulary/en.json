@@ -68,7 +68,7 @@
         "WeAreCurrentlyOnTestnet": "We are currently on testnet.",
         "YouShouldGetPRIXandETH": "You should get PRIX and ETH from privatix bot.",
         "CopyTheAddress": "Copy the address below to the clipboard",
-        "PostIntoBot": "<0>Post it into <1>Privatix's bot chat</1>.</0>",
+        "PostIntoBot": "<0>Open Telegram and send this address to <1>@prixbot</1> for airdrop (ETH/PRIX).</0>",
         "PressButton": "Press button \"I did it\".",
         "IdidIt": "I did it",
         "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
@@ -481,8 +481,7 @@
     "client/serviceView": {
         "CommonInfo": "Common Info",
         "IdTd": "Id:",
-        "OfferingID": "Offering ID:",
-        "OfferingHash": "Offering Hash:",
+        "Offering": "Offering:",
         "ContractStatusTd": "Contract status:",
         "ServiceStatusTd": "Service status:",
         "Transferred": "Transferred:",
@@ -528,22 +527,12 @@
         "AreYouSure": "Are you sure?"
     },
     "client/connections/connection": {
-        "Offering": "Offering",
         "Started": "Started",
         "Stopped": "Stopped",
         "Usage": "Usage",
         "CostPRIX": "Cost (PRIX)",
         "LastUsageTime": "Last Usage time",
         "ClientIP": "Client IP",
-        "CommonInfo": "Common Info",
-        "IdT": "Id:",
-        "OfferingT": "Offering:",
-        "ContractStatusT": "Contract status:",
-        "ServiceStatusT": "Service status:",
-        "TransferredT": "Transferred:",
-        "CostT": "Cost:",
-        "DepositT": "Deposit:",
-        "LastUsageTimeT": "Last usage time:",
         "Sessions": "Sessions"
     },
     "client/increaseDepositButton":{
@@ -634,6 +623,9 @@
         "psc_periods_popup_Name": "Popup period",
         "psc_periods_remove_Name": "Remove period",
         "updateDismissVersion_Name": "Dismissed update version",
+        "client_min_deposit_Name": "Min. deposit for auto-increase",
+        "client_autoincrease_percent_Name": "Percent of total usage for auto-increase",
+        "client_autoincrease_deposit_Name": "Auto-increase deposit.",
         "error_sendremote_Description": "Allow error reporting to send logs to Privatix.",
         "eth_challenge_period_Description": "Number of blocks to wait from an uncooperativeClose initiated by the Client in order to give the Agent a chance to respond with a balance proof in case the Client cheats. After the challenge period, the Client can settle and delete the channel. Number of blocks Agent will wait from registerServiceOffering or from createChannel before he can delete service offering and recieve Agent's deposit back_",
         "eth_default_gasprice_Description": "Default GAS price for transactions.",
@@ -652,7 +644,10 @@
         "psc_periods_popup_Description": "Number of blocks to be mined to repeatedly pop up an offering",
         "psc_periods_remove_Description": "Number of blocks to be mined from last offering update in blockchain to remove offering",
         "client_somc_transports_Description": "This setting defines what SOMC type should be used to display Offering",
-        "updateDismissVersion_Description": "Last dismissed update version"
+        "updateDismissVersion_Description": "Last dismissed update version",
+        "client_min_deposit_Description": "This value will override min. deposit proposed by Agent in auto-increase mode, if greater than proposed.",
+        "client_autoincrease_percent_Description": "This setting specifies when to increase deposit. Increase deposit, when current usage is equal to this percent of total used units.",
+        "client_autoincrease_deposit_Description": "Enable or disable auto-increase mode. Only for client."
     },
     "copyToClipboard": {
         "Copied": "Copied!",
@@ -766,12 +761,17 @@
         "Resume": "Resume",
         "Balance": "Balance",
         "Address": "Address",
-        "LighweightMode": "Simple Mode",
+        "SimpleMode": "Simple Mode",
         "AdvancedMode": "Advanced Mode",
         "SearchingTheOptimalNode": "Searching the optimal node",
         "NoAvailableOfferings": "No available offerings. Please choose another country.",
         "AgentFailed": "Agent failed to provide the service.",
         "HisRating": "His rating will register that.",
-        "PleaseTryAgain": "Please, try again."
+        "PleaseTryAgain": "Please, try again.",
+        "CountryAlertInvalid": "The country in the offering doesn't match the country that has been detected on the basis of IP address. Service will be terminated and contract will be closed.",
+        "PricePerMB": "Price per MB",
+        "MaxTraffic": "Max. traffic",
+        "FirstDeposit": "First deposit",
+        "unusedDepositTip": "Unused deposit will be returned after connection closed"
     }
 }
