@@ -73,12 +73,14 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 
     saveWindowsLogs() {
-        const utilPath = path.join(process.cwd(), '\\..\\util\\dump\\');
-        const archivePath = path.join(process.cwd(), '\\..');
+        const installDir = path.join(app.getAppPath(), '\\..\\..\\..');
+        const utilPath = path.join(installDir, '\\util\\dump\\');
         const archiveName = 'dump_' + Date.now() + '.zip';
-        const archive = path.join(archivePath, '\\util\\dump\\', archiveName);
+        const archive = path.join(app.getPath('temp'), archiveName);
 
-        exec(`"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`, () => {
+        const cmd = `"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${installDir}" -outFile "${archive}"`;
+        console.log(cmd);
+        exec(cmd, () => {
             this.saveDialogHandler(archive, archiveName);
         });
     }
