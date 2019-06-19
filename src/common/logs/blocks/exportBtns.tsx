@@ -68,7 +68,10 @@ class ExportBtns extends React.Component<IProps, IState> {
         const archivePath = path.join(appPath, '../../../../');
 
         console.log(`sudo ${util} ${archivePath}`);
-        exec(`sudo ${util} ${archivePath}`, () => {
+        exec(`sudo ${util} ${archivePath}`, (error: any) => {
+            if(error){
+                console.log(error);
+            }
             this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
         });
     }
@@ -81,7 +84,10 @@ class ExportBtns extends React.Component<IProps, IState> {
 
         const cmd = `"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${installDir}" -outFile "${archive}"`;
         console.log(cmd);
-        exec(cmd, () => {
+        exec(cmd, (error) => {
+            if(error){
+                console.log(error);
+            }
             this.saveDialogHandler(archive, archiveName);
         });
     }
@@ -92,7 +98,10 @@ class ExportBtns extends React.Component<IProps, IState> {
         const util = path.join(utilPath, 'dump_mac.sh');
         const archivePath = path.join(appPath, '/../../../../../../');
 
-        exec(`${util} ${archivePath}`, () => {
+        exec(`${util} ${archivePath}`, (error) => {
+            if(error){
+                console.log(error);
+            }
             this.saveDialogHandler(archivePath + this.archiveName);
         });
     }
@@ -113,6 +122,7 @@ class ExportBtns extends React.Component<IProps, IState> {
                 api.fs.copyFile(archive, pathToArchive)
                     .then(res => {
                         if (res.err) {
+                            console.log(res.err);
                             if (res.err.code === 'EACCES') {
                                 notice({level: 'error', msg: t('PermissionDenied')});
                             } else {
