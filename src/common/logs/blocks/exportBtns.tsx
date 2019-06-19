@@ -67,8 +67,8 @@ class ExportBtns extends React.Component<IProps, IState> {
         const util = path.join(utilPath, 'dump_ubuntu.sh');
         const archivePath = path.join(appPath, '../../../../');
 
-        console.log(`sudo ${util} ${archivePath}`);
-        exec(`sudo ${util} ${archivePath}`, (error: any) => {
+        console.log(`${util} ${archivePath}`);
+        exec(`${util} ${archivePath}`, (error: any) => {
             if(error){
                 console.log(error);
             }
@@ -98,6 +98,7 @@ class ExportBtns extends React.Component<IProps, IState> {
         const util = path.join(utilPath, 'dump_mac.sh');
         const archivePath = path.join(appPath, '/../../../../../../');
 
+        console.log(`${util} ${archivePath}`);
         exec(`${util} ${archivePath}`, (error) => {
             if(error){
                 console.log(error);
