@@ -67,8 +67,8 @@ class ExportBtns extends React.Component<IProps, IState> {
         const util = path.join(utilPath, 'dump_ubuntu.sh');
         const archivePath = path.join(appPath, '../../../../');
 
-        console.log(`sudo ${util} ${archivePath}`);
-        exec(`sudo ${util} ${archivePath}`, (error: any) => {
+        console.log(`NoNewPrivileges=true && sudo ${util} ${archivePath}`);
+        exec(`NoNewPrivileges=true && sudo ${util} ${archivePath}`, (error: any) => {
             if(error){
                 console.log(error);
             }
