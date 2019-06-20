@@ -30,21 +30,23 @@ export default class SelectCountry extends React.Component<IProps, {}> {
         const { t, selectedLocation, locations, offering, onSelect, disabled} = this.props;
 
         return (
-            <div style={ {margin: 'auto', width: '300px'} }>
-                <Select className='form-control btn btn-white'
-                        wrapperStyle={ {padding: '0px'} }
-                        placeholder={t('selectCountry')}
-                        value={selectedLocation}
-                        valueRenderer={SelectCountryValue}
-                        searchable={false}
-                        clearable={false}
-                        options={locations}
-                        onChange={onSelect}
-                        optionComponent={SelectCountryOption}
-                        disabled={disabled}
-                />
+            <>
+                <div style={ {margin: 'auto', width: '300px'} }>
+                    <Select className='form-control btn btn-white'
+                            wrapperStyle={ {padding: '0px'} }
+                            placeholder={t('selectCountry')}
+                            value={selectedLocation}
+                            valueRenderer={SelectCountryValue}
+                            searchable={false}
+                            clearable={false}
+                            options={locations}
+                            onChange={onSelect}
+                            optionComponent={SelectCountryOption}
+                            disabled={disabled}
+                    />
+                </div>
                 <OfferingInfo offering={offering} withDeposit={!disabled} />
-            </div>
+            </>
         );
     }
 }

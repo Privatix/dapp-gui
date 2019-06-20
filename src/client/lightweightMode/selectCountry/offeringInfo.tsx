@@ -2,6 +2,8 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
+import Traffic from 'common/badges/traffic';
+
 import toFixed from 'utils/toFixedN';
 
 import { State } from 'typings/state';
@@ -23,16 +25,16 @@ class OfferingInfo extends React.Component<any, {}> {
             const depositPRIX = toFixed({number: approvedDeposit/1e8, fixed: 4});
 
             return (
-                <table className='table table-sm' style={ {margin: 'auto',  width: '300px'} }>
+                <table className='table table-sm' style={ {margin: 'auto', width: '400px'} }>
                     <tbody>
                     <tr>
                         <td style={ {border: '0px'} }>{t('PricePerMB')}: </td>
-                        <td style={ {border: '0px'} }>{`${toFixed({number: offering.unitPrice/1e8, fixed: 8})} PRIX`}</td>
+                        <td style={ {border: '0px', whiteSpace: 'nowrap'} }>{`${toFixed({number: offering.unitPrice/1e8, fixed: 8})} PRIX`}</td>
                     </tr>
                     {withDeposit
                         ? <tr>
                              <td style={ {border: '0px'} }>{t('FirstDeposit')}:</td>
-                             <td style={ {border: '0px'} }>{depositMB} MB ({depositPRIX} PRIX) 
+                             <td style={ {border: '0px', whiteSpace: 'nowrap'} }><Traffic amount={parseFloat(depositMB)} />({depositPRIX} PRIX)
                                  <i className='fa fa-question-circle' title={t('unusedDepositTip')}></i></td>
                          </tr>
                         : null
@@ -40,7 +42,7 @@ class OfferingInfo extends React.Component<any, {}> {
                     }
                     <tr>
                         <td style={ {paddingBottom: '0px'} }>{t('MaxTraffic')}:</td>
-                        <td style={ {paddingBottom: '0px'} }>{offering.maxUnit ? `${offering.maxUnit} ${offering.unitName}` : 'unlimited' }</td>
+                        <td style={ {paddingBottom: '0px'} }>{offering.maxUnit ? <Traffic amount={offering.maxUnit} /> : 'unlimited' }</td>
                     </tr>
                     </tbody>
                 </table>
