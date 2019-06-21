@@ -22,7 +22,7 @@ class OfferingInfo extends React.Component<any, {}> {
             const approvedDeposit = autoIncreaseDeposit ? Math.min(maxPossibleDeposit, Math.max(supposedDeposit, minFirstDeposit)) : supposedDeposit;
 
             const depositMB = toFixed({number: approvedDeposit/offering.unitPrice, fixed: 2});
-            const depositPRIX = toFixed({number: approvedDeposit/1e8, fixed: 4});
+            const depositPRIX = toFixed({number: approvedDeposit/1e8, fixed: 8, significant: 2});
 
             return (
                 <table className='table table-sm' style={ {marginLeft: 'auto', marginRight: 'auto', marginTop: '7px', maxWidth: '350px', minWidth: '300px', width: 'auto'} }>
