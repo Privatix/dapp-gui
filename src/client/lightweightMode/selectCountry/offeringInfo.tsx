@@ -29,7 +29,7 @@ class OfferingInfo extends React.Component<any, {}> {
                     <tbody>
                     <tr>
                         <td style={ {border: '0px', textAlign: 'left'} }>{t('PricePerMB')}: </td>
-                        <td style={ {border: '0px', whiteSpace: 'nowrap', textAlign: 'center'} }>{`${toFixed({number: offering.unitPrice/1e8, fixed: 8})} PRIX`}</td>
+                        <td style={ {border: '0px', whiteSpace: 'nowrap', textAlign: 'center'} }>{`${toFixed({number: offering.unitPrice/1e8, fixed: 8, significant: 2})} PRIX`}</td>
                     </tr>
                     {withDeposit
                         ? <tr>
