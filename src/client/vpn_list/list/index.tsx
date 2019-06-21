@@ -24,8 +24,8 @@ import SelectByOffering from './selectByOffering';
 import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
 
-import {State} from 'typings/state';
-import {Offering} from 'typings/offerings';
+import { State } from 'typings/state';
+import { Offering, ClientOfferingItem } from 'typings/offerings';
 import { WS } from 'utils/ws';
 
 interface IProps {
@@ -61,7 +61,7 @@ interface IState {
     filteredCountries: string[];
     activePage: number;
     totalItems: number;
-    rawOfferings: any[];
+    rawOfferings: ClientOfferingItem[];
     form: {
         fromStr: string;
         toStr: string;
@@ -170,9 +170,9 @@ class VPNList extends React.Component<IProps, IState> {
         if (filter.offeringHash !== '') {
 
             try {
-                const offering = await this.props.ws.getObjectByHash('offering', filter.offeringHash.replace(/^0x/, ''));
+                const offering = await ws.getObjectByHash('offering', filter.offeringHash.replace(/^0x/, ''));
                 this.setState({
-                    rawOfferings: [offering],
+                    rawOfferings: [{offering: offering.items[0], rating: 0}],
                     totalItems: 1
                 });
             } catch (e) {
@@ -363,7 +363,7 @@ class VPNList extends React.Component<IProps, IState> {
 
     onCheckStatus = () => {
         this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
-        const offeringsIds = this.state.rawOfferings.map(offering => offering.id);
+        const offeringsIds = this.state.rawOfferings.map(offeringItem => offeringItem.offering.id);
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
     }
 
@@ -376,7 +376,7 @@ class VPNList extends React.Component<IProps, IState> {
         const { t, localSettings, offeringsAvailability } = this.props;
         const { rawOfferings, filteredCountries, filter, form, activePage, totalItems } = this.state;
 
-        const offerings = rawOfferings.map(offering => this.formFilteredDataRow(offering));
+        const offerings = rawOfferings.map(offeringItem => this.formFilteredDataRow(offeringItem.offering));
 
         if (offeringsAvailability.counter === 0
             && this.checkAvailabilityBtn.current

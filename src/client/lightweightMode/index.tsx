@@ -15,7 +15,7 @@ import countryByISO from 'utils/countryByIso';
 
 import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
-import { Offering } from 'typings/offerings';
+import { Offering, ClientOfferingItem } from 'typings/offerings';
 
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 
@@ -51,7 +51,7 @@ interface IState {
     locations: SelectItem[];
     channel: ClientChannel;
     usage: ClientChannelUsage;
-    offering: Offering;
+    offeringItem: ClientOfferingItem;
     sessionsDuration: number;
     topUpInProgress: boolean;
 }
@@ -67,7 +67,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     firstJobSubscription = null;
     increaseSubscription = null;
 
-    private offerings: Offering[] = [];
+    private offerings: ClientOfferingItem[] = [];
     private optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
     private blackList: Offering[] = [];
 
@@ -80,7 +80,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
            ,locations: null
            ,channel: null
            ,usage: null
-           ,offering: null
+           ,offeringItem: null
            ,sessionsDuration: 0
            ,topUpInProgress: false
         };
@@ -327,11 +327,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
     async uncooperativeClose(channel: ClientChannel){
 
         const { ws } = this.props;
-        const { offering, selectedLocation } = this.state;
+        const { offeringItem, selectedLocation } = this.state;
 
-        this.addToBlackList(offering);
+        this.addToBlackList(offeringItem.offering);
         this.updateOfferings();
-        this.setState({offering: null});
+        this.setState({offeringItem: null});
         this.onChangeLocation(selectedLocation ? selectedLocation : this.optimalLocation);
         if(channel){
             await ws.changeChannelStatus(channel.id, 'terminate');
@@ -365,11 +365,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return locations.findIndex(location => location.value === country) === -1;
     }
 
-    addOffering(offering: Offering){
+    addOffering(offeringItem: ClientOfferingItem){
 
         const { locations } = this.state;
 
-        this.offerings.push(offering);
+        this.offerings.push(offeringItem);
+        const offering = offeringItem.offering;
+
         if(this.isNewCountry(offering, locations)){
             const country = offering.country.toLowerCase().trim();
             this.setState({locations: locations.concat({value: country, label: countryByISO(country)})});
@@ -385,8 +387,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const { ws } = this.props;
 
         const allOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
-        const clientOfferings = allOfferings.items.filter(offering => this.blackList.findIndex(wreckOffering => wreckOffering.id === offering.id) === -1);
-        const ids = clientOfferings.map(offering => offering.id);
+        const clientOfferings = allOfferings.items.filter(item => this.blackList.findIndex(wreckOffering => wreckOffering.id === item.offering.id) === -1);
+        const ids = clientOfferings.map(item => item.offering.id);
 
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
@@ -396,7 +398,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if(!this.newOfferingSubscription){
             this.newOfferingSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish'], this.onNewOffering, this.updateOfferings);
         }
-        this.offerings = clientOfferings.filter(offering => offering.currentSupply > 0);
+        this.offerings = clientOfferings.filter(item => item.offering.currentSupply > 0);
 
         if(!this.state.locations){
             const locations = this.getLocations(this.offerings);
@@ -411,10 +413,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const { ws } = this.props;
 
-        if(!this.state.selectedLocation || !this.state.offering){
+        if(!this.state.selectedLocation || !this.state.offeringItem){
             const offering = await ws.getOffering(channel.offering);
             const country = offering.country.toLowerCase();
-            this.setState({selectedLocation: {value: country, label: countryByISO(country)}, offering});
+            this.setState({selectedLocation: {value: country, label: countryByISO(country)}, offeringItem: {offering, rating: 0}}); // TODO restore rating
         }
     }
 
@@ -469,13 +471,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     getOfferingsIdsForCountry(country: string){
 
-        return this.offerings.filter(offering => offering.country.toLowerCase() === country).map(offering => offering.id);
+        return this.offerings.filter(offeringItem => offeringItem.offering.country.toLowerCase() === country).map(offeringItem => offeringItem.offering.id);
     }
 
     getAvailableOffering(offeringsAvailability: State['offeringsAvailability'], country: string){
         const ids = this.getOfferingsIdsForCountry(country);
         const offerings = ids.filter(offeringId => offeringsAvailability.statuses[offeringId])
-                             .map(offeringId => this.offerings.find(offering => offering.id === offeringId));
+                             .map(offeringId => this.offerings.find(offeringItem => offeringItem.offering.id === offeringId));
         return offerings && offerings.length ? offerings[0] : null;
     }
 
@@ -483,10 +485,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         evt.preventDefault();
 
-        const { offering } = this.state;
+        const { offeringItem } = this.state;
 
         this.setState({status: 'connecting'});
-        this.connect(offering);
+        this.connect(offeringItem.offering);
 
     }
 
@@ -530,8 +532,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const selectedLocation = this.optimalLocation;
         this.setState({status: 'pingLocations', selectedLocation});
         const getCountries = () => {
-            return this.shuffle(Object.keys(this.offerings.reduce((registry: any, offering: Offering) => {
-                registry[offering.country.trim().toLowerCase()] = 1;
+            return this.shuffle(Object.keys(this.offerings.reduce((registry: any, offeringItem: ClientOfferingItem) => {
+                registry[offeringItem.offering.country.trim().toLowerCase()] = 1;
                 return registry;
             }, {})));
         };
@@ -541,8 +543,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
         for(let i=0; i<countries.length; i++){
             try{
                 const country = countries[i];
-                const offering = await this.pingLocation(country);
-                this.setState({status: 'disconnected', offering});
+                const offeringItem = await this.pingLocation(country);
+                this.setState({status: 'disconnected', offeringItem});
                 return;
             }catch(e){
                 continue;
@@ -553,7 +555,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     }
 
-    private pingLocation(country: string): Promise<Offering> {
+    private pingLocation(country: string): Promise<ClientOfferingItem> {
 
         return new Promise((resolve, reject) => {
             const { dispatch } = this.props;
@@ -566,9 +568,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 const { status } = this.state;
 
                 if(this.mounted && status === 'pingLocations'){
-                    const offering = this.getAvailableOffering(offeringsAvailability, country);
-                    if(offering){
-                        resolve(offering);
+                    const offeringItem = this.getAvailableOffering(offeringsAvailability, country);
+                    if(offeringItem){
+                        resolve(offeringItem);
                     }else{
                         if(offeringsAvailability.counter === 0){
                             reject();
@@ -600,9 +602,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { status } = this.state;
 
             if(this.mounted && status === 'pingLocations'){
-                const offering = this.getAvailableOffering(offeringsAvailability, selectedCountry);
-                if(offering){
-                    this.setState({status: 'disconnected', offering});
+                const offeringItem = this.getAvailableOffering(offeringsAvailability, selectedCountry);
+                if(offeringItem){
+                    this.setState({status: 'disconnected', offeringItem});
                 }else{
                     if(offeringsAvailability.counter === 0){
                         this.setState({status: 'pingFailed'});
@@ -616,9 +618,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return locations[Math.floor(Math.random()*locations.length)];
     }
 
-    private getLocations(offerings: Offering[]): SelectItem[] {
+    private getLocations(offerings: ClientOfferingItem[]): SelectItem[] {
 
-        let countries = offerings.reduce((registry: any, offering: any) => {
+        let countries = offerings.reduce((registry: any, offeringItem: ClientOfferingItem) => {
+            const offering = offeringItem.offering;
             const countries = offering.country.split(',').map(country => country.trim().toLowerCase());
             countries.forEach(country => {
                 if(country !== 'zz' && ! (country in registry)){
@@ -642,24 +645,24 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         connected: () => {
 
-            const { usage, ip, channel, selectedLocation, offering, sessionsDuration } = this.state;
-            const props = {usage, ip, channel, selectedLocation, offering, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect, sessionsDuration};
+            const { usage, ip, channel, selectedLocation, offeringItem, sessionsDuration } = this.state;
+            const props = {usage, ip, channel, selectedLocation, offering: offeringItem.offering, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect, sessionsDuration};
             return <States.Connected {...props} />;
             
         },
 
         connecting: () => {
 
-            const { channel, selectedLocation, offering } = this.state;
-            const props = { channel, selectedLocation, offering, onChangeLocation: this.onChangeLocation };
+            const { channel, selectedLocation, offeringItem } = this.state;
+            const props = { channel, selectedLocation, offering: offeringItem.offering, onChangeLocation: this.onChangeLocation };
             return <States.Connecting {...props} />;
             
         },
 
         suspended: () => {
 
-            const { selectedLocation, offering } = this.state;
-            const props = { selectedLocation, offering, onResume: this.onResume };
+            const { selectedLocation, offeringItem } = this.state;
+            const props = { selectedLocation, offering: offeringItem.offering, onResume: this.onResume };
             return <States.Suspended {...props} />;
             
         },
@@ -682,8 +685,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         disconnected: () => {
 
-            const { locations, selectedLocation, offering } = this.state;
-            const props = { locations, selectedLocation, offering, onChangeLocation: this.onChangeLocation, onConnect: this.onConnect };
+            const { locations, selectedLocation, offeringItem } = this.state;
+            const props = { locations, selectedLocation, offering: offeringItem.offering, onChangeLocation: this.onChangeLocation, onConnect: this.onConnect };
             return <States.Disconnected {...props} />;
 
         },

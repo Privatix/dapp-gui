@@ -1,3 +1,4 @@
+import { PaginatedResponse } from 'typings/paginatedResponse';
 import {Job} from './job';
 
 export type ServiceStatus = 'pending' |'activating' | 'active' | 'suspending' | 'suspended' | 'terminating' | 'terminated';
@@ -50,3 +51,6 @@ export interface OneChannelStatus {
     code?: number;
     status: ChannelStatus;
 }
+
+export type ChannelResponse  = PaginatedResponse<Channel[]>;
+export type ClientChannelResponse  = PaginatedResponse<ClientChannel[]>;
