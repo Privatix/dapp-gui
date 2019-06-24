@@ -61,24 +61,33 @@ class ExportBtns extends React.Component<IProps, IState> {
         }
     }
 
-    saveUbuntuLogs() {
+    async saveUbuntuLogs() {
         const appPath = app.getAppPath();
         const utilPath = path.join(appPath, '../../../util/dump/');
         const util = path.join(utilPath, 'dump_ubuntu.sh');
         const archivePath = path.join(appPath, '../../../../');
 
-        exec(`sudo ${util} ${archivePath}`, () => {
-            this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
-        });
+        console.log(`${util} ${archivePath}`);
+
+        const { error } = await api.exec(`${util} ${archivePath}`);
+        if(error){
+            console.log(error);
+        }
+        this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
     }
 
     saveWindowsLogs() {
-        const utilPath = path.join(process.cwd(), '\\..\\util\\dump\\');
-        const archivePath = path.join(process.cwd(), '\\..');
+        const installDir = path.join(app.getAppPath(), '\\..\\..\\..');
+        const utilPath = path.join(installDir, '\\util\\dump\\');
         const archiveName = 'dump_' + Date.now() + '.zip';
-        const archive = path.join(archivePath, '\\util\\dump\\', archiveName);
+        const archive = path.join(app.getPath('temp'), archiveName);
 
-        exec(`"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${archivePath}" -outFile "${archive}"`, () => {
+        const cmd = `"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${installDir}" -outFile "${archive}"`;
+        console.log(cmd);
+        exec(cmd, (error) => {
+            if(error){
+                console.log(error);
+            }
             this.saveDialogHandler(archive, archiveName);
         });
     }
@@ -89,7 +98,11 @@ class ExportBtns extends React.Component<IProps, IState> {
         const util = path.join(utilPath, 'dump_mac.sh');
         const archivePath = path.join(appPath, '/../../../../../../');
 
-        exec(`${util} ${archivePath}`, () => {
+        console.log(`${util} ${archivePath}`);
+        exec(`${util} ${archivePath}`, (error) => {
+            if(error){
+                console.log(error);
+            }
             this.saveDialogHandler(archivePath + this.archiveName);
         });
     }
@@ -110,6 +123,7 @@ class ExportBtns extends React.Component<IProps, IState> {
                 api.fs.copyFile(archive, pathToArchive)
                     .then(res => {
                         if (res.err) {
+                            console.log(res.err);
                             if (res.err.code === 'EACCES') {
                                 notice({level: 'error', msg: t('PermissionDenied')});
                             } else {
