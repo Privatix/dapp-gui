@@ -61,19 +61,19 @@ class ExportBtns extends React.Component<IProps, IState> {
         }
     }
 
-    saveUbuntuLogs() {
+    async saveUbuntuLogs() {
         const appPath = app.getAppPath();
         const utilPath = path.join(appPath, '../../../util/dump/');
         const util = path.join(utilPath, 'dump_ubuntu.sh');
         const archivePath = path.join(appPath, '../../../../');
 
-        console.log(`sudo ${util} ${archivePath}`);
-        exec(`sudo ${util} ${archivePath}`, (error: any) => {
-            if(error){
-                console.log(error);
-            }
-            this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
-        });
+        console.log(`${util} ${archivePath}`);
+
+        const { error } = await api.exec(`${util} ${archivePath}`);
+        if(error){
+            console.log(error);
+        }
+        this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
     }
 
     saveWindowsLogs() {
