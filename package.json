@@ -55,7 +55,6 @@
         "cors": "^2.8.4",
         "dateformat": "^3.0.3",
         "electron": "^5.0.3",
-        "electron-sudo": "^4.0.12",
         "fs-extra": "^7.0.1",
         "history": "^4.7.2",
         "i18next": "^11.9.0",
