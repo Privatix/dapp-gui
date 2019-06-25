@@ -164,7 +164,7 @@ class GetPrix extends React.Component<IProps, IState>{
     render(){
 
         const { t, accountId } = this.props;
-        const { ethAddr , didIt, getPrix, done } = this.state;
+        const { ethAddr, didIt, getPrix, done } = this.state;
         const advancedMode = accountId && accountId !== 'generate';
 
         return <div className='card-box'>
