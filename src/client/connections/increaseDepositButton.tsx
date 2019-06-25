@@ -39,7 +39,6 @@ class IncreaseDepositButton extends React.Component<any, any>{
                 <Trans i18nKey='ThisOperationWillIncrease' values={{serviceName}} >
                     This operation will increase your {{serviceName}} balance by increasing the deposit.
                 </Trans>
-                {t('ThisOperationWillIncrease')}
             </p>
             <div>
                 {increaseDepositView}

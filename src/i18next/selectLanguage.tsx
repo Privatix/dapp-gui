@@ -23,6 +23,11 @@ interface IState {
 @translate()
 class SelectLanguage extends React.Component<IProps, IState> {
 
+    constructor(props: IProps){
+        super(props);
+        this.state = {lang: props.lang};
+    }
+
     changeLanguage = (lang:any) => {
 
         const { i18n, ws } = this.props;
@@ -32,11 +37,12 @@ class SelectLanguage extends React.Component<IProps, IState> {
             // From custom electron menu
             initElectronMenu();
         });
+        this.setState({lang: lang.value});
     }
 
     render() {
 
-        const { lang } = this.props;
+        const { lang } = this.state;
 
         return <Select className='form-control'
             value={lang}

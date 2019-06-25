@@ -5,6 +5,7 @@ import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
 import * as fse from 'fs-extra';
+import * as sudo from 'sudo-prompt';
 
 import { updateChecker } from './updateChecker';
 
@@ -19,7 +20,7 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
       app.disableHardwareAcceleration();
   }
 
-  ipcMain.on('api', (event, msg) => {
+  ipcMain.on('api', async (event, msg) => {
     const req = JSON.parse(msg);
     if(!req.options){
         req.options = {};
@@ -28,7 +29,22 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         req.options.method = 'get';
     }
 
-    if(req.endpoint === '/readFile'){
+    if(req.endpoint === '/exec'){
+        const options = {
+          name: 'Electron',
+        };
+        console.log(req.options.body.cmd);
+        sudo.exec(req.options.body.cmd, options,
+          function(error: any, stdout: any, stderr: any) {
+            if(error){
+                throw error;
+            }
+            console.log('stdout: ' + stdout);
+            event.sender.send('api-reply', JSON.stringify({req: msg, res: {error, stdout, stderr}}));
+          }
+        );
+
+    }else if(req.endpoint === '/readFile'){
         const file = fs.readFileSync(req.options.body.fileName, {encoding: 'utf8'});
         event.sender.send('api-reply', JSON.stringify({req: msg, res: file}));
     }else if(req.endpoint === '/saveAs'){
