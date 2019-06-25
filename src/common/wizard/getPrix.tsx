@@ -180,7 +180,7 @@ class GetPrix extends React.Component<IProps, IState>{
                                 <tbody>
                                     <tr>
                                         <td style={ {verticalAlign: 'top', width: '30' } } >
-                                            <i className='fa fa-info-circle' style={ {fontSize:'22px', color: 'deepskyblue'} }></i>
+                                            <i className='fa fa-info-circle' style={ {fontSize:'22px', color: 'deepskyblue', marginRight:'10px'} }></i>
                                         </td>
                                         <td>
                                             <p>
