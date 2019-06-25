@@ -15,6 +15,9 @@ import Steps from './steps';
 import { PreviousButton, FinishButton, back } from './utils';
 import Spinner from './spinner';
 
+
+import * as QRCode from 'qrcode';
+
 interface IProps{
     ws?: WS;
     t?: any;
@@ -55,6 +58,7 @@ class GetPrix extends React.Component<IProps, IState>{
             ws.getAccount(accountId)
               .then(account => {
                   this.setState({ethAddr: `0x${account.ethAddr}`});
+                  this.drawQRcode(`0x${account.ethAddr}`);
               });
         }else{
             // simple mode!
@@ -70,12 +74,23 @@ class GetPrix extends React.Component<IProps, IState>{
                 ws.getAccount(accountId)
                   .then(account => {
                       this.setState({accountId, ethAddr: `0x${account.ethAddr}`});
+                      this.drawQRcode(`0x${account.ethAddr}`);
                   });
             } catch (e){
                 const msg = t('auth/generateKey:SomethingWentWrong');
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg});
             }
         }
+    }
+
+    private drawQRcode(str: string){
+        const canvas = document.getElementById('qrCode');
+
+        QRCode.toCanvas(canvas, str, {width: 200}, function (error: any) {
+            if (error){
+                console.error(error);
+            }
+        });
     }
 
     componentWillUnmount() {
@@ -161,62 +176,125 @@ class GetPrix extends React.Component<IProps, IState>{
                     <Steps step={advancedMode ? 6 : 3} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />
                     <div className='content clearfix'>
                         <section>
-                            <p>{t('WeAreCurrentlyOnTestnet')}</p>
-                            <p>{t('YouShouldGetPRIXandETH')}</p>
-                            <ol>
-                                <li>
-                                    <p>{t('CopyTheAddress')}</p>
-                                    <div className='input-group bootstrap-touchspin'>
-                                            <input className='form-control'
-                                                   readOnly
-                                                   type='text'
-                                                   defaultValue={ethAddr}
-                                            />
-                                            <span style={ {paddingLeft: '9px', paddingRight: '16px'} }
-                                                  className='input-group-addon bootstrap-touchspin-postfix'>
-                                                <CopyToClipboard text={ethAddr} />
-                                            </span>
-                                    </div>
-                                    <br />
-                                </li>
-                                <li>
-                                    <Trans i18nKey='PostIntoBot'>
-                                        <p>Open Telegram and send this address to <ExternalLink href='https://t.me/prixbot'>{'@prixbot'}</ExternalLink> for airdrop (ETH/PRIX).</p>
-                                    </Trans>
-                                </li>
-                                <li>
-                                    <p>{t('PressButton')}</p>
-                                    <div className='form-group row'>
-                                        <div className='col-md-12'>
-                                            {didIt
-                                                ?<button className='btn btnCustomDisabled btn-block disabled' >{t('IdidIt')}</button>
-                                                :<button type='submit'
-                                                        onClick={this.onSubmit}
-                                                        className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
-                                                >
-                                                    {t('IdidIt')}
-                                                </button>
-                                            }
-                                        </div>
-                                    </div>
-                                    {didIt && (!getPrix || !done)
-                                        ? <div className='text-center'>
-                                              {getPrix
-                                                  ? <>
-                                                      <div>{t('TokensHaveBeenReceived')}</div>
-                                                      <div>{t('WeAreTransferring')}</div>
-                                                    </>
-                                                  : t('PleaseWait')
-                                              }
-                                              <Spinner />
-                                          </div>
-                                        : null
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td style={ {verticalAlign: 'top', width: '30' } } >
+                                            <i className='fa fa-info-circle' style={ {fontSize:'22px', color: 'deepskyblue', marginRight:'10px'} }></i>
+                                        </td>
+                                        <td>
+                                            <p>
+                                                <i>{t('intro')}&nbsp;
+                                                    <ExternalLink href='https://help.privatix.network/general/short-explanation-of-core-simple-ui-client'>
+                                                    {t('learnMore')}
+                                                    </ExternalLink>.
+                                                </i>
+                                            </p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <h4>{t('fundYourAccount')}</h4>
+
+                            <hr />
+
+                            <h5>{t('option1')} {t('directDeposit')}</h5>
+
+                            <div>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <ol>
+                                                    <li>{t('transferPRIX')}</li>
+                                                    <li>
+                                                        <Trans i18nKey='weRecommend'>
+                                                            We recommend transferring min 0.005 ETH and min 1 PRIX. Learn about price formation&nbsp;
+                                                            <ExternalLink href='https://help.privatix.network/general/price-formation'>here</ExternalLink>
+                                                        </Trans>
+                                                    </li>
+                                                    <li>
+                                                        <Trans i18nKey='thisOptionIsGood'>
+                                                            This option is good for users who already have PRIX and ETH. If you didn't,&nbsp;
+                                                            <ExternalLink href='https://help.privatix.network/general/how-to-get-prix-token'>
+                                                                learn how to get them
+                                                            </ExternalLink>
+                                                        </Trans>
+                                                    </li>
+                                                </ol>
+                                                <h6>{t('accountAddress')}</h6>
+                                                <div className='input-group bootstrap-touchspin'>
+                                                    <input className='form-control'
+                                                           readOnly type='text'
+                                                           defaultValue={ethAddr}
+                                                    />
+                                                    <span style={ {paddingLeft: '9px', paddingRight: '16px'} }
+                                                          className='input-group-addon bootstrap-touchspin-postfix'>
+                                                        <CopyToClipboard text={ethAddr} />
+                                                    </span>
+                                                </div>
+                                            </td>
+                                            <td align='right' style={ {verticalAlign: 'bottom', width: '40%'} }>
+                                               <canvas id='qrCode'></canvas>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <hr />
+
+                            <h5><b>{t('option2')} {t('easySwap')}</b></h5>
+
+                            <div>
+                                <ol>
+                                    <li>{t('transferPopularCrypto')}</li>
+                                    <li>
+                                        <Trans i18nKey='weRecommendOption2'>
+                                            We recommend transferring min $10 of crypto equivalent.&nbsp;
+                                            <ExternalLink href={`https://swap.privatix.network/?addr=${ethAddr}`}>
+                                                learn how to get them
+                                            </ExternalLink>
+                                        </Trans>
+                                    </li>
+                                    <li>{t('thisOptionIsGoodOption2')}</li>
+                                </ol>
+                            </div>
+
+                            <hr />
+
+                            <p>{t('PressButton')}</p>
+                            <div className='form-group row'>
+                                <div className='col-md-12'>
+                                    {didIt
+                                        ?<button className='btn btnCustomDisabled btn-block disabled' >{t('IdidIt')}</button>
+                                        :<button type='submit'
+                                                onClick={this.onSubmit}
+                                                className='btn btn-default btn-lg btn-custom btn-block waves-effect waves-light'
+                                        >
+                                            {t('IdidIt')}
+                                        </button>
                                     }
-                                    <h4 className='text-center'>
-                                        {done ? t('AllDonePressFinish') : null }
-                                    </h4>
-                                </li>
-                            </ol>
+                                </div>
+                            </div>
+                            {didIt && (!getPrix || !done)
+                                ? <div className='text-center'>
+                                      {getPrix
+                                          ? <>
+                                              <div>{t('TokensHaveBeenReceived')}</div>
+                                              <div>{t('WeAreTransferring')}</div>
+                                            </>
+                                          : t('PleaseWait')
+                                      }
+                                      <Spinner />
+                                  </div>
+                                : null
+                            }
+                            <h4 className='text-center'>
+                                {done ? t('AllDonePressFinish') : null }
+                            </h4>
+
                             <div className='form-group text-right m-t-40'>
                                 {advancedMode ? <PreviousButton onSubmit={this.back} /> : null }
                                 {done
@@ -227,6 +305,7 @@ class GetPrix extends React.Component<IProps, IState>{
                                 }
                            </div>
                         </section>
+
                     </div>
                 </div>
             </div>
