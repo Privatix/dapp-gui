@@ -25,7 +25,7 @@ import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
 
 import { State } from 'typings/state';
-import { Offering, ClientOfferingItem } from 'typings/offerings';
+import { ClientOfferingItem } from 'typings/offerings';
 import { WS } from 'utils/ws';
 
 interface IProps {
@@ -226,10 +226,10 @@ class VPNList extends React.Component<IProps, IState> {
         this.updateFilter({price: {userFilter: filter.price.userFilter, min, max, from, to}}, undefined);
     }
 
-    formFilteredDataRow(offering: Offering) {
+    formFilteredDataRow(offeringItem: ClientOfferingItem) {
 
         const { t, offeringsAvailability } = this.props;
-
+        const offering = offeringItem.offering;
         const offeringHash = '0x' + offering.hash;
 
         const availability = (offering.id in offeringsAvailability.statuses)
@@ -250,7 +250,8 @@ class VPNList extends React.Component<IProps, IState> {
             country: countryByIso(offering.country),
             price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
             availableSupply: offering.currentSupply,
-            supply: offering.supply
+            supply: offering.supply,
+            rating: offeringItem.rating
         };
     }
 
@@ -376,7 +377,7 @@ class VPNList extends React.Component<IProps, IState> {
         const { t, localSettings, offeringsAvailability } = this.props;
         const { rawOfferings, filteredCountries, filter, form, activePage, totalItems } = this.state;
 
-        const offerings = rawOfferings.map(offeringItem => this.formFilteredDataRow(offeringItem.offering));
+        const offerings = rawOfferings.map(offeringItem => this.formFilteredDataRow(offeringItem));
 
         if (offeringsAvailability.counter === 0
             && this.checkAvailabilityBtn.current

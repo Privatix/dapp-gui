@@ -740,7 +740,8 @@
         "Name": "Имя",
         "ServiceBalance": "Баланс сервиса",
         "IsDefault": "По умолчанию",
-        "Actions": "Действия"
+        "Actions": "Действия",
+        "Rating": "Рейтинг"
     },
     "client/simpleMode" : {
         "selectCountry": "Выберите страну",

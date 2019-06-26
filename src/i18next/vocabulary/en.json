@@ -740,7 +740,8 @@
         "Name": "Name",
         "ServiceBalance": "Service Balance",
         "IsDefault": "Is Default",
-        "Actions": "Actions"
+        "Actions": "Actions",
+        "Rating": "Rating"
     },
     "client/simpleMode" : {
         "selectCountry": "Select country",

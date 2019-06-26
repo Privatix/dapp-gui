@@ -80,7 +80,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
            ,locations: null
            ,channel: null
            ,usage: null
-           ,offeringItem: null
+           ,offeringItem: {offering: null, rating: 0}
            ,sessionsDuration: 0
            ,topUpInProgress: false
         };
