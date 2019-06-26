@@ -198,6 +198,13 @@ export const Supply = {
     dataProps: { className: 'text-center'}
 };
 
+export const Rating = {
+    header: i18n.t('tables:Rating'),
+    headerStyle: {textAlign: 'center'},
+    key: 'rating',
+    dataProps: { className: 'text-center'}
+};
+
 export const ServiceName = {
     header: i18n.t('tables:ServiceName'),
     headerStyle: {textAlign: 'center'},

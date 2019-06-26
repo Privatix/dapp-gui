@@ -1,3 +1,5 @@
+import { PaginatedResponse } from 'typings/paginatedResponse';
+
 export enum BillType {
     prepaid = 'prepaid', postpaid = 'postpaid'
 }
@@ -46,3 +48,7 @@ export interface ResolvedOffering extends Offering {
 export type OfferingAvailabilityResponse = {
     [key: string]: boolean;
 };
+
+export type ClientOfferingItem = {offering: Offering, rating: number};
+export type AgentOfferingResponse = PaginatedResponse<Offering[]>;
+export type ClientOfferingResponse = PaginatedResponse<ClientOfferingItem[]>;

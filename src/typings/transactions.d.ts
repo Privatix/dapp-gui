@@ -1,3 +1,5 @@
+import { PaginatedResponse } from 'typings/paginatedResponse';
+
 export interface Transaction {
     addrFrom: string;
     addrTo: string;
@@ -14,3 +16,5 @@ export interface Transaction {
     status: string;
     txRaw: string;
 }
+
+export type TransactionResponse = PaginatedResponse<Transaction[]>;
