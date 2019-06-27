@@ -103,7 +103,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    unsubscribe(){
+    private unsubscribe(){
         const { ws } = this.props;
 
         if(this.subscription){
@@ -128,7 +128,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    async getIp(attempt?: number){
+    private async getIp(attempt?: number){
         if(!this.mounted){
             return;
         }
@@ -146,7 +146,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    checker = (event: any) => {
+    private checker = (event: any) => {
 
         const unsubscribe = () => {
                 const { ws } = this.props;
@@ -166,7 +166,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    eventDispatcher(channelId: string, event: any){
+    private eventDispatcher(channelId: string, event: any){
         if('job' in event){
             this.refresh();
         }else if(channelId in event){
@@ -260,7 +260,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    async hasSessions(channelId: string){
+    private async hasSessions(channelId: string){
 
         const { ws } = this.props;
 
@@ -268,7 +268,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return sessions.length > 0;
 
     }
-    async getSessionsDuration(channelId: string){
+    private async getSessionsDuration(channelId: string){
 
         const { ws } = this.props;
 
@@ -285,13 +285,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.setState({sessionsDuration});
     }
 
-    addToBlackList(offering: Offering){
+    private addToBlackList(offering: Offering){
         if(offering){
             this.blackList.push(offering);
         }
     }
 
-    async failedJob(channel: ClientChannel){
+    private async failedJob(channel: ClientChannel){
 
         if(!this.mounted){
             return;
@@ -306,7 +306,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     }
 
-    async checkCountryAccordance(channel: ClientChannel){
+    private async checkCountryAccordance(channel: ClientChannel){
 
         if(!this.mounted){
             return;
@@ -324,7 +324,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    async uncooperativeClose(channel: ClientChannel){
+    private async uncooperativeClose(channel: ClientChannel){
 
         const { ws } = this.props;
         const { offeringItem, selectedLocation } = this.state;
@@ -339,7 +339,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    onNewOffering = (event: any) => {
+    private onNewOffering = (event: any) => {
 
         if(!this.mounted){
             return;
@@ -357,7 +357,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
 
-    isNewCountry(offering: Offering, locations: SelectItem[]){
+    private isNewCountry(offering: Offering, locations: SelectItem[]){
         const country = offering.country.toLowerCase().trim();
         if(country === 'zz'){
             return false;
@@ -365,7 +365,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return locations.findIndex(location => location.value === country) === -1;
     }
 
-    addOffering(offeringItem: ClientOfferingItem){
+    private addOffering(offeringItem: ClientOfferingItem){
 
         const { locations } = this.state;
 
@@ -378,7 +378,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    updateOfferings = async () => {
+    private updateOfferings = async () => {
 
         if(!this.mounted){
             return;
@@ -409,7 +409,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    async updateCurrentCountry(channel: any){
+    private async updateCurrentCountry(channel: any){
 
         const { ws } = this.props;
 
@@ -420,16 +420,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    async refreshUsage(channelId: string, usage: ClientChannelUsage){
-
-        if(!this.mounted){
-            return;
-        }
-
-        this.setState({usage: usage[channelId]});
-    }
-
-    async connect(offering: Offering){
+    private async connect(offering: Offering){
 
         const { t, ws, localSettings, gasPrice, account } = this.props;
 
@@ -469,23 +460,16 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
-    getOfferingsIdsForCountry(country: string){
-
-        return this.offerings.filter(offeringItem => offeringItem.offering.country.toLowerCase() === country).map(offeringItem => offeringItem.offering.id);
+    private getOfferingsIdsForCountry(country: string){
+        return this.offerings.filter(offeringItem => offeringItem.offering.country.toLowerCase() === country)
+                             .map(offeringItem => offeringItem.offering.id);
     }
 
-    getAvailableOffering(offeringsAvailability: State['offeringsAvailability'], country: string){
-        const ids = this.getOfferingsIdsForCountry(country);
-        const offerings = ids.filter(offeringId => offeringsAvailability.statuses[offeringId])
-                             .map(offeringId => this.offerings.find(offeringItem => offeringItem.offering.id === offeringId));
-        return offerings && offerings.length ? offerings[0] : null;
-    }
-
-    isAvailableOffering(offeringsAvailability: State['offeringsAvailability'], offeringItem: ClientOfferingItem){
+    private isAvailableOffering(offeringsAvailability: State['offeringsAvailability'], offeringItem: ClientOfferingItem){
         return offeringsAvailability.statuses[offeringItem.offering.id];
     }
 
-    onConnect = (evt: any) => {
+    private onConnect = (evt: any) => {
 
         evt.preventDefault();
 
@@ -515,11 +499,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.setState({status: 'connecting'});
     }
 
-    makeLocation(country: string): SelectItem {
-        return {value: country, label: countryByISO(country)};
-    }
-
-    shuffle(a: Array<any>): Array<any> {
+    private shuffle(a: Array<any>): Array<any> {
         for (let i = a.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [a[i], a[j]] = [a[j], a[i]];
@@ -527,7 +507,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return a;
     }
 
-    selectOptimalLocation = async () => {
+    private selectOptimalLocation = async () => {
 
         if(!this.mounted){
             return;
@@ -586,7 +566,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         });
     }
 
-    getRange(offeringsItems: ClientOfferingItem[]){
+    private getRange(offeringsItems: ClientOfferingItem[]){
 
         const table = [
             {min: 0, max: 0.1, probability: 0.15},
@@ -620,7 +600,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return this.getRange(offeringsItems);
     }
 
-    selectByProbability(items: any[], probability: number){
+    private selectByProbability(items: any[], probability: number){
 
         const result = items.reduce((res: any, item: any) => {
             if(res.item){
