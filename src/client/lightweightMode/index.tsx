@@ -481,6 +481,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return offerings && offerings.length ? offerings[0] : null;
     }
 
+    isAvailableOffering(offeringsAvailability: State['offeringsAvailability'], offeringItem: ClientOfferingItem){
+        return offeringsAvailability.statuses[offeringItem.offering.id];
+    }
+
     onConnect = (evt: any) => {
 
         evt.preventDefault();
@@ -581,6 +585,72 @@ class LightWeightClient extends React.Component<IProps, IState> {
         });
     }
 
+    getRange(offeringsItems: ClientOfferingItem[]){
+
+        const table = [
+            {min: 0, max: 0.1, probability: 0.15},
+            {min: 0.1, max: 1, probability: 0.85}
+        ];
+
+        if(offeringsItems.length === 0){
+            return undefined;
+        }
+
+        const probability = Math.random();
+        const range = this.selectByProbability(table, probability);
+        const items = offeringsItems.map(offeringItem => ({id: offeringItem.offering.id, rating: offeringItem.rating}));
+        const max = Math.max(...items.map(item => item.rating));
+
+        if(max === 0){
+            return offeringsItems;
+        }
+
+        const k = 1/max;
+        const normalizedItems = items.map(item => ({id: item.id, rating: item.rating*k}));
+
+        const res = normalizedItems.filter(item => item.rating >= range.min && item.rating < range.max);
+        const ids = res.map(item => item.id);
+        const offerings = offeringsItems.filter(offeringItem => ids.includes(offeringItem.offering.id));
+
+        if(offerings.length > 0){
+            return offerings;
+        }
+
+        return this.getRange(offeringsItems);
+    }
+
+    selectByProbability(items: any[], probability: number){
+
+        const result = items.reduce((res: any, item: any) => {
+            if(res.item){
+                return res;
+            }
+            if(res.probability <= item.probability){
+                res.item = item;
+                return res;
+            }
+            res.probability -= item.probability;
+            return res;
+        }, {probability, item: null});
+
+        return result.item;
+    }
+
+    private flipCoin(offeringsItems: ClientOfferingItem[]){
+
+        const offerings = this.getRange(offeringsItems);
+        const items = offerings.map(offeringItem => ({id: offeringItem.offering.id, probability: offeringItem.rating/offeringItem.offering.unitPrice}));
+        const k = items.reduce(((k:number, item: any) => k += item.probability), 0);
+
+        if(k === 0){
+            return offerings[Math.floor(Math.random()*offerings.length)];
+        }
+
+        const item = this.selectByProbability(items, Math.random()*k);
+        const offering = offerings.find(offeringItem => offeringItem.offering.id === item.id);
+        return offering;
+    }
+
     private onChangeLocation = (selectedLocation: SelectItem) => {
 
         this.setState({selectedLocation, status: 'pingLocations'});
@@ -590,11 +660,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return;
         }
 
-
         const { dispatch } = this.props;
 
         const selectedCountry = selectedLocation.value;
         const ids = this.getOfferingsIdsForCountry(selectedCountry);
+        const offeringsItems = this.offerings.filter(offeringItem => ids.includes(offeringItem.offering.id));
 
         dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
 
@@ -602,8 +672,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { status } = this.state;
 
             if(this.mounted && status === 'pingLocations'){
-                const offeringItem = this.getAvailableOffering(offeringsAvailability, selectedCountry);
-                if(offeringItem){
+                const offeringItem = this.flipCoin(offeringsItems);
+                if(this.isAvailableOffering(offeringsAvailability, offeringItem)){
                     this.setState({status: 'disconnected', offeringItem});
                 }else{
                     if(offeringsAvailability.counter === 0){
@@ -614,13 +684,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }));
     }
 
-    private getOptimalLocation(locations: SelectItem[]){
+    private getOptimalLocation(locations: Offering[]){
         return locations[Math.floor(Math.random()*locations.length)];
     }
 
     private getLocations(offerings: ClientOfferingItem[]): SelectItem[] {
 
-        let countries = offerings.reduce((registry: any, offeringItem: ClientOfferingItem) => {
+        const offeringsByCountries = offerings.reduce((registry: {[key: string]: Offering[]}, offeringItem: ClientOfferingItem) => {
             const offering = offeringItem.offering;
             const countries = offering.country.split(',').map(country => country.trim().toLowerCase());
             countries.forEach(country => {
@@ -630,11 +700,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 registry[country].push(offering);
             });
             return registry;
-        }, {});
+        }, {}) as {[key: string]: Offering[]};
 
-        Object.keys(countries).forEach(country => {
-            countries[country] = this.getOptimalLocation(countries[country]);
-        });
+        const countries = Object.keys(offeringsByCountries).reduce((countries, country) => {
+            countries[country] = this.getOptimalLocation(offeringsByCountries[country]);
+            return countries;
+        }, {});
 
         const res = Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
         res.unshift(this.optimalLocation);
