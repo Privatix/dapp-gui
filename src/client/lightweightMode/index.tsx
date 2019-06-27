@@ -565,6 +565,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { dispatch } = this.props;
 
             const ids = this.getOfferingsIdsForCountry(country);
+            const offeringsItems = this.offerings.filter(offeringItem => ids.includes(offeringItem.offering.id));
 
             dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
 
@@ -572,8 +573,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 const { status } = this.state;
 
                 if(this.mounted && status === 'pingLocations'){
-                    const offeringItem = this.getAvailableOffering(offeringsAvailability, country);
-                    if(offeringItem){
+                    const offeringItem = this.flipCoin(offeringsItems);
+                    if(this.isAvailableOffering(offeringsAvailability, offeringItem)){
                         resolve(offeringItem);
                     }else{
                         if(offeringsAvailability.counter === 0){
