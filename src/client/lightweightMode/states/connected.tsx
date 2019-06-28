@@ -3,7 +3,7 @@ import { translate } from 'react-i18next';
 
 import SelectCountry from '../selectCountry/';
 
-import toFixed from 'utils/toFixedN';
+import prix from 'utils/prix';
 
 import { Offering } from 'typings/offerings';
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
@@ -115,7 +115,7 @@ export default class Connected extends React.Component<IProps, IState> {
                     </li>
                     <li>
                         <h6 className='text-muted' style={ {marginTop: '0px'} }>{t('SPENT')}</h6>
-                        <h2 className='m-t-20'>{usage ? toFixed({number: usage.cost/1e8, fixed: 4}) : null}</h2>
+                        <h2 className='m-t-20'>{usage ? prix(usage.cost) : null}</h2>
                         <h4 className='text-muted m-b-0'>PRIX</h4>
                     </li>
                 </ul>

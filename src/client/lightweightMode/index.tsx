@@ -9,8 +9,9 @@ import CopyToClipboard from 'common/copyToClipboard';
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
 import States from './states';
 
-import toFixed from 'utils/toFixedN';
 import notice from 'utils/notice';
+import prix from 'utils/prix';
+
 import countryByISO from 'utils/countryByIso';
 
 import { State } from 'typings/state';
@@ -791,7 +792,7 @@ export default connect((state: State) => {
        ,localSettings: state.localSettings
        ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
        ,account
-       ,balance: account ? toFixed({number: account.pscBalance/1e8, fixed: 2}) : ''
+       ,balance: account ? prix(account.pscBalance) : ''
        ,offeringsAvailability: state.offeringsAvailability
     };
 })(LightWeightClient);
