@@ -5,7 +5,9 @@ import { translate, Trans } from 'react-i18next';
 import Select from 'react-select';
 
 import notice from 'utils/notice';
-import toFixedN from 'utils/toFixedN';
+import prix from 'utils/prix';
+import eth from 'utils/eth';
+
 import parseFloatPrix from 'utils/parseFloatPrix';
 import countries from 'utils/countries';
 import GasRange from 'common/etc/gasRange';
@@ -412,8 +414,8 @@ class CreateOffering extends React.Component<IProps, IState>{
             options={accounts.map(account => ({value: account.id, label: account.name}))}
             onChange={this.onAccountChanged} />;
 
-        const ethBalance = account ? (toFixedN({number: (account.ethBalance / 1e18), fixed: 8})) : 0;
-        const pscBalance = account ? (toFixedN({number: (account.pscBalance / 1e8), fixed: 8})) : 0;
+        const ethBalance = account ? eth(account.ethBalance) : '0';
+        const pscBalance = account ? prix(account.pscBalance) : '0';
 
         const onUserInput = this.onUserInput;
 
@@ -709,7 +711,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   value={toFixedN({number: (payload.deposit / 1e8), fixed: 8})}
+                                                   value={prix(payload.deposit)}
                                                    placeholder='PRIX'
                                                    readOnly
                                             />

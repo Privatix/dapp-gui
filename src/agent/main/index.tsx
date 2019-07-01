@@ -4,7 +4,7 @@ import { translate } from 'react-i18next';
 
 import ChannelsListByStatus from 'agent/channels/channelsListByStatus';
 import Offerings from 'agent/offerings/';
-import toFixedN from 'utils/toFixedN';
+import Prix from 'common/badges/PRIX';
 
 import { State } from 'typings/state';
 
@@ -16,12 +16,11 @@ class Main extends React.Component <any,any> {
 
         const { t, totalIncome } = this.props;
 
-        const income = toFixedN({number: (totalIncome / 1e8), fixed: 8});
 
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-b-20'>
-                    <h3 className='page-title'>{t('TotalIncome')} {income} PRIX</h3>
+                    <h3 className='page-title'>{t('TotalIncome')} <Prix amount={totalIncome} /> PRIX</h3>
                 </div>
             </div>
             <div className='row'>

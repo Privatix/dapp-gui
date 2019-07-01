@@ -14,7 +14,6 @@ import AcceptOffering from '../acceptOffering';
 import ModalWindow from 'common/modalWindow';
 
 import notice from 'utils/notice';
-import toFixedN from 'utils/toFixedN';
 import countryByIso from 'utils/countryByIso';
 
 import Spinner from './spinner';
@@ -248,7 +247,7 @@ class VPNList extends React.Component<IProps, IState> {
             />,
             agent: offering.agent,
             country: countryByIso(offering.country),
-            price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
+            price: offering.unitPrice,
             availableSupply: offering.currentSupply,
             supply: offering.supply,
             rating: offeringItem.rating

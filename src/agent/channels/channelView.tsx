@@ -11,7 +11,7 @@ import ChannelUsage from 'common/badges/channelUsage';
 import ChannelStatus from 'common/badges/channelStatus';
 import ContractStatus from 'common/badges/contractStatus';
 
-import toFixedN from 'utils/toFixedN';
+import Prix from 'common/badges/PRIX';
 import Offering from 'agent/offerings/offeringView';
 
 interface IProps{
@@ -90,8 +90,8 @@ class ChannelView extends React.Component<IProps, any> {
                                     <tr><td>{t('ContractStatus')}</td><td><ContractStatus contractStatus={channel.channelStatus} /></td></tr>
                                     <tr><td>{t('ServiceStatus')}</td><td><ChannelStatus serviceStatus={channel.serviceStatus} /></td></tr>
                                     <tr><td>{t('Usage')}</td><td><ChannelUsage usage={usage} mode='unit'/></td></tr>
-                                    <tr><td>{t('Income')}</td><td>{toFixedN({number: channel.receiptBalance/1e8, fixed: 8})} PRIX</td></tr>
-                                    <tr><td>{t('Deposit')}</td><td>{toFixedN({number: channel.totalDeposit/1e8, fixed: 8})} PRIX</td></tr>
+                                    <tr><td>{t('Income')}</td><td><Prix amount={channel.receiptBalance} /> PRIX</td></tr>
+                                    <tr><td>{t('Deposit')}</td><td><Prix amount={channel.totalDeposit} /> PRIX</td></tr>
                                 </tbody>
                             </table>
                         </div>
