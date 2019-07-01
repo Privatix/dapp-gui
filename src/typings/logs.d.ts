@@ -1,3 +1,5 @@
+import { PaginatedResponse } from 'typings/paginatedResponse';
+
 export interface Log{
     time: string;
     level: string;
@@ -8,3 +10,5 @@ export interface Log{
     };
     stack: string;
 }
+
+export type LogResponse = PaginatedResponse<Log[]>;

@@ -6,7 +6,8 @@ import {remote} from 'electron';
 const {dialog} = remote;
 
 import * as api from 'utils/api';
-import toFixedN from 'utils/toFixedN';
+import Prix from 'common/badges/PRIX';
+import MB from 'common/badges/MB';
 
 import SessionsTable from './sessionsTable';
 
@@ -39,7 +40,7 @@ class Sessions extends React.Component <any,any> {
                 id: session.id,
                 started: session.started,
                 stopped: session.stopped,
-                usage: session.unitsUsed + ' MB',
+                usage: session.unitsUsed,
                 lastUsedTime: session.lastUsageTime,
                 clientIP: session.clientIP
             };
@@ -48,7 +49,7 @@ class Sessions extends React.Component <any,any> {
         this.setState({sessions, usage, sessionsData});
     }
 
-    exportToFile() {
+    exportToFile = () => {
 
         const { t } = this.props;
 
@@ -75,6 +76,7 @@ class Sessions extends React.Component <any,any> {
     render() {
 
         const { t, income } = this.props;
+        const { usage, sessions, sessionsData } = this.state;
 
         return <div className='container-fluid'>
 
@@ -88,15 +90,15 @@ class Sessions extends React.Component <any,any> {
                                     <tbody>
                                     <tr key='usage'>
                                         <td>{t('TotalUsage')}:</td>
-                                        <td>{(this.state.usage / 1024).toFixed(3)} GB</td>
+                                        <td><MB amount={usage} /></td>
                                     </tr>
                                     <tr key='income'>
                                         <td>{t('TotalIncome')}:</td>
-                                        <td>{toFixedN({number: income / 1e8, fixed: 8})} PRIX</td>
+                                        <td><Prix amount={income} /> PRIX</td>
                                     </tr>
                                     <tr key='sessionsCount'>
                                         <td>{t('SessionsCount')}:</td>
-                                        <td>{this.state.sessions.length}</td>
+                                        <td>{sessions.length}</td>
                                     </tr>
                                     </tbody>
                                 </table>
@@ -113,10 +115,10 @@ class Sessions extends React.Component <any,any> {
                         <div className='col-md-12 col-sm-12 col-xs-12 p-0'>
                             <div className='card-body'>
                                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-20'
-                                        onClick={this.exportToFile.bind(this)}>{t('ExportToAFile')}
+                                        onClick={this.exportToFile}>{t('ExportToAFile')}
                                 </button>
 
-                                <SessionsTable data={this.state.sessionsData} />
+                                <SessionsTable data={sessionsData} />
                             </div>
                         </div>
                     </div>

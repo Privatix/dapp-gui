@@ -10,6 +10,9 @@ import ContractStatusComponent from 'common/badges/contractStatus';
 import ChannelStatus from 'common/badges/channelStatus';
 import JobName from 'common/badges/jobName';
 import JobStatusComponent from 'common/badges/jobStatus';
+import ETHComponent from 'common/badges/ETH';
+import Prix from 'common/badges/PRIX';
+import MB from 'common/badges/MB';
 import UsageComponent from 'common/badges/channelUsage';
 import OfferingStatusComponent from 'common/badges/offeringStatus';
 import AvailabilityComponent from 'common/badges/availability';
@@ -123,7 +126,8 @@ export const PlainUsage = {
     headerStyle: {textAlign: 'center'},
     key: 'usage',
     dataProps: { className: 'text-center'},
-    sortable: false
+    sortable: false,
+    render: amount => <MB amount={amount} />
 };
 
 export const Usage = {
@@ -181,7 +185,8 @@ export const Country = {
 export const Price = {
     header: i18n.t('tables:Price'),
     headerStyle: {textAlign: 'center'},
-    key: 'price'
+    key: 'price',
+    render: amount => <Prix amount={amount} />
 };
 
 export const AvailableSupply = {
@@ -195,6 +200,13 @@ export const Supply = {
     header: i18n.t('tables:Supply'),
     headerStyle: {textAlign: 'center'},
     key: 'supply',
+    dataProps: { className: 'text-center'}
+};
+
+export const Rating = {
+    header: i18n.t('tables:Rating'),
+    headerStyle: {textAlign: 'center'},
+    key: 'rating',
     dataProps: { className: 'text-center'}
 };
 
@@ -333,7 +345,8 @@ export const EthereumAddress = {
 export const ETH = {
     header: i18n.t('tables:ETH'),
     headerStyle: {textAlign: 'center'},
-    key: 'eth'
+    key: 'eth',
+    render: amount => <ETHComponent amount={amount} />
 };
 
 export const ExchangeBalance = {
@@ -341,6 +354,7 @@ export const ExchangeBalance = {
     headerStyle: {textAlign: 'center'},
     key: 'exchangeBalance',
     dataProps: {className: 'text-center'},
+    render: amount => <Prix amount={amount} />
 };
 
 export const ServiceBalance = {
@@ -348,6 +362,7 @@ export const ServiceBalance = {
     headerStyle: {textAlign: 'center'},
     key: 'serviceBalance',
     dataProps: { className: 'text-center'},
+    render: amount => <Prix amount={amount} />
 };
 
 export const IsDefault = {

@@ -14,7 +14,6 @@ import AcceptOffering from '../acceptOffering';
 import ModalWindow from 'common/modalWindow';
 
 import notice from 'utils/notice';
-import toFixedN from 'utils/toFixedN';
 import countryByIso from 'utils/countryByIso';
 
 import Spinner from './spinner';
@@ -24,8 +23,8 @@ import SelectByOffering from './selectByOffering';
 import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
 
-import {State} from 'typings/state';
-import {Offering} from 'typings/offerings';
+import { State } from 'typings/state';
+import { ClientOfferingItem } from 'typings/offerings';
 import { WS } from 'utils/ws';
 
 interface IProps {
@@ -61,7 +60,7 @@ interface IState {
     filteredCountries: string[];
     activePage: number;
     totalItems: number;
-    rawOfferings: any[];
+    rawOfferings: ClientOfferingItem[];
     form: {
         fromStr: string;
         toStr: string;
@@ -170,9 +169,9 @@ class VPNList extends React.Component<IProps, IState> {
         if (filter.offeringHash !== '') {
 
             try {
-                const offering = await this.props.ws.getObjectByHash('offering', filter.offeringHash.replace(/^0x/, ''));
+                const offering = await ws.getObjectByHash('offering', filter.offeringHash.replace(/^0x/, ''));
                 this.setState({
-                    rawOfferings: [offering],
+                    rawOfferings: [{offering: offering.items[0], rating: 0}],
                     totalItems: 1
                 });
             } catch (e) {
@@ -226,10 +225,10 @@ class VPNList extends React.Component<IProps, IState> {
         this.updateFilter({price: {userFilter: filter.price.userFilter, min, max, from, to}}, undefined);
     }
 
-    formFilteredDataRow(offering: Offering) {
+    formFilteredDataRow(offeringItem: ClientOfferingItem) {
 
         const { t, offeringsAvailability } = this.props;
-
+        const offering = offeringItem.offering;
         const offeringHash = '0x' + offering.hash;
 
         const availability = (offering.id in offeringsAvailability.statuses)
@@ -248,9 +247,10 @@ class VPNList extends React.Component<IProps, IState> {
             />,
             agent: offering.agent,
             country: countryByIso(offering.country),
-            price: toFixedN({number: (offering.unitPrice / 1e8), fixed: 8}),
+            price: offering.unitPrice,
             availableSupply: offering.currentSupply,
-            supply: offering.supply
+            supply: offering.supply,
+            rating: offeringItem.rating
         };
     }
 
@@ -363,7 +363,7 @@ class VPNList extends React.Component<IProps, IState> {
 
     onCheckStatus = () => {
         this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
-        const offeringsIds = this.state.rawOfferings.map(offering => offering.id);
+        const offeringsIds = this.state.rawOfferings.map(offeringItem => offeringItem.offering.id);
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
     }
 
@@ -376,7 +376,7 @@ class VPNList extends React.Component<IProps, IState> {
         const { t, localSettings, offeringsAvailability } = this.props;
         const { rawOfferings, filteredCountries, filter, form, activePage, totalItems } = this.state;
 
-        const offerings = rawOfferings.map(offering => this.formFilteredDataRow(offering));
+        const offerings = rawOfferings.map(offeringItem => this.formFilteredDataRow(offeringItem));
 
         if (offeringsAvailability.counter === 0
             && this.checkAvailabilityBtn.current

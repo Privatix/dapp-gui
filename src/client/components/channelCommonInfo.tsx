@@ -6,7 +6,10 @@ import { translate } from 'react-i18next';
 import PgTime from 'common/etc/pgTime';
 import ContractStatus from 'common/badges/contractStatus';
 import ChannelStatus from 'common/badges/channelStatus';
+import Usage from 'common/badges/channelUsage';
 import OfferingView from 'client/vpn_list/acceptOffering';
+
+import prix from 'utils/prix';
 
 import { State } from 'typings/state';
 import { ClientChannel } from 'typings/channels';
@@ -90,15 +93,15 @@ class ServiceView extends React.Component <IProps, IState> {
                             </tr>
                             <tr>
                                 <td>{t('Transferred')}</td>
-                                <td>{channel.usage.current} {channel.usage.unitName}</td>
+                                <td><Usage mode='unit' usage={channel.usage} /></td>
                             </tr>
                             <tr>
                                 <td>{t('Cost')}</td>
-                                <td>{channel.usage.cost / 1e8} PRIX</td>
+                                <td>{prix(channel.usage.cost)} PRIX</td>
                             </tr>
                             <tr>
                                 <td>{t('Deposit')}</td>
-                                <td>{channel.totalDeposit / 1e8} PRIX</td>
+                                <td>{prix(channel.totalDeposit)} PRIX</td>
                             </tr>
                             <tr>
                                 <td>{t('LastUsageTime')}</td>

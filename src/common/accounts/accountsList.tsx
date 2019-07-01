@@ -85,9 +85,9 @@ class Accounts extends React.Component<IProps, {}> {
                                    component={<Account account={account} />}
                       />,
                 ethereumAddress,
-                eth: (account.ethBalance/1e18).toFixed(3),
-                exchangeBalance: (account.ptcBalance/1e8).toFixed(3),
-                serviceBalance: (account.pscBalance/1e8).toFixed(3),
+                eth: account.ethBalance,
+                exchangeBalance: account.ptcBalance,
+                serviceBalance: account.pscBalance,
                 isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault} onClick={account.isDefault ? null : this.onSetAsDefault.bind(this, account)}>
                                <i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i>
                            </span>,

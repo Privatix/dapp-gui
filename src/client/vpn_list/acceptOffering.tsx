@@ -4,15 +4,19 @@ import { translate, Trans } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 
 import Select from 'react-select';
+
 import notice from 'utils/notice';
+import prix from 'utils/prix';
+import eth from 'utils/prix';
+
 import GasRange from 'common/etc/gasRange';
-import toFixedN from 'utils/toFixedN';
+
 import countryByIso from 'utils/countryByIso';
 
 import { State } from 'typings/state';
-import {Offering} from 'typings/offerings';
-import {Account} from 'typings/accounts';
-import {LocalSettings} from 'typings/settings';
+import { Offering } from 'typings/offerings';
+import { Account } from 'typings/accounts';
+import { LocalSettings } from 'typings/settings';
 import { WS } from 'utils/ws';
 
 interface IProps{
@@ -100,14 +104,14 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
         if(customDeposit < deposit) {
             err=true;
-            msg += ' ' + t('DepositMustBeMoreThan') + ' ' + toFixedN({number: (deposit / 1e8), fixed: 8}) + ' PRIX.';
+            msg += ' ' + t('DepositMustBeMoreThan') + ' ' + prix(deposit) + ' PRIX.';
         }
 
         if(offering.maxUnit && offering.maxUnit > 0) {
             const topDepositLimit = offering.maxUnit * offering.unitPrice;
             if (customDeposit > topDepositLimit) {
                 err = true;
-                msg += ' ' + t('DepositMustBeLessOrEqualThan') + ' ' + toFixedN({number: (topDepositLimit / 1e8), fixed: 8}) + ' PRIX.';
+                msg += ' ' + t('DepositMustBeLessOrEqualThan') + ' ' + prix(topDepositLimit) + ' PRIX.';
             }
         }
 
@@ -147,7 +151,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
     render(){
 
         const { t, offering, accounts, serviceName } = this.props;
-        const { account, thereAreActiveChannels } = this.state;
+        const { account, customDeposit, thereAreActiveChannels } = this.state;
 
         const acceptOfferingBtnBl = thereAreActiveChannels
             ? <div className='form-group row'>
@@ -202,7 +206,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                         <label className='col-3 col-form-label'>{t('PricePerMB')}</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={toFixedN({number: (offering.unitPrice / 1e8), fixed: 8})} readOnly/>
+                                <input type='text' className='form-control' value={prix(offering.unitPrice)} readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                             </div>
                         </div>
@@ -274,7 +278,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                                     {selectAccount}
                                 </div>
                                 <div className='col-4 col-form-label'>
-                                    {t('Balance')} <span>{this.state.account ? toFixedN({number: (this.state.account.pscBalance / 1e8), fixed: 8}) : 0} PRIX / {this.state.account ? toFixedN({number: (this.state.account.ethBalance / 1e18), fixed: 8}) : 0} ETH</span>
+                                    {t('Balance')} <span>{account ? prix(account.pscBalance) : 0} PRIX / {account ? eth(account.ethBalance) : 0} ETH</span>
                                 </div>
                             </div>
                             <div className='form-group row'>
@@ -282,7 +286,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                                 <div className='col-6'>
                                     <div className='input-group bootstrap-touchspin'>
                                         <input id='offeringDeposit' type='number' className='form-control' min='0' step='0.01'
-                                               value={toFixedN({number: (this.state.customDeposit / 1e8), fixed: 8})}
+                                               value={prix(customDeposit)}
                                                onChange={this.changeDepositHandler}/>
                                         <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                     </div>
@@ -300,7 +304,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>{t('AcceptancePrice')}</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{toFixedN({number: (this.state.customDeposit / 1e8), fixed: 8})} PRIX</strong>
+                                    <strong>{prix(customDeposit)} PRIX</strong>
                                 </div>
                             </div>
                         </div>

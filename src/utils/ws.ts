@@ -4,24 +4,18 @@ import * as uuidv4 from 'uuid/v4';
 
 import * as api from './api';
 
-import {Template, TemplateType} from 'typings/templates';
+import { Template, TemplateType } from 'typings/templates';
 import { Endpoint } from 'typings/endpoints';
-import {OfferStatus, Offering} from 'typings/offerings';
-import {Account} from 'typings/accounts';
-import {Transaction} from 'typings/transactions';
-import {Product} from 'typings/products';
-import {Session} from 'typings/session';
-import {Channel, ClientChannel, ClientChannelUsage} from 'typings/channels';
-import { Log } from 'typings/logs';
+import { OfferStatus, Offering, AgentOfferingResponse, ClientOfferingResponse } from 'typings/offerings';
+import { Account } from 'typings/accounts';
+import { TransactionResponse } from 'typings/transactions';
+import { Product } from 'typings/products';
+import { Session } from 'typings/session';
+import { Channel, ClientChannel, ClientChannelUsage, ChannelResponse, ClientChannelResponse } from 'typings/channels';
+import { LogResponse } from 'typings/logs';
 import { State } from 'typings/state';
 import { Role } from 'typings/mode';
-import { PaginatedResponse, GetClientOfferingsFilterParamsResponse } from 'typings/paginatedResponse';
-
-type OfferingResponse = PaginatedResponse<Offering[]>;
-type ChannelResponse  = PaginatedResponse<Channel[]>;
-type ClientChannelResponse  = PaginatedResponse<ClientChannel[]>;
-type TransactionResponse = PaginatedResponse<Transaction[]>;
-type LogResponse = PaginatedResponse<Log[]>;
+import { GetClientOfferingsFilterParamsResponse } from 'typings/paginatedResponse';
 
 export class WS {
 
@@ -390,8 +384,8 @@ export class WS {
 
 // offerings
 
-    getAgentOfferings(productId: string='', statuses: OfferStatus[] = [], offset: number = 0, limit: number = 0): Promise<OfferingResponse>{
-        return this.send('ui_getAgentOfferings', [productId, statuses, offset, limit]) as Promise<OfferingResponse>;
+    getAgentOfferings(productId: string='', statuses: OfferStatus[] = [], offset: number = 0, limit: number = 0): Promise<AgentOfferingResponse>{
+        return this.send('ui_getAgentOfferings', [productId, statuses, offset, limit]) as Promise<AgentOfferingResponse>;
     }
 
     getClientOfferings(agent: string = ''
@@ -399,8 +393,8 @@ export class WS {
                       ,maxUnitPrice: number = 0
                       ,countries: string[] = []
                       ,offset: number = 0
-                      ,limit: number = 0) : Promise<OfferingResponse> {
-        return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries, offset, limit]) as Promise<OfferingResponse>;
+                      ,limit: number = 0) : Promise<ClientOfferingResponse> {
+        return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries, offset, limit]) as Promise<ClientOfferingResponse>;
     }
 
     getOffering(id: string): Promise<Offering>{
@@ -423,8 +417,8 @@ export class WS {
         return this.send('ui_getClientOfferingsFilterParams') as Promise<GetClientOfferingsFilterParamsResponse>;
     }
 
-    getObjectByHash(type: 'offering', hash: string) : Promise<OfferingResponse> {
-        return this.send('ui_getObjectByHash', [type, hash]) as Promise<OfferingResponse>;
+    getObjectByHash(type: 'offering', hash: string) : Promise<AgentOfferingResponse> {
+        return this.send('ui_getObjectByHash', [type, hash]) as Promise<AgentOfferingResponse>;
     }
 
     pingOfferings(offeringsIds: Array<string>) {
