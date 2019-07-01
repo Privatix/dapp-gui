@@ -9,7 +9,6 @@ import ExternalLink from 'common/etc/externalLink';
 import CopyToClipboard from 'common/copyToClipboard';
 
 import { WS, ws } from 'utils/ws';
-import notice from 'utils/notice';
 
 import Steps from './steps';
 import { PreviousButton, FinishButton, back } from './utils';
@@ -25,6 +24,7 @@ interface IProps{
     history?: any;
     accountId: string;
     entryPoint: string;
+    mode: 'simple' | 'advanced';
 }
 
 interface IState {
@@ -46,41 +46,17 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 
     isSimpleMode(){
-        const { accountId } = this.props;
-        return !accountId || accountId === 'generate';
+        const { mode } = this.props;
+        return mode === 'simple';
     }
 
     async componentDidMount(){
 
-        const { ws, t, accountId } = this.props;
+        const { ws, accountId } = this.props;
 
-        if(!this.isSimpleMode()){
-            ws.getAccount(accountId)
-              .then(account => {
-                  this.setState({ethAddr: `0x${account.ethAddr}`});
-                  this.drawQRcode(`0x${account.ethAddr}`);
-              });
-        }else{
-            // simple mode!
-            const payload = {
-                isDefault: true
-               ,inUse: true
-               ,name: 'main'
-            };
-
-            try {
-                const accountId = await ws.generateAccount(payload);
-                await ws.setGUISettings({accountCreated:true});
-                ws.getAccount(accountId)
-                  .then(account => {
-                      this.setState({accountId, ethAddr: `0x${account.ethAddr}`});
-                      this.drawQRcode(`0x${account.ethAddr}`);
-                  });
-            } catch (e){
-                const msg = t('auth/generateKey:SomethingWentWrong');
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
-            }
-        }
+        const account = await ws.getAccount(accountId);
+        this.setState({ethAddr: `0x${account.ethAddr}`});
+        this.drawQRcode(`0x${account.ethAddr}`);
     }
 
     private drawQRcode(str: string){
@@ -163,9 +139,9 @@ class GetPrix extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t, accountId } = this.props;
+        const { t } = this.props;
         const { ethAddr, didIt, getPrix, done } = this.state;
-        const advancedMode = accountId && accountId !== 'generate';
+        const advancedMode = !this.isSimpleMode();
 
         return <div className='card-box'>
             <div className='panel-heading'>
@@ -173,7 +149,7 @@ class GetPrix extends React.Component<IProps, IState>{
             </div>
             <div className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={advancedMode ? 6 : 3} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />
+                    <Steps step={advancedMode ? 6 : 4} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />
                     <div className='content clearfix'>
                         <section>
                             <table>

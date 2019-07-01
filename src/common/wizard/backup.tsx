@@ -10,7 +10,7 @@ import notice from 'utils/notice';
 import Steps from './steps';
 import {NextButton} from './utils';
 
-type From = 'generateKey' | 'importHexKey' | 'importJsonKey';
+type From = 'generateKey' | 'importHexKey' | 'importJsonKey' | 'simpleMode';
 
 interface IProps{
     ws?: WS;
@@ -23,20 +23,42 @@ interface IProps{
 
 interface IState {
     fileName: string;
+    accountId: string;
 }
 
-@translate(['auth/backup', 'auth/setAccount', 'auth/importJsonKey', 'utils/notice'])
+@translate(['auth/backup', 'auth/importJsonKey', 'utils/notice'])
 class Backup extends React.Component<IProps, IState>{
 
     constructor(props:IProps){
         super(props);
-        this.state = {fileName: ''};
+        this.state = {fileName: '', accountId: props.accountId};
     }
 
-    componentDidMount(){
-        const { t } = this.props;
+    async componentDidMount(){
+
+        const { t, from , ws } = this.props;
+
         document.addEventListener('keydown', this.handleKeyDown);
-        notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t(this.props.from)});
+
+        if(from === 'simpleMode'){
+            // simple mode!
+            const payload = {
+                isDefault: true
+               ,inUse: true
+               ,name: 'main'
+            };
+
+            try {
+                const accountId = await ws.generateAccount(payload);
+                await ws.setGUISettings({accountCreated:true});
+                this.setState({accountId});
+            } catch (e){
+                const msg = t('auth/generateKey:SomethingWentWrong');
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
+            }
+        }else{
+            notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t(from)});
+        }
     }
 
     componentWillUnmount() {
@@ -59,8 +81,8 @@ class Backup extends React.Component<IProps, IState>{
 
     onSubmit = async (evt: any) => {
 
-        const { t, ws, history, accountId, entryPoint, from } = this.props;
-        const { fileName } = this.state;
+        const { t, ws, history, entryPoint, from } = this.props;
+        const { fileName, accountId } = this.state;
 
         evt.preventDefault();
 
@@ -75,7 +97,7 @@ class Backup extends React.Component<IProps, IState>{
             if(response.err){
                 throw new Error();
             }
-            history.push(from === 'generateKey' ? `/getPrix/${accountId}` : entryPoint);
+            history.push(['generateKey', 'simpleMode'].includes(from) ? `/getPrix/${accountId}/simple` : entryPoint);
         }catch(e){
             notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
         }
@@ -86,13 +108,16 @@ class Backup extends React.Component<IProps, IState>{
         const { t, from } = this.props;
         const { fileName } = this.state;
 
+        const step = from === 'simpleMode' ? 3 : 5;
+        const shape = from === 'simpleMode' ? 'simple' : 'advanced';
+
         return <div className='card-box'>
             <div className='panel-heading'>
-                <h4 className='text-center'> {t('auth/setAccount:SetTheContractAccount')} <strong className='text-custom'>Privatix</strong> </h4>
+                <h4 className='text-center'>{t('Backup')}</h4>
             </div>
             <form className='form-horizontal m-t-20'>
                 <div className='p-20 wizard clearfix'>
-                    <Steps step={5} prix={from === 'generateKey'} shape='advanced' />
+                    <Steps step={step} prix={from === 'generateKey'} shape={shape} />
                     <div className='content clearfix'>
                         <section>
                             <p>{t('ToPreventEthereumAddress')}</p>

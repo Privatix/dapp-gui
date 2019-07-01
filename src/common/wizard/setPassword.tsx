@@ -119,7 +119,7 @@ class SetPassword extends React.Component<IOwnProps, IState>{
                 await ws.setPassword(pwd);
                 await ws.setGUISettings({firstStart:false});
                 registerBugsnag(ws);
-                this.props.history.push(role === Role.AGENT || mode === Mode.ADVANCED ? '/setAccount' : '/getPrix/generate');
+                this.props.history.push(role === Role.AGENT || mode === Mode.ADVANCED ? '/setAccount' : '/backup/0x/simpleMode');
             }catch(e){
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('AccessDenied')});
                 this.submitted = false;

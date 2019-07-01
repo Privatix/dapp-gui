@@ -90,10 +90,15 @@ class Steps extends React.Component<IProps, {}>{
                                 {t('Password')}
                             </Link>
                         </li>
-                        {/* this step is only relevant for test net */ }
                         <li role='tab' className={ step >= 3 ? (step > 3 ? 'done' : 'current') : 'disabled'} style={{width:'auto'}}>
-                            <a id='steps-uid-0-t-4' href='#'>
+                            <a id='steps-uid-0-t-3' href='#'>
                                 <span className='number'>3.</span>
+                                {t('Backup')}
+                            </a>
+                        </li>
+                        <li role='tab' className={ step >= 4 ? (step > 4 ? 'done' : 'current') : 'disabled'} style={{width:'auto'}}>
+                            <a id='steps-uid-0-t-4' href='#'>
+                                <span className='number'>4.</span>
                                 {'PRIX'}
                             </a>
                         </li>

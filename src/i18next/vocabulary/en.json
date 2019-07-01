@@ -55,6 +55,7 @@
         "SomethingWentWrong": "Something went wrong. Please, check the key."
     },
     "auth/backup": {
+        "Backup": "Backup",
         "generateKey": "new key has been successfully generated and registered!",
         "importHexKey": "hex key has been successfully imported and registered!",
         "importJsonKey": "JSON Keystore File has been successfully imported!",

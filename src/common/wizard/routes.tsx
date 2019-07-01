@@ -48,9 +48,10 @@ class Routes extends React.Component<IProps, {}> {
                                                />
                               }
                 />,
-                <Route key='/getPrix/' path='/getPrix/:accountId'
+                <Route key='/getPrix/' path='/getPrix/:accountId/:mode'
                        render={(props: any) => <GetPrix entryPoint={'/app'}
                                                         accountId={props.match.params.accountId}
+                                                        mode={props.match.params.mode}
                                                />
                               }
                 />,
@@ -89,13 +90,21 @@ class Routes extends React.Component<IProps, {}> {
 
         if( mode === Mode.SIMPLE || mode === Mode.WIZARD){
             let routes = [
-                <Route key='/getPrix/' path='/getPrix/:accountId'
+                <Route key='/getPrix/' path='/getPrix/:accountId/:mode'
                        render={(props: any) => <GetPrix entryPoint={'/app'}
                                                         accountId={props.match.params.accountId}
+                                                        mode={props.match.params.mode}
                                                />
                               }
                 />,
-                <Route key='/app' path='/app' component={app} />
+                <Route key='/app' path='/app' component={app} />,
+                <Route key='/backup/' path='/backup/:accountId/:from'
+                       render={(props: any) => <Backup entryPoint={'/app'}
+                                                       accountId={props.match.params.accountId}
+                                                       from={props.match.params.from}
+                                               />
+                              }
+                />,
             ];
 
             if(currentState === 'firstStart'){
@@ -112,6 +121,7 @@ class Routes extends React.Component<IProps, {}> {
                     <Route key='/' path='/'
                            render={(props: any) => <GetPrix entryPoint={'/app'}
                                                             accountId=''
+                                                            mode={'simple'}
                                                    />
                                   }
                     />,
