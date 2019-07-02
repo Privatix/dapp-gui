@@ -60,16 +60,14 @@ interface IState {
 @translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
 class LightWeightClient extends React.Component<IProps, IState> {
 
-    mounted: boolean;
-    subscription: string;
-    offeringsSubscription = null;
-    newOfferingSubscription = null;
-    getIpSubscription = null;
-    firstJobSubscription = null;
-    increaseSubscription = null;
+    private mounted: boolean;
+    private subscription: string;
+    private offeringsSubscription = null;
+    private newOfferingSubscription = null;
+    private getIpSubscription = null;
+    private firstJobSubscription = null;
 
     private offerings: ClientOfferingItem[] = [];
-    private optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
     private blackList: Offering[] = [];
 
     constructor(props: IProps){
@@ -88,23 +86,21 @@ class LightWeightClient extends React.Component<IProps, IState> {
     }
 
     componentDidMount() {
+
         this.mounted = true;
         this.refresh();
+
     }
 
     componentWillUnmount(){
 
-        const { ws } = this.props;
-
         this.mounted = false;
         this.unsubscribe();
-        if(this.increaseSubscription){
-            ws.unsubscribe(this.increaseSubscription);
-            this.increaseSubscription = null;
-        }
+
     }
 
     private unsubscribe(){
+
         const { ws } = this.props;
 
         if(this.subscription){
@@ -333,7 +329,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.addToBlackList(offeringItem.offering);
         this.updateOfferings();
         this.setState({offeringItem: null});
-        this.onChangeLocation(selectedLocation ? selectedLocation : this.optimalLocation);
+        this.onChangeLocation(selectedLocation);
         if(channel){
             await ws.changeChannelStatus(channel.id, 'terminate');
             await ws.changeChannelStatus(channel.id, 'close');
@@ -404,9 +400,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
         if(!this.state.locations){
             const locations = this.getLocations(this.offerings);
             this.setState({locations});
-            if(!this.state.selectedLocation){
-                this.selectOptimalLocation();
-            }
         }
     }
 
@@ -500,73 +493,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.setState({status: 'connecting'});
     }
 
-    private shuffle(a: Array<any>): Array<any> {
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-    }
-
-    private selectOptimalLocation = async () => {
-
-        if(!this.mounted){
-            return;
-        }
-
-        const selectedLocation = this.optimalLocation;
-        this.setState({status: 'pingLocations', selectedLocation});
-        const getCountries = () => {
-            return this.shuffle(Object.keys(this.offerings.reduce((registry: any, offeringItem: ClientOfferingItem) => {
-                registry[offeringItem.offering.country.trim().toLowerCase()] = 1;
-                return registry;
-            }, {})));
-        };
-
-        const countries = getCountries();
-
-        for(let i=0; i<countries.length; i++){
-            try{
-                const country = countries[i];
-                const offeringItem = await this.pingLocation(country);
-                this.setState({status: 'disconnected', offeringItem});
-                return;
-            }catch(e){
-                continue;
-            }
-        }
-
-        setTimeout(this.selectOptimalLocation, 3000);
-
-    }
-
-    private pingLocation(country: string): Promise<ClientOfferingItem> {
-
-        return new Promise((resolve, reject) => {
-            const { dispatch } = this.props;
-
-            const ids = this.getOfferingsIdsForCountry(country);
-            const offeringsItems = this.offerings.filter(offeringItem => ids.includes(offeringItem.offering.id));
-
-            dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
-
-                const { offeringsAvailability } = this.props;
-                const { status } = this.state;
-
-                if(this.mounted && status === 'pingLocations'){
-                    const offeringItem = this.flipCoin(offeringsItems);
-                    if(this.isAvailableOffering(offeringsAvailability, offeringItem)){
-                        resolve(offeringItem);
-                    }else{
-                        if(offeringsAvailability.counter === 0){
-                            reject();
-                        }
-                    }
-                }
-            }));
-        });
-    }
-
     private getRange(offeringsItems: ClientOfferingItem[]){
 
         const table = [
@@ -637,11 +563,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         this.setState({selectedLocation, status: 'pingLocations'});
 
-        if(selectedLocation.value === this.optimalLocation.value){
-            this.selectOptimalLocation();
-            return;
-        }
-
         const { dispatch } = this.props;
 
         const selectedCountry = selectedLocation.value;
@@ -666,32 +587,20 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }));
     }
 
-    private getOptimalLocation(locations: Offering[]){
-        return locations[Math.floor(Math.random()*locations.length)];
-    }
-
     private getLocations(offerings: ClientOfferingItem[]): SelectItem[] {
 
-        const offeringsByCountries = offerings.reduce((registry: {[key: string]: Offering[]}, offeringItem: ClientOfferingItem) => {
+        const countries = offerings.reduce((registry: {[key: string]: boolean}, offeringItem: ClientOfferingItem) => {
             const offering = offeringItem.offering;
             const countries = offering.country.split(',').map(country => country.trim().toLowerCase());
             countries.forEach(country => {
                 if(country !== 'zz' && ! (country in registry)){
-                    registry[country] = [];
+                    registry[country] = true;
                 }
-                registry[country].push(offering);
             });
             return registry;
-        }, {}) as {[key: string]: Offering[]};
+        }, {}) as {[key: string]: boolean};
 
-        const countries = Object.keys(offeringsByCountries).reduce((countries, country) => {
-            countries[country] = this.getOptimalLocation(offeringsByCountries[country]);
-            return countries;
-        }, {});
-
-        const res = Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
-        res.unshift(this.optimalLocation);
-        return res;
+        return Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
     }
 
     states: {[key in Status]: any} = {
