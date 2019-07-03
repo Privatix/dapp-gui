@@ -516,7 +516,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const k = 1/max;
         const normalizedItems = items.map(item => ({id: item.id, rating: item.rating*k}));
 
-        const res = normalizedItems.filter(item => item.rating >= range.min && item.rating < range.max);
+        const res = normalizedItems.filter(item => item.rating >= range.min && item.rating <= range.max);
         const ids = res.map(item => item.id);
         const offerings = offeringsItems.filter(offeringItem => ids.includes(offeringItem.offering.id));
 
