@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { registerBugsnag } from 'utils/bugsnag';
 import { WS } from 'utils/ws';
 import {default as notice, clearNotices } from 'utils/notice';
+import HintComponent from 'common/hintComponent';
 import { translate } from 'react-i18next';
 import {State} from 'typings/state';
 
@@ -114,6 +115,10 @@ class Login extends React.Component<IProps, IState> {
                 <h4 className='text-center'> {t('LoginTo')} <strong className='text-custom'>Privatix</strong></h4>
             </div>
             <div className='p-20'>
+                <div>
+                    <HintComponent msg={<i>{t('PasswordHint')}</i>} />
+                </div>
+
                 <form className='form-horizontal m-t-20' onSubmit={this.onSubmit.bind(this)}>
                     <div className='form-group'>
                         <div className='col-12'>
