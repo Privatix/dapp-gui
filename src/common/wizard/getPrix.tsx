@@ -85,34 +85,7 @@ class GetPrix extends React.Component<IProps, IState>{
 
         dispatch(handlers.setAutoTransfer(false));
     }
-/*
-    private startObserveAccountBalance = async () => {
 
-        const { ws } = this.props;
-        const { accountId } = this.state;
-
-        const account = await ws.getAccount(accountId);
-        if(account.ptcBalance !== 0 && account.ethBalance !== 0){
-            this.setState({getPrix: true});
-            this.observerId = null;
-            this.transferTokens();
-        }else{
-            this.observerId = setTimeout(this.startObserveAccountBalance, 3000);
-        }
-    }
-*/
-/*
-    private transferTokens = async () => {
-        const { ws } = this.props;
-        const { accountId  } = this.state;
-
-        const account = await ws.getAccount(accountId);
-        const settings = await ws.getSettings();
-
-        await ws.transferTokens(accountId, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
-        this.startObserveServiceBalance();
-    }
-*/
     private startObserveServiceBalance = async () => {
 
         const { ws, t, dispatch } = this.props;
@@ -139,7 +112,6 @@ class GetPrix extends React.Component<IProps, IState>{
 
         evt.preventDefault();
         this.setState({didIt: true});
-        // this.startObserveAccountBalance();
         this.startObserveServiceBalance();
     }
 
