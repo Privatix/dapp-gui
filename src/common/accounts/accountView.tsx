@@ -26,6 +26,7 @@ interface IState {
     amount: number;
     destination: 'psc' | 'ptc';
     address: string;
+    transferStarted: boolean;
 }
 
 @translate(['accounts/accountView', 'utils/notice'])
@@ -41,6 +42,7 @@ class AccountView extends React.Component<IProps, IState> {
                      ,amount: 0
                      ,destination: 'psc'
                      ,address: `0x${account.ethAddr}`
+                     ,transferStarted: false
         };
     }
 
@@ -100,11 +102,13 @@ class AccountView extends React.Component<IProps, IState> {
         const { amount, destination, gasPrice } = this.state;
 
         try {
+            this.setState({transferStarted: true});
             await ws.transferTokens(account.id, destination, amount, gasPrice);
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
         } catch ( e ) {
             // TODO something wrong !!!
             console.log('ERROR', e);
+            this.setState({transferStarted: false});
         }
 
     }
@@ -117,7 +121,7 @@ class AccountView extends React.Component<IProps, IState> {
     render() {
 
         const { t, account, localSettings } = this.props;
-        const { destination, address, gasPrice } = this.state;
+        const { destination, address, gasPrice, transferStarted } = this.state;
 
         return <div className='col-lg-9 col-md-8'>
             <div className='card m-b-20'>
@@ -214,7 +218,9 @@ class AccountView extends React.Component<IProps, IState> {
                                 className={'btn btn-default btn-block btn-custom waves-effect waves-light'}
                                 swalType='warning'
                                 swalConfirmBtnText={t('TransferConfirmBtn')}
-                                swalTitle={t('TransferSwalTitle')} />
+                                swalTitle={t('TransferSwalTitle')}
+                                disabledBtn={transferStarted}
+                            />
                         </div>
                     </div>
                 </div>
