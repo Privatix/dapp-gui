@@ -14,7 +14,7 @@ interface IProps {
     swalConfirmBtnText: string;
     text: string|JSX.Element;
     disabledBtn?: boolean;
-    parentDivClassName?: string;
+    isExternalLink?: boolean;
 }
 
 interface IState {
@@ -79,35 +79,41 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t, parentDivClassName, className, title, text, swalTitle, swalConfirmBtnText, swalType } = this.props;
+        const { t, isExternalLink, className, title, text, swalTitle, swalConfirmBtnText, swalType } = this.props;
         const { show } = this.state;
+        const ReactSweetAlertComponent = <ReactSweetAlert
+            show={show}
+            type={swalType}
+            showCancel
+            closeOnClickOutside={false}
+            confirmBtnText={swalConfirmBtnText}
+            cancelBtnText={t('CancelBtn')}
+            confirmBtnCssClass='swal2-styled'
+            confirmBtnBsStyle='link'
+            cancelBtnBsStyle='primary'
+            cancelBtnCssClass='swal2-styled'
+            title={swalTitle}
+            onConfirm={this.confirmHandler}
+            onCancel={this.cancelHandler}
+        >
+            {text}
+        </ReactSweetAlert>;
 
         return (
-            <div className={parentDivClassName}>
+            !isExternalLink
+            ? <div>
                 <button onClick={this.showPopUpSwal}
                         className={className}
                         ref={this.showConfirmAlertBtn}
                 >
                     {title}
                 </button>
-                <ReactSweetAlert
-                    show={show}
-                    type={swalType}
-                    showCancel
-                    closeOnClickOutside={false}
-                    confirmBtnText={swalConfirmBtnText}
-                    cancelBtnText={t('CancelBtn')}
-                    confirmBtnCssClass='swal2-styled'
-                    confirmBtnBsStyle='link'
-                    cancelBtnBsStyle='primary'
-                    cancelBtnCssClass='swal2-styled'
-                    title={swalTitle}
-                    onConfirm={this.confirmHandler}
-                    onCancel={this.cancelHandler}
-                >
-                    {text}
-               </ReactSweetAlert>
+                {ReactSweetAlertComponent}
             </div>
+            : <>
+                <a href='#' className={className} onClick={this.showPopUpSwal}>{title}</a>
+                {ReactSweetAlertComponent}
+            </>
         );
     }
 }
