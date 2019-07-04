@@ -3,6 +3,8 @@ import { WS } from 'utils/ws';
 import {Account} from './accounts';
 import {Role, Mode} from './mode';
 import {Product} from './products';
+import { Notice } from 'utils/notice';
+
 import {OfferingAvailabilityResponse} from './offerings';
 import {LocalSettings} from './settings';
 
@@ -21,6 +23,8 @@ interface State {
         counter: number;
         statuses: OfferingAvailabilityResponse;
     };
+    autoTransfer: boolean;
+    notices: {code: number, notice: Notice}[];
 }
 
 const StateDefault: State = {
@@ -38,6 +42,8 @@ const StateDefault: State = {
         counter: 0,
         statuses: {}
     },
+    autoTransfer: false,
+    notices: []
 };
 
 export {

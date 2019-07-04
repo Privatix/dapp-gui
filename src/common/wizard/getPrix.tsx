@@ -2,7 +2,7 @@ import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 
-import { asyncProviders } from 'redux/actions';
+import { default as handlers, asyncProviders } from 'redux/actions';
 import { Mode } from 'typings/mode';
 
 import ExternalLink from 'common/etc/externalLink';
@@ -52,11 +52,12 @@ class GetPrix extends React.Component<IProps, IState>{
 
     async componentDidMount(){
 
-        const { ws, accountId } = this.props;
+        const { ws, accountId, dispatch } = this.props;
 
         const account = await ws.getAccount(accountId);
         this.setState({ethAddr: `0x${account.ethAddr}`});
         this.drawQRcode(`0x${account.ethAddr}`);
+        dispatch(handlers.setAutoTransfer(true));
     }
 
     private drawQRcode(str: string){
@@ -70,11 +71,16 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 
     componentWillUnmount() {
+
+        const { dispatch } = this.props;
+
         if(this.observerId){
             clearTimeout(this.observerId);
         }
-    }
 
+        dispatch(handlers.setAutoTransfer(false));
+    }
+/*
     private startObserveAccountBalance = async () => {
 
         const { ws } = this.props;
@@ -89,7 +95,8 @@ class GetPrix extends React.Component<IProps, IState>{
             this.observerId = setTimeout(this.startObserveAccountBalance, 3000);
         }
     }
-
+*/
+/*
     private transferTokens = async () => {
         const { ws } = this.props;
         const { accountId  } = this.state;
@@ -100,13 +107,18 @@ class GetPrix extends React.Component<IProps, IState>{
         await ws.transferTokens(accountId, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
         this.startObserveServiceBalance();
     }
-
+*/
     private startObserveServiceBalance = async () => {
 
         const { ws } = this.props;
         const { accountId } = this.state;
 
         const account = await ws.getAccount(accountId);
+
+        if(account.ptcBalance !== 0 && account.ethBalance !== 0){
+            this.setState({getPrix: true});
+        }
+
         if(account.pscBalance !== 0 ){
             this.setState({done: true});
             this.observerId = null;
@@ -121,7 +133,8 @@ class GetPrix extends React.Component<IProps, IState>{
 
         evt.preventDefault();
         this.setState({didIt: true});
-        this.startObserveAccountBalance();
+        // this.startObserveAccountBalance();
+        this.startObserveServiceBalance();
     }
 
     private onFinish = (evt: any) => {
