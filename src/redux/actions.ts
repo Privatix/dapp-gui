@@ -8,6 +8,8 @@ import { Offering } from 'typings/offerings';
 import { Role, Mode } from 'typings/mode';
 import { Notice } from 'utils/notice';
 
+import i18n from 'i18next/init';
+
 export const enum actions {
     REFRESH_ACCOUNTS,
     SET_ROLE,
@@ -57,9 +59,13 @@ export const asyncProviders = {
                 const settings = await ws.getSettings();
                 const localSettings = await ws.getLocal();
                 if(localSettings.gas.transfer*settings['eth.default.gasprice'].value <= account.ethBalance){
-                    await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
+                    try{
+                        await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
+                    }catch(e){
+                        // 
+                    }
                 }else{
-                    dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: 'not enought ETH to transfer tokens'}}));
+                    dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
                 }
             }
         };

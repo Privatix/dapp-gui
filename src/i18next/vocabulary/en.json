@@ -85,7 +85,9 @@
         "TokensHaveBeenReceived": "Tokens have been received.",
         "WeAreTransferring": "We are transferring them to a service balance (it might take 5-10 min)...",
         "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
-        "AllDonePressFinish": "All done. Press Finish"
+        "AllDonePressFinish": "All done. Press Finish",
+        "notEnoughETH": "Oops, PRIX transfer to the Marketplace has been failed: not enough ETH to cover gas costs",
+        "Congrats": "Great, PRIX transfer to the Marketpalce has been successfully completed."
     },
     "auth/steps": {
         "Language": "Language",
@@ -787,5 +789,14 @@
         "MaxTraffic": "Max. traffic",
         "FirstDeposit": "First deposit",
         "unusedDepositTip": "Unused deposit will be returned after connection closed"
+    },
+    "externalLinks/warning" : {
+        "warning": "You are going to open external resource",
+        "confirmBtn": "Ok",
+        "AreYouSure": "Are you sure?"
+    },
+    "transferTokens": {
+        "TransferPRIXNotEnoughETH": "Transfer PRIX to marketplace: not enough ETH.",
+        "TransferPRIXCompletedSuccessfully": "Transfer PRIX to marketplace: completed successfully."
     }
 }

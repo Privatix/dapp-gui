@@ -1,30 +1,30 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
+import * as QRCode from 'qrcode';
 
 import { default as handlers, asyncProviders } from 'redux/actions';
-import { Mode } from 'typings/mode';
 
 import ExternalLink from 'common/etc/externalLink';
 import CopyToClipboard from 'common/copyToClipboard';
-
-import { WS, ws } from 'utils/ws';
 
 import Steps from './steps';
 import { PreviousButton, FinishButton, back } from './utils';
 import Spinner from './spinner';
 
-
-import * as QRCode from 'qrcode';
+import { State } from 'typings/state';
+import { Mode } from 'typings/mode';
 
 interface IProps{
-    ws?: WS;
+    ws?: State['ws'];
     t?: any;
     dispatch?: any;
     history?: any;
     accountId: string;
     entryPoint: string;
     mode: 'simple' | 'advanced';
+    notices?: State['notices'];
 }
 
 interface IState {
@@ -33,16 +33,21 @@ interface IState {
     didIt: boolean;
     getPrix: boolean;
     done: boolean;
+    err: boolean;
 }
 
-@translate(['auth/getPrix', 'auth/generateKey', 'auth/utils'])
+@translate(['auth/getPrix', 'auth/generateKey', 'auth/utils', 'transferTokens'])
 class GetPrix extends React.Component<IProps, IState>{
+
+    static getDerivedStateFromProps(props: IProps, state: IState){
+        return {err: props.notices.findIndex(notice => notice.code === 0) !== -1};
+    }
 
     private observerId = null;
 
     constructor(props:IProps){
         super(props);
-        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false, accountId: props.accountId};
+        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false, err: false, accountId: props.accountId};
     }
 
     isSimpleMode(){
@@ -110,7 +115,7 @@ class GetPrix extends React.Component<IProps, IState>{
 */
     private startObserveServiceBalance = async () => {
 
-        const { ws } = this.props;
+        const { ws, t, dispatch } = this.props;
         const { accountId } = this.state;
 
         const account = await ws.getAccount(accountId);
@@ -121,6 +126,7 @@ class GetPrix extends React.Component<IProps, IState>{
 
         if(account.pscBalance !== 0 ){
             this.setState({done: true});
+            dispatch(handlers.addNotice({code: 1, notice: {level: 'info', msg: t('transferTokens:TransferPRIXCompletedSuccessfully')}}));
             this.observerId = null;
         }else{
             this.observerId = setTimeout(this.startObserveServiceBalance, 3000);
@@ -153,7 +159,7 @@ class GetPrix extends React.Component<IProps, IState>{
     render(){
 
         const { t } = this.props;
-        const { ethAddr, didIt, getPrix, done } = this.state;
+        const { ethAddr, didIt, getPrix, done, err } = this.state;
         const advancedMode = !this.isSimpleMode();
 
         return <div className='card-box'>
@@ -267,8 +273,9 @@ class GetPrix extends React.Component<IProps, IState>{
                                     }
                                 </div>
                             </div>
-                            {didIt && (!getPrix || !done)
-                                ? <div className='text-center'>
+                            <div className='text-center'>
+                                {didIt && (!getPrix || !done ) && !err
+                                    ? <>
                                       {getPrix
                                           ? <>
                                               <div>{t('TokensHaveBeenReceived')}</div>
@@ -277,13 +284,13 @@ class GetPrix extends React.Component<IProps, IState>{
                                           : t('PleaseWait')
                                       }
                                       <Spinner />
-                                  </div>
-                                : null
-                            }
+                                      </>
+                                    : (done ? t('Congrats') : (err ? t('notEnoughETH') : null))
+                                }
+                            </div>
                             <h4 className='text-center'>
                                 {done ? t('AllDonePressFinish') : null }
                             </h4>
-
                             <div className='form-group text-right m-t-40'>
                                 {advancedMode ? <PreviousButton onSubmit={this.back} /> : null }
                                 {done
@@ -302,4 +309,4 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(withRouter(GetPrix));
+export default connect((state:State, ownProps: IProps) => Object.assign({}, {ws: state.ws, notices: state.notices}, ownProps))(withRouter(GetPrix));
