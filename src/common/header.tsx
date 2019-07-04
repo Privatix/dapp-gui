@@ -1,25 +1,12 @@
 import * as React from 'react';
 import { withRouter } from 'react-router';
-import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
 import TopPanel from './topPanel';
 import UpdateInformer from './updateInformer/';
 
-import { asyncProviders } from 'redux/actions';
-
-import { Dispatch } from 'redux';
-import { Role, Mode } from 'typings/mode';
-import {State} from 'typings/state';
-
 declare var window: any;
-
-interface IProps {
-    role: Role;
-    mode: Mode;
-    setSimpleMode?(): void;
-}
 
 @translate(['header', 'utils/notice'])
 class Header extends React.Component<any, any>{
@@ -75,29 +62,7 @@ class Header extends React.Component<any, any>{
         $('body').trigger('resize');
     }
 
-    openHelpLink = (evt:any) => {
-        evt.preventDefault();
-        require('electron').shell.openExternal('https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause');
-    }
-
-    setLighweightMode = (evt:any) => {
-        const { setSimpleMode } = this.props;
-        evt.preventDefault();
-        setSimpleMode();
-    }
-
     render(){
-
-        const { t, role } = this.props;
-
-        const style = {
-            padding: '5px',
-            color: 'rgb(12, 102, 121)',
-            backgroundColor: 'rgb(255, 255, 255)',
-            fontSize: '33px',
-            verticalAlign: 'middle',
-            lineHeight: '0.9'
-        };
         return <div className='topbar'>
 
             <div className='topbar-left'>
@@ -113,32 +78,6 @@ class Header extends React.Component<any, any>{
             <nav className='navbar-custom'>
 
                 <ul className='list-inline float-right mb-0'>
-
-                    <li className='list-inline-item dropdown notification-list'>
-                        <a className='nav-link dropdown-toggle waves-effect waves-light nav-user' data-toggle='dropdown'
-                           href='#' role='button'
-                           aria-haspopup='false' aria-expanded='false'>
-                            <i className='fa fa-gear rounded-circle' style={style}></i>
-                        </a>
-                            <div className='dropdown-menu dropdown-menu-right profile-dropdown ' aria-labelledby='Preview'>
-                                <NavLink to='/accounts' className='dropdown-item notify-item'>
-                                    <i className='md  md-account-child'></i> <span>{t('Accounts')}</span>
-                                </NavLink>
-                                <a onClick={this.openHelpLink} className='dropdown-item notify-item cursorPoiner'>
-                                    <i className='md md-help'></i> <span>{t('Help')}</span>
-                                </a>
-                                <NavLink to='/settings' className='dropdown-item notify-item'>
-                                    <i className='md md-settings'></i> <span>{t('Settings')}</span>
-                                </NavLink>
-                                { role === Role.CLIENT
-                                    ? <a onClick={this.setLighweightMode} className='dropdown-item notify-item cursorPoiner'>
-                                          <i className='md md-swap-horiz'></i> <span>Simple Mode</span>
-                                      </a>
-                                    : null
-                                }
-                            </div>
-                    </li>
-
                     <a className='nav-link waves-light waves-effect' href='#' onClick={this.toggleFullScreen.bind(this)} >
                         <i className='dripicons-expand noti-icon'></i>
                     </a>
@@ -158,15 +97,4 @@ class Header extends React.Component<any, any>{
     }
 }
 
-const mapStateToProps = (state: State) => {
-    const { role, mode } = state;
-    return { role, mode };
-};
-
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ 
-    setSimpleMode: () => {
-        dispatch(asyncProviders.setMode(Mode.SIMPLE));
-    }
-});
-
-export default connect<IProps>(mapStateToProps, mapDispatchToProps)(withRouter(Header));
+export default withRouter(Header);
