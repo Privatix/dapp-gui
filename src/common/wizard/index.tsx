@@ -4,6 +4,7 @@ import { Router, Switch } from 'react-router';
 import { createMemoryHistory } from 'history';
 
 import Routes from './routes';
+import Noticer from 'common/noticer';
 
 import { State } from 'typings/state';
 import { Role } from 'typings/mode';
@@ -28,11 +29,14 @@ class Wizard extends React.Component<IProps, {}> {
         const MemoryHistory = createMemoryHistory();
 
         return (
-            <Router history={MemoryHistory}>
-                <Switch>
-                    <Routes app={app} currentState={currentState} />
-                </Switch>
-            </Router>
+            <>
+                <Noticer />
+                <Router history={MemoryHistory}>
+                    <Switch>
+                        <Routes app={app} currentState={currentState} />
+                    </Switch>
+                </Router>
+            </>
         );
     }
 }

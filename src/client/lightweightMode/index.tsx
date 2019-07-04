@@ -2,9 +2,10 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-import { asyncProviders } from 'redux/actions';
+import { default as handlers, asyncProviders } from 'redux/actions';
 
 import CopyToClipboard from 'common/copyToClipboard';
+import Noticer from 'common/noticer';
 
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
 import States from './states';
@@ -87,16 +88,23 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     componentDidMount() {
 
+        const { dispatch } = this.props;
+
         this.mounted = true;
         this.refresh();
 
+        dispatch(handlers.setAutoTransfer(true));
+        dispatch(asyncProviders.updateAccounts());
     }
 
     componentWillUnmount(){
 
+        const { dispatch } = this.props;
+
         this.mounted = false;
         this.unsubscribe();
 
+        dispatch(handlers.setAutoTransfer(false));
     }
 
     private unsubscribe(){
@@ -670,6 +678,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const ethAddr = account ? `0x${account.ethAddr}` : '';
         return (
             <>
+                <Noticer />
                 <style dangerouslySetInnerHTML={{__html: `
                    html { background: white; } body { background: white; }
                 `}} />

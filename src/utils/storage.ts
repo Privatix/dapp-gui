@@ -100,7 +100,7 @@ const subscribeAccounts = (async () => {
     if(ws) {
         await ws.whenAuthorized();
         refreshAccounts();
-        ws.subscribe('account', ['afterAccountAddBalance', 'accountUpdateBalances'], refreshAccounts, refreshAccounts);
+        ws.subscribe('account', ['afterAccountAddBalanceApprove', 'afterAccountAddBalance', 'accountUpdateBalances'], refreshAccounts, refreshAccounts);
     }else{
         setTimeout(subscribeAccounts, 1000);
     }

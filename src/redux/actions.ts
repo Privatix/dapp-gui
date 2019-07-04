@@ -1,11 +1,14 @@
 import { WS } from 'utils/ws';
 import * as api from 'utils/api';
 
-import {Account} from 'typings/accounts';
-import {Product} from 'typings/products';
-import {DbSetting as Setting, LocalSettings} from 'typings/settings';
-import {Offering} from 'typings/offerings';
+import { Account } from 'typings/accounts';
+import { Product } from 'typings/products';
+import { DbSetting as Setting, LocalSettings } from 'typings/settings';
+import { Offering } from 'typings/offerings';
 import { Role, Mode } from 'typings/mode';
+import { Notice } from 'utils/notice';
+
+import i18n from 'i18next/init';
 
 export const enum actions {
     REFRESH_ACCOUNTS,
@@ -20,7 +23,10 @@ export const enum actions {
     SET_CHANNEL,
     SET_WS,
     SET_OFFERINGS_AVAILABILITY,
-    INCREMENT_OFFERINGS_AVAILABILITY_COUNTER
+    INCREMENT_OFFERINGS_AVAILABILITY_COUNTER,
+    SET_AUTOTRANSFER,
+    ADD_NOTICE,
+    REMOVE_NOTICES
 }
 
 const handlers  = {
@@ -37,16 +43,31 @@ const handlers  = {
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
     setOfferingsAvailability   : function(offeringsAvailability: Object[]){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};},
     incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};},
+    setAutoTransfer            : function(autoTransfer: boolean){ return { type: actions.SET_AUTOTRANSFER, value: autoTransfer };},
+    addNotice                  : function(msg: {code: number,  notice: Notice}){ return { type: actions.ADD_NOTICE, value: msg };},
+    removeNotices              : function(notices: {code: number,  notice: Notice}[]){ return { type: actions.REMOVE_NOTICES, value: notices };}
 };
 
 export const asyncProviders = {
     updateAccounts: function(){
-        return function(dispatch: any, getState: Function){
-            const { ws } = getState();
-            ws.getAccounts()
-               .then(accounts => {
-                   dispatch(handlers.updateAccounts(accounts));
-               });
+        return async function(dispatch: any, getState: Function){
+            const { ws, autoTransfer } = getState();
+            const accounts = await ws.getAccounts();
+            dispatch(handlers.updateAccounts(accounts));
+            const account = accounts.find(account => account.isDefault);
+            if(account && account.ptcBalance !== 0 && autoTransfer){
+                const settings = await ws.getSettings();
+                const localSettings = await ws.getLocal();
+                if(localSettings.gas.transfer*settings['eth.default.gasprice'].value <= account.ethBalance){
+                    try{
+                        await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
+                    }catch(e){
+                        // 
+                    }
+                }else{
+                    dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
+                }
+            }
         };
     },
     updateProducts: function(){
