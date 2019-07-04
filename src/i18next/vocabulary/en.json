@@ -605,7 +605,8 @@
         "LoginTo": "Login to",
         "Password": "Password",
         "AccessDenied": "access denied, possibly wrong password",
-        "TryToConnect": "connection attempt ..."
+        "TryToConnect": "connection attempt ...",
+        "PasswordHint": "Privatix network is completely decentralized. There are no centralized servers that store any personal information, that usually used to restore password, such as your email address. It is not possible to recover password for your personal wallet. Please, re-install application and setup new account. Note, that all data and will be lost during re-install."
     },
     "settings": {
         "Success": "Changes has been successfully saved.",
@@ -787,5 +788,10 @@
         "MaxTraffic": "Max. traffic",
         "FirstDeposit": "First deposit",
         "unusedDepositTip": "Unused deposit will be returned after connection closed"
+    },
+    "externalLinks/warning" : {
+        "warning": "You are going to open external resource",
+        "confirmBtn": "Ok",
+        "AreYouSure": "Are you sure?"
     }
 }

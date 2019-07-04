@@ -14,6 +14,7 @@ interface IProps {
     swalConfirmBtnText: string;
     text: string|JSX.Element;
     disabledBtn?: boolean;
+    parentDivClassName?: string;
 }
 
 interface IState {
@@ -78,11 +79,11 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t, className, title, text, swalTitle, swalConfirmBtnText, swalType } = this.props;
+        const { t, parentDivClassName, className, title, text, swalTitle, swalConfirmBtnText, swalType } = this.props;
         const { show } = this.state;
 
         return (
-            <>
+            <div className={parentDivClassName}>
                 <button onClick={this.showPopUpSwal}
                         className={className}
                         ref={this.showConfirmAlertBtn}
@@ -97,6 +98,8 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
                     confirmBtnText={swalConfirmBtnText}
                     cancelBtnText={t('CancelBtn')}
                     confirmBtnCssClass='swal2-styled'
+                    confirmBtnBsStyle='link'
+                    cancelBtnBsStyle='primary'
                     cancelBtnCssClass='swal2-styled'
                     title={swalTitle}
                     onConfirm={this.confirmHandler}
@@ -104,7 +107,7 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
                 >
                     {text}
                </ReactSweetAlert>
-            </>
+            </div>
         );
     }
 }

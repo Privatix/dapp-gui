@@ -7,6 +7,7 @@ import { Mode } from 'typings/mode';
 
 import ExternalLink from 'common/etc/externalLink';
 import CopyToClipboard from 'common/copyToClipboard';
+import HintComponent from 'common/hintComponent';
 
 import { WS, ws } from 'utils/ws';
 
@@ -152,24 +153,11 @@ class GetPrix extends React.Component<IProps, IState>{
                     <Steps step={advancedMode ? 6 : 4} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />
                     <div className='content clearfix'>
                         <section>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td style={ {verticalAlign: 'top', width: '30' } } >
-                                            <i className='fa fa-info-circle' style={ {fontSize:'22px', color: 'deepskyblue', marginRight:'10px'} }></i>
-                                        </td>
-                                        <td>
-                                            <p>
-                                                <i>{t('intro')}&nbsp;
-                                                    <ExternalLink href='https://help.privatix.network/general/short-explanation-of-core-simple-ui-client'>
-                                                    {t('learnMore')}
-                                                    </ExternalLink>.
-                                                </i>
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <HintComponent msg={<i>{t('intro')}&nbsp;
+                                <ExternalLink href='https://help.privatix.network/general/short-explanation-of-core-simple-ui-client'>
+                                    {t('learnMore')}
+                                </ExternalLink>.
+                            </i>} />
 
                             <h4>{t('fundYourAccount')}</h4>
 
