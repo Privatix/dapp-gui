@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-import toFixedN from 'utils/toFixedN';
+import mb from 'utils/mb';
 
 interface IProps {
     amount: number;
@@ -17,13 +17,7 @@ export default class MB extends React.Component<IProps, {}>{
             return null;
         }
 
-        switch(true) {
-            case amount < 1024:
-                return `${toFixedN({number: amount, fixed: 2})} MB`;
-            case amount < 1024*1024:
-                return `${toFixedN({number: amount/(1024), fixed: 2})} GB`;
-            default:
-                return `${toFixedN({number: amount/(1024*1024), fixed: 2})} TB`;
-        }
+        const {value, unit} = mb(amount);
+        return `${value} ${unit}`;
     }
 }
