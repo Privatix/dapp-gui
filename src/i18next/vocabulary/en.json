@@ -606,7 +606,10 @@
         "Password": "Password",
         "AccessDenied": "access denied, possibly wrong password",
         "TryToConnect": "connection attempt ...",
-        "PasswordHint": "Privatix network is completely decentralized. There are no centralized servers that store any personal information, that usually used to restore password, such as your email address. It is not possible to recover password for your personal wallet. Please, re-install application and setup new account. Note, that all data and will be lost during re-install."
+        "PasswordHint1": "Privatix network is completely decentralized. There are no centralized servers that store any personal information, that usually used to restore password, such as your email address.",
+        "PasswordHint2": "It is not possible to recover password for your personal wallet.",
+        "PasswordHint3": "If you forgot or lost your password, you should re-install application and setup new account.",
+        "PasswordHint4": "All data will be lost during re-install."
     },
     "settings": {
         "Success": "Changes has been successfully saved.",

@@ -116,7 +116,7 @@ class Login extends React.Component<IProps, IState> {
             </div>
             <div className='p-20'>
                 <div>
-                    <HintComponent msg={<i>{t('PasswordHint')}</i>} />
+                    <HintComponent msg={<i>{t('PasswordHint1')}<br />{t('PasswordHint2')}<br />{t('PasswordHint3')}<br />{t('PasswordHint4')}</i>} />
                 </div>
 
                 <form className='form-horizontal m-t-20' onSubmit={this.onSubmit.bind(this)}>
