@@ -13,6 +13,7 @@ interface IProps {
     swalTitle: string|JSX.Element;
     swalConfirmBtnText: string;
     text: string|JSX.Element;
+    parentDivClassName?: string;
     disabledBtn?: boolean; // what for?
 }
 
@@ -76,7 +77,7 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
         const { t, className } = this.props;
 
         return (
-            <div>
+            <div className={this.props.parentDivClassName}>
                 <button onClick={this.showPopUpSwal} className={className} ref={this.showConfirmAlertBtn}>
                     {this.props.title}
                 </button>
@@ -88,6 +89,8 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
                     confirmBtnText={this.props.swalConfirmBtnText}
                     cancelBtnText={t('CancelBtn')}
                     confirmBtnCssClass='swal2-styled'
+                    confirmBtnBsStyle='link'
+                    cancelBtnBsStyle='primary'
                     cancelBtnCssClass='swal2-styled'
                     title={this.props.swalTitle}
                     onConfirm={this.confirmHandler}

@@ -788,5 +788,10 @@
         "MaxTraffic": "Max. traffic",
         "FirstDeposit": "First deposit",
         "unusedDepositTip": "Unused deposit will be returned after connection closed"
+    },
+    "externalLinks/warning" : {
+        "warning": "You are going to open external resource",
+        "confirmBtn": "Ok",
+        "AreYouSure": "Are you sure?"
     }
 }
