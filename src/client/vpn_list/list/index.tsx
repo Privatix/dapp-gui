@@ -187,7 +187,6 @@ class VPNList extends React.Component<IProps, IState> {
         const offset = activePage > 1 ? (activePage - 1) * limit : 0;
 
         const filterParams = await ws.getClientOfferingsFilterParams();
-        console.log('PARAMS!!!', filterParams);
         const allCountries = filterParams.countries;
 
         const min = filterParams.minPrice / 1e8;
