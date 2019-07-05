@@ -7,4 +7,5 @@ export interface GetClientOfferingsFilterParamsResponse {
     countries: string[];
     minPrice: number;
     maxPrice: number;
+    maxRating: number;
 }

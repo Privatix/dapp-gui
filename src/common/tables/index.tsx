@@ -13,6 +13,7 @@ import JobStatusComponent from 'common/badges/jobStatus';
 import ETHComponent from 'common/badges/ETH';
 import Prix from 'common/badges/PRIX';
 import MB from 'common/badges/MB';
+import RatingComponent from 'common/badges/rating';
 import UsageComponent from 'common/badges/channelUsage';
 import OfferingStatusComponent from 'common/badges/offeringStatus';
 import AvailabilityComponent from 'common/badges/availability';
@@ -216,7 +217,8 @@ export const Rating = {
     header: i18n.t('tables:Rating'),
     headerStyle: {textAlign: 'center'},
     key: 'rating',
-    dataProps: { className: 'text-center'}
+    dataProps: { className: 'text-center'},
+    render: amount => <RatingComponent amount={amount} />
 };
 
 export const ServiceName = {
