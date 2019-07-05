@@ -13,11 +13,11 @@ export default function externalLink(props: any) {
     };
 
     return <ConfirmPopupSwal
-            parentDivClassName='d-inline'
+            isExternalLink={true}
             done={openExternalLink}
             title={text || children}
             text={<span>{i18n.t('externalLinks/warning:warning')}</span>}
-            className={className === undefined ? 'btn btn-link waves-effect ' : className}
+            className={className}
             swalType='warning'
             swalConfirmBtnText={i18n.t('externalLinks/warning:confirmBtn')}
             swalTitle={i18n.t('externalLinks/warning:AreYouSure')} />;

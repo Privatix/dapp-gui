@@ -608,7 +608,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return registry;
         }, {}) as {[key: string]: boolean};
 
-        return Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
+
+        let countriesArr = Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
+        countriesArr.sort((a, b) => (a.label > b.label) ? 1 : ((b.label > a.label) ? -1 : 0));
+
+        return countriesArr;
     }
 
     states: {[key in Status]: any} = {
@@ -618,7 +622,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { usage, ip, channel, selectedLocation, offeringItem, sessionsDuration } = this.state;
             const props = {usage, ip, channel, selectedLocation, offering: offeringItem.offering, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect, sessionsDuration};
             return <States.Connected {...props} />;
-            
+
         },
 
         connecting: () => {
@@ -626,7 +630,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { channel, selectedLocation, offeringItem } = this.state;
             const props = { channel, selectedLocation, offering: offeringItem.offering, onChangeLocation: this.onChangeLocation };
             return <States.Connecting {...props} />;
-            
+
         },
 
         suspended: () => {
@@ -634,7 +638,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { selectedLocation, offeringItem } = this.state;
             const props = { selectedLocation, offering: offeringItem.offering, onResume: this.onResume };
             return <States.Suspended {...props} />;
-            
+
         },
 
         pingLocations: () => {
@@ -642,7 +646,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { locations, selectedLocation } = this.state;
             const props = { locations, selectedLocation, onChangeLocation: this.onChangeLocation };
             return <States.PingLocations {...props} />;
-            
+
         },
 
         pingFailed: () => {
@@ -666,7 +670,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { channel, selectedLocation } = this.state;
             const props = { channel, selectedLocation };
             return <States.Disconnecting {...props} />;
-            
+
         }
     };
 

@@ -63,7 +63,7 @@ class Accounts extends React.Component<IProps, {}> {
         try{
             await ws.updateAccount(account.id, account.name, true, account.inUse);
         }catch(e){
-            // 
+            //
         }
     }
 
@@ -124,11 +124,6 @@ class Accounts extends React.Component<IProps, {}> {
             <div className='row'>
                 <div className='col-sm-12 m-b-15'>
                     <h3 className='page-title'>{t('Title')}</h3>
-                    <div className='m-t-15'>
-                        <Link to={'/setAccount'} className='btn btn-default btn-custom waves-effect waves-light m-r-15'>
-                            {t('CreateBtn')}
-                        </Link>
-                    </div>
                 </div>
             </div>
             <div className='row'>
