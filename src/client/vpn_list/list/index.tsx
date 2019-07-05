@@ -250,7 +250,8 @@ class VPNList extends React.Component<IProps, IState> {
             price: offering.unitPrice,
             availableSupply: offering.currentSupply,
             supply: offering.supply,
-            rating: offeringItem.rating
+            rating: offeringItem.rating,
+            maxUnits: offering.maxUnit
         };
     }
 

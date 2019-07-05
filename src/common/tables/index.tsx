@@ -189,6 +189,15 @@ export const Price = {
     render: amount => <Prix amount={amount} />
 };
 
+export const MaxUnits = {
+    header: i18n.t('tables:MaxUnits'),
+    headerStyle: {textAlign: 'center'},
+    key: 'maxUnits',
+    dataProps: { className: 'text-center'},
+    sortable: true,
+    render: amount => amount ? <MB amount={amount} /> : 'unlimited'
+};
+
 export const AvailableSupply = {
     header: i18n.t('tables:AvailableSupply'),
     headerStyle: {textAlign: 'center'},
