@@ -738,7 +738,7 @@
         "Block": "Block",
         "Country": "Country",
         "Price": "Price (PRIX/MB)",
-        "MaxUnits": "Max units",
+        "MaxUnits": "Max. traffic",
         "AvailableSupply": "Available supply",
         "Supply": "Supply",
         "ServiceName": "Service name",
