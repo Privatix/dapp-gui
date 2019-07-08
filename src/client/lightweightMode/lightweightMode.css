@@ -1,0 +1,35 @@
+.SMHelpBl{
+    text-align: right;
+    margin: 10px 20px 35px 0;
+}
+.SMHelpBl>a{
+    font-size: 15px;
+}
+.SMHelpBl>a>i{
+    color: #797979;
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.simpleModeFooterMenu{
+    margin: 25px 0 50px;
+}
+.simpleModeFooterMenu>a,
+.simpleModeFooterMenu>div>a {
+    font-weight: 600;
+    color: #007bff;
+}
+
+.simpleModeFooterText{
+    margin-left: auto;
+    margin-right: auto;
+    padding-top: 25px;
+    margin-top: 70px;
+    max-width: 350px;
+    min-width: 300px;
+    width: auto;
+    border-top: 1px solid #ebeff2;
+}
+.simpleModeFooterText>p{
+    font-weight: 600;
+}

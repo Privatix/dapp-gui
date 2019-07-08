@@ -26,6 +26,7 @@ interface IProps{
     entryPoint: string;
     mode: 'simple' | 'advanced';
     notices?: State['notices'];
+    isModal?: boolean;
 }
 
 interface IState {
@@ -35,6 +36,7 @@ interface IState {
     getPrix: boolean;
     done: boolean;
     err: boolean;
+    accountPSCBalance: number;
 }
 
 @translate(['auth/getPrix', 'auth/generateKey', 'auth/utils', 'transferTokens'])
@@ -48,7 +50,8 @@ class GetPrix extends React.Component<IProps, IState>{
 
     constructor(props:IProps){
         super(props);
-        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false, err: false, accountId: props.accountId};
+
+        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false, err: false, accountId: props.accountId, accountPSCBalance: 0};
     }
 
     isSimpleMode(){
@@ -57,11 +60,10 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 
     async componentDidMount(){
-
         const { ws, accountId, dispatch } = this.props;
 
         const account = await ws.getAccount(accountId);
-        this.setState({ethAddr: `0x${account.ethAddr}`});
+        this.setState({ethAddr: `0x${account.ethAddr}`, accountPSCBalance: account.pscBalance});
         this.drawQRcode(`0x${account.ethAddr}`);
         dispatch(handlers.setAutoTransfer(true));
     }
@@ -98,7 +100,7 @@ class GetPrix extends React.Component<IProps, IState>{
             this.setState({getPrix: true});
         }
 
-        if(account.pscBalance !== 0 ){
+        if(account.pscBalance !== this.state.accountPSCBalance ){
             this.setState({done: true});
             dispatch(handlers.addNotice({code: 1, notice: {level: 'info', msg: t('transferTokens:TransferPRIXCompletedSuccessfully')}}));
             this.observerId = null;
@@ -131,17 +133,34 @@ class GetPrix extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t } = this.props;
+        const { t, isModal } = this.props;
         const { ethAddr, didIt, getPrix, done, err } = this.state;
         const advancedMode = !this.isSimpleMode();
+        const panelHeading = isModal
+            ? ''
+            : <div className='panel-heading'>
+                <h4 className='text-center'>PRIX</h4>
+            </div>;
+        const steps = isModal
+            ? ''
+            : <Steps step={advancedMode ? 6 : 4} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />;
+        const bottomButtons = isModal
+            ? ''
+            : <div className='form-group text-right m-t-40'>
+                {advancedMode ? <PreviousButton onSubmit={this.back} /> : null }
+                {done
+                    ? <FinishButton onSubmit={this.onFinish} />
+                    : <button className='btn btn-default text-uppercase waves-effect waves-light pull-right m-l-5 btnCustomDisabled disabled' >
+                        {t('auth/utils:Finish')}
+                    </button>
+                }
+            </div>;
 
         return <div className='card-box'>
-            <div className='panel-heading'>
-                <h4 className='text-center'>PRIX</h4>
-            </div>
-            <div className='form-horizontal m-t-20'>
-                <div className='p-20 wizard clearfix'>
-                    <Steps step={advancedMode ? 6 : 4} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />
+            {panelHeading}
+            <div className={'form-horizontal ' + (isModal ? '' : 'm-t-20')}>
+                <div className={(isModal ? '' : 'p-20 ') + 'wizard clearfix'}>
+                    {steps}
                     <div className='content clearfix'>
                         <section>
                             <HintComponent msg={<i>{t('intro')}&nbsp;
@@ -249,17 +268,9 @@ class GetPrix extends React.Component<IProps, IState>{
                                 }
                             </div>
                             <h4 className='text-center'>
-                                {done ? t('AllDonePressFinish') : null }
+                                {done ? (isModal ? t('AllDoneCloseModal') : t('AllDonePressFinish')) : null }
                             </h4>
-                            <div className='form-group text-right m-t-40'>
-                                {advancedMode ? <PreviousButton onSubmit={this.back} /> : null }
-                                {done
-                                    ? <FinishButton onSubmit={this.onFinish} />
-                                    : <button className='btn btn-default text-uppercase waves-effect waves-light pull-right m-l-5 btnCustomDisabled disabled' >
-                                          {t('auth/utils:Finish')}
-                                      </button>
-                                }
-                           </div>
+                            {bottomButtons}
                         </section>
 
                     </div>

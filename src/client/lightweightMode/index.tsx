@@ -20,6 +20,11 @@ import { Account } from 'typings/accounts';
 import { Offering, ClientOfferingItem } from 'typings/offerings';
 
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+import ExternalLink from 'common/etc/externalLink';
+
+import './lightweightMode.css';
+import ModalWindow from 'common/modalWindow';
+import GetPrix from 'common/wizard/getPrix';
 
 type Status = 'disconnected'
             | 'disconnecting'
@@ -704,8 +709,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 <style dangerouslySetInnerHTML={{__html: `
                    html { background: white; } body { background: white; }
                 `}} />
-                <div style={ {textAlign: 'right'} }>
-                    <SwitchAdvancedModeButton />
+                <div className='SMHelpBl'>
+                    <ExternalLink
+                        href={'https://help.privatix.network/core-software/simple-mode'}
+                    ><i className='md md-help'></i> <span>{t('Help')}</span></ExternalLink>
                 </div>
                 <div className='widget-chart text-center'>
                     <div>
@@ -718,6 +725,26 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         <img src='images/Privatix_logo.png' alt='image' className='img-fluid spacing' width='250' />
                         <h1 className='spacing'>{t(status)}</h1>
                         { this.states[this.state.status]() }
+                    </div>
+
+                    <div className='simpleModeFooterText'>
+                        <p>{t('footerTextLine0')}</p>
+                        <p>{t('footerTextLine1')}</p>
+                    </div>
+                    <div className='simpleModeFooterMenu'>
+                        <SwitchAdvancedModeButton /> |&nbsp;
+                        <ModalWindow wrapClass='d-inline'
+                                     customClass=''
+                                     modalTitle={t('addFundsModalTitle')}
+                                     text={t('addFunds')}
+                                     component={<GetPrix mode={'simple'} entryPoint={'/app'} accountId={account.id} isModal={true} />}
+                        /> |&nbsp;
+                        <ExternalLink
+                            href={'https://help.privatix.network/core-software/withdrawal-funds'}
+                        ><span>{t('withdrawal')}</span></ExternalLink> |&nbsp;
+                        <ExternalLink
+                            href={'https://help.privatix.network/core-software/terms-of-use'}
+                        ><span>{t('termsOfUse')}</span></ExternalLink>
                     </div>
                 </div>
             </>

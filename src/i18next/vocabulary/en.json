@@ -86,6 +86,7 @@
         "WeAreTransferring": "We are transferring them to a service balance (it might take 5-10 min)...",
         "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
         "AllDonePressFinish": "All done. Press Finish",
+        "AllDoneCloseModal": "All done. Close Modal",
         "notEnoughETH": "Oops, PRIX transfer to the Marketplace has been failed: not enough ETH to cover gas costs",
         "Congrats": "Great, PRIX transfer to the Marketpalce has been successfully completed."
     },
@@ -783,7 +784,7 @@
         "Balance": "Balance",
         "Address": "Address",
         "SimpleMode": "Simple Mode",
-        "AdvancedMode": "Advanced Mode",
+        "AdvancedMode": "advanced mode",
         "SearchingTheOptimalNode": "Searching the optimal node",
         "NoAvailableOfferings": "No available offerings. Please choose another country.",
         "AgentFailed": "Agent failed to provide the service.",
@@ -793,7 +794,14 @@
         "PricePerMB": "Price per MB",
         "MaxTraffic": "Max. traffic",
         "FirstDeposit": "First deposit",
-        "unusedDepositTip": "Unused deposit will be returned after connection closed"
+        "unusedDepositTip": "Unused deposit will be returned after connection closed",
+        "Help": "Help",
+        "addFunds": "add funds",
+        "addFundsModalTitle": "Add funds",
+        "withdrawal": "withdrawal",
+        "termsOfUse": "terms of use",
+        "footerTextLine0": "Decentralized P2P Bandwidth Marketplace",
+        "footerTextLine1": "Privatix Network Core - Client Simple Mode"
     },
     "externalLinks/warning" : {
         "warning": "You are going to open external resource",
