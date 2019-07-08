@@ -103,6 +103,7 @@ ul.default li {
 .sweet-alert .swal2-styled:focus{
     box-shadow: none;
     color: #fff;
+    text-decoration: none;
 }
 .sweet-alert .btn-primary{
     background: rgb(79, 167, 243) !important;
