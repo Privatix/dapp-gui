@@ -801,7 +801,11 @@
         "withdrawal": "withdrawal",
         "termsOfUse": "terms of use",
         "footerTextLine0": "Decentralized P2P Bandwidth Marketplace",
-        "footerTextLine1": "Privatix Network Core - Client Simple Mode"
+        "footerTextLine1": "Privatix Network Core - Client Simple Mode",
+        "connectedMsg": "VPN connection has been established",
+        "disconnectedMsg": "VPN connection has been disconnected",
+        "reconnectMsg": "Connection has been interrupted. Trying to reconnect.",
+        "reconnectFailed": "All attempts to reconnect were unsuccessful. Connection is closed."
     },
     "externalLinks/warning" : {
         "warning": "You are going to open external resource",

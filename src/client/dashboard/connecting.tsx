@@ -42,7 +42,7 @@ const countdownRender = ( { hours, minutes, seconds, completed } ) => {
 
 };
 
-@translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal'])
+@translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal', 'client/simpleMode'])
 class Connecting extends React.Component<any, any>{
 
     subscription: String;
@@ -81,6 +81,15 @@ class Connecting extends React.Component<any, any>{
         this.props.ws.changeChannelStatus(this.state.channel.id, 'resume');
     }
 
+    private notify(msg: string){
+        const notification = new Notification('Privatix', {
+          body: msg
+        });
+        notification.onclick = () => {
+          //
+        };
+    }
+
     refresh = async () => {
 
         const { t, ws } = this.props;
@@ -98,10 +107,16 @@ class Connecting extends React.Component<any, any>{
             const channel = channels[0];
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
+                    if(this.state.status !== 'active'){
+                        this.notify(t('client/simpleMode:connectedMsg'));
+                    }
                     const offering = await ws.getOffering(channel.offering);
                     this.setState({status: 'active', channel, offering, pendingTimeCounter: 0});
                     break;
                 case 'suspended':
+                    if(['suspending'].includes(this.state.status)){
+                        this.notify(t('client/simpleMode:disconnectedMsg'));
+                    }
                     let countryAlert = '';
                     const endpoint = await ws.getEndpoints(channel.id);
                     if (endpoint[0]) {

@@ -34,6 +34,10 @@ export interface LocalSettings {
             height: number;
         }
     }
+    reconnect: {
+        count: number;
+        delay: number;
+    }
 }
 
 export interface DbSetting {

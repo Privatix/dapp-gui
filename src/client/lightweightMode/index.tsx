@@ -60,7 +60,7 @@ interface IState {
     usage: ClientChannelUsage;
     offeringItem: ClientOfferingItem;
     sessionsDuration: number;
-    topUpInProgress: boolean;
+    reconnectTry: number;
 }
 
 @translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
@@ -87,7 +87,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
            ,usage: null
            ,offeringItem: {offering: null, rating: 0}
            ,sessionsDuration: 0
-           ,topUpInProgress: false
+           ,reconnectTry: 0
         };
     }
 
@@ -136,6 +136,15 @@ class LightWeightClient extends React.Component<IProps, IState> {
             ws.unsubscribe(this.firstJobSubscription);
             this.firstJobSubscription = null;
         }
+    }
+
+    private notify(msg: string){
+        const notification = new Notification('Privatix', {
+          body: msg
+        });
+        notification.onclick = () => {
+          //
+        };
     }
 
     private async getIp(attempt?: number){
@@ -191,7 +200,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return;
         }
 
-        const { ws } = this.props;
+        const { ws, t } = this.props;
 
         const channels = await ws.getNotTerminatedClientChannels();
 
@@ -224,6 +233,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
             this.updateCurrentCountry(channel);
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
+                    if(!['connected', 'disconnected'].includes(this.state.status)){
+                        this.notify(t('connectedMsg'));
+                    }
                     this.setState({status: 'connected'});
                     if(!this.state.ip || this.state.ip === ''){
                         this.getIp();
@@ -243,6 +255,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
                             break;
                         case 'disconnecting':
                             break;
+                        case 'connected':
+                            this.reconnect();
+                            break;
                         default:
                             this.setState({status: 'suspended'});
                     }
@@ -260,6 +275,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     break;
                 default:
                     if(this.state.channel){
+
+                        this.notify(t('disconnectedMsg'));
+
                         if(this.state.usage && this.state.usage.current === 0){
                             await ws.changeChannelStatus(this.state.channel.id, 'close');
                         }
@@ -278,6 +296,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return sessions.length > 0;
 
     }
+
     private async getSessionsDuration(channelId: string){
 
         const { ws } = this.props;
@@ -483,6 +502,72 @@ class LightWeightClient extends React.Component<IProps, IState> {
             msg = t('client/acceptOffering:ErrorAcceptingOffering');
             notice({level: 'error', header: t('utils/notice:Attention!'), msg});
         }
+    }
+
+    private reconnect = async () => {
+
+        const { ws, t, localSettings } = this.props;
+        const { channel, reconnectTry } = this.state;
+
+        if(reconnectTry === 0){
+            this.notify(t('disconnectedMsg'));
+            notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('reconnectMsg')});
+        }
+
+        if(!channel){
+            return;
+        }
+
+        const updatedChannelInfo = await ws.getObject('channel', channel.id);
+        const usage = await ws.getChannelsUsage([channel.id]);
+
+        if(usage[channel.id].cost >= updatedChannelInfo.totalDeposit){
+            return;
+        }
+
+        if(updatedChannelInfo.channelStatus !== 'active'){
+            this.setState({status: 'disconnected', channel: null, usage: null});
+        }else{
+            if(reconnectTry <= localSettings.reconnect.count){
+                this.setState({reconnectTry: reconnectTry + 1});
+                const connected = await this.tryToConnect();
+                if(!connected){
+                    setTimeout(this.reconnect, localSettings.reconnect.delay);
+                }else{
+                    this.setState({status: 'connected', reconnectTry: 0});
+                }
+            }else{
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('reconnectFailed')});
+            }
+        }
+    }
+
+    private tryToConnect(){
+        return new Promise(async (resolve: Function, reject: Function) => {
+            const { ws } = this.props;
+            const { channel } = this.state;
+
+            let subscription;
+            const eventDispatcher = (event: any) => {
+                const unsubscribe = () => ws.unsubscribe(subscription);
+
+                if('job' in event){
+                    switch(event.job.Status){
+                        case 'failed':
+                        case 'canceled':
+                            unsubscribe();
+                            resolve(false);
+                            break;
+                        case 'done':
+                            unsubscribe();
+                            resolve(true);
+                            break;
+                    }
+                }
+            };
+            ws.changeChannelStatus(channel.id, 'resume');
+            subscription = await ws.subscribe('channels', [channel.id], eventDispatcher);
+        });
     }
 
     private getOfferingsIdsForCountry(country: string){
