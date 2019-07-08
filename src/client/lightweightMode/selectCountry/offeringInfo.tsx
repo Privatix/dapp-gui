@@ -28,12 +28,12 @@ class OfferingInfo extends React.Component<any, {}> {
                 <table className='table table-sm' style={ {marginLeft: 'auto', marginRight: 'auto', marginTop: '7px', maxWidth: '350px', minWidth: '300px', width: 'auto'} }>
                     <tbody>
                     <tr>
-                        <td style={ {border: '0px', textAlign: 'left'} }>{t('PricePerMB')}: </td>
+                        <td style={ {border: '0px', textAlign: 'center'} }>{t('PricePerMB')}: </td>
                         <td style={ {border: '0px', whiteSpace: 'nowrap', textAlign: 'center'} }>{`${prix(offering.unitPrice)} PRIX`}</td>
                     </tr>
                     {withDeposit
                         ? <tr>
-                             <td style={ {textAlign: 'left'} }>{t('FirstDeposit')}:</td>
+                             <td style={ {textAlign: 'center'} }>{t('FirstDeposit')}:</td>
                              <td style={ {whiteSpace: 'nowrap', textAlign: 'center'} }><MB amount={depositMB} /> ({depositPRIX} PRIX)
                                  &nbsp;<i className='fa fa-question-circle' title={t('unusedDepositTip')}></i></td>
                          </tr>
@@ -41,7 +41,7 @@ class OfferingInfo extends React.Component<any, {}> {
 
                     }
                     <tr>
-                        <td style={ {paddingBottom: '0px', textAlign: 'left'} }>{t('MaxTraffic')}:</td>
+                        <td style={ {paddingBottom: '0px', textAlign: 'center'} }>{t('MaxTraffic')}:</td>
                         <td style={ {paddingBottom: '0px', textAlign: 'center'} }>{offering.maxUnit ? <MB amount={offering.maxUnit} /> : 'unlimited' }</td>
                     </tr>
                     </tbody>
