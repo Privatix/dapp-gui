@@ -1,8 +1,8 @@
 {
    "wsEndpoint": "ws://localhost:8888/ws",
    "gas": {
-        "acceptOffering": 100000,
-        "createOffering": 100000,
+        "acceptOffering": 200000,
+        "createOffering": 200000,
         "transfer": 100000,
         "increaseDeposit": 100000
    },
