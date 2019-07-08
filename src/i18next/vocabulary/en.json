@@ -134,7 +134,7 @@
         "MinUnits": "Min units",
         "UsedToCalculateMinimumDeposit": "Used to calculate minimum deposit required.",
         "MaxUnits": "Max units",
-        "UsedToSpecifyMaximumUnits": "Used to specify maximum units of service that will be supplied. Can be empty.",
+        "UsedToSpecifyMaximumUnits": "Used to specify maximum units of service that will be supplied. Can be empty. Only unlimited offerings will be shown in client simple mode.",
         "ConnectionInfo": "Connection info",
         "MaxSuspendTime": "Max suspend time",
         "sec": "sec",
