@@ -5,6 +5,7 @@ import { isNotice } from 'utils/notice';
 
 interface IProps {
     customClass: string;
+    wrapClass?: string;
     modalTitle: string;
     text: string;
     visible?: boolean;
@@ -140,7 +141,7 @@ export default class ModalWindow extends React.Component<IProps, IState> {
             <CopyToClipboard text={props.text} />;
 
         return (
-            <div>
+            <div className={props.wrapClass ? props.wrapClass : ''}>
                 <a href='#' onClick={this.showModal} className={props.customClass} title={props.text}>{props.text}</a>
                 {copyToClipboard}
                 {content}

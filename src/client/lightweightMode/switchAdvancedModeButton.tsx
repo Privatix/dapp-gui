@@ -24,16 +24,15 @@ class SwitchAdvancedModeButton extends React.Component<IProps, {}> {
     }
 
     render(){
-
         const { t } = this.props;
 
-        return <a href='' style={ {margin: '10px'} } onClick={this.onClick}>{t('AdvancedMode')}</a>;
+        return <a href='' onClick={this.onClick}>{t('AdvancedMode')}</a>;
     }
 }
 
 const mapStateToProps = (state: State) => ({});
 
-const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ 
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     setAdvancedMode: () => {
         dispatch(asyncProviders.setMode(Mode.ADVANCED));
     }
