@@ -1,10 +1,10 @@
 {
    "wsEndpoint": "ws://localhost:8888/ws",
    "gas": {
-        "acceptOffering": 200000,
-        "createOffering": 200000,
-        "transfer": 100000,
-        "increaseDeposit": 100000
+        "acceptOffering": 75446,
+        "createOffering": 112941,
+        "transfer": 88723,
+        "increaseDeposit": 45836
    },
    "network": "rinkeby",
    "bugsnag": {
