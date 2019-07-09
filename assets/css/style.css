@@ -1714,6 +1714,10 @@ body.fixed-left .side-menu.left {
   color: #5fbeaa !important;
 }
 
+#sidebar-menu > ul >li.separator{
+  border-top: 1px solid #ebeff2;
+}
+
 .menu-title {
   padding: 12px 20px !important;
   letter-spacing: .035em;
