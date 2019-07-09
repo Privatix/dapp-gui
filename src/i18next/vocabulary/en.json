@@ -298,9 +298,9 @@
         "ServiceList": "{{serviceName}} list"
     },
     "topPanel": {
-        "ETHBalance": "ETH balance",
-        "ExchangeBalance": "Exchange balance",
-        "ServiceBalance": "Service balance",
+        "Account": "Account",
+        "Marketplace": "Marketplace",
+        "Escrow": "Escrow",
         "ActiveServices": "Active services",
         "Status": "Status",
         "TotalTraffic": "Total traffic"

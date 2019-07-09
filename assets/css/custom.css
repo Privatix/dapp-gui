@@ -83,7 +83,7 @@ ul.default li {
     color: #81c868;
 }
 @media only screen and (max-width: 1170px) {
-    .topPanel li:not(:last-child){
+    .topPanel li span.balanceText{
         display: none;
     }
 }
