@@ -27,6 +27,7 @@
    },
    "reconnect": {
        "count": 3,
-       "delay": 20000
+       "delay": 3000,
+       "progression": 3
    }
 }

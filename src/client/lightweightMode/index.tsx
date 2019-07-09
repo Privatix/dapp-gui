@@ -532,7 +532,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 this.setState({reconnectTry: reconnectTry + 1});
                 const connected = await this.tryToConnect();
                 if(!connected){
-                    setTimeout(this.reconnect, localSettings.reconnect.delay);
+                    setTimeout(this.reconnect, localSettings.reconnect.delay*Math.pow(localSettings.reconnect.progression, reconnectTry));
                 }else{
                     this.setState({status: 'connected', reconnectTry: 0});
                 }

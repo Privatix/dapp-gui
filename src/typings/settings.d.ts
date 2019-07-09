@@ -37,6 +37,7 @@ export interface LocalSettings {
     reconnect: {
         count: number;
         delay: number;
+        progression: number;
     }
 }
 
