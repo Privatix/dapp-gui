@@ -14,7 +14,10 @@ import * as api from 'utils/api';
 
 import {State} from 'typings/state';
 
-import { Name, EthereumAddress, ETH, ExchangeBalance, ServiceBalance, IsDefault, Actions } from 'common/tables/';
+import eth from 'utils/eth';
+import prix from 'utils/prix';
+
+import { Name, EthereumAddress, AccountBalance, Marketplace, Escrow, Actions } from 'common/tables/';
 
 interface IProps {
     accounts?: State['accounts'];
@@ -73,7 +76,6 @@ class Accounts extends React.Component<IProps, {}> {
 
         const accountsDataArr = accounts.map(account => {
 
-            const isDefault = account.isDefault === true ? 'on' : 'off';
             const ethereumAddress = `0x${account.ethAddr}`;
 
             return {
@@ -85,12 +87,9 @@ class Accounts extends React.Component<IProps, {}> {
                                    component={<Account account={account} />}
                       />,
                 ethereumAddress,
-                eth: account.ethBalance,
-                exchangeBalance: account.ptcBalance,
-                serviceBalance: account.pscBalance,
-                isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault} onClick={account.isDefault ? null : this.onSetAsDefault.bind(this, account)}>
-                               <i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i>
-                           </span>,
+                account: <>{prix(account.ptcBalance)} PRIX&nbsp;&nbsp;{eth(account.ethBalance)} ETH</>,
+                marketplace: prix(account.pscBalance) + ' PRIX',
+                escrow: prix(0) + ' PRIX',
                 actions: <>
                              <Link to={'#'}
                                    onClick={this.onRefresh.bind(this, account.id)}
@@ -113,10 +112,9 @@ class Accounts extends React.Component<IProps, {}> {
         const columns = [
             Name,
             EthereumAddress,
-            ETH,
-            ExchangeBalance,
-            ServiceBalance,
-            IsDefault,
+            AccountBalance,
+            Marketplace,
+            Escrow,
             Actions
         ];
 
