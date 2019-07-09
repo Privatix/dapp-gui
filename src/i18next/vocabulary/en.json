@@ -6,6 +6,12 @@
         "Select": "Select",
         "NoResults": "Nothing was found on your request. Please modify the filtering options!"
     },
+    "start": {
+        "StartingServices": "Starting services",
+        "UsuallyItTakes": "Usually it takes 20-30 seconds.",
+        "IfSomethingWentWrong": "If something went wrong, please, go to the article:",
+        "HowToDetectATroubleCause": "How to detect a trouble cause"
+    },
     "auth/setLanguage": {
         "chooseTheLanguage": "Choose the language",
         "PleaseSelectLanguage": "Please, select your language:"

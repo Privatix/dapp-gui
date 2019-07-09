@@ -1,5 +1,6 @@
 {
    "wsEndpoint": "ws://localhost:8888/ws",
+   "supervisorEndpoint": "http://localhost:7777",
    "gas": {
         "acceptOffering": 75446,
         "createOffering": 112941,

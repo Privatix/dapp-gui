@@ -11,9 +11,12 @@ import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
 
 const localCache = window.localStorage.getItem('localSettings');
+console.log('LOCAL CACHE!!!', localCache, !localCache);
 if(!localCache){
-    window.localStorage.setItem('localSettings', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en'}));
+    console.log('set the store', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en', supervisorEndpoint: 'http://localhost:7777'}));
+    window.localStorage.setItem('localSettings', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en', supervisorEndpoint: 'http://localhost:7777'}));
 }
+console.log('LOCAL CACHE!!!', window.localStorage.getItem('localSettings'));
 
 const storage = createStore(reducers, applyMiddleware(
     thunk as ThunkMiddleware<State, AnyAction> // lets us dispatch() functions
