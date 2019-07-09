@@ -4,14 +4,12 @@ import { translate } from 'react-i18next';
 
 import { default as handlers, asyncProviders } from 'redux/actions';
 
-import CopyToClipboard from 'common/copyToClipboard';
 import Noticer from 'common/noticer';
 
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
 import States from './states';
 
 import notice from 'utils/notice';
-import prix from 'utils/prix';
 
 import countryByISO from 'utils/countryByIso';
 
@@ -25,6 +23,8 @@ import ExternalLink from 'common/etc/externalLink';
 import './lightweightMode.css';
 import ModalWindow from 'common/modalWindow';
 import GetPrix from 'common/wizard/getPrix';
+import eth from 'utils/eth';
+import prix from 'utils/prix';
 
 type Status = 'disconnected'
             | 'disconnecting'
@@ -790,10 +790,9 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     render(){
 
-        const { t, balance, account } = this.props;
+        const { t, account } = this.props;
         const { status } = this.state;
 
-        const ethAddr = account ? `0x${account.ethAddr}` : '';
         return (
             <>
                 <Noticer />
@@ -806,13 +805,32 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     ><i className='md md-help'></i> <span>{t('Help')}</span></ExternalLink>
                 </div>
                 <div className='widget-chart text-center'>
+
+                    <div className='SMBalanceBl'>
+                        <div className='SMBalance'>
+                            <div className='SMBalanceRow'>
+                                <div className='text'>{t('Account')} :</div>
+                                <div className='value'>{prix(account.ptcBalance)} PRIX | {eth(account.ethBalance)} ETH</div>
+                            </div>
+                            <div className='SMBalanceRow'>
+                                <div className='text'>{t('Marketplace')} :</div>
+                                <div className='value'>{prix(account.pscBalance)} PRIX</div>
+                            </div>
+                            <div className='SMBalanceRow'>
+                                <div className='text'>{t('EscrowLocked')} : </div>
+                                <div className='value'>0 PRIX</div>
+                            </div>
+                        </div>
+
+                        <ModalWindow wrapClass='addFundsPlusBtnBl'
+                                     customClass='addFundsPlusBtn'
+                                     modalTitle={t('addFundsModalTitle')}
+                                     text={t('addFunds')}
+                                     component={<GetPrix mode={'simple'} entryPoint={'/app'} accountId={account.id} isModal={true} />}
+                        />
+                    </div>
+
                     <div>
-                        <h5 style={ {margin: 'auto', width: '300px'} }>
-                            <span className='shortTableText' style={ {marginRight: '10px'} } >{t('Address')}: </span>
-                            <span className='shortTableText' title={ethAddr}>{ethAddr}</span>
-                            <CopyToClipboard text={ethAddr} />
-                        </h5>
-                        <h5>{t('Balance')}: { balance } PRIX</h5>
                         <img src='images/Privatix_logo.png' alt='image' className='img-fluid spacing' width='250' />
                         <h1 className='spacing'>{t(status)}</h1>
                         { this.states[this.state.status]() }
