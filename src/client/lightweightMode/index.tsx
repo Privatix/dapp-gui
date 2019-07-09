@@ -537,10 +537,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const probability = Math.random();
         const range = this.selectByProbability(table, probability);
+        console.log('RANGE SELECTED!!!', range);
         const items = offeringsItems.map(offeringItem => ({id: offeringItem.offering.id, rating: offeringItem.rating}));
         const max = Math.max(...items.map(item => item.rating));
 
         if(max === 0){
+            console.log('RATING NOT CALCULATED!!! result:', offeringsItems);
             return offeringsItems;
         }
 
@@ -552,9 +554,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const offerings = offeringsItems.filter(offeringItem => ids.includes(offeringItem.offering.id));
 
         if(offerings.length > 0){
+            console.log('RESULT: ', offerings);
             return offerings;
         }
-
+        console.log('there are no offerings in selected range, next attempt');
         return this.getRange(offeringsItems);
     }
 
@@ -582,11 +585,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const k = items.reduce(((k:number, item: any) => k += item.probability), 0);
 
         if(k === 0){
-            return offerings[Math.floor(Math.random()*offerings.length)];
+            const res = offerings[Math.floor(Math.random()*offerings.length)];
+            console.log('random offering:', res);
+            return res;
         }
 
         const item = this.selectByProbability(items, Math.random()*k);
         const offering = offerings.find(offeringItem => offeringItem.offering.id === item.id);
+        console.log('selected offering: ', offering);
         return offering;
     }
 
