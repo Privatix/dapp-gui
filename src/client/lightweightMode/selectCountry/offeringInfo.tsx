@@ -40,10 +40,6 @@ class OfferingInfo extends React.Component<any, {}> {
                         : null
 
                     }
-                    <tr>
-                        <td style={ {paddingBottom: '0px', textAlign: 'center'} }>{t('MaxTraffic')}:</td>
-                        <td style={ {paddingBottom: '0px', textAlign: 'center'} }>{offering.maxUnit ? <MB amount={offering.maxUnit} /> : 'unlimited' }</td>
-                    </tr>
                     </tbody>
                 </table>
             );

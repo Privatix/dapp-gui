@@ -801,7 +801,10 @@
         "withdrawal": "withdrawal",
         "termsOfUse": "terms of use",
         "footerTextLine0": "Decentralized P2P Bandwidth Marketplace",
-        "footerTextLine1": "Privatix Network Core - Client Simple Mode"
+        "footerTextLine1": "Privatix Network Core - Client Simple Mode",
+        "Account": "Account",
+        "Marketplace": "Marketplace",
+        "EscrowLocked": "Escrow (locked)"
     },
     "externalLinks/warning" : {
         "warning": "You are going to open external resource",
