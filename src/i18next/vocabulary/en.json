@@ -826,9 +826,9 @@
         "TransferPRIXCompletedSuccessfully": "Transfer PRIX to marketplace: completed successfully."
     },
     "exit": {
-        "title": "Attention!",
-        "terminate": "terminate services",
-        "cancel": "cancel",
-        "exitMessage": "You have running services. Terminate before shutting down?"
+        "title": "Are you sure?",
+        "terminate": "Yes, close it all",
+        "cancel": "Cancel",
+        "exitMessage": "Some associated services still running and will be terminated before closing. It may affect some unfinished processes."
     }
 }
