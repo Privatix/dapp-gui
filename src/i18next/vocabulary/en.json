@@ -381,7 +381,7 @@
         "AveragePublicationTimeText": "Average publication time:",
         "AverageAcceptanceTimeText": "Average acceptance time:",
         "AverageTime": "min",
-        "MoreInformation": "More information:"
+        "RecommendedGasPricesInformation": "Recommended Gas prices information:"
     },
     "transactions/transactionsList": {
         "TransactionLog": "Transaction Log",
