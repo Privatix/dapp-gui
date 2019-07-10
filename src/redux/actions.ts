@@ -3,9 +3,11 @@ import * as api from 'utils/api';
 
 import { Account } from 'typings/accounts';
 import { Product } from 'typings/products';
+import { ClientChannel } from 'typings/channels';
 import { DbSetting as Setting, LocalSettings } from 'typings/settings';
 import { Offering } from 'typings/offerings';
 import { Role, Mode } from 'typings/mode';
+
 import { Notice } from 'utils/notice';
 
 import i18n from 'i18next/init';
@@ -51,9 +53,28 @@ const handlers  = {
 export const asyncProviders = {
     updateAccounts: function(){
         return async function(dispatch: any, getState: Function){
-            const { ws, autoTransfer } = getState();
+            const { ws, role, autoTransfer } = getState();
             const accounts = await ws.getAccounts();
             dispatch(handlers.updateAccounts(accounts));
+            if(role === Role.CLIENT){
+                const channels = await ws.getClientChannels(['wait_coop', 'wait_challenge', 'wait_uncoop', 'pending', 'active'], [], 0, 0);
+                const ledger = channels.items.reduce((ledger: any, channel: ClientChannel) => {
+                    const address = channel.client.toLowerCase();
+                    if(!(address in ledger)){
+                        ledger[address] = 0;
+                    }
+                    ledger[address] += channel.totalDeposit - channel.usage.cost;
+                    return ledger;
+                }, {});
+                const updatedAccounts = accounts.map(account => Object.assign({}
+                                                                             ,account
+                                                                             ,{escrow: `0x${account.ethAddr.toLowerCase()}` in ledger
+                                                                                 ? ledger[`0x${account.ethAddr.toLowerCase()}`]
+                                                                                 : 0
+                                                                               }
+                                                                             ));
+                dispatch(handlers.updateAccounts(updatedAccounts));
+            }
             const account = accounts.find(account => account.isDefault);
             if(account && account.ptcBalance !== 0 && autoTransfer){
                 const settings = await ws.getSettings();
