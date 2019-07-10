@@ -1,5 +1,5 @@
 import {remote} from 'electron';
-import i18n from '../i18next/init';
+import i18n from 'i18next/init';
 
 export default () => {
     const {Menu} = remote;

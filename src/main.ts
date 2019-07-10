@@ -9,6 +9,8 @@ import * as sudo from 'sudo-prompt';
 
 import { updateChecker } from './updateChecker';
 
+let smartExit = false;
+
 let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
 
@@ -65,6 +67,13 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         const { width, height } = req.options;
         win.setSize(width, height);
         event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
+    }else if(req.endpoint === '/exit'){
+        smartExit = false;
+        win = null;
+        app.quit();
+    }else if(req.endpoint === '/smartExit'){
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
+        smartExit = req.options.body.status;
     }
   });
 
@@ -90,10 +99,15 @@ function createWindow () {
     slashes: true
   }));
 
-  // Open the DevTools.
-  if (process.env.TARGET === 'dev') {
-      win.webContents.openDevTools();
-  }
+  win.on('close', function(e: any){
+    if(smartExit){
+        e.preventDefault();
+        win.webContents.send('exit', {});
+    }else{
+        win = null;
+        app.quit();
+    }
+  });
 
     // Emitted when the window is closed.
   win.on('closed', () => {

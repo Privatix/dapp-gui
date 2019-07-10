@@ -19,6 +19,7 @@ import { Offering, ClientOfferingItem } from 'typings/offerings';
 
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 import ExternalLink from 'common/etc/externalLink';
+import ExitNotice from 'client/exitNotice';
 
 import './lightweightMode.css';
 import ModalWindow from 'common/modalWindow';
@@ -796,6 +797,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return (
             <>
                 <Noticer />
+                <ExitNotice />
                 <style dangerouslySetInnerHTML={{__html: `
                    html { background: white; } body { background: white; }
                 `}} />

@@ -25,6 +25,7 @@ interface State {
     };
     autoTransfer: boolean;
     notices: {code: number, notice: Notice}[];
+    exit: boolean;
 }
 
 const StateDefault: State = {
@@ -43,7 +44,8 @@ const StateDefault: State = {
         statuses: {}
     },
     autoTransfer: false,
-    notices: []
+    notices: [],
+    exit: false
 };
 
 export {
