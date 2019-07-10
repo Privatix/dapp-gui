@@ -3,7 +3,7 @@
    "gas": {
         "acceptOffering": 75446,
         "createOffering": 112941,
-        "transfer": 88723,
+        "transfer": 148755,
         "increaseDeposit": 45836
    },
    "network": "rinkeby",
