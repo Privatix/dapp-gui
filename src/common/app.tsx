@@ -13,7 +13,6 @@ import ExitNotice from 'client/exitNotice';
 import Wizard from './wizard/';
 
 import Main from 'agent/main/';
-import Products from 'agent/products/';
 import Offerings from 'agent/offerings/';
 import ChannelsList from 'agent/channels/channelsList';
 import ChannelsByStatus from 'agent/channels/channelsByStatus';
@@ -26,7 +25,6 @@ import ClientDashboardConnecting from 'client/dashboard/connecting';
 import VPNList from 'client/vpn_list/list/';
 import AcceptOffering from 'client/vpn_list/acceptOffering';
 import ClientHistory from 'client/vpn_list/history';
-
 
 import Logs from 'common/logs/logsList';
 
@@ -62,7 +60,6 @@ class App extends React.Component<IProps, {}> {
                             <Switch>
                                 <Route exact path='/' render={(props: any) => role === Role.CLIENT ? <ClientDashboardStart /> : <Main /> } />
                                 <Route path='/settings' component={Settings} />
-                                <Route path='/products' render={() => <Products />} />
                                 <Route path='/accounts' component={AccountsList} />
                                 <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} statuses={[]} />} />
                                 <Route path='/offeringsByStatus/:page' render={(props: any) => <Offerings

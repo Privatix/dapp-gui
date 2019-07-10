@@ -217,7 +217,7 @@
         "Supply": "Supply"
     },
     "products/productsList":{
-        "ServersList": "Servers list",
+        "ServersList": "Exit nodes",
         "Name": "Name",
         "OfferingTemplate": "Offering template",
         "AccessTemplate": "Access template",

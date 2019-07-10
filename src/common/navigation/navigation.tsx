@@ -142,12 +142,6 @@ class Navigation extends React.Component<Props, any> {
 
                         <Submenu submenuData={this.offeringsSubmenuData} active={useSub} onClick={this.changeActive} />
 
-                        <li onClick={this.handleClickFalse} className=''>
-                            <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
-                                <i className='fa fa-server'></i><span>{t('Servers')}</span>
-                            </NavLink>
-                        </li>
-
                         {commonLinks}
                     </ul>
                     <div className='clearfix'></div>
