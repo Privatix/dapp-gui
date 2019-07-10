@@ -7515,6 +7515,11 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
   padding: 20px;
 }
 
+.accountQrCodeBl{
+  justify-content: center;
+  display: flex;
+}
+
 @media only screen and (max-width: 6000px) and (min-width: 700px) {
   .wrapper.right-bar-enabled .right-bar {
     right: 0;

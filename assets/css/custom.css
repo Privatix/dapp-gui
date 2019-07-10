@@ -703,7 +703,17 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
 .copyToClipboardBtn{
     float: right;
     width: 15px;
-    padding: 0 5px;
+    padding: 3px 5px;
+}
+.copyToClipboardBtn:hover,
+.copyToClipboardBtn:active,
+.copyToClipboardBtn:focus{
+    text-decoration: none;
+}
+
+.inputCopyBtn{
+    padding: 11px 12px;
+    width: auto;
 }
 
 .shortOfferingHash{

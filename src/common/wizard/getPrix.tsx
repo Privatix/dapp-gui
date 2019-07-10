@@ -193,9 +193,9 @@ class GetPrix extends React.Component<IProps, IState>{
                                                            readOnly type='text'
                                                            defaultValue={ethAddr}
                                                     />
-                                                    <span style={ {paddingLeft: '9px', paddingRight: '16px'} }
+                                                    <span style={ {padding: '0'} }
                                                           className='input-group-addon bootstrap-touchspin-postfix'>
-                                                        <CopyToClipboard text={ethAddr} />
+                                                        <CopyToClipboard text={ethAddr}  className='inputCopyBtn' />
                                                     </span>
                                                 </div>
                                             </td>

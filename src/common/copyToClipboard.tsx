@@ -6,6 +6,7 @@ import notice from 'utils/notice';
 
 interface IProps {
     t?: any;
+    className?: string;
     text: string;
 }
 
@@ -22,13 +23,11 @@ export default class CopyToClipboardWrapper extends React.Component<IProps, {}> 
 
     render() {
 
-        const { t, text } = this.props;
+        const { t, text, className } = this.props;
 
         return (
             <CopyToClipboard text={text} onCopy={this.onCopy} >
-                <button className='btn btn-link copyToClipboardBtn' title={t('Copy')}>
-                    <i className='fa fa-clipboard'></i>
-                </button>
+                <button className={`btn btn-link copyToClipboardBtn ${className} fa fa-clipboard`} title={t('Copy')}></button>
             </CopyToClipboard>
         );
     }
