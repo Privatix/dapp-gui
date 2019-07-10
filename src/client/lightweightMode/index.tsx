@@ -820,7 +820,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                             </div>
                             <div className='SMBalanceRow'>
                                 <div className='text'>{t('EscrowLocked')} : </div>
-                                <div className='value'>0 PRIX</div>
+                                <div className='value'>{prix(account.escrow)} PRIX</div>
                             </div>
                         </div>
 

@@ -89,7 +89,7 @@ class Accounts extends React.Component<IProps, {}> {
                 ethereumAddress,
                 account: <>{prix(account.ptcBalance)} PRIX&nbsp;&nbsp;{eth(account.ethBalance)} ETH</>,
                 marketplace: prix(account.pscBalance) + ' PRIX',
-                escrow: prix(0) + ' PRIX',
+                escrow: prix(account.escrow) + ' PRIX',
                 actions: <>
                              <Link to={'#'}
                                    onClick={this.onRefresh.bind(this, account.id)}
