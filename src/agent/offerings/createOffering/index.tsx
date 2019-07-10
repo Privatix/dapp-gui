@@ -520,9 +520,6 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         </span>
                                     </div>
                                 </div>
-
-
-
                                 <div className='form-group row'>
                                     <label className='col-2 col-form-label'>{t('IpType')}:<span className='text-danger'>*</span> </label>
                                     <div className='col-6'>
@@ -538,9 +535,6 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         </span>
                                     </div>
                                 </div>
-
-
-
                             </div>
                         </div>
                         <div className='card m-b-20'>
