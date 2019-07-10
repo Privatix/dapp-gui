@@ -2,6 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import countryByIso from 'utils/countryByIso';
+import ipTypes from 'utils/ipTypes';
 import ProductNameByOffering from 'agent/products/productNameByOffering';
 
 import prix from 'utils/prix';
@@ -12,6 +13,7 @@ export default class OfferingView extends React.Component<any, {}>{
     render(){
 
         const { t, offering } = this.props;
+        const offeringIpType = ipTypes.filter(ipType => ipType.type === offering.ipType);
 
         return <div className='col-lg-9 col-md-8'>
             <div className='card m-b-20 card-body'>
@@ -55,6 +57,12 @@ export default class OfferingView extends React.Component<any, {}>{
                                     {t('ItRepresentsTheMaximum')}
                                 </small>
                             </span>
+                        </div>
+                    </div>
+                    <div className='form-group row'>
+                        <label className='col-3 col-form-label'>{t('IpType')}: </label>
+                        <div className='col-9'>
+                            <input type='text' className='form-control' value={offeringIpType[0].name} readOnly/>
                         </div>
                     </div>
                 </div>
