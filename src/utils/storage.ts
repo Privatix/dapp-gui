@@ -6,17 +6,16 @@ import {valid as isValid, gt } from 'semver';
 import reducers from 'redux/reducers';
 import { asyncProviders, default as handlers } from 'redux/actions';
 
+import stopSupervisor from 'utils/stopSupervisor';
+
 import { WS } from 'utils/ws';
 import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
 
 const localCache = window.localStorage.getItem('localSettings');
-console.log('LOCAL CACHE!!!', localCache, !localCache);
 if(!localCache){
-    console.log('set the store', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en', supervisorEndpoint: 'http://localhost:7777'}));
     window.localStorage.setItem('localSettings', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en', supervisorEndpoint: 'http://localhost:7777'}));
 }
-console.log('LOCAL CACHE!!!', window.localStorage.getItem('localSettings'));
 
 const storage = createStore(reducers, applyMiddleware(
     thunk as ThunkMiddleware<State, AnyAction> // lets us dispatch() functions
@@ -91,6 +90,19 @@ api.on('releases', async function(event: any, data: any){
     }
 });
 
+api.on('exit', async ()=>{
+
+    const { ws } = storage.getState();
+    const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);
+
+    if(channels.items.length){
+        storage.dispatch(handlers.setExit(true));
+    }else{
+        await stopSupervisor();
+        api.exit();
+    }
+
+});
 
 const refreshAccounts = function(){
     storage.dispatch(asyncProviders.updateAccounts());

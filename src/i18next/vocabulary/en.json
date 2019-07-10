@@ -824,5 +824,11 @@
     "transferTokens": {
         "TransferPRIXNotEnoughETH": "Transfer PRIX to marketplace: not enough ETH.",
         "TransferPRIXCompletedSuccessfully": "Transfer PRIX to marketplace: completed successfully."
+    },
+    "exit": {
+        "title": "Attention!",
+        "terminate": "terminate services",
+        "cancel": "cancel",
+        "exitMessage": "You have running services. Terminate before shutting down?"
     }
 }

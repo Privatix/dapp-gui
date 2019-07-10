@@ -40,7 +40,6 @@ export default class Start extends React.Component<{}, IState> {
     constructor(props: {}){
 
         super(props);
-        console.log('PROPS!!!', props);
 
         const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
         i18n.changeLanguage(localSettings.lang);
@@ -71,9 +70,21 @@ export default class Start extends React.Component<{}, IState> {
         if(!this.mount){
             return;
         }
+
+        const { started } = this.state;
+
+        if(started){
+            return;
+        }
+
         const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
-        console.log('START!!!', localSettings);
         const { supervisorEndpoint } = localSettings;
+
+        // REMOVE!!!
+        setTimeout(() => {
+            this.setState({started: true});
+        }, 5000);
+
         try{
             const res = await fetch(`${supervisorEndpoint}/start`);
             if(res.status === 200){
@@ -88,7 +99,6 @@ export default class Start extends React.Component<{}, IState> {
 
     render(){
 
-        console.log('RENDER!!!', this.state, i18n);
         const { started, component } = this.state;
 
         return started ? (

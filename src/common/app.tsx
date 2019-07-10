@@ -8,6 +8,7 @@ import { createMemoryHistory } from 'history';
 import Navigation from './navigation/navigation';
 import Header from './header';
 import Settings from './settings/';
+import ExitNotice from 'client/exitNotice';
 
 import Wizard from './wizard/';
 
@@ -55,6 +56,7 @@ class App extends React.Component<IProps, {}> {
                 <div id='wrapper'>
                     <Header />
                     <Navigation />
+                    {role === Role.CLIENT ? <ExitNotice /> : null }
                     <div className='content-page'>
                         <div className='content'>
                             <Switch>

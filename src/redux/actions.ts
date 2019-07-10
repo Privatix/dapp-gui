@@ -26,7 +26,8 @@ export const enum actions {
     INCREMENT_OFFERINGS_AVAILABILITY_COUNTER,
     SET_AUTOTRANSFER,
     ADD_NOTICE,
-    REMOVE_NOTICES
+    REMOVE_NOTICES,
+    SET_EXIT
 }
 
 const handlers  = {
@@ -45,7 +46,8 @@ const handlers  = {
     incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};},
     setAutoTransfer            : function(autoTransfer: boolean){ return { type: actions.SET_AUTOTRANSFER, value: autoTransfer };},
     addNotice                  : function(msg: {code: number,  notice: Notice}){ return { type: actions.ADD_NOTICE, value: msg };},
-    removeNotices              : function(notices: {code: number,  notice: Notice}[]){ return { type: actions.REMOVE_NOTICES, value: notices };}
+    removeNotices              : function(notices: {code: number,  notice: Notice}[]){ return { type: actions.REMOVE_NOTICES, value: notices };},
+    setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
 };
 
 export const asyncProviders = {
