@@ -37,7 +37,7 @@ export default [
   },
   {
     id: 'AG',
-    name: 'Antigua and Barbuda'
+    name: 'Antigua & Barbuda'
   },
   {
     id: 'AR',
@@ -109,11 +109,11 @@ export default [
   },
   {
     id: 'BQ',
-    name: 'Bonaire'
+    name: 'Caribbean Netherlands'
   },
   {
     id: 'BA',
-    name: 'Bosnia and Herzegovina'
+    name: 'Bosnia & Herzegovina'
   },
   {
     id: 'BW',
@@ -133,7 +133,7 @@ export default [
   },
   {
     id: 'BN',
-    name: 'Brunei Darussalam'
+    name: 'Brunei'
   },
   {
     id: 'BG',
@@ -149,7 +149,7 @@ export default [
   },
   {
     id: 'CV',
-    name: 'Cabo Verde'
+    name: 'Cape Verde'
   },
   {
     id: 'KH',
@@ -201,11 +201,11 @@ export default [
   },
   {
     id: 'CG',
-    name: 'Congo'
+    name: 'Congo - Brazzaville'
   },
   {
     id: 'CD',
-    name: 'Congo (Democratic Republic)'
+    name: 'Congo - Kinshasa'
   },
   {
     id: 'CK',
@@ -217,7 +217,7 @@ export default [
   },
   {
     id: 'CI',
-    name: 'Côte d\'Ivoire'
+    name: 'Côte d’Ivoire'
   },
   {
     id: 'HR',
@@ -237,7 +237,7 @@ export default [
   },
   {
     id: 'CZ',
-    name: 'Czechia'
+    name: 'Czech Republic'
   },
   {
     id: 'DK',
@@ -385,11 +385,11 @@ export default [
   },
   {
     id: 'HM',
-    name: 'Heard Island and McDonald Islands'
+    name: 'Heard & McDonald Islands'
   },
   {
     id: 'VA',
-    name: 'Holy See'
+    name: 'Vatican City'
   },
   {
     id: 'HN',
@@ -469,11 +469,11 @@ export default [
   },
   {
     id: 'KP',
-    name: 'Korea (Democratic People\'s Republic of)'
+    name: 'North Korea'
   },
   {
     id: 'KR',
-    name: 'Korea (Republic of)'
+    name: 'South Korea'
   },
   {
     id: 'KW',
@@ -485,7 +485,7 @@ export default [
   },
   {
     id: 'LA',
-    name: 'Lao People\'s Democratic Republic'
+    name: 'Laos'
   },
   {
     id: 'LV',
@@ -521,7 +521,7 @@ export default [
   },
   {
     id: 'MO',
-    name: 'Macao'
+    name: 'Macau SAR China'
   },
   {
     id: 'MK',
@@ -609,7 +609,7 @@ export default [
   },
   {
     id: 'MM',
-    name: 'Myanmar'
+    name: 'Myanmar (Burma)'
   },
   {
     id: 'NA',
@@ -677,7 +677,7 @@ export default [
   },
   {
     id: 'PS',
-    name: 'Palestine, State of'
+    name: 'Palestinian Territories'
   },
   {
     id: 'PA',
@@ -701,7 +701,7 @@ export default [
   },
   {
     id: 'PN',
-    name: 'Pitcairn'
+    name: 'Pitcairn Islands'
   },
   {
     id: 'PL',
@@ -729,7 +729,7 @@ export default [
   },
   {
     id: 'RU',
-    name: 'Russian Federation'
+    name: 'Russia'
   },
   {
     id: 'RW',
@@ -737,31 +737,31 @@ export default [
   },
   {
     id: 'BL',
-    name: 'Saint Barthélemy'
+    name: 'St. Barthélemy'
   },
   {
     id: 'SH',
-    name: 'Saint Helena, Ascension and Tristan da Cunha'
+    name: 'St. Helena'
   },
   {
     id: 'KN',
-    name: 'Saint Kitts and Nevis'
+    name: 'St. Kitts & Nevis'
   },
   {
     id: 'LC',
-    name: 'Saint Lucia'
+    name: 'St. Lucia'
   },
   {
     id: 'MF',
-    name: 'Saint Martin (French part)'
+    name: 'St. Martin'
   },
   {
     id: 'PM',
-    name: 'Saint Pierre and Miquelon'
+    name: 'St. Pierre & Miquelon'
   },
   {
     id: 'VC',
-    name: 'Saint Vincent and the Grenadines'
+    name: 'St. Vincent & Grenadines'
   },
   {
     id: 'WS',
@@ -773,7 +773,7 @@ export default [
   },
   {
     id: 'ST',
-    name: 'Sao Tome and Principe'
+    name: 'São Tomé & Príncipe'
   },
   {
     id: 'SA',
@@ -801,7 +801,7 @@ export default [
   },
   {
     id: 'SX',
-    name: 'Sint Maarten (Dutch part)'
+    name: 'Saint Martin'
   },
   {
     id: 'SK',
@@ -825,7 +825,7 @@ export default [
   },
   {
     id: 'GS',
-    name: 'South Georgia and the South Sandwich Islands'
+    name: 'South Georgia & South Sandwich Islands'
   },
   {
     id: 'SS',
@@ -849,7 +849,7 @@ export default [
   },
   {
     id: 'SJ',
-    name: 'Svalbard and Jan Mayen'
+    name: 'Svalbard & Jan Mayen'
   },
   {
     id: 'SZ',
@@ -865,7 +865,7 @@ export default [
   },
   {
     id: 'SY',
-    name: 'Syrian Arab Republic'
+    name: 'Syria'
   },
   {
     id: 'TW',
@@ -901,7 +901,7 @@ export default [
   },
   {
     id: 'TT',
-    name: 'Trinidad and Tobago'
+    name: 'Trinidad & Tobago'
   },
   {
     id: 'TN',
@@ -917,7 +917,7 @@ export default [
   },
   {
     id: 'TC',
-    name: 'Turks and Caicos Islands'
+    name: 'Turks & Caicos Islands'
   },
   {
     id: 'TV',
@@ -941,11 +941,11 @@ export default [
   },
   {
     id: 'US',
-    name: 'United States of America'
+    name: 'USA'
   },
   {
     id: 'UM',
-    name: 'United States Minor Outlying Islands'
+    name: 'U.S. Outlying Islands'
   },
   {
     id: 'UY',
@@ -965,19 +965,19 @@ export default [
   },
   {
     id: 'VN',
-    name: 'Viet Nam'
+    name: 'Vietnam'
   },
   {
     id: 'VG',
-    name: 'Virgin Islands (British)'
+    name: 'British Virgin Islands'
   },
   {
     id: 'VI',
-    name: 'Virgin Islands (U.S.)'
+    name: 'U.S. Virgin Islands'
   },
   {
     id: 'WF',
-    name: 'Wallis and Futuna'
+    name: 'Wallis & Futuna'
   },
   {
     id: 'EH',
@@ -997,6 +997,6 @@ export default [
   },
   {
     id: 'ZZ',
-    name: 'Unknown or Invalid Territory'
+    name: 'Unknown Region'
   }
 ];
