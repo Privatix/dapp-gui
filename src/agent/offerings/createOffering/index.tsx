@@ -608,7 +608,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder={t('ie') + ' 10'}
+                                                   placeholder={t('ie') + ' 30'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxSuspendTime'
                                                    value={payload.maxSuspendTime}
@@ -630,7 +630,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder={t('ie') + ' 10'}
+                                                   placeholder={t('ie') + ' 30'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxInactiveTimeSec'
                                                    value={payload.maxInactiveTimeSec}

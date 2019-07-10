@@ -2,7 +2,6 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
-import * as QRCode from 'qrcode';
 
 import { default as handlers, asyncProviders } from 'redux/actions';
 
@@ -16,6 +15,7 @@ import Spinner from './spinner';
 
 import { State } from 'typings/state';
 import { Mode } from 'typings/mode';
+import drawQrCode from 'utils/qrCode';
 
 interface IProps{
     ws?: State['ws'];
@@ -64,18 +64,8 @@ class GetPrix extends React.Component<IProps, IState>{
 
         const account = await ws.getAccount(accountId);
         this.setState({ethAddr: `0x${account.ethAddr}`, accountPSCBalance: account.pscBalance});
-        this.drawQRcode(`0x${account.ethAddr}`);
+        drawQrCode(`0x${account.ethAddr}`);
         dispatch(handlers.setAutoTransfer(true));
-    }
-
-    private drawQRcode(str: string){
-        const canvas = document.getElementById('qrCode');
-
-        QRCode.toCanvas(canvas, str, {width: 200}, function (error: any) {
-            if (error){
-                console.error(error);
-            }
-        });
     }
 
     componentWillUnmount() {
@@ -203,9 +193,9 @@ class GetPrix extends React.Component<IProps, IState>{
                                                            readOnly type='text'
                                                            defaultValue={ethAddr}
                                                     />
-                                                    <span style={ {paddingLeft: '9px', paddingRight: '16px'} }
+                                                    <span style={ {padding: '0'} }
                                                           className='input-group-addon bootstrap-touchspin-postfix'>
-                                                        <CopyToClipboard text={ethAddr} />
+                                                        <CopyToClipboard text={ethAddr}  className='inputCopyBtn' />
                                                     </span>
                                                 </div>
                                             </td>

@@ -360,20 +360,28 @@ export const ETH = {
     render: amount => <ETHComponent amount={amount} />
 };
 
-export const ExchangeBalance = {
-    header: i18n.t('tables:ExchangeBalance'),
+export const AccountBalance = {
+    header: i18n.t('tables:Account'),
     headerStyle: {textAlign: 'center'},
-    key: 'exchangeBalance',
+    key: 'account',
     dataProps: {className: 'text-center'},
-    render: amount => <Prix amount={amount} />
+    render: accountBalance => accountBalance
 };
 
-export const ServiceBalance = {
-    header: i18n.t('tables:ServiceBalance'),
+export const Marketplace = {
+    header: i18n.t('tables:Marketplace'),
     headerStyle: {textAlign: 'center'},
-    key: 'serviceBalance',
+    key: 'marketplace',
     dataProps: { className: 'text-center'},
-    render: amount => <Prix amount={amount} />
+    render: marketplace => marketplace
+};
+
+export const Escrow = {
+    header: i18n.t('tables:Escrow'),
+    headerStyle: {textAlign: 'center'},
+    key: 'escrow',
+    dataProps: { className: 'text-center'},
+    render: amount => amount
 };
 
 export const IsDefault = {

@@ -16,7 +16,7 @@ interface Props {
 @translate(['topPanel'])
 class TopPanel extends React.Component <Props, {}>{
 
-    render(){
+    render() {
 
         const { t, accounts } = this.props;
 
@@ -25,9 +25,9 @@ class TopPanel extends React.Component <Props, {}>{
         const pscBalance = prix(accounts.reduce((balance, account) => (account.pscBalance + balance), 0));
 
         return <ul className='list-inline float-right mb-0 topPanel'>
-            <li className='list-inline-item'>{t('ETHBalance')}: {ethBalance}</li>
-            <li className='list-inline-item'>{t('ExchangeBalance')}: {ptcBalance}</li>
-            <li className='list-inline-item'>{t('ServiceBalance')}: {pscBalance}</li>
+            <li className='list-inline-item mr-0'><span className='balanceText'>{t('Account')}:</span> {ptcBalance} PRIX&nbsp;&nbsp;{ethBalance} ETH |&nbsp;</li>
+            <li className='list-inline-item mr-0'><span className='balanceText'>{t('Marketplace')}:</span> {pscBalance} PRIX |&nbsp;</li>
+            <li className='list-inline-item mr-0'><span className='balanceText'>{t('Escrow')}:</span> {0} PRIX</li>
         </ul>;
     }
 }

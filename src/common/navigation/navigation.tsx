@@ -105,23 +105,23 @@ class Navigation extends React.Component<Props, any> {
 
         const commonLinks = <>
             <li onClick={this.handleClickFalse} className=''>
-                <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
+                <NavLink exact to='/logs' activeClassName='active' className='waves-effect'>
                     <i className='dripicons-blog'></i><span>{t('Logs')}</span>
                 </NavLink>
             </li>
-            <li onClick={this.handleClickFalse} className=''>
-                <NavLink to='/accounts' className='dropdown-item notify-item'>
+            <li onClick={this.handleClickFalse} className='separator'>
+                <NavLink to='/accounts' className='waves-effect'>
                     <i className='md  md-account-child'></i> <span>{t('Accounts')}</span>
                 </NavLink>
             </li>
             <li onClick={this.handleClickFalse} className=''>
                 <ExternalLink
-                    className='dropdown-item notify-item cursorPoiner'
+                    className='waves-effect cursorPoiner'
                     href={'https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause'}
                 ><i className='md md-help'></i> <span>{t('Help')}</span></ExternalLink>
             </li>
             <li onClick={this.handleClickFalse} className=''>
-                <NavLink to='/settings' className='dropdown-item notify-item'>
+                <NavLink to='/settings' className='waves-effect'>
                     <i className='md md-settings'></i> <span>{t('Settings')}</span>
                 </NavLink>
             </li>
@@ -184,7 +184,7 @@ class Navigation extends React.Component<Props, any> {
                         {commonLinks}
 
                         <li onClick={this.handleClickFalse} className=''>
-                            <a onClick={this.setLighweightMode} className='dropdown-item notify-item cursorPoiner'>
+                            <a onClick={this.setLighweightMode} className='waves-effect cursorPoiner'>
                                 <i className='md md-swap-horiz'></i> <span>Simple Mode</span>
                             </a>
                         </li>
