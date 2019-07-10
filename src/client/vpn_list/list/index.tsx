@@ -22,6 +22,7 @@ import SelectByAgent from './selectByAgent';
 import SelectByOffering from './selectByOffering';
 import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
+import SelectByIPType from './selectByIPType';
 
 import { State } from 'typings/state';
 import { ClientOfferingItem } from 'typings/offerings';
@@ -45,6 +46,7 @@ interface Filter {
     };
     agent: string;
     offeringHash: string;
+    checkedIPTypes: string[];
     checkedCountries: string[];
     searchCountryStr: string;
 }
@@ -88,6 +90,7 @@ class VPNList extends React.Component<IProps, IState> {
             agent: '',
             offeringHash: '',
             checkedCountries: [],
+            checkedIPTypes: [],
             searchCountryStr: ''
         };
     }
@@ -198,7 +201,13 @@ class VPNList extends React.Component<IProps, IState> {
         const fromVal = Math.round(from * 1e8);
         const toVal = Math.round(to * 1e8);
 
-        const clientOfferingsLimited = await ws.getClientOfferings(filter.agent.replace(/^0x/, ''), fromVal, toVal, filter.checkedCountries, offset, limit);
+        const clientOfferingsLimited = await ws.getClientOfferings(filter.agent.replace(/^0x/, '')
+                                                                  ,fromVal
+                                                                  ,toVal
+                                                                  ,filter.checkedCountries
+                                                                  ,filter.checkedIPTypes
+                                                                  ,offset
+                                                                  ,limit);
         const {items: clientOfferings} = clientOfferingsLimited;
 
         if (this.handler !== null) {
@@ -336,6 +345,18 @@ class VPNList extends React.Component<IProps, IState> {
         }
     }
 
+    filterByIPTypeHandler = (e: any): void => {
+
+        const { filter } = this.state;
+        const changedType = e.target.value;
+
+        if(filter.checkedIPTypes.includes(changedType)){
+            this.updateFilter({checkedIPTypes: filter.checkedIPTypes.filter(IPType => IPType !== changedType)}, this.getClientOfferings);
+        }else{
+            this.updateFilter({checkedIPTypes: filter.checkedIPTypes.concat([changedType])}, this.getClientOfferings);
+        }
+    }
+
     filterByCountryHandler = (e:any): void => {
 
         const { filter } = this.state;
@@ -439,6 +460,11 @@ class VPNList extends React.Component<IProps, IState> {
                             step={form.step}
                             start={filter.price.from}
                             end={filter.price.to}
+                        />
+
+                        <SelectByIPType
+                            selectedTypes={filter.checkedIPTypes}
+                            onChange={this.filterByIPTypeHandler}
                         />
 
                         <SelectCountry
