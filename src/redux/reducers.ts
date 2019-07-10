@@ -32,7 +32,8 @@ export default function reducer(state: State = StateDefault, action: Action = {t
         [actions.REMOVE_NOTICES]                : (state: State, action: Action) => _.assign({}
                                                                                             ,state
                                                                                             ,{notices: state.notices.filter(noticeItem => !action.value.includes(noticeItem))}
-                                                                                            )
+                                                                                            ),
+        [actions.SET_EXIT]                      : (state: State, action: Action) => _.assign({}, state, {exit: action.value}),
     };
 
     return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;

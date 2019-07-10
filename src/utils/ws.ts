@@ -392,9 +392,10 @@ export class WS {
                       ,minUnitPrice: number = 0
                       ,maxUnitPrice: number = 0
                       ,countries: string[] = []
+                      ,ipTypes: string[] = []
                       ,offset: number = 0
                       ,limit: number = 0) : Promise<ClientOfferingResponse> {
-        return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries, offset, limit]) as Promise<ClientOfferingResponse>;
+        return this.send('ui_getClientOfferings', [agent, minUnitPrice, maxUnitPrice, countries, ipTypes, offset, limit]) as Promise<ClientOfferingResponse>;
     }
 
     getOffering(id: string): Promise<Offering>{

@@ -15,3 +15,11 @@ export const app = App;
 export const exec = function(cmd: string): Promise<{error: any, stdout: any, stderr: any}>{
     return fetch('/exec', {body: {cmd}}) as Promise<{error: any, stdout: any, stderr: any}>;
 };
+
+export const exit = function(): Promise<{}>{
+    return fetch('/exit', {}) as Promise<{}>;
+};
+
+export const smartExit = function(status: boolean): Promise<{}>{
+    return fetch('/smartExit', {body: {status}}) as Promise<{}>;
+};
