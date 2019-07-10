@@ -381,7 +381,7 @@ export const Escrow = {
     headerStyle: {textAlign: 'center'},
     key: 'escrow',
     dataProps: { className: 'text-center'},
-    render: amount => amount
+    render: escrow => escrow
 };
 
 export const IsDefault = {

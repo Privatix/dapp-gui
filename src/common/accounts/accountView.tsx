@@ -196,7 +196,7 @@ class AccountView extends React.Component<IProps, IState> {
                             <label className='col-3 col-form-label'>{t('Escrow')}</label>
                             <div className='col-9'>
                                 <div className='input-group bootstrap-touchspin'>
-                                    <input type='text' className='form-control' value={prix(0)} readOnly/>
+                                    <input type='text' className='form-control' value={prix(account.escrow)} readOnly/>
                                     <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
                                 </div>
                             </div>
