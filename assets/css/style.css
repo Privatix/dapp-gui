@@ -1714,6 +1714,10 @@ body.fixed-left .side-menu.left {
   color: #5fbeaa !important;
 }
 
+#sidebar-menu > ul >li.separator{
+  border-top: 1px solid #ebeff2;
+}
+
 .menu-title {
   padding: 12px 20px !important;
   letter-spacing: .035em;
@@ -7509,6 +7513,11 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
   border: 1px dashed rgba(152, 166, 173, 0.5) !important;
   background-color: rgba(152, 166, 173, 0.2) !important;
   padding: 20px;
+}
+
+.accountQrCodeBl{
+  justify-content: center;
+  display: flex;
 }
 
 @media only screen and (max-width: 6000px) and (min-width: 700px) {
