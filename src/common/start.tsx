@@ -1,6 +1,9 @@
 import * as React from 'react';
+import { Provider } from 'react-redux';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
+
+import { createStorage } from 'utils/storage';
 
 import Wizard from './wizard/';
 import Login from './auth/login';
@@ -17,6 +20,7 @@ import initElectronMenu from './electronMenu';
 interface IState {
     component: any;
     started: boolean;
+    storage: any;
 }
 
 const memoryHistory = createMemoryHistory();
@@ -54,7 +58,7 @@ export default class Start extends React.Component<{}, IState> {
             component = login;
         }
 
-        this.state = { started: false, component };
+        this.state = { started: false, component, storage: null };
     }
 
     componentDidMount(){
@@ -83,7 +87,8 @@ export default class Start extends React.Component<{}, IState> {
         try{
             const res = await fetch(`${supervisorEndpoint}/start`);
             if(res.status === 200){
-                this.setState({started: true});
+                const storage = createStorage();
+                this.setState({started: true, storage});
             }else{
                 setTimeout(this.startWatchingSupervisor, 1000);
             }
@@ -94,14 +99,16 @@ export default class Start extends React.Component<{}, IState> {
 
     render(){
 
-        const { started, component } = this.state;
+        const { started, component, storage } = this.state;
 
         return started ? (
-            <Router history={memoryHistory}>
-                <I18nextProvider i18n={ i18n }>
-                    { component }
-                </I18nextProvider>
-            </Router>
+            <Provider store={storage}>
+                <Router history={memoryHistory}>
+                    <I18nextProvider i18n={ i18n }>
+                        { component }
+                    </I18nextProvider>
+                </Router>
+            </Provider>
          ):(
              <I18nextProvider i18n={ i18n }>
                  <div style={ {textAlign: 'center', margin: 'auto'} }>
