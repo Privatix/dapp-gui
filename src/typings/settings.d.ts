@@ -1,4 +1,4 @@
-import { Mode } from './mode';
+import { Role, Mode } from './mode';
 
 export interface GasConsumption {
     acceptOffering: number;
@@ -11,6 +11,7 @@ export interface LocalSettings {
     firstStart: boolean;
     accountCreated: boolean;
     wsEndpoint: string;
+    supervisorEndpoint: string;
     gas: GasConsumption;
     network: string;
     bugsnag: {
@@ -38,7 +39,8 @@ export interface LocalSettings {
         count: number;
         delay: number;
         progression: number;
-    }
+    },
+    role: Role;
 }
 
 export interface DbSetting {

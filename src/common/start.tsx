@@ -3,6 +3,7 @@ import { Provider } from 'react-redux';
 import { Route, Router, Switch} from 'react-router';
 import { createMemoryHistory } from 'history';
 
+import * as api from 'utils/api';
 import { createStorage } from 'utils/storage';
 
 import Wizard from './wizard/';
@@ -16,6 +17,8 @@ import { I18nextProvider} from 'react-i18next';
 import i18n from 'i18next/init';
 
 import initElectronMenu from './electronMenu';
+
+import { Role } from 'typings/mode';
 
 interface IState {
     component: any;
@@ -81,19 +84,22 @@ export default class Start extends React.Component<{}, IState> {
             return;
         }
 
-        const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
-        const { supervisorEndpoint } = localSettings;
-
-        try{
-            const res = await fetch(`${supervisorEndpoint}/start`);
-            if(res.status === 200){
-                const storage = createStorage();
-                this.setState({started: true, storage});
-            }else{
+        const { role, supervisorEndpoint } = await api.settings.getLocal();
+        if(role === Role.CLIENT){
+            try{
+                const res = await fetch(`${supervisorEndpoint}/start`);
+                if(res.status === 200){
+                    const storage = createStorage();
+                    this.setState({started: true, storage});
+                }else{
+                    setTimeout(this.startWatchingSupervisor, 1000);
+                }
+            }catch (e){
                 setTimeout(this.startWatchingSupervisor, 1000);
             }
-        }catch (e){
-            setTimeout(this.startWatchingSupervisor, 1000);
+        }else{
+            const storage = createStorage();
+            this.setState({started: true, storage});
         }
     }
 

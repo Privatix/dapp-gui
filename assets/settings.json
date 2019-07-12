@@ -30,5 +30,6 @@
        "count": 3,
        "delay": 3000,
        "progression": 3
-   }
+   },
+   "role": "client"
 }

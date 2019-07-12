@@ -154,12 +154,10 @@ export const asyncProviders = {
         };
     },
     setRole: function(){
-        return function(dispatch: any, getState: Function){
-            const { ws } = getState();
-            ws.getUserRole()
-               .then(role => {
-                   // TODO check if error
-                   dispatch(handlers.setRole(role));
+        return function(dispatch: any){
+            api.settings.getLocal()
+               .then(settings => {
+                   dispatch(handlers.setRole(settings.role));
                });
         };
     },

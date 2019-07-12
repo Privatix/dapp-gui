@@ -30,7 +30,7 @@ export const createStorage = () => {
         storage.dispatch(asyncProviders.updateLocalSettings(
             async () => {
                 storage.dispatch(asyncProviders.setRole());
-                const role = await ws.getUserRole();
+                const { role } = await api.settings.getLocal();
                 const { firstStart, accountCreated } = await ws.getLocal();
                 const mode = (firstStart || !accountCreated) ? Mode.WIZARD
                              : role === Role.AGENT ? Mode.ADVANCED : Mode.SIMPLE;
@@ -97,13 +97,17 @@ export const createStorage = () => {
 
     api.on('exit', async ()=>{
 
-        const { ws } = storage.getState();
-        const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);
+        const { ws, role } = storage.getState();
+        if(role === Role.CLIENT){
+            const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);
 
-        if(channels.items.length){
-            storage.dispatch(handlers.setExit(true));
+            if(channels.items.length){
+                storage.dispatch(handlers.setExit(true));
+            }else{
+                await stopSupervisor();
+                api.exit();
+            }
         }else{
-            await stopSupervisor();
             api.exit();
         }
 

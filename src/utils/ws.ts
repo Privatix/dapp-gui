@@ -14,7 +14,6 @@ import { Session } from 'typings/session';
 import { Channel, ClientChannel, ClientChannelUsage, ChannelResponse, ClientChannelResponse } from 'typings/channels';
 import { LogResponse } from 'typings/logs';
 import { State } from 'typings/state';
-import { Role } from 'typings/mode';
 import { GetClientOfferingsFilterParamsResponse } from 'typings/paginatedResponse';
 
 export class WS {
@@ -474,9 +473,6 @@ export class WS {
 
     getTotalIncome(): Promise<number> {
         return this.send('ui_getTotalIncome', []) as Promise<number>;
-    }
-    getUserRole(): Promise<Role>{
-        return this.send('ui_getUserRole', []) as Promise<Role>;
     }
 // logs
     getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
