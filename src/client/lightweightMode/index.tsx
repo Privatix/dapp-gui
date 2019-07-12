@@ -23,6 +23,7 @@ import ExitNotice from 'client/exitNotice';
 
 import './lightweightMode.css';
 import ModalWindow from 'common/modalWindow';
+import NetworkAndVersion from 'common/networkAndVersion';
 import GetPrix from 'common/wizard/getPrix';
 import eth from 'utils/eth';
 import prix from 'utils/prix';
@@ -798,6 +799,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             <>
                 <Noticer />
                 <ExitNotice />
+                <NetworkAndVersion className='networkANdBuildVersionSimple' />
                 <style dangerouslySetInnerHTML={{__html: `
                    html { background: white; } body { background: white; }
                 `}} />
