@@ -20,14 +20,6 @@ interface IProps {
 @translate(['exit'])
 class ExitNotice extends React.Component<IProps, {}>{
 
-    componentDidMount(){
-        api.smartExit(true);
-    }
-
-    componentWillUnmount(){
-        api.smartExit(false);
-    }
-
     cancelHandler = () => {
         const { dispatch } = this.props;
         dispatch(handlers.setExit(false));

@@ -158,5 +158,11 @@ export const createStorage = () => {
 
     refresh();
 
+    (async () => {
+        const { role } = await api.settings.getLocal();
+        if(role === Role.CLIENT){
+            api.smartExit(true);
+        }
+    })();
     return storage;
 };
