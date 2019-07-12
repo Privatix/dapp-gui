@@ -15,6 +15,7 @@
    },
    "release": "0.18.0",
    "target": "",
+   "role": "client",
    "logsCountPerPage": 10,
    "elementsPerPage": 10,
    "lang": "en",
