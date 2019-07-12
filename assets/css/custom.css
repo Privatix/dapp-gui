@@ -728,6 +728,22 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     white-space: nowrap;
 }
 
+.networkANdBuildVersion{
+    font-size: 12px;
+    color: #7e7e7e;
+}
+.networkANdBuildVersionSimple{
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    text-align: right;
+}
+.networkANdBuildVersionAdvanced{
+    position: absolute;
+    bottom: 20px;
+    left: 25px;
+}
+
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {
     .logsLevelFilterBl{
         max-width: 100%;

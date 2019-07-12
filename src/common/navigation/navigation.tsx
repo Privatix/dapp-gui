@@ -10,6 +10,7 @@ import Submenu from './submenu';
 
 import './navigation.css';
 import ExternalLink from 'common/etc/externalLink';
+import NetworkAndVersion from 'common/networkAndVersion';
 
 interface Props {
     role: Role;
@@ -147,6 +148,7 @@ class Navigation extends React.Component<Props, any> {
                     <div className='clearfix'></div>
                 </div>
                 <div className='clearfix'></div>
+                <NetworkAndVersion className='networkANdBuildVersionAdvanced' />
             </div>
         </div>
         :
@@ -185,6 +187,7 @@ class Navigation extends React.Component<Props, any> {
                     </ul>
                     <div className='clearfix'></div>
                 </div>
+                <NetworkAndVersion className='networkANdBuildVersionAdvanced' />
             </div>
         </div>;
     }
