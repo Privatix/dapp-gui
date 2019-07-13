@@ -74,6 +74,10 @@
 .addFundsPlusBtn:after{
     content: '+';
     font-size: 25px;
-    line-height: 23px;
     color: #fff;
+    width: 23px;
+    height: 23px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
