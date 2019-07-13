@@ -1,7 +1,8 @@
 import {remote} from 'electron';
 import i18n from 'i18next/init';
+import handlers from 'redux/actions';
 
-export default () => {
+export default (dispatch: any) => {
     const {Menu} = remote;
     let template:Electron.MenuItemConstructorOptions[] = [
         {
@@ -130,7 +131,7 @@ export default () => {
                 {
                     label: i18n.t('electronMenu:AboutProject'),
                     click: function() {
-                        remote.shell.openExternal('https://privatix.io');
+                        dispatch(handlers.showExternalLinkWarning(true, 'https://privatix.io'));
                     }
                 },
                 {

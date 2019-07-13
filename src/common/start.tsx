@@ -50,7 +50,6 @@ export default class Start extends React.Component<{}, IState> {
 
         const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
         i18n.changeLanguage(localSettings.lang);
-        initElectronMenu();
 
         let component;
         if(localSettings.firstStart){
@@ -64,9 +63,10 @@ export default class Start extends React.Component<{}, IState> {
         this.state = { started: false, component, storage: null };
     }
 
-    componentDidMount(){
+    async componentDidMount(){
         this.mount = true;
-        this.startWatchingSupervisor();
+        await this.startWatchingSupervisor();
+        initElectronMenu(this.state.storage.dispatch);
     }
 
     componentWillUnmount(){
