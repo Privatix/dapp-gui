@@ -92,7 +92,7 @@
         "WeAreTransferring": "We are transferring them to a marketplace (it might take 5-10 min)...",
         "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
         "AllDonePressFinish": "All done. Press Finish",
-        "AllDoneCloseModal": "All done. Close Modal",
+        "AllDoneCloseModal": "All done.",
         "notEnoughETH": "Oops, PRIX transfer to the Marketplace has been failed: not enough ETH to cover gas costs",
         "Congrats": "Great, PRIX transfer to the Marketplace has been successfully completed."
     },
