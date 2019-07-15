@@ -8,6 +8,7 @@ import Noticer from 'common/noticer';
 
 import { State } from 'typings/state';
 import { Role } from 'typings/mode';
+import ExternalLinkWarning from 'common/externalLinkWarning';
 
 type WizardState = 'firstStart' | 'setAccount' | 'createAccount';
 
@@ -31,6 +32,7 @@ class Wizard extends React.Component<IProps, {}> {
         return (
             <>
                 <Noticer />
+                <ExternalLinkWarning />
                 <Router history={MemoryHistory}>
                     <Switch>
                         <Routes app={app} currentState={currentState} />

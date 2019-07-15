@@ -26,6 +26,8 @@ interface State {
     autoTransfer: boolean;
     notices: {code: number, notice: Notice}[];
     exit: boolean;
+    showExternalLink: boolean;
+    externalLink: string;
 }
 
 const StateDefault: State = {
@@ -45,7 +47,9 @@ const StateDefault: State = {
     },
     autoTransfer: false,
     notices: [],
-    exit: false
+    exit: false,
+    showExternalLink: false,
+    externalLink: ''
 };
 
 export {

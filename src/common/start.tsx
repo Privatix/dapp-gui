@@ -50,7 +50,9 @@ export default class Start extends React.Component<{}, IState> {
 
         const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
         i18n.changeLanguage(localSettings.lang);
-        initElectronMenu();
+
+        const storage = createStorage();
+        initElectronMenu(storage.dispatch);
 
         let component;
         if(localSettings.firstStart){
@@ -61,12 +63,12 @@ export default class Start extends React.Component<{}, IState> {
             component = login;
         }
 
-        this.state = { started: false, component, storage: null };
+        this.state = { started: false, component, storage };
     }
 
-    componentDidMount(){
+    async componentDidMount(){
         this.mount = true;
-        this.startWatchingSupervisor();
+        await this.startWatchingSupervisor();
     }
 
     componentWillUnmount(){
@@ -84,12 +86,12 @@ export default class Start extends React.Component<{}, IState> {
             return;
         }
 
+        const storage = this.state.storage;
         const { role, supervisorEndpoint } = await api.settings.getLocal();
         if(role === Role.CLIENT){
             try{
                 const res = await fetch(`${supervisorEndpoint}/start`);
                 if(res.status === 200){
-                    const storage = createStorage();
                     this.setState({started: true, storage});
                 }else{
                     setTimeout(this.startWatchingSupervisor, 1000);
@@ -98,7 +100,6 @@ export default class Start extends React.Component<{}, IState> {
                 setTimeout(this.startWatchingSupervisor, 1000);
             }
         }else{
-            const storage = createStorage();
             this.setState({started: true, storage});
         }
     }

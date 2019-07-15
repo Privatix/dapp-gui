@@ -14,6 +14,7 @@ interface IProps {
     ws?: WS;
     lang?: string;
     i18n?: any;
+    dispatch?: any;
 }
 
 interface IState {
@@ -35,7 +36,7 @@ class SelectLanguage extends React.Component<IProps, IState> {
         i18n.changeLanguage(lang.value, () => {
             ws.setGUISettings({lang: lang.value});
             // From custom electron menu
-            initElectronMenu();
+            initElectronMenu(this.props.dispatch);
         });
         this.setState({lang: lang.value});
     }

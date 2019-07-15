@@ -29,7 +29,8 @@ export const enum actions {
     SET_AUTOTRANSFER,
     ADD_NOTICE,
     REMOVE_NOTICES,
-    SET_EXIT
+    SET_EXIT,
+    SET_EXTERNAL_LINK_WARNING
 }
 
 const handlers  = {
@@ -50,6 +51,7 @@ const handlers  = {
     addNotice                  : function(msg: {code: number,  notice: Notice}){ return { type: actions.ADD_NOTICE, value: msg };},
     removeNotices              : function(notices: {code: number,  notice: Notice}[]){ return { type: actions.REMOVE_NOTICES, value: notices };},
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
+    showExternalLinkWarning    : function(showExternalLink: boolean, externalLink: string){ return { type: actions.SET_EXTERNAL_LINK_WARNING, value: {showExternalLink, externalLink} };},
 };
 
 export const asyncProviders = {

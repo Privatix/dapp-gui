@@ -34,6 +34,7 @@ export default function reducer(state: State = StateDefault, action: Action = {t
                                                                                             ,{notices: state.notices.filter(noticeItem => !action.value.includes(noticeItem))}
                                                                                             ),
         [actions.SET_EXIT]                      : (state: State, action: Action) => _.assign({}, state, {exit: action.value}),
+        [actions.SET_EXTERNAL_LINK_WARNING]     : (state: State, action: Action) => _.assign({}, state, {showExternalLink: action.value.showExternalLink, externalLink: action.value.externalLink}),
     };
 
     return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;
