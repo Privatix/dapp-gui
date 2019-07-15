@@ -137,19 +137,19 @@ export default (dispatch: any) => {
                 {
                     label: i18n.t('electronMenu:Documentation'),
                     click: function() {
-                        remote.shell.openExternal('https://privatix.atlassian.net/wiki/spaces/BVP/pages/270762169/Privatix+DApp+High-level+design');
+                        dispatch(handlers.showExternalLinkWarning(true, 'https://privatix.atlassian.net/wiki/spaces/BVP/pages/270762169/Privatix+DApp+High-level+design'));
                     }
                 },
                 {
                     label: i18n.t('electronMenu:SearchIssues'),
                     click: function() {
-                        remote.shell.openExternal('https://github.com/Privatix/dapp-gui/issues');
+                        dispatch(handlers.showExternalLinkWarning(true, 'https://github.com/Privatix/dapp-gui/issues'));
                     }
                 },
                 {
                     label: i18n.t('electronMenu:CommunityDiscussion'),
                     click: function() {
-                        remote.shell.openExternal('https://t.me/Privatix');
+                        dispatch(handlers.showExternalLinkWarning(true, 'https://t.me/Privatix'));
                     }
                 }
             ]

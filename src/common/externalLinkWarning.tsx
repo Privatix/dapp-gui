@@ -12,10 +12,11 @@ import {remote} from 'electron';
 interface IProps {
     t?: any;
     showExternalLink: boolean;
+    externalLink: string;
     dispatch: any;
 }
 
-@translate(['exit'])
+@translate(['externalLinks/warning'])
 class ExternalLinkWarning extends React.Component<IProps, {}>{
 
     cancelHandler = () => {
@@ -26,8 +27,7 @@ class ExternalLinkWarning extends React.Component<IProps, {}>{
     confirmHandler = async () => {
         const { dispatch } = this.props;
         dispatch(handlers.showExternalLinkWarning(false, ''));
-        // TODO: Open external Link
-        remote.shell.openExternal('https://privatix.io');
+        remote.shell.openExternal(this.props.externalLink);
     }
 
     render(){
@@ -38,17 +38,16 @@ class ExternalLinkWarning extends React.Component<IProps, {}>{
             type={'warning'}
             showCancel
             closeOnClickOutside={true}
-            confirmBtnText={t('terminate')}
-            cancelBtnText={t('cancel')}
+            confirmBtnText={t('confirmBtn')}
             confirmBtnCssClass='swal2-styled'
             confirmBtnBsStyle='link'
             cancelBtnBsStyle='primary'
             cancelBtnCssClass='swal2-styled'
-            title={t('title')}
+            title={t('AreYouSure')}
             onCancel={this.cancelHandler}
             onConfirm={this.confirmHandler}
         >
-            <div>{t('exitMessage')}</div>
+            {t('warning')}
         </ReactSweetAlert>;
 
         return ReactSweetAlertComponent;
