@@ -80,7 +80,7 @@
         "react-router-dom": "5.0.0",
         "react-select": "^1.2.1",
         "react-sortable-table-vilan": "^1.0.0",
-        "react-sweetalert-vilan": "^1.0.0",
+        "react-sweetalert-vilan": "^1.1.0",
         "react-table": "^6.8.5",
         "react-toggle": "^4.0.2",
         "react-tooltip": "^3.8.4",
