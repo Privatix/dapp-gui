@@ -29,7 +29,9 @@ export const enum actions {
     SET_AUTOTRANSFER,
     ADD_NOTICE,
     REMOVE_NOTICES,
-    SET_EXIT
+    SET_EXIT,
+    ADD_TRANSFER,
+    REMOVE_TRANSFER
 }
 
 const handlers  = {
@@ -50,12 +52,33 @@ const handlers  = {
     addNotice                  : function(msg: {code: number,  notice: Notice}){ return { type: actions.ADD_NOTICE, value: msg };},
     removeNotices              : function(notices: {code: number,  notice: Notice}[]){ return { type: actions.REMOVE_NOTICES, value: notices };},
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
+    addTransfer                : function(address: string, amount: number){ return { type: actions.ADD_TRANSFER, value: {address, amount} };},
+    removeTransfer             : function(address: string, amount: number){ return { type: actions.REMOVE_TRANSFER, value: {address, amount} };}
 };
 
 export const asyncProviders = {
     updateAccounts: function(){
         return async function(dispatch: any, getState: Function){
-            const { ws, role, autoTransfer } = getState();
+            const { ws, role, autoTransfer, transferring } = getState();
+
+            const startWatchingTransfer = async (address: string, amount: number) => {
+
+                const context = {subscriptionId: null};
+
+                const checkIfComplete = (evt: any) => {
+                    if('job' in evt && evt.job.type === 'afterAccountAddBalance' && evt.job.status === 'done'){
+
+                        dispatch(handlers.removeTransfer(address, amount));
+                        ws.unsubscribe(context.subscriptionId);
+                        context.subscriptionId = null;
+                    }
+                };
+                context.subscriptionId = await ws.subscribe('account', [address], checkIfComplete);
+            };
+
+            const includesTransfer = (transferring: {address: string, amount: number}[], address: string, amount: number) =>
+                transferring.some(transfer => transfer.address === address && transfer.amount === amount);
+
             const accounts = await ws.getAccounts();
             dispatch(handlers.updateAccounts(accounts));
             if(role === Role.CLIENT){
@@ -77,13 +100,16 @@ export const asyncProviders = {
                                                                              ));
                 dispatch(handlers.updateAccounts(updatedAccounts));
             }
+
             const account = accounts.find(account => account.isDefault);
-            if(account && account.ptcBalance !== 0 && autoTransfer){
+            if(account && account.ptcBalance !== 0 && autoTransfer && !includesTransfer(transferring, account.ethAddr, account.ptcBalance)){
                 const settings = await ws.getSettings();
                 const localSettings = await ws.getLocal();
                 if(localSettings.gas.transfer*settings['eth.default.gasprice'].value <= account.ethBalance){
                     try{
                         await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
+                        dispatch(handlers.addTransfer(account.ethAddress, account.ptcBalance));
+                        startWatchingTransfer(account.ethAddress, account.ptcBalance);
                     }catch(e){
                         // 
                     }

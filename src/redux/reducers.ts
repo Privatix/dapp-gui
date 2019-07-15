@@ -34,6 +34,15 @@ export default function reducer(state: State = StateDefault, action: Action = {t
                                                                                             ,{notices: state.notices.filter(noticeItem => !action.value.includes(noticeItem))}
                                                                                             ),
         [actions.SET_EXIT]                      : (state: State, action: Action) => _.assign({}, state, {exit: action.value}),
+        [actions.ADD_TRANSFER]                  : (state: State, action: Action) => _.assign({}, state, {transfers: state.transfers.concat([action.value])}),
+        [actions.REMOVE_TRANSFER]               : (state: State, action: Action) => {
+            const index = state.transfers.findIndex(transfer => transfer.address === action.value.address && transfer.amount === action.value.amount);
+            if(index === -1) {
+                return state;
+            }
+            state.transfers.splice(index, 1);
+            return _.assign({}, state, {transfers: state.transfers.concat([])});
+        }
     };
 
     return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;
