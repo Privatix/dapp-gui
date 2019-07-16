@@ -445,6 +445,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
+            this.offeringsSubscription = null;
         }
 
         this.offeringsSubscription = await ws.subscribe('offering', ids, this.updateOfferings, this.updateOfferings);
