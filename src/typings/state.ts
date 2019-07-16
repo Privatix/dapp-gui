@@ -1,12 +1,13 @@
 import { WS } from 'utils/ws';
 
-import {Account} from './accounts';
-import {Role, Mode} from './mode';
-import {Product} from './products';
+import { Account } from './accounts';
+import { Role, Mode } from './mode';
+import { Product } from './products';
 import { Notice } from 'utils/notice';
 
-import {OfferingAvailabilityResponse} from './offerings';
-import {LocalSettings} from './settings';
+import { OfferingAvailabilityResponse } from './offerings';
+import { LocalSettings } from './settings';
+import { ClientChannel } from './channels';
 
 interface State {
     accounts: Account[];
@@ -14,7 +15,7 @@ interface State {
     serviceName: string;
     settings: {[key: string]: string};
     localSettings: LocalSettings;
-    channel: string;
+    channel: ClientChannel;
     role: Role;
     mode: Mode;
     ws: WS;
@@ -27,6 +28,7 @@ interface State {
     notices: {code: number, notice: Notice}[];
     exit: boolean;
     transfers: {address: string, amount: number}[];
+    ip: string;
 }
 
 const StateDefault: State = {
@@ -35,7 +37,7 @@ const StateDefault: State = {
     serviceName: '',
     settings: {},
     localSettings: null,
-    channel: '',
+    channel: null,
     role: null,
     mode: null,
     ws: null,
@@ -47,7 +49,8 @@ const StateDefault: State = {
     autoTransfer: false,
     notices: [],
     exit: false,
-    transfers: []
+    transfers: [],
+    ip: ''
 };
 
 export {

@@ -244,7 +244,7 @@ class VPNList extends React.Component<IProps, IState> {
         const offeringHash = '0x' + offering.hash;
 
         const availability = (offering.id in offeringsAvailability.statuses)
-            ? (offeringsAvailability.statuses[offering.id] === true ? 'available' : 'unreachable')
+            ? (offeringsAvailability.statuses[offering.id] === true ? 'available' : (offeringsAvailability.statuses[offering.id] === false ? 'unreachable' : 'unknown' ))
             : 'unknown';
 
         return {
