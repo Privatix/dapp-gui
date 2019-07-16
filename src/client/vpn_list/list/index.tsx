@@ -15,6 +15,7 @@ import ModalWindow from 'common/modalWindow';
 
 import notice from 'utils/notice';
 import countryByIso from 'utils/countryByIso';
+import { ipTypesAssoc } from 'utils/ipTypes';
 
 import Spinner from './spinner';
 import VPNListTable from './table';
@@ -259,6 +260,7 @@ class VPNList extends React.Component<IProps, IState> {
             />,
             agent: offering.agent,
             country: countryByIso(offering.country),
+            ipType: ipTypesAssoc[offering.ipType],
             price: offering.unitPrice,
             availableSupply: offering.currentSupply,
             supply: offering.supply,
