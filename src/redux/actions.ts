@@ -31,7 +31,8 @@ export const enum actions {
     REMOVE_NOTICES,
     SET_EXIT,
     ADD_TRANSFER,
-    REMOVE_TRANSFER
+    REMOVE_TRANSFER,
+    SET_IP
 }
 
 const handlers  = {
@@ -44,7 +45,7 @@ const handlers  = {
     updateServiceName          : function(serviceName: string){ return { type: actions.UPDATE_SERVICE_NAME, value: serviceName };},
     setRole                    : function(role: Role){ return { type: actions.SET_ROLE, value: role };},
     setMode                    : function(mode: Mode){ return { type: actions.SET_MODE, value: mode };},
-    setChannel                 : function(channelId: string){ return { type: actions.SET_CHANNEL, value: channelId };},
+    setChannel                 : function(channel: ClientChannel){ return { type: actions.SET_CHANNEL, value: channel };},
     setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
     setOfferingsAvailability   : function(offeringsAvailability: Object[]){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};},
     incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};},
@@ -53,13 +54,89 @@ const handlers  = {
     removeNotices              : function(notices: {code: number,  notice: Notice}[]){ return { type: actions.REMOVE_NOTICES, value: notices };},
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
     addTransfer                : function(address: string, amount: number){ return { type: actions.ADD_TRANSFER, value: {address, amount} };},
-    removeTransfer             : function(address: string, amount: number){ return { type: actions.REMOVE_TRANSFER, value: {address, amount} };}
+    removeTransfer             : function(address: string, amount: number){ return { type: actions.REMOVE_TRANSFER, value: {address, amount} };},
+    setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};}
+};
+
+const notify = function(msg: string){
+    const notification = new Notification('Privatix', {
+      body: msg
+    });
+    notification.onclick = () => {
+      //
+    };
 };
 
 export const asyncProviders = {
+    observeChannel: function(){
+        const context = {createChannelSubscription: null, channelSubscription: null, connected: null, ipSubscription: null}; 
+
+        const refresh = async function(dispatch: any, getState: Function){
+
+            const getIP = async function(attempt?: number){
+                const counter = !attempt ? 0 : attempt;
+                if(counter < 5){
+                    try{
+                        const res = await fetch('https://api.ipify.org?format=json');
+                        const json = await res.json();
+                        dispatch(handlers.setIP(json.ip));
+                    }catch(e){
+                        context.ipSubscription = setTimeout(getIP.bind(null, counter+1), 3000);
+                    }
+                }
+            };
+
+            const handler = refresh.bind(null, dispatch, getState);
+            const { channel, ws, ip } = getState();
+            const channels = await ws.getNotTerminatedClientChannels();
+
+            if(!context.createChannelSubscription){
+                context.createChannelSubscription = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
+            } 
+
+            if(channels.length){
+                if(!ip){
+                    getIP();
+                }
+                if(channels[0].channelStatus.serviceStatus === 'active'){
+                    if(context.connected === false){
+                        notify(i18n.t('client/simpleMode:connectedMsg'));
+                    }
+                    context.connected = true;
+                }else{
+                    context.connected = false;
+                }
+                if(channel && channel.id === channels[0].id){
+                        dispatch(handlers.setChannel(channels[0]));
+                }else{
+                    if(context.channelSubscription){
+                        await ws.unsubscribe(context.channelSubscription);
+                    }
+                    dispatch(handlers.setChannel(channels[0]));
+                    context.channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
+                }
+            }else{
+                if(context.connected !== null){
+                    if(context.connected === true){
+                        notify(i18n.t('client/simpleMode:disconnectedMsg'));
+                        dispatch(handlers.setIP(''));
+                    }
+                }
+                context.connected = false;
+
+                if(context.channelSubscription){
+                    await ws.unsubscribe(context.channelSubscription);
+                    context.channelSubscription = null;
+                }
+                dispatch(handlers.setChannel(null));
+            }
+        };
+
+        return refresh;
+    },
     updateAccounts: function(){
         return async function(dispatch: any, getState: Function){
-            const { ws, role, autoTransfer, transferring } = getState();
+            const { ws, role, autoTransfer, transfers } = getState();
 
             const startWatchingTransfer = async (address: string, amount: number) => {
 
@@ -102,7 +179,7 @@ export const asyncProviders = {
             }
 
             const account = accounts.find(account => account.isDefault);
-            if(account && account.ptcBalance !== 0 && autoTransfer && !includesTransfer(transferring, account.ethAddr, account.ptcBalance)){
+            if(account && account.ptcBalance !== 0 && autoTransfer && !includesTransfer(transfers, account.ethAddr, account.ptcBalance)){
                 const settings = await ws.getSettings();
                 const localSettings = await ws.getLocal();
                 if(localSettings.gas.transfer*settings['eth.default.gasprice'].value <= account.ethBalance){
@@ -202,6 +279,7 @@ export const asyncProviders = {
         return function(dispatch: any, getState: Function){
             const { ws } = getState();
 
+            dispatch(handlers.setOfferingsAvailability(offeringsIds.map(id => ({[id]: undefined}))));
             dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
 
             offeringsIds.forEach((offeringId) => {
