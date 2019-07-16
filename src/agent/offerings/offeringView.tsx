@@ -2,7 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import countryByIso from 'utils/countryByIso';
-import ipTypes from 'utils/ipTypes';
+import { ipTypes } from 'utils/ipTypes';
 import ProductNameByOffering from 'agent/products/productNameByOffering';
 
 import prix from 'utils/prix';

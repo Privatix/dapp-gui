@@ -16,7 +16,7 @@ class SelectByIPType extends React.Component<IProps, {}>{
         const { t, selectedTypes, onChange } = this.props;
 
         const checkboxes = ['residential', 'datacenter', 'mobile'].map(ipType => (
-            <div className='checkbox checkbox-custom'>
+            <div className='checkbox checkbox-custom' key={ipType}>
                 <input id={ipType}
                        type='checkbox'
                        name='checkboxIPType'

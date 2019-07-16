@@ -5,7 +5,7 @@ import { translate, Trans } from 'react-i18next';
 import Select from 'react-select';
 
 import notice from 'utils/notice';
-import ipTypes from 'utils/ipTypes';
+import { ipTypes } from 'utils/ipTypes';
 import prix from 'utils/prix';
 import eth from 'utils/eth';
 

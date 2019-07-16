@@ -12,6 +12,7 @@ import eth from 'utils/prix';
 import GasRange from 'common/etc/gasRange';
 
 import countryByIso from 'utils/countryByIso';
+import { ipTypesAssoc } from 'utils/ipTypes';
 
 import { State } from 'typings/state';
 import { Offering } from 'typings/offerings';
@@ -71,7 +72,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
         const activeChannels = await ws.getNotTerminatedClientChannels();
         this.setState({thereAreActiveChannels: activeChannels.length > 0});
- 
+
     }
 
     onAccountChanged = (selectedAccount: any) => {
@@ -194,6 +195,12 @@ class AcceptOffering extends React.Component<IProps, IState>{
                         <label className='col-3 col-form-label'>{t('Country')}</label>
                         <div className='col-9'>
                             <input type='text' className='form-control' value={countryByIso(offering.country)} readOnly/>
+                        </div>
+                    </div>
+                    <div className='form-group row'>
+                        <label className='col-3 col-form-label'>{t('IpType')}</label>
+                        <div className='col-9'>
+                            <input type='text' className='form-control' value={ipTypesAssoc[offering.ipType]} readOnly/>
                         </div>
                     </div>
                 </div>

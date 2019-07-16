@@ -23,6 +23,7 @@ export interface Offering {
     serviceName: string;
     description: string;
     country: string;
+    ipType: string;
     supply: number;
     currentSupply: number;
     unitName: string;
