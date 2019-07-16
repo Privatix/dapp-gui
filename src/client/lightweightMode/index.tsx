@@ -94,13 +94,15 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     componentDidMount() {
 
-        const { dispatch } = this.props;
+        const { dispatch, ws } = this.props;
 
         this.mounted = true;
         this.refresh();
 
         dispatch(handlers.setAutoTransfer(true));
         dispatch(asyncProviders.updateAccounts());
+
+        ws.setGUISettings({mode: 'simple'});
     }
 
     componentWillUnmount(){

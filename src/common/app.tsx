@@ -44,7 +44,6 @@ class App extends React.Component<IProps, {}> {
     render(){
 
         const { role, mode } = this.props;
-
         if(role === Role.CLIENT && mode === Mode.SIMPLE){
             return <LightClient />;
         }

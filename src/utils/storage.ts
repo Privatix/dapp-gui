@@ -32,9 +32,10 @@ export const createStorage = () => {
                 storage.dispatch(asyncProviders.setRole());
                 const { role } = await api.settings.getLocal();
                 const { firstStart, accountCreated } = await ws.getLocal();
+                const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
                 const mode = (firstStart || !accountCreated) ? Mode.WIZARD
                              : role === Role.AGENT ? Mode.ADVANCED : Mode.SIMPLE;
-                storage.dispatch(asyncProviders.setMode(mode));
+                storage.dispatch(asyncProviders.setMode(localSettings.mode ? localSettings.mode : mode));
                 storage.dispatch(asyncProviders.setRole());
             }
         ));
