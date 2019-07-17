@@ -47,6 +47,7 @@ class Connecting extends React.Component<any, any>{
 
     subscription: String;
     handler = 0;
+    mounted = false;
 
     constructor(props:any) {
         super(props);
@@ -60,11 +61,13 @@ class Connecting extends React.Component<any, any>{
     }
 
     componentDidMount() {
+        this.mounted = true;
         this.refresh();
     }
 
     componentWillUnmount() {
 
+        this.mounted = false;
         const { ws } = this.props;
 
         if(this.handler !== 0){
@@ -83,11 +86,16 @@ class Connecting extends React.Component<any, any>{
 
     refresh = async () => {
 
+        if(!this.mounted){
+            return;
+        }
+
         const { t, ws } = this.props;
+        const { channel } = this.state;
 
         const channels = await ws.getNotTerminatedClientChannels();
 
-        if(this.subscription){
+        if(this.subscription && channel.id !== channels[0].id){
             await ws.unsubscribe(this.subscription);
         }
 

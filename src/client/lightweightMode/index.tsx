@@ -94,13 +94,15 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     componentDidMount() {
 
-        const { dispatch } = this.props;
+        const { dispatch, ws } = this.props;
 
         this.mounted = true;
         this.refresh();
 
         dispatch(handlers.setAutoTransfer(true));
         dispatch(asyncProviders.updateAccounts());
+
+        ws.setGUISettings({mode: 'simple'});
     }
 
     componentWillUnmount(){
@@ -383,7 +385,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return;
         }
 
-        this.addOffering(event.object);
+        this.addOffering({offering: event.object, rating: 0});
     }
 
 
@@ -443,6 +445,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(this.offeringsSubscription){
             ws.unsubscribe(this.offeringsSubscription);
+            this.offeringsSubscription = null;
         }
 
         this.offeringsSubscription = await ws.subscribe('offering', ids, this.updateOfferings, this.updateOfferings);

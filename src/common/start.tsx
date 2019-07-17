@@ -5,6 +5,7 @@ import { createMemoryHistory } from 'history';
 
 import * as api from 'utils/api';
 import { createStorage } from 'utils/storage';
+import handlers from 'redux/actions';
 
 import Wizard from './wizard/';
 import Login from './auth/login';
@@ -90,6 +91,8 @@ export default class Start extends React.Component<{}, IState> {
                 const res = await fetch(`${supervisorEndpoint}/start`);
                 if(res.status === 200){
                     const storage = createStorage();
+                    const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
+                    storage.dispatch(handlers.setMode(localSettings.mode ? localSettings.mode : 'simple'));
                     this.setState({started: true, storage});
                 }else{
                     setTimeout(this.startWatchingSupervisor, 1000);

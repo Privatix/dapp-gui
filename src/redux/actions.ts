@@ -185,8 +185,8 @@ export const asyncProviders = {
                 if(localSettings.gas.transfer*settings['eth.default.gasprice'].value <= account.ethBalance){
                     try{
                         await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
-                        dispatch(handlers.addTransfer(account.ethAddress, account.ptcBalance));
-                        startWatchingTransfer(account.ethAddress, account.ptcBalance);
+                        dispatch(handlers.addTransfer(account.ethAddr, account.ptcBalance));
+                        startWatchingTransfer(account.ethAddr, account.ptcBalance);
                     }catch(e){
                         // 
                     }
