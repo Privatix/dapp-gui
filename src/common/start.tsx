@@ -106,7 +106,7 @@ export default class Start extends React.Component<{}, IState> {
         }
     }
 
-    render(){
+    render() {
 
         const { started, component, storage } = this.state;
 
@@ -118,22 +118,24 @@ export default class Start extends React.Component<{}, IState> {
                     </I18nextProvider>
                 </Router>
             </Provider>
-         ):(
-             <I18nextProvider i18n={ i18n }>
-                 <div style={ {textAlign: 'center', margin: 'auto'} }>
-                    <h6>{ i18n.t('start:StartingServices') }<DotProgress /></h6>
+        ):(
+            <div className='startingServiceWrap'>
+                <I18nextProvider i18n={ i18n }>
+                    <div style={ {textAlign: 'center', margin: 'auto'} }>
+                        <h6>{ i18n.t('start:StartingServices') }<DotProgress /></h6>
 
-                    <div className='text-center m-t-15 m-b-15'>
-                        <div className='lds-dual-ring'></div>
+                        <div className='text-center m-t-15 m-b-15'>
+                            <div className='lds-dual-ring'></div>
+                        </div>
+
+                        <div>{ i18n.t('start:UsuallyItTakes') }</div>
+                        <div>{ i18n.t('start:IfSomethingWentWrong') }</div>&nbsp;
+                        <ExternalLink href='https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause'>
+                            { i18n.t('start:HowToDetectATroubleCause') }
+                        </ExternalLink>
                     </div>
-
-                    <div>{ i18n.t('start:UsuallyItTakes') }</div>
-                    <div>{ i18n.t('start:IfSomethingWentWrong') }</div>&nbsp;
-                    <ExternalLink href='https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause'>
-                        { i18n.t('start:HowToDetectATroubleCause') }
-                    </ExternalLink>
-                </div>
-            </I18nextProvider>
-         );
+                </I18nextProvider>
+            </div>
+        );
     }
 }

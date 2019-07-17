@@ -7533,6 +7533,12 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
   background-size: 24px;
 }
 
+.startingServiceWrap{
+  height: 100vh;
+  display: flex;
+  align-items: center;
+}
+
 @media only screen and (max-width: 6000px) and (min-width: 700px) {
   .wrapper.right-bar-enabled .right-bar {
     right: 0;
