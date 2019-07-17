@@ -198,7 +198,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                         </div>
                     </div>
                     <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('IpType')}</label>
+                        <label className='col-3 col-form-label'>{t('offerings/createOffering:IpType')}</label>
                         <div className='col-9'>
                             <input type='text' className='form-control' value={ipTypesAssoc[offering.ipType]} readOnly/>
                         </div>
