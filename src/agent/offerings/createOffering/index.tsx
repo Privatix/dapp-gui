@@ -397,10 +397,10 @@ class CreateOffering extends React.Component<IProps, IState>{
     }
 
     redirectToServers = () => {
-        if (this.props.location.pathname === '/products') {
+        if (this.props.location.pathname === '/') {
             this.props.closeModal();
         } else {
-            this.props.history.push('/products');
+            this.props.history.push('/');
         }
     }
 
@@ -493,7 +493,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                                     <button
                                                         className='btn btn-link btnLinkSmallCustom'
                                                         onClick={this.redirectToServers}
-                                                    >Servers</button>
+                                                    >Exit Nodes</button>
                                                     page
                                                 </Trans>
                                             </small>

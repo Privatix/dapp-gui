@@ -67,9 +67,10 @@ const notify = function(msg: string){
     };
 };
 
+const context = {createChannelSubscription: null, channelSubscription: null, connected: null, ipSubscription: null}; 
+
 export const asyncProviders = {
     observeChannel: function(){
-        const context = {createChannelSubscription: null, channelSubscription: null, connected: null, ipSubscription: null}; 
 
         const refresh = async function(dispatch: any, getState: Function){
 
@@ -104,6 +105,9 @@ export const asyncProviders = {
                     }
                     context.connected = true;
                 }else{
+                    if(context.connected === true){
+                        notify(i18n.t('client/simpleMode:disconnectedMsg'));
+                    }
                     context.connected = false;
                 }
                 if(channel && channel.id === channels[0].id){
