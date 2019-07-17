@@ -385,7 +385,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return;
         }
 
-        this.addOffering(event.object);
+        this.addOffering({offering: event.object, rating: 0});
     }
 
 
