@@ -7520,6 +7520,19 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
   display: flex;
 }
 
+.addFundsPlusBtnBl{
+  position: absolute;
+  top: 5px;
+  right: -30px;
+}
+.addFundsPlusBtn{
+  width: 24px;
+  height: 24px;
+  display: block;
+  background: url('../images/plus.png') no-repeat;
+  background-size: 24px;
+}
+
 @media only screen and (max-width: 6000px) and (min-width: 700px) {
   .wrapper.right-bar-enabled .right-bar {
     right: 0;

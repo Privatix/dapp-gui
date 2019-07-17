@@ -186,7 +186,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         notification.onclick = () => {
           //
         };
-    } 
+    }
 
     private checker = (event: any) => {
 
@@ -835,7 +835,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         <ModalWindow wrapClass='addFundsPlusBtnBl'
                                      customClass='addFundsPlusBtn'
                                      modalTitle={t('addFundsModalTitle')}
-                                     text={'+'}
+                                     text={''}
                                      component={<GetPrix mode={'simple'} entryPoint={'/app'} accountId={account.id} isModal={true} />}
                         />
                     </div>
