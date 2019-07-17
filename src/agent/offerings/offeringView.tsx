@@ -7,7 +7,7 @@ import ProductNameByOffering from 'agent/products/productNameByOffering';
 
 import prix from 'utils/prix';
 
-@translate('offerings/createOffering')
+@translate(['offerings/createOffering', 'common'])
 export default class OfferingView extends React.Component<any, {}>{
 
     render(){
@@ -60,7 +60,7 @@ export default class OfferingView extends React.Component<any, {}>{
                         </div>
                     </div>
                     <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('IpType')}: </label>
+                        <label className='col-3 col-form-label'>{t('common:IPType')}: </label>
                         <div className='col-9'>
                             <input type='text' className='form-control' value={offeringIpType[0].name} readOnly/>
                         </div>

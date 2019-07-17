@@ -521,7 +521,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('IpType')}:<span className='text-danger'>*</span> </label>
+                                    <label className='col-2 col-form-label'>{t('common:IPType')}:<span className='text-danger'>*</span> </label>
                                     <div className='col-6'>
                                         {selectIpType}
                                         <span className='help-block'>

@@ -40,7 +40,7 @@ interface IState{
     thereAreActiveChannels: boolean;
 }
 
-@translate(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice'])
+@translate(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice', 'common'])
 class AcceptOffering extends React.Component<IProps, IState>{
 
     acceptBtn = null;
@@ -198,7 +198,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                         </div>
                     </div>
                     <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('IpType')}</label>
+                        <label className='col-3 col-form-label'>{t('common:IPType')}</label>
                         <div className='col-9'>
                             <input type='text' className='form-control' value={ipTypesAssoc[offering.ipType]} readOnly/>
                         </div>
