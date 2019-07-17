@@ -4,7 +4,8 @@
         "RefreshAll": "Refresh all",
         "Refresh": "Refresh",
         "Select": "Select",
-        "NoResults": "Nothing was found on your request. Please modify the filtering options!"
+        "NoResults": "Nothing was found on your request. Please modify the filtering options!",
+        "IPType": "IP type"
     },
     "start": {
         "StartingServices": "Starting services",
@@ -128,7 +129,6 @@
         "Country": "Country",
         "ChangeCountryHelpText": "For changing country you must go to the <1>Exit Nodes</1> page",
         "Supply": "Supply",
-        "IpType": "Ip type",
         "IpTypeHint": "Please choose your IP type very carefully. The incorrect choice may decrease your Rating. In case you're not confident, please use external websites to determine your IP type (i.e.",
         "ResidentialIP": "Residential (Home/Office)",
         "DataCenterIP": "Data Center (Server/Hosting)",
@@ -438,7 +438,6 @@
         "Availability": "Availability",
         "Block": "Block",
         "Hash": "Hash",
-        "IPType": "IP type",
         "residential": "Residential (Home/Office)",
         "datacenter": "Data Center (Server/Hosting)",
         "mobile": "Сellular (Mobile)",
@@ -749,7 +748,6 @@
         "Hash": "Hash",
         "Block": "Block",
         "Country": "Country",
-        "IpType": "Ip type",
         "Price": "Price (PRIX/MB)",
         "MaxUnits": "Max. traffic",
         "AvailableSupply": "Available supply",

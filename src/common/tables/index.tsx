@@ -184,7 +184,7 @@ export const Country = {
 };
 
 export const IpType = {
-    header: i18n.t('tables:IpType'),
+    header: i18n.t('common:IPType'),
     headerStyle: {textAlign: 'center'},
     key: 'ipType'
 };
