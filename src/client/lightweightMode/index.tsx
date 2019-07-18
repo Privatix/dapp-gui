@@ -190,19 +190,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     private checker = (event: any) => {
 
-        const unsubscribe = () => {
-                const { ws } = this.props;
-                ws.unsubscribe(this.firstJobSubscription);
-                this.firstJobSubscription = null;
-        };
         switch(event.job.Status){
             case 'failed':
             case 'canceled':
-                unsubscribe();
                 this.failedJob(null);
                 break;
             case 'done':
-                unsubscribe();
                 this.refresh();
                 break;
         }
