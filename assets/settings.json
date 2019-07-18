@@ -31,5 +31,8 @@
        "count": 3,
        "delay": 3000,
        "progression": 3
+   },
+   "timings":{
+       "updateBalances": 60000
    }
 }

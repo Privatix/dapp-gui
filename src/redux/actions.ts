@@ -143,19 +143,19 @@ export const asyncProviders = {
         return async function(dispatch: any, getState: Function){
             const { ws, role, autoTransfer, transfers } = getState();
 
-            const startWatchingTransfer = async (address: string, amount: number) => {
+            const startWatchingTransfer = async (accountId: string, address: string, amount: number) => {
 
                 const context = {subscriptionId: null};
 
                 const checkIfComplete = (evt: any) => {
-                    if('job' in evt && evt.job.type === 'afterAccountAddBalance' && evt.job.status === 'done'){
+                    if('job' in evt && evt.job.Type === 'afterAccountAddBalance' && evt.job.Status === 'done'){
 
                         dispatch(handlers.removeTransfer(address, amount));
                         ws.unsubscribe(context.subscriptionId);
                         context.subscriptionId = null;
                     }
                 };
-                context.subscriptionId = await ws.subscribe('account', [address], checkIfComplete);
+                context.subscriptionId = await ws.subscribe('account', [accountId], checkIfComplete);
             };
 
             const includesTransfer = (transferring: {address: string, amount: number}[], address: string, amount: number) =>
@@ -204,7 +204,7 @@ export const asyncProviders = {
                     try{
                         await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
                         dispatch(handlers.addTransfer(account.ethAddr, account.ptcBalance));
-                        startWatchingTransfer(account.ethAddr, account.ptcBalance);
+                        startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
                     }catch(e){
                         //
                     }
