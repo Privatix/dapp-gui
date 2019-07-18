@@ -142,7 +142,9 @@ export class WS {
                     const usagePolling = async () => {
                         const usage = await this.getChannelsUsage(ids);
                         handler(usage);
-                        WS.pollings[uuid].workerId = setTimeout(usagePolling, 2000);
+                        if(WS.pollings[uuid]){
+                            WS.pollings[uuid].workerId = setTimeout(usagePolling, 2000);
+                        }
                     };
                     WS.pollings[uuid] = {entityType, ids, handler, onReconnect};
                     resolve(uuid);

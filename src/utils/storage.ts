@@ -162,10 +162,23 @@ export const createStorage = () => {
     refresh();
 
     (async () => {
-        const { role } = await api.settings.getLocal();
+        const { role, timings } = await api.settings.getLocal();
         if(role === Role.CLIENT){
             api.smartExit(true);
         }
+        const updateBalances = async () => {
+            const { ws } = storage.getState();
+
+            if(ws) {
+
+                await ws.whenAuthorized();
+                const accounts = await ws.getAccounts();
+                accounts.forEach(account => ws.updateBalance(account.id));
+            }
+            setTimeout(updateBalances, timings.updateBalances);
+        };
+
+        updateBalances();
     })();
     return storage;
 };

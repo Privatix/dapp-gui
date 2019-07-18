@@ -41,6 +41,9 @@ export interface LocalSettings {
         progression: number;
     },
     role: Role;
+    timings: {
+        updateBalances: number;
+    }
 }
 
 export interface DbSetting {
