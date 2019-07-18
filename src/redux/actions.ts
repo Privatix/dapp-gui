@@ -1,6 +1,6 @@
 import { WS } from 'utils/ws';
 import * as api from 'utils/api';
-import {screen} from 'electron';
+import {remote} from 'electron';
 
 import { Account } from 'typings/accounts';
 import { Product } from 'typings/products';
@@ -275,7 +275,7 @@ export const asyncProviders = {
             const { window } = await api.settings.getLocal();
             let { width, height } = window[mode];
 
-            const winSize = screen.getPrimaryDisplay().workAreaSize;
+            const winSize = remote.screen.getPrimaryDisplay().workAreaSize;
             if (mode === 'simple' && winSize.height <= height) {
                 height = winSize.height;
             }
@@ -290,11 +290,13 @@ export const asyncProviders = {
             const { ws } = getState();
 
             dispatch(handlers.setOfferingsAvailability(offeringsIds.map(id => ({[id]: undefined}))));
+
             dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
 
             offeringsIds.forEach((offeringId) => {
                 ws.pingOfferings([offeringId])
                     .then(offeringsAvailability => {
+
                         dispatch(handlers.setOfferingsAvailability([offeringsAvailability]));
                         if(cb){
                             cb();
