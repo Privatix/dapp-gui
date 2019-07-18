@@ -115,7 +115,8 @@ export const asyncProviders = {
                         dispatch(handlers.setChannel(channels[0]));
                 }else{
                     if(context.channelSubscription){
-                        await ws.unsubscribe(context.channelSubscription);
+                        ws.unsubscribe(context.channelSubscription);
+                        context.channelSubscription = null;
                     }
                     dispatch(handlers.setChannel(channels[0]));
                     context.channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
@@ -130,7 +131,7 @@ export const asyncProviders = {
                 context.connected = false;
 
                 if(context.channelSubscription){
-                    await ws.unsubscribe(context.channelSubscription);
+                    ws.unsubscribe(context.channelSubscription);
                     context.channelSubscription = null;
                 }
                 dispatch(handlers.setChannel(null));
