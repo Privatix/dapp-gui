@@ -24,7 +24,7 @@
    "updateCheckFreq": 480,
    "window": {
        "advanced": {"width": 1024, "height": 800},
-       "simple": {"width": 600, "height": 800},
+       "simple": {"width": 600, "height": 880},
        "wizard": {"width": 1024, "height": 800}
    },
    "reconnect": {

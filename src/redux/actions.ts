@@ -1,5 +1,6 @@
 import { WS } from 'utils/ws';
 import * as api from 'utils/api';
+import {screen} from 'electron';
 
 import { Account } from 'typings/accounts';
 import { Product } from 'typings/products';
@@ -67,7 +68,7 @@ const notify = function(msg: string){
     };
 };
 
-const context = {createChannelSubscription: null, channelSubscription: null, connected: null, ipSubscription: null}; 
+const context = {createChannelSubscription: null, channelSubscription: null, connected: null, ipSubscription: null};
 
 export const asyncProviders = {
     observeChannel: function(){
@@ -93,7 +94,7 @@ export const asyncProviders = {
 
             if(!context.createChannelSubscription){
                 context.createChannelSubscription = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
-            } 
+            }
 
             if(channels.length){
                 if(!ip){
@@ -192,7 +193,7 @@ export const asyncProviders = {
                         dispatch(handlers.addTransfer(account.ethAddr, account.ptcBalance));
                         startWatchingTransfer(account.ethAddr, account.ptcBalance);
                     }catch(e){
-                        // 
+                        //
                     }
                 }else{
                     dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
@@ -272,7 +273,12 @@ export const asyncProviders = {
         return async function(dispatch: any, getState: Function){
 
             const { window } = await api.settings.getLocal();
-            const { width, height } = window[mode];
+            let { width, height } = window[mode];
+
+            const winSize = screen.getPrimaryDisplay().workAreaSize;
+            if (mode === 'simple' && winSize.height <= height) {
+                height = winSize.height;
+            }
 
             api.app.resizeWindow(width, height);
             dispatch(handlers.setMode(mode));
