@@ -93,7 +93,7 @@ class Backup extends React.Component<IProps, IState>{
 
         try{
             const acc = await ws.exportAccount(accountId);
-            const response = await api.fs.saveAs(fileName, atob(acc));
+            const response = await api.fs.saveAs(fileName + '.json', atob(acc));
             if(response.err){
                 throw new Error();
             }
