@@ -114,14 +114,15 @@ export const asyncProviders = {
                     }
                     context.connected = false;
                 }
+                saveContext(context);
                 if(channel && channel.id === channels[0].id){
                         dispatch(handlers.setChannel(channels[0]));
                 }else{
                     if(context.channelSubscription){
                         ws.unsubscribe(context.channelSubscription);
                         context.channelSubscription = null;
-                        saveContext(context);
                     }
+                    saveContext(context);
                     dispatch(handlers.setChannel(channels[0]));
                     const channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
                     const { channelObserverContext: updatedContext } = getState();
