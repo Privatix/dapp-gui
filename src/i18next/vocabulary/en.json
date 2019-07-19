@@ -90,7 +90,7 @@
         "PressButton": "When funds has been transferred, please press on the button below.",
         "IdidIt": "I did it",
         "TokensHaveBeenReceived": "Tokens have been received.",
-        "WeAreTransferring": "We are transferring them to a marketplace (it might take 5-10 min)...",
+        "WeAreTransferring": "We are transferring them to the marketplace (it might take 5-10 min)...",
         "PleaseWait": "Please, wait, sending PRIX and ETH to your account.",
         "AllDonePressFinish": "All done. Press Finish",
         "AllDoneCloseModal": "All done.",
