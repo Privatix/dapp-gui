@@ -151,21 +151,45 @@ export const asyncProviders = {
     },
     updateAccounts: function(){
         return async function(dispatch: any, getState: Function){
-            const { ws, role, autoTransfer, transfers } = getState();
+            const { ws, role, autoTransfer } = getState();
 
             const startWatchingTransfer = async (accountId: string, address: string, amount: number) => {
 
-                const context = {subscriptionId: null};
+                const Watcher = class {
+                    private _subscriptionId = null;
+                    private unsubscribe = false;
+                    private address: string;
+                    private amount: number;
 
-                const checkIfComplete = (evt: any) => {
-                    if('job' in evt && evt.job.Type === 'afterAccountAddBalance' && evt.job.Status === 'done'){
+                    constructor(address: string, amount: number){
+                        this.address = address;
+                        this.amount = amount;
+                    }
 
-                        dispatch(handlers.removeTransfer(address, amount));
-                        ws.unsubscribe(context.subscriptionId);
-                        context.subscriptionId = null;
+                    get subscriptionId(){
+                        return this._subscriptionId;
+                    }
+
+                    set subscriptionId(id: string){
+                        this._subscriptionId = id;
+                        if(this.unsubscribe){
+                            ws.unsubscribe(this.subscriptionId);
+                        }
+                    }
+                    checkIfComplete = (evt: any) => {
+                        if('job' in evt && evt.job.Type === 'afterAccountAddBalance' && evt.job.Status === 'done'){
+
+                            dispatch(handlers.removeTransfer(this.address, this.amount));
+                            if(this.subscriptionId){
+                                ws.unsubscribe(this.subscriptionId);
+                            }else{
+                                this.unsubscribe = true;
+                            }
+                        }
                     }
                 };
-                context.subscriptionId = await ws.subscribe('account', [accountId], checkIfComplete);
+                const watcher = new Watcher(address, amount);
+                watcher.subscriptionId = await ws.subscribe('account', [accountId], watcher.checkIfComplete);
             };
 
             const includesTransfer = (transferring: {address: string, amount: number}[], address: string, amount: number) =>
@@ -173,6 +197,23 @@ export const asyncProviders = {
 
             const accounts = await ws.getAccounts();
             dispatch(handlers.updateAccounts(accounts));
+
+            const account = accounts.find(account => account.isDefault);
+            const { localSettings, settings, transfers } = getState();
+            if(account && account.ptcBalance !== 0 && autoTransfer && !includesTransfer(transfers, account.ethAddr, account.ptcBalance)){
+                if(localSettings.gas.transfer*settings['eth.default.gasprice'] <= account.ethBalance){
+                    try{
+                        dispatch(handlers.addTransfer(account.ethAddr, account.ptcBalance));
+                        await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice']));
+                        startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
+                    }catch(e){
+                        //
+                        dispatch(handlers.removeTransfer(account.ethAddr, account.ptcBalance));
+                    }
+                }else{
+                    dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
+                }
+            }
 
             let ledger = {};
             if(role === Role.CLIENT){
@@ -204,24 +245,6 @@ export const asyncProviders = {
                                                                            }
                                                                          ));
             dispatch(handlers.updateAccounts(updatedAccounts));
-
-
-            const account = accounts.find(account => account.isDefault);
-            if(account && account.ptcBalance !== 0 && autoTransfer && !includesTransfer(transfers, account.ethAddr, account.ptcBalance)){
-                const settings = await ws.getSettings();
-                const localSettings = await ws.getLocal();
-                if(localSettings.gas.transfer*settings['eth.default.gasprice'].value <= account.ethBalance){
-                    try{
-                        await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
-                        dispatch(handlers.addTransfer(account.ethAddr, account.ptcBalance));
-                        startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
-                    }catch(e){
-                        //
-                    }
-                }else{
-                    dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
-                }
-            }
         };
     },
     updateProducts: function(){
