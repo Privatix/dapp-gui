@@ -28,6 +28,7 @@ import SelectByIPType from './selectByIPType';
 import { State } from 'typings/state';
 import { ClientOfferingItem } from 'typings/offerings';
 import { WS } from 'utils/ws';
+import handlers from 'redux/actions';
 
 interface IProps {
     t?: any;
@@ -391,6 +392,7 @@ class VPNList extends React.Component<IProps, IState> {
     onCheckStatus = () => {
         this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
         const offeringsIds = this.state.rawOfferings.map(offeringItem => offeringItem.offering.id);
+        this.props.dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
     }
 

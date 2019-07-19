@@ -302,14 +302,12 @@ export const asyncProviders = {
         return function(dispatch: any, getState: Function){
             const { ws } = getState();
 
-            dispatch(handlers.setOfferingsAvailability(offeringsIds.map(id => ({[id]: undefined}))));
-
             dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
+            dispatch(handlers.setOfferingsAvailability(offeringsIds.map(id => ({[id]: undefined}))));
 
             offeringsIds.forEach((offeringId) => {
                 ws.pingOfferings([offeringId])
                     .then(offeringsAvailability => {
-
                         dispatch(handlers.setOfferingsAvailability([offeringsAvailability]));
                         if(cb){
                             cb();
