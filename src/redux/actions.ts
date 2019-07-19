@@ -97,17 +97,16 @@ export const asyncProviders = {
 
             const handler = refresh.bind(null, dispatch, getState);
             const channels = await ws.getNotTerminatedClientChannels();
-            console.log('REDUX!!!', channels);
             if(!context.createChannelSubscription){
                 context.createChannelSubscription = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
             }
 
             if(channels.length){
                 dispatch(handlers.setChannel(channels[0]));
-                if(!ip){
-                    getIP();
-                }
                 if(channels[0].channelStatus.serviceStatus === 'active'){
+                    if(!ip){
+                        getIP();
+                    }
                     if(context.connected === false){
                         notify(i18n.t('client/simpleMode:connectedMsg'));
                     }

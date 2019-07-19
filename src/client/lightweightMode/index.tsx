@@ -125,9 +125,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     static getDerivedStateFromProps(props: IProps, state: IState){
         const { channel } = props;
+
         if(!channel){
-            return {channel: null, status: 'disconnected'};
+            return {channel: null, status: state.status === 'connected' ? 'disconnected' : state.status};
         }
+
         let status = state.status;
         switch(channel.channelStatus.serviceStatus){
             case 'active':
