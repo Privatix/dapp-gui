@@ -1,11 +1,8 @@
-import { WS } from 'utils/ws';
 import * as api from 'utils/api';
 import {remote} from 'electron';
 
-import { Account } from 'typings/accounts';
-import { Product } from 'typings/products';
+import { State } from 'typings/state';
 import { ClientChannel } from 'typings/channels';
-import { DbSetting as Setting, LocalSettings } from 'typings/settings';
 import { Offering } from 'typings/offerings';
 import { Role, Mode } from 'typings/mode';
 
@@ -33,30 +30,34 @@ export const enum actions {
     SET_EXIT,
     ADD_TRANSFER,
     REMOVE_TRANSFER,
-    SET_IP
+    SET_IP,
+    SAVE_CHANNEL_OBSERVER_CONTEXT
 }
 
 const handlers  = {
-    updateAccounts             : function(accounts: Account[]){ return { type: actions.REFRESH_ACCOUNTS, value: accounts };},
-    updateProducts             : function(products: Product[]){ return { type: actions.UPDATE_PRODUCTS, value: products };},
-    updateSettings             : function(settings: Setting[]){ return { type: actions.UPDATE_SETTINGS, value: settings };},
-    updateLocalSettings        : function(settings: LocalSettings){ return { type: actions.UPDATE_LOCAL_SETTINGS, value: settings };},
+    updateAccounts             : function(accounts: State['accounts']){ return { type: actions.REFRESH_ACCOUNTS, value: accounts };},
+    updateProducts             : function(products: State['products']){ return { type: actions.UPDATE_PRODUCTS, value: products };},
+    updateSettings             : function(settings: State['settings']){ return { type: actions.UPDATE_SETTINGS, value: settings };},
+    updateLocalSettings        : function(settings: State['localSettings']){ return { type: actions.UPDATE_LOCAL_SETTINGS, value: settings };},
     updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     updateServiceName          : function(serviceName: string){ return { type: actions.UPDATE_SERVICE_NAME, value: serviceName };},
-    setRole                    : function(role: Role){ return { type: actions.SET_ROLE, value: role };},
-    setMode                    : function(mode: Mode){ return { type: actions.SET_MODE, value: mode };},
-    setChannel                 : function(channel: ClientChannel){ return { type: actions.SET_CHANNEL, value: channel };},
-    setWS                      : function(ws: WS){ return { type: actions.SET_WS, value: ws};},
-    setOfferingsAvailability   : function(offeringsAvailability: Object[]){ return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};},
+    setRole                    : function(role: State['role']){ return { type: actions.SET_ROLE, value: role };},
+    setMode                    : function(mode: State['mode']){ return { type: actions.SET_MODE, value: mode };},
+    setChannel                 : function(channel: State['channel']){ return { type: actions.SET_CHANNEL, value: channel };},
+    setWS                      : function(ws: State['ws']){ return { type: actions.SET_WS, value: ws};},
+    setOfferingsAvailability   : function(offeringsAvailability: State['offeringsAvailability']['statuses'][]){
+                                     return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};
+                                 },
     incrementOfferingsAvailabilityCounter: function(counter: number){ return { type: actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER, value: counter};},
     setAutoTransfer            : function(autoTransfer: boolean){ return { type: actions.SET_AUTOTRANSFER, value: autoTransfer };},
     addNotice                  : function(msg: {code: number,  notice: Notice}){ return { type: actions.ADD_NOTICE, value: msg };},
-    removeNotices              : function(notices: {code: number,  notice: Notice}[]){ return { type: actions.REMOVE_NOTICES, value: notices };},
+    removeNotices              : function(notices: State['notices']){ return { type: actions.REMOVE_NOTICES, value: notices };},
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
     addTransfer                : function(address: string, amount: number){ return { type: actions.ADD_TRANSFER, value: {address, amount} };},
     removeTransfer             : function(address: string, amount: number){ return { type: actions.REMOVE_TRANSFER, value: {address, amount} };},
-    setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};}
+    setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};},
+    saveChannelObserverContext : function(context: State['channelObserverContext']){ return {type: actions.SAVE_CHANNEL_OBSERVER_CONTEXT, value: context};}
 };
 
 const notify = function(msg: string){
@@ -68,12 +69,16 @@ const notify = function(msg: string){
     };
 };
 
-const context = {createChannelSubscription: null, channelSubscription: null, connected: null, ipSubscription: null};
-
 export const asyncProviders = {
     observeChannel: function(){
 
         const refresh = async function(dispatch: any, getState: Function){
+
+            const { channel, ws, ip, channelObserverContext: context } = getState();
+
+            const saveContext = (context: State['channelObserverContext']) => {
+                dispatch(handlers.saveChannelObserverContext(Object.assign({}, context)));
+            };
 
             const getIP = async function(attempt?: number){
                 const counter = !attempt ? 0 : attempt;
@@ -83,24 +88,25 @@ export const asyncProviders = {
                         const json = await res.json();
                         dispatch(handlers.setIP(json.ip));
                     }catch(e){
+                        const { channelObserverContext: context } = getState();
                         context.ipSubscription = setTimeout(getIP.bind(null, counter+1), 3000);
+                        saveContext(context);
                     }
                 }
             };
 
             const handler = refresh.bind(null, dispatch, getState);
-            const { channel, ws, ip } = getState();
             const channels = await ws.getNotTerminatedClientChannels();
-
             if(!context.createChannelSubscription){
                 context.createChannelSubscription = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
             }
 
             if(channels.length){
-                if(!ip){
-                    getIP();
-                }
+                dispatch(handlers.setChannel(channels[0]));
                 if(channels[0].channelStatus.serviceStatus === 'active'){
+                    if(!ip){
+                        getIP();
+                    }
                     if(context.connected === false){
                         notify(i18n.t('client/simpleMode:connectedMsg'));
                     }
@@ -111,16 +117,20 @@ export const asyncProviders = {
                     }
                     context.connected = false;
                 }
-                if(channel && channel.id === channels[0].id){
-                        dispatch(handlers.setChannel(channels[0]));
-                }else{
+                saveContext(context);
+                if(!channel || channel.id !== channels[0].id){
                     if(context.channelSubscription){
-                        await ws.unsubscribe(context.channelSubscription);
+                        ws.unsubscribe(context.channelSubscription);
+                        context.channelSubscription = null;
+                        saveContext(context);
                     }
-                    dispatch(handlers.setChannel(channels[0]));
-                    context.channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
+                    const channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
+                    const { channelObserverContext: updatedContext } = getState();
+                    updatedContext.channelSubscription = channelSubscription;
+                    saveContext(updatedContext);
                 }
             }else{
+                dispatch(handlers.setChannel(null));
                 if(context.connected !== null){
                     if(context.connected === true){
                         notify(i18n.t('client/simpleMode:disconnectedMsg'));
@@ -130,10 +140,10 @@ export const asyncProviders = {
                 context.connected = false;
 
                 if(context.channelSubscription){
-                    await ws.unsubscribe(context.channelSubscription);
+                    ws.unsubscribe(context.channelSubscription);
                     context.channelSubscription = null;
                 }
-                dispatch(handlers.setChannel(null));
+                saveContext(context);
             }
         };
 

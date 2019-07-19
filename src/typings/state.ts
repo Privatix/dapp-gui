@@ -29,6 +29,12 @@ interface State {
     exit: boolean;
     transfers: {address: string, amount: number}[];
     ip: string;
+    channelObserverContext: {
+        createChannelSubscription: string;
+        channelSubscription: string;
+        connected: boolean;
+        ipSubscription: string;
+    };
 }
 
 const StateDefault: State = {
@@ -50,7 +56,13 @@ const StateDefault: State = {
     notices: [],
     exit: false,
     transfers: [],
-    ip: ''
+    ip: '',
+    channelObserverContext: {
+        createChannelSubscription: null,
+        channelSubscription: null,
+        connected: null,
+        ipSubscription: null
+    }
 };
 
 export {
