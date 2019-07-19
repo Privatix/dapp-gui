@@ -76,6 +76,10 @@ export const asyncProviders = {
 
             const { channel, ws, ip, channelObserverContext: context } = getState();
 
+            const saveContext = (context: State['channelObserverContext']) => {
+                dispatch(handlers.saveChannelObserverContext(Object.assign({}, context)));
+            };
+
             const getIP = async function(attempt?: number){
                 const counter = !attempt ? 0 : attempt;
                 if(counter < 5){
@@ -84,22 +88,22 @@ export const asyncProviders = {
                         const json = await res.json();
                         dispatch(handlers.setIP(json.ip));
                     }catch(e){
+                        const { channelObserverContext: context } = getState();
                         context.ipSubscription = setTimeout(getIP.bind(null, counter+1), 3000);
+                        saveContext(context);
                     }
                 }
             };
 
-            const saveContext = (context: State['channelObserverContext']) => {
-                dispatch(handlers.saveChannelObserverContext(Object.assign({}, context)));
-            };
             const handler = refresh.bind(null, dispatch, getState);
             const channels = await ws.getNotTerminatedClientChannels();
-
+            console.log('REDUX!!!', channels);
             if(!context.createChannelSubscription){
                 context.createChannelSubscription = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
             }
 
             if(channels.length){
+                dispatch(handlers.setChannel(channels[0]));
                 if(!ip){
                     getIP();
                 }
@@ -115,21 +119,19 @@ export const asyncProviders = {
                     context.connected = false;
                 }
                 saveContext(context);
-                if(channel && channel.id === channels[0].id){
-                        dispatch(handlers.setChannel(channels[0]));
-                }else{
+                if(!channel || channel.id !== channels[0].id){
                     if(context.channelSubscription){
                         ws.unsubscribe(context.channelSubscription);
                         context.channelSubscription = null;
+                        saveContext(context);
                     }
-                    saveContext(context);
-                    dispatch(handlers.setChannel(channels[0]));
                     const channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
                     const { channelObserverContext: updatedContext } = getState();
                     updatedContext.channelSubscription = channelSubscription;
                     saveContext(updatedContext);
                 }
             }else{
+                dispatch(handlers.setChannel(null));
                 if(context.connected !== null){
                     if(context.connected === true){
                         notify(i18n.t('client/simpleMode:disconnectedMsg'));
@@ -143,7 +145,6 @@ export const asyncProviders = {
                     context.channelSubscription = null;
                 }
                 saveContext(context);
-                dispatch(handlers.setChannel(null));
             }
         };
 
