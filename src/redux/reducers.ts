@@ -43,7 +43,8 @@ export default function reducer(state: State = StateDefault, action: Action = {t
             state.transfers.splice(index, 1);
             return _.assign({}, state, {transfers: state.transfers.concat([])});
         },
-        [actions.SET_IP]                        : (state: State, action: Action) => _.assign({}, state, {ip: action.value})
+        [actions.SET_IP]                        : (state: State, action: Action) => _.assign({}, state, {ip: action.value}),
+        [actions.SAVE_CHANNEL_OBSERVER_CONTEXT] : (state: State, action: Action) => _.assign({}, state, {channelObserverContext: action.value})
     };
 
     return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;

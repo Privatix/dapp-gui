@@ -594,10 +594,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const { ws, channel } = this.props;
 
+        this.setState({status: 'disconnected'});
         ws.changeChannelStatus(channel.id, 'terminate');
         this.unsubscribe();
         this.refresh();
-        this.setState({status: 'disconnecting'});
     }
 
     private onResume = () => {
