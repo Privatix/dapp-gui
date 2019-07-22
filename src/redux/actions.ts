@@ -55,7 +55,7 @@ const handlers  = {
     removeNotices              : function(notices: State['notices']){ return { type: actions.REMOVE_NOTICES, value: notices };},
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
     addTransfer                : function(address: string, amount: number){ return { type: actions.ADD_TRANSFER, value: {address, amount} };},
-    removeTransfer             : function(address: string, amount: number){ return { type: actions.REMOVE_TRANSFER, value: {address, amount} };},
+    removeTransfer             : function(address: string, amount: number){ console.log('REMOVE TRANSFER', address, amount); return { type: actions.REMOVE_TRANSFER, value: {address, amount} };},
     setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};},
     saveChannelObserverContext : function(context: State['channelObserverContext']){ return {type: actions.SAVE_CHANNEL_OBSERVER_CONTEXT, value: context};}
 };
@@ -208,8 +208,10 @@ export const asyncProviders = {
 
             const account = accounts.find(account => account.isDefault);
             const { localSettings, settings, transfers } = getState();
+            console.log('TRANSFER?', transfers, account);
             if(account && account.ptcBalance !== 0 && autoTransfer && !includesTransfer(transfers, account.ethAddr, account.ptcBalance)){
                 if(localSettings.gas.transfer*settings['eth.default.gasprice'] <= account.ethBalance){
+                    console.log('TRANSFER!!!');
                     try{
                         dispatch(handlers.addTransfer(account.ethAddr, account.ptcBalance));
                         await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice']));
