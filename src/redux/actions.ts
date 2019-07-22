@@ -72,8 +72,10 @@ const notify = function(msg: string){
 export const asyncProviders = {
     observeChannel: function(){
 
-        const refresh = async function(dispatch: any, getState: Function){
-
+        const refresh = async function(dispatch: any, getState: Function, evt?: any){
+            if(evt){
+                console.log('CHANNEL EVENT!!!', evt);
+            }
             const { channel, ws, ip } = getState();
 
             const saveContext = (context: State['channelObserverContext']) => {
