@@ -160,6 +160,7 @@ export const asyncProviders = {
                     private unsubscribe = false;
                     private address: string;
                     private amount: number;
+                    private transactionFinished = 0;
 
                     constructor(address: string, amount: number){
                         this.address = address;
@@ -173,12 +174,14 @@ export const asyncProviders = {
                     set subscriptionId(id: string){
                         this._subscriptionId = id;
                         if(this.unsubscribe){
-                            ws.unsubscribe(this.subscriptionId);
+                            ws.unsubscribe(id);
                         }
                     }
                     checkIfComplete = (evt: any) => {
                         if('job' in evt && evt.job.Type === 'afterAccountAddBalance' && evt.job.Status === 'done'){
-
+                            this.transactionFinished = Date.now();
+                        }
+                        if(this.transactionFinished > 0 && (new Date(evt.object.lastBalanceCheck)).getTime() > this.transactionFinished){
                             dispatch(handlers.removeTransfer(this.address, this.amount));
                             if(this.subscriptionId){
                                 ws.unsubscribe(this.subscriptionId);
