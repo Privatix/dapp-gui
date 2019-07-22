@@ -74,7 +74,7 @@ export const asyncProviders = {
 
         const refresh = async function(dispatch: any, getState: Function){
 
-            const { channel, ws, ip, channelObserverContext: context } = getState();
+            const { channel, ws, ip } = getState();
 
             const saveContext = (context: State['channelObserverContext']) => {
                 dispatch(handlers.saveChannelObserverContext(Object.assign({}, context)));
@@ -97,10 +97,15 @@ export const asyncProviders = {
 
             const handler = refresh.bind(null, dispatch, getState);
             const channels = await ws.getNotTerminatedClientChannels();
-            if(!context.createChannelSubscription){
-                context.createChannelSubscription = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
+            const { channelObserverContext } = getState();
+            if(!channelObserverContext.createChannelSubscription){
+                const id = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
+                const { channelObserverContext: updatedContext } = getState();
+                updatedContext.createChannelSubscription = id;
+                saveContext(updatedContext);
             }
 
+            const { channelObserverContext: context } = getState();
             if(channels.length){
                 dispatch(handlers.setChannel(channels[0]));
                 if(channels[0].channelStatus.serviceStatus === 'active'){
@@ -131,11 +136,9 @@ export const asyncProviders = {
                 }
             }else{
                 dispatch(handlers.setChannel(null));
-                if(context.connected !== null){
-                    if(context.connected === true){
-                        notify(i18n.t('client/simpleMode:disconnectedMsg'));
-                        dispatch(handlers.setIP(''));
-                    }
+                if(context.connected === true){
+                    notify(i18n.t('client/simpleMode:disconnectedMsg'));
+                    dispatch(handlers.setIP(''));
                 }
                 context.connected = false;
 
@@ -240,12 +243,14 @@ export const asyncProviders = {
                     return ledger;
                 }, {});
             }
+
             const updatedAccounts = accounts.map(account => Object.assign({}
                                                                          ,account
                                                                          ,{escrow: `0x${account.ethAddr.toLowerCase()}` in ledger
-                                                                             ? ledger[`0x${account.ethAddr.toLowerCase()}`]
-                                                                             : 0
-                                                                           }
+                                                                                    && ledger[`0x${account.ethAddr.toLowerCase()}`] > 0
+                                                                                    ? ledger[`0x${account.ethAddr.toLowerCase()}`]
+                                                                                    : 0
+                                                                         }
                                                                          ));
             dispatch(handlers.updateAccounts(updatedAccounts));
         };
