@@ -5,6 +5,7 @@
         "acceptOffering": 75446,
         "createOffering": 112941,
         "transfer": 148755,
+        "returnBalance": 52691,
         "increaseDeposit": 45836,
         "removeOffering": 28190,
         "popupOffering": 42579
