@@ -5,6 +5,8 @@ export interface GasConsumption {
     createOffering: number;
     transfer: number;
     increaseDeposit: number;
+    removeOffering: number;
+    popupOffering: number;
 }
 
 export interface LocalSettings {
