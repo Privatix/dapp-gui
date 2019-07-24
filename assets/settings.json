@@ -5,7 +5,8 @@
         "acceptOffering": 75446,
         "createOffering": 112941,
         "transfer": 148755,
-        "increaseDeposit": 45836
+        "increaseDeposit": 45836,
+        "removeOffering": 28190
    },
    "network": "rinkeby",
    "bugsnag": {
