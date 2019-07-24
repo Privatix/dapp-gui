@@ -136,7 +136,6 @@ export class WS {
     }
 
     private _subscribe (uuid: string, entityType:string, ids: string[], handler: Function, onReconnect: Function){
-        console.log('SUBSCRIBE!!!', uuid, entityType, ids);
         return new Promise((resolve: Function, reject: Function) => {
             switch(entityType){
                 case 'usage':
@@ -152,7 +151,6 @@ export class WS {
                     usagePolling();
                     break;
                 case 'channels':
-                    // подписываемся на все каналы и их usage
                     const channelsUUID = uuidv4();
                     this._subscribe(channelsUUID, 'channel', ids, handler, onReconnect)
                         .then(channelsSubscribeId => {
@@ -218,7 +216,6 @@ export class WS {
                     this.socket.send(JSON.stringify(req));
                     delete WS.byUUID[id];
                     delete WS.subscribeRequests[subscribeId];
-                    console.log('UNSUBSCRIBE!!!', id, 'subscribe requests: ', WS.subscribeRequests, 'pollings:', WS.pollings, 'groups:', WS.groups, 'ids', WS.byUUID);
                 });
             }
         }else if(id in WS.pollings){
@@ -231,7 +228,6 @@ export class WS {
         }else {
             console.error('unsubscribe: unknown subscription', id);
         }
-        console.log('UNSUBSCRIBE!!!', id, 'subscribe requests: ', WS.subscribeRequests, 'pollings:', WS.pollings, 'groups:', WS.groups, 'ids', WS.byUUID);
     }
 
     send(method: string, params: any[] = []){

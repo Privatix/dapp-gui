@@ -32,6 +32,7 @@ type Status = 'disconnected'
             | 'disconnecting'
             | 'connected'
             | 'connecting'
+            | 'resuming'
             | 'pingLocations'
             | 'pingFailed'
             | 'suspended'
@@ -143,9 +144,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
             case 'suspended':
                 switch(state.status){
                     case 'connecting':
-                        break;
+                    case 'resuming':
                     case 'disconnecting':
-                        break;
                     case 'connected':
                         break;
                     default:
@@ -252,9 +252,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 case 'suspended':
                     switch(this.state.status){
                         case 'connecting':
+                            this.setState({status: 'resuming'});
                             ws.changeChannelStatus(channel.id, 'resume');
-                            break;
-                        case 'disconnecting':
                             break;
                         case 'connected':
                             this.reconnect();
@@ -760,6 +759,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return <States.Connecting {...props} />;
 
         },
+
+        resuming: () => this.states.connecting(),
 
         suspended: () => {
 
