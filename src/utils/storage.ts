@@ -144,7 +144,8 @@ export const createStorage = () => {
             if(role === Role.AGENT){
                 storage.dispatch(asyncProviders.updateProducts());
                 storage.dispatch(asyncProviders.updateTotalIncome());
-            }else{
+            }
+            if(role === Role.CLIENT){
                 storage.dispatch(asyncProviders.observeChannel());
             }
 
