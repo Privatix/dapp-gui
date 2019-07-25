@@ -43,6 +43,7 @@
        "level": "info",
        "console": true,
        "file": true,
-       "fileName": "dapp-gui.log"
+       "fileName": "dapp-gui.log",
+       "fileOverwrite": true
    }
 }
