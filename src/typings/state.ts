@@ -26,9 +26,9 @@ interface State {
         statuses: OfferingAvailabilityResponse;
     };
     autoTransfer: boolean;
+    transferring: boolean;
     notices: {code: number, notice: Notice}[];
     exit: boolean;
-    transfers: {address: string, amount: number}[];
     ip: string;
     channelObserverContext: {
         createChannelSubscription: string;
@@ -55,9 +55,9 @@ const StateDefault: State = {
         statuses: {}
     },
     autoTransfer: false,
+    transferring: false,
     notices: [],
     exit: false,
-    transfers: [],
     ip: '',
     channelObserverContext: {
         createChannelSubscription: null,

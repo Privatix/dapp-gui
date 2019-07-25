@@ -35,15 +35,7 @@ export default function reducer(state: State = StateDefault, action: Action = {t
                                                                                             ,{notices: state.notices.filter(noticeItem => !action.value.includes(noticeItem))}
                                                                                             ),
         [actions.SET_EXIT]                      : (state: State, action: Action) => _.assign({}, state, {exit: action.value}),
-        [actions.ADD_TRANSFER]                  : (state: State, action: Action) => _.assign({}, state, {transfers: state.transfers.concat([action.value])}),
-        [actions.REMOVE_TRANSFER]               : (state: State, action: Action) => {
-            const index = state.transfers.findIndex(transfer => transfer.address === action.value.address && transfer.amount === action.value.amount);
-            if(index === -1) {
-                return state;
-            }
-            state.transfers.splice(index, 1);
-            return _.assign({}, state, {transfers: state.transfers.concat([])});
-        },
+        [actions.SET_TRANSFERRING_FLAG]         : (state: State, action: Action) => _.assign({}, state, {transferring: action.value}),
         [actions.SET_IP]                        : (state: State, action: Action) => _.assign({}, state, {ip: action.value}),
         [actions.SAVE_CHANNEL_OBSERVER_CONTEXT] : (state: State, action: Action) => _.assign({}, state, {channelObserverContext: action.value})
     };

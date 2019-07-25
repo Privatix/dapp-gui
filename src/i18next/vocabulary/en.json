@@ -208,7 +208,8 @@
         "WouldYouLikeToProceed": "Would you like to proceed?",
         "DeleteOfferingRequestProcessing": "Your delete offering request is processing. Please wait.",
         "DeleteOfferingRequestScheduled1": "Your delete offering request was scheduled. After",
-        "DeleteOfferingRequestScheduled2": "minutes the offering will be removed."
+        "DeleteOfferingRequestScheduled2": "minutes the offering will be removed.",
+        "ErrorNotEnoughPublishFunds": "Not enough funds to publish transaction."
     },
     "offerings/offeringsList":{
         "Offering": "Offering",

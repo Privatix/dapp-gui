@@ -152,7 +152,6 @@ export class WS {
                     usagePolling();
                     break;
                 case 'channels':
-                    // подписываемся на все каналы и их usage
                     const channelsUUID = uuidv4();
                     this._subscribe(channelsUUID, 'channel', ids, handler, onReconnect)
                         .then(channelsSubscribeId => {

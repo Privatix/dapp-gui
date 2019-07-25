@@ -29,8 +29,7 @@ export const enum actions {
     ADD_NOTICE,
     REMOVE_NOTICES,
     SET_EXIT,
-    ADD_TRANSFER,
-    REMOVE_TRANSFER,
+    SET_TRANSFERRING_FLAG,
     SET_IP,
     SAVE_CHANNEL_OBSERVER_CONTEXT
 }
@@ -56,8 +55,7 @@ const handlers  = {
     addNotice                  : function(msg: {code: number,  notice: Notice}){ return { type: actions.ADD_NOTICE, value: msg };},
     removeNotices              : function(notices: State['notices']){ return { type: actions.REMOVE_NOTICES, value: notices };},
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
-    addTransfer                : function(address: string, amount: number){ return { type: actions.ADD_TRANSFER, value: {address, amount} };},
-    removeTransfer             : function(address: string, amount: number){ console.log('REMOVE TRANSFER', address, amount); return { type: actions.REMOVE_TRANSFER, value: {address, amount} };},
+    setTransferringFlag        : function(flag: boolean){ return { type: actions.SET_TRANSFERRING_FLAG, value: flag };},
     setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};},
     saveChannelObserverContext : function(context: State['channelObserverContext']){ return {type: actions.SAVE_CHANNEL_OBSERVER_CONTEXT, value: context};}
 };
@@ -165,14 +163,7 @@ export const asyncProviders = {
                 const Watcher = class {
                     private _subscriptionId = null;
                     private unsubscribe = false;
-                    private address: string;
-                    private amount: number;
                     private transactionFinished = 0;
-
-                    constructor(address: string, amount: number){
-                        this.address = address;
-                        this.amount = amount;
-                    }
 
                     get subscriptionId(){
                         return this._subscriptionId;
@@ -187,9 +178,17 @@ export const asyncProviders = {
                     checkIfComplete = (evt: any) => {
                         if('job' in evt && evt.job.Type === 'afterAccountAddBalance' && evt.job.Status === 'done'){
                             this.transactionFinished = Date.now();
+                        }else{
+                            if(['preAccountAddBalanceApprove'
+                               ,'afterAccountAddBalanceApprove'
+                               ,'preAccountAddBalance'
+                               ,'afterAccountAddBalance'].includes(evt.job.Type)
+                            && ['canceled'].includes(evt.jobStatus)){
+                                this.transactionFinished = Date.now();
+                            }
                         }
                         if(this.transactionFinished > 0 && (new Date(evt.object.lastBalanceCheck)).getTime() > this.transactionFinished){
-                            dispatch(handlers.removeTransfer(this.address, this.amount));
+                            dispatch(handlers.setTransferringFlag(false));
                             if(this.subscriptionId){
                                 ws.unsubscribe(this.subscriptionId);
                             }else{
@@ -198,30 +197,22 @@ export const asyncProviders = {
                         }
                     }
                 };
-                const watcher = new Watcher(address, amount);
+                const watcher = new Watcher();
                 watcher.subscriptionId = await ws.subscribe('account', [accountId], watcher.checkIfComplete);
             };
-
-            const includesTransfer = (transferring: {address: string, amount: number}[], address: string, amount: number) =>
-                transferring.some(transfer => transfer.address === address && transfer.amount === amount);
 
             const accounts = await ws.getAccounts();
             dispatch(handlers.updateAccounts(accounts));
 
             const account = accounts.find(account => account.isDefault);
-            const { localSettings, settings, transfers } = getState();
-            console.log('TRANSFER?', transfers, account);
-            if(account && account.ptcBalance !== 0 && autoTransfer && !includesTransfer(transfers, account.ethAddr, account.ptcBalance)){
+            const { localSettings, settings, transferring } = getState();
+            console.log('TRANSFER?', transferring, account);
+            if(account && account.ptcBalance !== 0 && autoTransfer && !transferring){
                 if(localSettings.gas.transfer*settings['eth.default.gasprice'] <= account.ethBalance){
                     console.log('TRANSFER!!!');
-                    try{
-                        dispatch(handlers.addTransfer(account.ethAddr, account.ptcBalance));
-                        await ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice']));
-                        startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
-                    }catch(e){
-                        //
-                        dispatch(handlers.removeTransfer(account.ethAddr, account.ptcBalance));
-                    }
+                    dispatch(handlers.setTransferringFlag(true));
+                    startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
+                    ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice']));
                 }else{
                     dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
                 }
