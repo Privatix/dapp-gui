@@ -54,6 +54,7 @@ export interface LocalSettings {
         level: string;
         console: boolean;
         file: boolean;
+        fileName: string;
     },
     rootpath: string;
 >>>>>>> 1aeb38fc64c065e36f7b870e623fe242282723d1

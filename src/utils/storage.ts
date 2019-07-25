@@ -36,7 +36,7 @@ export const createStorage = () => {
         log.transports.remote.level = false;
         if (settings.log && settings.log.file){
             log.transports.file.level = settings.log.level as log.ILevelOption;
-            log.transports.file.file = `${settings.rootpath}/all.log`;   
+            log.transports.file.file = `${settings.rootpath}/${settings.log.fileName}`;
         }
         if (settings.log && settings.log.console){
             log.transports.console.level = settings.log.level as log.ILevelOption;
