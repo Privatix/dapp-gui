@@ -45,10 +45,7 @@ export interface LocalSettings {
     role: Role;
     timings: {
         updateBalances: number;
-<<<<<<< HEAD
         delayBetweenTransferTokensAndUpdateBalance: number;
-    }
-=======
     },
     log: {
         level: string;
@@ -56,7 +53,6 @@ export interface LocalSettings {
         file: boolean;
     },
     rootpath: string;
->>>>>>> 1aeb38fc64c065e36f7b870e623fe242282723d1
 }
 
 export interface DbSetting {
