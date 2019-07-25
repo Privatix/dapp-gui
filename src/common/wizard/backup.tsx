@@ -97,7 +97,7 @@ class Backup extends React.Component<IProps, IState>{
             if(response.err){
                 throw new Error();
             }
-            history.push(['generateKey', 'simpleMode'].includes(from) ? `/getPrix/${accountId}/simple` : entryPoint);
+            history.push(['generateKey', 'simpleMode'].includes(from) ? `/getPrix/${accountId}` : entryPoint);
         }catch(e){
             notice({level: 'error', header: t('utils/notice:Error!'), msg: t('SomeErrorOccured')});
         }

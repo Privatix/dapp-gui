@@ -844,7 +844,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                                      customClass='addFundsPlusBtn'
                                      modalTitle={t('addFundsModalTitle')}
                                      text={''}
-                                     component={<GetPrix mode={'simple'} entryPoint={'/app'} accountId={account.id} isModal={true} />}
+                                     component={<GetPrix entryPoint={'/app'} accountId={account.id} isModal={true} />}
                         />
                     </div>
 
@@ -864,7 +864,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                                      customClass=''
                                      modalTitle={t('addFundsModalTitle')}
                                      text={t('addFunds')}
-                                     component={<GetPrix mode={'simple'} entryPoint={'/app'} accountId={account.id} isModal={true} />}
+                                     component={<GetPrix entryPoint={'/app'} accountId={account.id} isModal={true} />}
                         /> |&nbsp;
                         <ExternalLink
                             href={'https://help.privatix.network/core-software/withdrawal-funds'}

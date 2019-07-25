@@ -14,7 +14,7 @@ import { PreviousButton, FinishButton, back } from './utils';
 import Spinner from './spinner';
 
 import { State } from 'typings/state';
-import { Mode } from 'typings/mode';
+import { Mode, Role } from 'typings/mode';
 import drawQrCode from 'utils/qrCode';
 
 interface IProps{
@@ -24,7 +24,8 @@ interface IProps{
     history?: any;
     accountId: string;
     entryPoint: string;
-    mode: 'simple' | 'advanced';
+    mode?: State['mode'];
+    role?: State['role'];
     notices?: State['notices'];
     isModal?: boolean;
 }
@@ -55,8 +56,8 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 
     isSimpleMode(){
-        const { mode } = this.props;
-        return mode === 'simple';
+        const { mode, role } = this.props;
+        return mode === 'simple' || (mode === 'wizard' && role === Role.CLIENT);
     }
 
     async componentDidMount(){
@@ -270,4 +271,4 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 }
 
-export default connect((state:State, ownProps: IProps) => Object.assign({}, {ws: state.ws, notices: state.notices}, ownProps))(withRouter(GetPrix));
+export default connect((state:State, ownProps: IProps) => Object.assign({}, {mode: state.mode, role: state.role, ws: state.ws, notices: state.notices}, ownProps))(withRouter(GetPrix));

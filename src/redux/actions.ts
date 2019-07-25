@@ -230,7 +230,7 @@ export const asyncProviders = {
                     return ledger;
                 }, {});
             }else{
-                const offerings = await ws.getAgentOfferings();
+                const offerings = await ws.getAgentOfferings('', ['registered', 'popping_up', 'popped_up', 'removing']);
                 ledger = offerings.items.reduce((ledger: {[key:string]: number}, offering: Offering) => {
                     const address = `0x${offering.agent.toLowerCase()}`;
                     if(!(address in ledger)){
