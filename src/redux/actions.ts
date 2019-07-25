@@ -22,6 +22,7 @@ export const enum actions {
     UPDATE_SERVICE_NAME,
     SET_CHANNEL,
     SET_WS,
+    SET_LOG,
     SET_OFFERINGS_AVAILABILITY,
     INCREMENT_OFFERINGS_AVAILABILITY_COUNTER,
     SET_AUTOTRANSFER,
@@ -45,6 +46,7 @@ const handlers  = {
     setMode                    : function(mode: State['mode']){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channel: State['channel']){ return { type: actions.SET_CHANNEL, value: channel };},
     setWS                      : function(ws: State['ws']){ return { type: actions.SET_WS, value: ws};},
+    setLOG                     : function(log: State['log']){console.log(log); return { type: actions.SET_LOG, value: log};},
     setOfferingsAvailability   : function(offeringsAvailability: State['offeringsAvailability']['statuses'][]){
                                      return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};
                                  },

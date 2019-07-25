@@ -11,6 +11,8 @@ import stopSupervisor from 'utils/stopSupervisor';
 import { WS } from 'utils/ws';
 import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
+import * as log from 'electron-log';
+
 
 const localCache = window.localStorage.getItem('localSettings');
 if(!localCache){
@@ -21,9 +23,27 @@ export const createStorage = () => {
     const storage = createStore(reducers, applyMiddleware(
         thunk as ThunkMiddleware<State, AnyAction> // lets us dispatch() functions
       ));
-
-    const ws = new WS();
+    
+    const ws = new WS(log);
     storage.dispatch(handlers.setWS(ws));
+    storage.dispatch(handlers.setLOG(log));
+
+    (async () => {
+        const settings = await api.settings.getLocal();
+        log.transports.file.level = false;
+        log.transports.console.level = false;
+        log.transports.mainConsole.level = false;
+        log.transports.remote.level = false;
+        if (settings.log && settings.log.file){
+            log.transports.file.level = settings.log.level as log.ILevelOption;
+            log.transports.file.file = `${settings.rootpath}/all.log`;   
+        }
+        if (settings.log && settings.log.console){
+            log.transports.console.level = settings.log.level as log.ILevelOption;
+            log.transports.mainConsole.level = settings.log.level as log.ILevelOption;
+        }
+        
+    })();
 
     (async () => {
         await ws.whenReady();

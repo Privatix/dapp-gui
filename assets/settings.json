@@ -38,5 +38,10 @@
    "timings":{
        "updateBalances": 60000,
        "delayBetweenTransferTokensAndUpdateBalance": 120000
+   },
+   "log": {
+       "level": "info",
+       "console": true,
+       "file": true
    }
 }
