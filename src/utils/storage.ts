@@ -35,9 +35,9 @@ export const createStorage = () => {
         log.transports.mainConsole.level = false;
         log.transports.remote.level = false;
         if (settings.log && settings.log.file){
+            const path = (!settings.log.filePath?settings.rootpath:settings.log.filePath);
             log.transports.file.level = settings.log.level as log.ILevelOption;
-            log.transports.file.file = `${settings.rootpath}/${settings.log.fileName}`;
-
+            log.transports.file.file = `${path}/${settings.log.fileName}`;
             if (settings.log.fileOverwrite){
                 log.transports.file.clear();
             }
