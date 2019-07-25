@@ -82,7 +82,7 @@ ul.default li {
 .statusWrap-on{
     color: #81c868;
 }
-@media only screen and (max-width: 800px) {
+@media only screen and (max-width: 600px) {
     .topPanel li span.balanceText{
         display: none;
     }
