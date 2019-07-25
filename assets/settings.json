@@ -42,6 +42,7 @@
    "log": {
        "level": "info",
        "console": true,
-       "file": true
+       "file": true,
+       "fileName": "dapp-gui.log"
    }
 }
