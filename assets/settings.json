@@ -34,5 +34,10 @@
    },
    "timings":{
        "updateBalances": 60000
+   },
+   "log": {
+       "level": "info",
+       "console": true,
+       "enable": true
    }
 }

@@ -19,6 +19,7 @@ interface State {
     role: Role;
     mode: Mode;
     ws: WS;
+    log: any;
     totalIncome: number;
     offeringsAvailability: {
         counter: number;
@@ -47,6 +48,7 @@ const StateDefault: State = {
     role: null,
     mode: null,
     ws: null,
+    log: null,
     totalIncome: 0,
     offeringsAvailability: {
         counter: 0,

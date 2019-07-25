@@ -43,7 +43,13 @@ export interface LocalSettings {
     role: Role;
     timings: {
         updateBalances: number;
-    }
+    },
+    log: {
+        level: string;
+        console: boolean;
+        enable: boolean;
+    },
+    rootpath: string;
 }
 
 export interface DbSetting {
