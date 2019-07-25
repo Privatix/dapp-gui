@@ -34,13 +34,13 @@ export const createStorage = () => {
         log.transports.console.level = false;
         log.transports.mainConsole.level = false;
         log.transports.remote.level = false;
-        if (settings.log && settings.log.enable){
+        if (settings.log && settings.log.file){
             log.transports.file.level = settings.log.level as log.ILevelOption;
             log.transports.file.file = `${settings.rootpath}/all.log`;   
-            if (settings.log.console){
-                log.transports.console.level = settings.log.level as log.ILevelOption;
-                log.transports.mainConsole.level = settings.log.level as log.ILevelOption;
-            }
+        }
+        if (settings.log && settings.log.console){
+            log.transports.console.level = settings.log.level as log.ILevelOption;
+            log.transports.mainConsole.level = settings.log.level as log.ILevelOption;
         }
         
     })();

@@ -49,7 +49,7 @@ export interface LocalSettings {
     log: {
         level: string;
         console: boolean;
-        enable: boolean;
+        file: boolean;
     },
     rootpath: string;
 }

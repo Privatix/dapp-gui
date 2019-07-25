@@ -41,6 +41,6 @@
    "log": {
        "level": "info",
        "console": true,
-       "enable": true
+       "file": true
    }
 }
