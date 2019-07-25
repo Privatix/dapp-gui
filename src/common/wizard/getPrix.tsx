@@ -61,23 +61,26 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 
     async componentDidMount(){
-        const { ws, accountId, dispatch } = this.props;
+        const { ws, accountId, dispatch, isModal } = this.props;
 
         const account = await ws.getAccount(accountId);
         this.setState({ethAddr: `0x${account.ethAddr}`, accountPSCBalance: account.pscBalance});
         drawQrCode(`0x${account.ethAddr}`);
-        dispatch(handlers.setAutoTransfer(true));
+        if(!isModal){
+            dispatch(handlers.setAutoTransfer(true));
+        }
     }
 
     componentWillUnmount() {
 
-        const { dispatch } = this.props;
+        const { dispatch, isModal } = this.props;
 
         if(this.observerId){
             clearTimeout(this.observerId);
         }
-
-        dispatch(handlers.setAutoTransfer(false));
+        if(!isModal){
+            dispatch(handlers.setAutoTransfer(false));
+        }
     }
 
     private startObserveServiceBalance = async () => {
