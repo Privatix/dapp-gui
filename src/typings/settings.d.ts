@@ -52,6 +52,7 @@ export interface LocalSettings {
         console: boolean;
         file: boolean;
         fileName: string;
+        fileOverwrite: boolean;
     },
     rootpath: string;
 }
