@@ -48,6 +48,7 @@ interface IProps {
     balance: string;
     dispatch?: any;
     channel: ClientChannel;
+    transferring: boolean;
     ip: string;
 }
 
@@ -806,7 +807,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     render(){
 
-        const { t, account } = this.props;
+        const { t, account, transferring } = this.props;
         const { status } = this.state;
 
         return (
@@ -832,7 +833,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                             </div>
                             <div className='SMBalanceRow'>
                                 <div className='text'>{t('Marketplace')} :</div>
-                                <div className='value'>{prix(account.pscBalance)} PRIX</div>
+                                <div className='value'>{transferring ? <span className='lds-dual-ring-small'></span> : null } {prix(account.pscBalance)} PRIX</div>
                             </div>
                             <div className='SMBalanceRow'>
                                 <div className='text'>{t('EscrowLocked')} : </div>
@@ -890,5 +891,6 @@ export default connect((state: State) => {
        ,ip: state.ip
        ,balance: account ? prix(account.pscBalance) : ''
        ,offeringsAvailability: state.offeringsAvailability
+       ,transferring: state.transferring
     };
 })(LightWeightClient);
