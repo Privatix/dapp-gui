@@ -36,6 +36,7 @@
        "progression": 3
    },
    "timings":{
-       "updateBalances": 60000
+       "updateBalances": 60000,
+       "delayBetweenTransferTokensAndUpdateBalance": 120000
    }
 }

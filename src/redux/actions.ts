@@ -154,7 +154,7 @@ export const asyncProviders = {
     },
     updateAccounts: function(){
         return async function(dispatch: any, getState: Function){
-            const { ws, role, autoTransfer } = getState();
+            const { ws, role, autoTransfer, localSettings } = getState();
 
             const startWatchingTransfer = async (accountId: string, address: string, amount: number) => {
 
@@ -185,7 +185,9 @@ export const asyncProviders = {
                                 this.transactionFinished = Date.now();
                             }
                         }
-                        if(this.transactionFinished > 0 && (new Date(evt.object.lastBalanceCheck)).getTime() > this.transactionFinished){
+                        const elapsedTime = (new Date(evt.object.lastBalanceCheck)).getTime() - this.transactionFinished;
+                        if(this.transactionFinished > 0
+                           && elapsedTime > localSettings.timings.delayBetweenTransferTokensAndUpdateBalance){
                             dispatch(handlers.setTransferringFlag(false));
                             if(this.subscriptionId){
                                 ws.unsubscribe(this.subscriptionId);
@@ -203,11 +205,9 @@ export const asyncProviders = {
             dispatch(handlers.updateAccounts(accounts));
 
             const account = accounts.find(account => account.isDefault);
-            const { localSettings, settings, transferring } = getState();
-            console.log('TRANSFER?', transferring, account);
+            const { settings, transferring } = getState();
             if(account && account.ptcBalance !== 0 && autoTransfer && !transferring){
                 if(localSettings.gas.transfer*settings['eth.default.gasprice'] <= account.ethBalance){
-                    console.log('TRANSFER!!!');
                     dispatch(handlers.setTransferringFlag(true));
                     startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
                     ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice']));

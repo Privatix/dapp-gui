@@ -45,6 +45,7 @@ export interface LocalSettings {
     role: Role;
     timings: {
         updateBalances: number;
+        delayBetweenTransferTokensAndUpdateBalance: number;
     }
 }
 
