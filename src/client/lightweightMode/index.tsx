@@ -822,7 +822,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         <div className='SMBalance'>
                             <div className='SMBalanceRow'>
                                 <div className='text'>{t('Account')} :</div>
-                                <div className='value'>{account ? prix(account.ptcBalance) : 0} PRIX | {eth(account.ethBalance)} ETH</div>
+                                <div className='value'>{account ? prix(account.ptcBalance) : 0} PRIX | {account ? eth(account.ethBalance) : 0} ETH</div>
                             </div>
                             <div className='SMBalanceRow'>
                                 <div className='text'>{t('Marketplace')} :</div>
