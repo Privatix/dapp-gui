@@ -242,7 +242,6 @@ export const asyncProviders = {
             };
 
             const accounts = await ws.getAccounts();
-            dispatch(handlers.updateAccounts(accounts));
 
             const account = accounts.find(account => account.isDefault);
             const { settings, transferring } = getState();
