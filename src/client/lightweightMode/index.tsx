@@ -147,7 +147,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     case 'connecting':
                     case 'resuming':
                     case 'disconnecting':
-                    case 'connected':
                         break;
                     default:
                         status = 'suspended';

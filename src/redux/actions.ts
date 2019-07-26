@@ -151,16 +151,11 @@ export const asyncProviders = {
                         getIP();
                     }
                     if(context.connected === false){
+                        context.connected = true;
+                        saveContext(context);
                         notify(i18n.t('client/simpleMode:connectedMsg'));
                     }
-                    context.connected = true;
-                }else{
-                    if(context.connected === true){
-                        notify(i18n.t('client/simpleMode:disconnectedMsg'));
-                    }
-                    context.connected = false;
                 }
-                saveContext(context);
                 if(!channel || channel.id !== channels[0].id){
                     if(context.channelSubscription){
                         ws.unsubscribe(context.channelSubscription);
@@ -169,8 +164,12 @@ export const asyncProviders = {
                     }
                     const channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
                     const { channelObserverContext: updatedContext } = getState();
-                    updatedContext.channelSubscription = channelSubscription;
-                    saveContext(updatedContext);
+                    if(!updatedContext.channelSubscription){
+                        updatedContext.channelSubscription = channelSubscription;
+                        saveContext(updatedContext);
+                    }else{
+                        ws.unsubscribe(channelSubscription);
+                    }
                 }
             }else{
                 dispatch(handlers.setChannel(null));
