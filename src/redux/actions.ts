@@ -219,7 +219,7 @@ export const asyncProviders = {
                                ,'afterAccountAddBalanceApprove'
                                ,'preAccountAddBalance'
                                ,'afterAccountAddBalance'].includes(evt.job.Type)
-                            && ['canceled'].includes(evt.jobStatus)){
+                            && ['failed'].includes(evt.jobStatus)){
                                 this.transactionFinished = Date.now();
                             }
                         }
