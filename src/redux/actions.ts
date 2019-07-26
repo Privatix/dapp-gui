@@ -224,7 +224,10 @@ export const asyncProviders = {
                         }
                         const elapsedTime = (new Date(evt.object.lastBalanceCheck)).getTime() - this.transactionFinished;
                         if(this.transactionFinished > 0
-                           && elapsedTime > localSettings.timings.delayBetweenTransferTokensAndUpdateBalance){
+                           && (elapsedTime > localSettings.timings.delayBetweenTransferTokensAndUpdateBalance
+                               || evt.object.ptcBalance === 0
+                              )
+                          ){
                             dispatch(handlers.setTransferringFlag(false));
                             if(this.subscriptionId){
                                 ws.unsubscribe(this.subscriptionId);
