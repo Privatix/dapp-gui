@@ -14,6 +14,10 @@ let smartExit = false;
 let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
   settings.rootpath = __dirname;
+  if (settings.log && settings.log.filePath){
+    let userHome = app.getPath('home');
+    settings.log.filePath = settings.log.filePath.replace(/(\~\/|\$HOME)/, userHome);
+  }
   const announce = function(announcement: any){
       win.webContents.send('releases', announcement);
   };
