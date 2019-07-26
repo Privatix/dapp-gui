@@ -2,6 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import SelectCountry from '../selectCountry/';
+import DotProgress from 'common/progressBars/dotProgress';
 
 import prix from 'utils/prix';
 import mb from 'utils/mb';
@@ -113,7 +114,7 @@ export default class Connected extends React.Component<IProps, IState> {
                         disabled={disconnecting}
                         className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'
                 >
-                    {t('Disconnect')}
+                    {disconnecting ? <>{t('Disconnecting')} <DotProgress /></> : t('Disconnect') }
                 </button>
                 <ul className='list-inline m-t-15 spacing'>
                     <li>
