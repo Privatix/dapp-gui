@@ -73,11 +73,47 @@ export const asyncProviders = {
     observeChannel: function(){
 
         const refresh = async function(dispatch: any, getState: Function, evt?: any){
-            if(evt){
-                console.log('CHANNEL EVENT!!!', evt);
-            }
-            const { channel, ws, ip } = getState();
+            const startWatchingClosing = async (channelId: string) => {
 
+                const { ws } = getState();
+                const Watcher = class {
+                    private _subscriptionId = null;
+                    private unsubscribe = false;
+
+                    get subscriptionId(){
+                        return this._subscriptionId;
+                    }
+
+                    set subscriptionId(id: string){
+                        this._subscriptionId = id;
+                        if(this.unsubscribe){
+                            ws.unsubscribe(id);
+                        }
+                    }
+                    checkIfComplete = (evt: any) => {
+                        if(evt.object.serviceStatus === 'terminated' && evt.object.channelStatus === 'active'){
+                            ws.changeChannelStatus(evt.object.id, 'close');
+                            if(this.subscriptionId){
+                                ws.unsubscribe(this.subscriptionId);
+                            }else{
+                                this.unsubscribe = true;
+                            }
+                        }
+                    }
+                };
+                const watcher = new Watcher();
+                watcher.subscriptionId = await ws.subscribe('channel', [channelId], watcher.checkIfComplete);
+            };
+            const { channel, ws, ip, mode } = getState();
+            if(evt){
+
+                if(evt.object.serviceStatus === 'terminating' && mode === Mode.SIMPLE){
+                    const usage = await ws.getChannelsUsage([evt.object.id]);
+                    if(usage[evt.object.id] && usage[evt.object.id].current === 0){
+                        startWatchingClosing(evt.object.id);
+                    }
+                }
+            }
             const saveContext = (context: State['channelObserverContext']) => {
                 dispatch(handlers.saveChannelObserverContext(Object.assign({}, context)));
             };

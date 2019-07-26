@@ -274,12 +274,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     }
                     break;
                 default:
-                    if(this.state.channel){
-
-                        if(this.state.usage && this.state.usage.current === 0){
-                            await ws.changeChannelStatus(this.state.channel.id, 'close');
-                        }
-                    }
                     this.setState({status: 'disconnected', channel: null, usage: null});
                     break;
             }
