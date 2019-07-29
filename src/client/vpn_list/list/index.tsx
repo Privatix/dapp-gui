@@ -178,7 +178,7 @@ class VPNList extends React.Component<IProps, IState> {
             try {
                 const offering = await ws.getObjectByHash('offering', filter.offeringHash.replace(/^0x/, ''));
                 this.setState({
-                    rawOfferings: [{offering: offering.items[0], rating: 0}],
+                    rawOfferings: [{offering, rating: 0}],
                     totalItems: 1
                 });
             } catch (e) {

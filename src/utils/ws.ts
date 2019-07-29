@@ -419,8 +419,8 @@ export class WS {
         return this.send('ui_getClientOfferingsFilterParams') as Promise<GetClientOfferingsFilterParamsResponse>;
     }
 
-    getObjectByHash(type: 'offering', hash: string) : Promise<AgentOfferingResponse> {
-        return this.send('ui_getObjectByHash', [type, hash]) as Promise<AgentOfferingResponse>;
+    getObjectByHash(type: 'offering', hash: string) : Promise<Offering> {
+        return this.send('ui_getObjectByHash', [type, hash]) as Promise<Offering>;
     }
 
     pingOfferings(offeringsIds: Array<string>) {
