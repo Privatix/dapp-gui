@@ -62,7 +62,7 @@ export const createStorage = () => {
             const logpath = (!settings.log.filePath?settings.rootpath:settings.log.filePath);
             if (!fs.existsSync(logpath)){
                 try {
-                    fs.mkdirSync(logpath, { recursive: true });
+                    fs.mkdirSync(logpath, { recursive: true } as any);
                 }catch(e){
                     console.log('Can not write to dir'+logpath,e);
                     return;
