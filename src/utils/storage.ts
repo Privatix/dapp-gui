@@ -1,3 +1,5 @@
+import * as path from 'path';
+import * as fs from 'fs';
 import * as api from './api';
 import { createStore, applyMiddleware, AnyAction } from 'redux';
 import { default as thunk, ThunkMiddleware } from 'redux-thunk';
@@ -19,6 +21,24 @@ if(!localCache){
     window.localStorage.setItem('localSettings', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en', supervisorEndpoint: 'http://localhost:7777'}));
 }
 
+
+const canReadAndWrite = (targetPath) => {
+    return new Promise((resolve, reject) => {
+        if (fs.existsSync(targetPath)){
+            fs.access(targetPath, fs.constants.W_OK | fs.constants.R_OK, (err) => {
+                if (err) { reject(err); return; }
+                resolve(true);
+            });
+        }else{
+            const dir = path.dirname(targetPath);
+            fs.access(dir, fs.constants.W_OK | fs.constants.R_OK, (err) => {
+                if (err) { reject(err); return; }
+                resolve(false);
+            });
+        }
+    });
+};
+
 export const createStorage = () => {
     const storage = createStore(reducers, applyMiddleware(
         thunk as ThunkMiddleware<State, AnyAction> // lets us dispatch() functions
@@ -34,19 +54,29 @@ export const createStorage = () => {
         log.transports.console.level = false;
         log.transports.mainConsole.level = false;
         log.transports.remote.level = false;
-        if (settings.log && settings.log.file){
-            const path = (!settings.log.filePath?settings.rootpath:settings.log.filePath);
-            log.transports.file.level = settings.log.level as log.ILevelOption;
-            log.transports.file.file = `${path}/${settings.log.fileName}`;
-            if (settings.log.fileOverwrite){
-                log.transports.file.clear();
-            }
-        }
         if (settings.log && settings.log.console){
             log.transports.console.level = settings.log.level as log.ILevelOption;
             log.transports.mainConsole.level = settings.log.level as log.ILevelOption;
         }
-        
+        if (settings.log && settings.log.file){
+            const logpath = (!settings.log.filePath?settings.rootpath:settings.log.filePath);
+            if (!fs.existsSync(logpath)){
+                try {
+                    fs.mkdirSync(logpath, { recursive: true });
+                }catch(e){
+                    console.log('Can not write to dir'+logpath,e);
+                    return;
+                }
+            }
+            const filePath = `${logpath}${path.sep}${settings.log.fileName}`;
+            canReadAndWrite(filePath).then(()=> {
+                log.transports.file.level = settings.log.level as log.ILevelOption;
+                log.transports.file.file = filePath;
+                if (settings.log.fileOverwrite && fs.existsSync(filePath)){
+                    log.transports.file.clear();
+                }
+            });
+        }
     })();
 
     (async () => {
