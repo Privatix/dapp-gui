@@ -379,6 +379,7 @@ export const asyncProviders = {
 
             dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
             dispatch(handlers.setOfferingsAvailability(offeringsIds.map(id => ({[id]: undefined}))));
+            dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
 
             offeringsIds.forEach((offeringId) => {
                 ws.pingOfferings([offeringId])
