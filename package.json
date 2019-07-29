@@ -67,7 +67,7 @@
         "node-loader": "^0.6.0",
         "popper.js": "^1.14.3",
         "qrcode": "^1.3.3",
-        "rc-slider": "8.6.3",
+        "rc-slider": "8.6.13",
         "react": "^16.7.0",
         "react-awesome-modal-perfected": "^1.1.1",
         "react-copy-to-clipboard": "^5.0.1",
