@@ -4,6 +4,7 @@ export interface GasConsumption {
     acceptOffering: number;
     createOffering: number;
     transfer: number;
+    returnBalance: number;
     increaseDeposit: number;
     removeOffering: number;
     popupOffering: number;

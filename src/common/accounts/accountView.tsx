@@ -91,7 +91,8 @@ class AccountView extends React.Component<IProps, IState> {
             msg += t('ErrorNotEnoughServiceFunds');
         }
 
-        if(localSettings.gas.transfer*gasPrice > account.ethBalance) {
+        const transactionCost = (destination === 'psc' ? localSettings.gas.transfer : localSettings.gas.returnBalance)*gasPrice;
+        if(transactionCost > account.ethBalance) {
             err = true;
             msg += t('ErrorNotEnoughPublishFunds');
         }
