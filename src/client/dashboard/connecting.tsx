@@ -48,6 +48,7 @@ class Connecting extends React.Component<any, any>{
     subscription: String;
     handler = 0;
     mounted = false;
+    resuming = false;
 
     constructor(props:any) {
         super(props);
@@ -81,7 +82,10 @@ class Connecting extends React.Component<any, any>{
 
     connectHandler(evt: any) {
         evt.preventDefault();
-        this.props.ws.changeChannelStatus(this.state.channel.id, 'resume');
+        if(!this.resuming){
+            this.resuming = true;
+            this.props.ws.changeChannelStatus(this.state.channel.id, 'resume');
+        }
     }
 
     refresh = async () => {
@@ -107,6 +111,7 @@ class Connecting extends React.Component<any, any>{
             const channel = channels[0];
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
+                    this.resuming = false;
                     const offering = await ws.getOffering(channel.offering);
                     this.setState({status: 'active', channel, offering, pendingTimeCounter: 0});
                     break;
