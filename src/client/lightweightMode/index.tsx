@@ -811,6 +811,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return <ExitScreen />;
         }
 
+        if(!account){
+            return null;
+        }
+
         return (
             <>
                 <Noticer />
@@ -830,15 +834,15 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         <div className='SMBalance'>
                             <div className='SMBalanceRow'>
                                 <div className='text'>{t('Account')} :</div>
-                                <div className='value'>{account ? prix(account.ptcBalance) : 0} PRIX | {account ? eth(account.ethBalance) : 0} ETH</div>
+                                <div className='value'>{prix(account.ptcBalance)} PRIX | {eth(account.ethBalance)} ETH</div>
                             </div>
                             <div className='SMBalanceRow'>
                                 <div className='text'>{t('Marketplace')} :</div>
-                                <div className='value'>{transferring ? <span className='lds-dual-ring-small'></span> : null } {account ? prix(account.pscBalance) : 0} PRIX</div>
+                                <div className='value'>{transferring ? <span className='lds-dual-ring-small'></span> : null } {prix(account.pscBalance)} PRIX</div>
                             </div>
                             <div className='SMBalanceRow'>
                                 <div className='text'>{t('EscrowLocked')} : </div>
-                                <div className='value'>{account ? prix(account.escrow) : 0} PRIX</div>
+                                <div className='value'>{prix(account.escrow)} PRIX</div>
                             </div>
                         </div>
 
