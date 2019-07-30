@@ -29,6 +29,7 @@ interface State {
     transferring: boolean;
     notices: {code: number, notice: Notice}[];
     exit: boolean;
+    stoppingSupervisor: boolean;
     ip: string;
     channelObserverContext: {
         createChannelSubscription: string;
@@ -58,6 +59,7 @@ const StateDefault: State = {
     transferring: false,
     notices: [],
     exit: false,
+    stoppingSupervisor: false,
     ip: '',
     channelObserverContext: {
         createChannelSubscription: null,

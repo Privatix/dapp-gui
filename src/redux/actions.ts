@@ -29,6 +29,7 @@ export const enum actions {
     ADD_NOTICE,
     REMOVE_NOTICES,
     SET_EXIT,
+    SET_STOPPING_SUPERVISOR,
     SET_TRANSFERRING_FLAG,
     SET_IP,
     SAVE_CHANNEL_OBSERVER_CONTEXT
@@ -55,6 +56,7 @@ const handlers  = {
     addNotice                  : function(msg: {code: number,  notice: Notice}){ return { type: actions.ADD_NOTICE, value: msg };},
     removeNotices              : function(notices: State['notices']){ return { type: actions.REMOVE_NOTICES, value: notices };},
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
+    setStoppingSupervisor      : function(flag: boolean){ return { type: actions.SET_STOPPING_SUPERVISOR, value: flag };},
     setTransferringFlag        : function(flag: boolean){ return { type: actions.SET_TRANSFERRING_FLAG, value: flag };},
     setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};},
     saveChannelObserverContext : function(context: State['channelObserverContext']){ return {type: actions.SAVE_CHANNEL_OBSERVER_CONTEXT, value: context};}

@@ -19,7 +19,8 @@ import { Offering, ClientOfferingItem } from 'typings/offerings';
 
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 import ExternalLink from 'common/etc/externalLink';
-import ExitNotice from 'client/exitNotice';
+import ExitNotice from 'client/exit/notice';
+import ExitScreen from 'client/exit/';
 
 import './lightweightMode.css';
 import ModalWindow from 'common/modalWindow';
@@ -50,6 +51,7 @@ interface IProps {
     channel: ClientChannel;
     transferring: boolean;
     ip: string;
+    stoppingSupervisor: boolean;
 }
 
 interface SelectItem {
@@ -96,15 +98,16 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     componentDidMount() {
 
-        const { dispatch, ws } = this.props;
+        const { stoppingSupervisor, dispatch, ws } = this.props;
 
         this.mounted = true;
         this.refresh();
 
         dispatch(handlers.setAutoTransfer(true));
         dispatch(asyncProviders.updateAccounts());
-
-        ws.setGUISettings({mode: 'simple'});
+        if(!stoppingSupervisor){
+            ws.setGUISettings({mode: 'simple'});
+        }
     }
 
     componentWillUnmount(){
@@ -800,8 +803,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     render(){
 
-        const { t, account, transferring } = this.props;
+        const { t, account, transferring, stoppingSupervisor } = this.props;
         const { status } = this.state;
+
+        if(stoppingSupervisor){
+            return <ExitScreen />;
+        }
 
         return (
             <>
@@ -885,5 +892,6 @@ export default connect((state: State) => {
        ,balance: account ? prix(account.pscBalance) : ''
        ,offeringsAvailability: state.offeringsAvailability
        ,transferring: state.transferring
+       ,stoppingSupervisor: state.stoppingSupervisor
     };
 })(LightWeightClient);

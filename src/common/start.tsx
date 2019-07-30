@@ -86,11 +86,11 @@ export default class Start extends React.Component<{}, IState> {
         }
 
         const { role, supervisorEndpoint } = await api.settings.getLocal();
+        const storage = createStorage();
         if(role === Role.CLIENT){
             try{
                 const res = await fetch(`${supervisorEndpoint}/start`);
                 if(res.status === 200){
-                    const storage = createStorage();
                     const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
                     storage.dispatch(handlers.setMode(localSettings.mode ? localSettings.mode : 'simple'));
                     this.setState({started: true, storage});
@@ -101,7 +101,6 @@ export default class Start extends React.Component<{}, IState> {
                 setTimeout(this.startWatchingSupervisor, 1000);
             }
         }else{
-            const storage = createStorage();
             this.setState({started: true, storage});
         }
     }

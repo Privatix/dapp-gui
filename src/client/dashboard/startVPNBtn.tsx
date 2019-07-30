@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 
+import ExitTrigger from 'client/exit/trigger';
+
 import { State } from 'typings/state';
 
 @translate('client/dashboard/start')
@@ -39,6 +41,7 @@ class StartVPN extends React.Component <any,any> {
         return <div className='container-fluid'>
             <div className='row'>
                 <div className='col-sm-12 m-t-20'>
+                    <ExitTrigger />
                     <button type='button'
                             className='btn btn-default btn-custom btn-lg w-lg waves-effect waves-light'
                             onClick={this.startVPNBtnHandler}>

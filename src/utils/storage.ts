@@ -150,22 +150,30 @@ export const createStorage = () => {
         }
     });
 
-    api.on('exit', async ()=>{
+    api.on('exit', async () => {
 
         const { ws, role } = storage.getState();
         if(role === Role.CLIENT){
-            const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);
+            console.log(ws, ws.passwordIsEntered);
+            if(ws && ws.passwordIsEntered){
+                await ws.whenAuthorized();
+                const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);
 
-            if(channels.items.length){
-                storage.dispatch(handlers.setExit(true));
+                if(channels.items.length){
+                    storage.dispatch(handlers.setExit(true));
+                }else{
+                    storage.dispatch(handlers.setStoppingSupervisor(true));
+                    await stopSupervisor();
+                    api.exit();
+                }
             }else{
+                storage.dispatch(handlers.setStoppingSupervisor(true));
                 await stopSupervisor();
                 api.exit();
             }
         }else{
             api.exit();
         }
-
     });
 
     const refreshAccounts = function(){

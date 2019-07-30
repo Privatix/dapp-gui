@@ -118,6 +118,9 @@ export class WS {
         return this.authorized;
     }
 
+    get passwordIsEntered(){
+        return this.pwd && this.pwd !== '';
+    }
     private async restoreSubscriptions(){
         const toRestore = WS.subscribeRequests;
         WS.subscribeRequests = {};

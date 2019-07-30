@@ -72,6 +72,7 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         win.setSize(width, height);
         event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
     }else if(req.endpoint === '/exit'){
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
         smartExit = false;
         win = null;
         app.quit();

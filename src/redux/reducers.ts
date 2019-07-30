@@ -35,6 +35,7 @@ export default function reducer(state: State = StateDefault, action: Action = {t
                                                                                             ,{notices: state.notices.filter(noticeItem => !action.value.includes(noticeItem))}
                                                                                             ),
         [actions.SET_EXIT]                      : (state: State, action: Action) => _.assign({}, state, {exit: action.value}),
+        [actions.SET_STOPPING_SUPERVISOR]       : (state: State, action: Action) => _.assign({}, state, {stoppingSupervisor: action.value}),
         [actions.SET_TRANSFERRING_FLAG]         : (state: State, action: Action) => _.assign({}, state, {transferring: action.value}),
         [actions.SET_IP]                        : (state: State, action: Action) => _.assign({}, state, {ip: action.value}),
         [actions.SAVE_CHANNEL_OBSERVER_CONTEXT] : (state: State, action: Action) => _.assign({}, state, {channelObserverContext: action.value})
