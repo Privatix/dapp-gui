@@ -75,11 +75,12 @@ class Login extends React.Component<IProps, IState> {
                     await ws.setPassword(pwd);
                     // TODO notice if server returns error (not implemented on dappctrl yet)
                     registerBugsnag(ws);
-                    this.props.history.push(entryPoint);
                 } catch(e) {
                     notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
                     this.submitted = false;
+                    return;
                 }
+                this.props.history.push(entryPoint);
             } else {
                 // TODO
             }
