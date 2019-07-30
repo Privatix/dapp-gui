@@ -101,11 +101,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const { stoppingSupervisor, dispatch, ws } = this.props;
 
         this.mounted = true;
-        this.refresh();
 
-        dispatch(handlers.setAutoTransfer(true));
-        dispatch(asyncProviders.updateAccounts());
         if(!stoppingSupervisor){
+            this.refresh();
+
+            dispatch(handlers.setAutoTransfer(true));
+            dispatch(asyncProviders.updateAccounts());
             ws.setGUISettings({mode: 'simple'});
         }
     }
