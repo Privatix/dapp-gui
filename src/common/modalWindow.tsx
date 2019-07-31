@@ -5,6 +5,7 @@ import { isNotice } from 'utils/notice';
 
 interface IProps {
     customClass: string;
+    wrapClass?: string;
     modalTitle: string;
     text: string;
     visible?: boolean;
@@ -24,6 +25,7 @@ interface IState {
 export default class ModalWindow extends React.Component<IProps, IState> {
 
     private content = React.createRef<HTMLDivElement>();
+    private mounted = false;
 
     constructor(props: IProps) {
 
@@ -35,6 +37,15 @@ export default class ModalWindow extends React.Component<IProps, IState> {
             component: props.component,
             contentChanged: false
         };
+    }
+
+    componentDidMount(){
+        this.mounted = true;
+    }
+
+    componentWillUnmount(){
+        this.mounted = false;
+        document.body.classList.remove('modal-open');
     }
 
     isNotTheCase(element: any){
@@ -68,20 +79,20 @@ export default class ModalWindow extends React.Component<IProps, IState> {
         document.removeEventListener('click', this.closeModalTop);
 
         const { component, modalTitle } = this.props;
-        this.setState({
-            visible: false,
-            component,
-            modalTitle
-        });
-    }
-
-    componentWillUnmount(){
-        document.body.classList.remove('modal-open');
+        if(this.mounted){
+            this.setState({
+                visible: false,
+                component,
+                modalTitle
+            });
+        }
     }
 
     changeContent = (modalTitle: string, component: any) => {
         const props = Object.assign({}, this.state.props, {modalTitle, component});
-        this.setState({props, component, modalTitle, contentChanged: true});
+        if(this.mounted){
+            this.setState({props, component, modalTitle, contentChanged: true});
+        }
     }
 
     static getDerivedStateFromProps(props: any, state: any){
@@ -93,8 +104,10 @@ export default class ModalWindow extends React.Component<IProps, IState> {
 
     showModal = (event: any) => {
         event.preventDefault();
-        this.setState({visible: true});
-        document.addEventListener('click', this.closeModalTop);
+        if(this.mounted){
+            this.setState({visible: true});
+            document.addEventListener('click', this.closeModalTop);
+        }
 
     }
 
@@ -140,7 +153,7 @@ export default class ModalWindow extends React.Component<IProps, IState> {
             <CopyToClipboard text={props.text} />;
 
         return (
-            <div>
+            <div className={props.wrapClass ? props.wrapClass : ''}>
                 <a href='#' onClick={this.showModal} className={props.customClass} title={props.text}>{props.text}</a>
                 {copyToClipboard}
                 {content}

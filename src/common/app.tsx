@@ -12,7 +12,6 @@ import Settings from './settings/';
 import Wizard from './wizard/';
 
 import Main from 'agent/main/';
-import Products from 'agent/products/';
 import Offerings from 'agent/offerings/';
 import ChannelsList from 'agent/channels/channelsList';
 import ChannelsByStatus from 'agent/channels/channelsByStatus';
@@ -25,7 +24,7 @@ import ClientDashboardConnecting from 'client/dashboard/connecting';
 import VPNList from 'client/vpn_list/list/';
 import AcceptOffering from 'client/vpn_list/acceptOffering';
 import ClientHistory from 'client/vpn_list/history';
-
+import ExitNotice from 'client/exit/notice';
 
 import Logs from 'common/logs/logsList';
 
@@ -45,9 +44,8 @@ class App extends React.Component<IProps, {}> {
     render(){
 
         const { role, mode } = this.props;
-
         if(role === Role.CLIENT && mode === Mode.SIMPLE){
-            return <LightClient />;
+             return <LightClient />;
         }
 
         const app = (
@@ -55,12 +53,12 @@ class App extends React.Component<IProps, {}> {
                 <div id='wrapper'>
                     <Header />
                     <Navigation />
+                    {role === Role.CLIENT ? <ExitNotice /> : null }
                     <div className='content-page'>
                         <div className='content'>
                             <Switch>
                                 <Route exact path='/' render={(props: any) => role === Role.CLIENT ? <ClientDashboardStart /> : <Main /> } />
                                 <Route path='/settings' component={Settings} />
-                                <Route path='/products' render={() => <Products />} />
                                 <Route path='/accounts' component={AccountsList} />
                                 <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} statuses={[]} />} />
                                 <Route path='/offeringsByStatus/:page' render={(props: any) => <Offerings

@@ -27,6 +27,7 @@ interface IProps {
 class Offerings extends React.Component<IProps, any>{
 
     private subscribes = [];
+    private mounted = false;
 
     constructor(props: IProps){
         super(props);
@@ -36,6 +37,7 @@ class Offerings extends React.Component<IProps, any>{
     }
 
     componentDidMount(){
+        this.mounted = true;
         this.refresh();
     }
 
@@ -46,6 +48,7 @@ class Offerings extends React.Component<IProps, any>{
     }
 
     componentWillUnmount(){
+        this.mounted = false;
         this.unsubscribe();
     }
 
@@ -53,12 +56,17 @@ class Offerings extends React.Component<IProps, any>{
 
         const { ws } = this.props;
 
-        await Promise.all(this.subscribes.map(subscribeId => ws.unsubscribe(subscribeId)));
+        const subscribes = this.subscribes;
         this.subscribes = [];
+        await Promise.all(subscribes.map(subscribeId => subscribeId && ws.unsubscribe(subscribeId)));
 
     }
 
     refresh = async () => {
+
+        if(!this.mounted){
+            return;
+        }
 
         const { ws, product, products, statuses } = this.props;
         const productId = product === 'all' ? '' : product;
@@ -71,14 +79,32 @@ class Offerings extends React.Component<IProps, any>{
         }, {});
 
         const offerings = offerings_wo_products.items.map(offering => Object.assign(offering, {productName: resolveTable[offering.product]}));
+        if(this.mounted){
+            this.setState({offerings});
+        }
+        // await this.unsubscribe();
+        if(!this.subscribes[0]){
+            const subscribeId = await ws.subscribe('channel', ['agentAfterChannelCreate'], this.refresh); /* available supply */
+            if(!this.subscribes[0]){
+                this.subscribes[0] = subscribeId;
+            }else{
+                ws.unsubscribe(subscribeId);
+            }
+        }
+        if(this.subscribes[1]){
+            ws.unsubscribe(this.subscribes[1]);
+            this.subscribes[1] = null;
+        }
+        const subscribeId = await ws.subscribe('offering', ['agentPreOfferingMsgBCPublish', ...offerings.map(offering => offering.id)], this.refresh);
+        if(!this.subscribes[1]){
+            this.subscribes[1] = subscribeId;
+        }else{
+            ws.unsubscribe(subscribeId);
+        }
 
-        await this.unsubscribe();
-        this.subscribes = await Promise.all([ws.subscribe('channel', ['agentAfterChannelCreate'], this.refresh), /* available supply */
-                                             ws.subscribe('offering', offerings.map(offering => offering.id), this.refresh),
-                                             ws.subscribe('offering', ['agentPreOfferingMsgBCPublish'], this.refresh), /* new offering */
-                                            ]);
-
-        this.setState({offerings});
+        if(!this.mounted){
+            this.unsubscribe();
+        }
     }
 
     render() {

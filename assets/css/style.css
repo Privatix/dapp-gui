@@ -1633,7 +1633,8 @@ body.fixed-left .side-menu.left {
   color: #5fbeaa !important;
 }
 
-#sidebar-menu > ul > li > a {
+#sidebar-menu > ul > li > a,
+#sidebar-menu > ul > li > div > button {
   color: #36404a;
   display: block;
   padding: 12px 20px;
@@ -1641,12 +1642,14 @@ body.fixed-left .side-menu.left {
   border-left: 3px solid #ffffff;
 }
 
-#sidebar-menu > ul > li > a:hover {
+#sidebar-menu > ul > li > a:hover,
+#sidebar-menu > ul > li > div > button:hover {
   color: #5fbeaa;
   text-decoration: none;
 }
 
-#sidebar-menu > ul > li > a > span {
+#sidebar-menu > ul > li > a > span,
+#sidebar-menu > ul > li > div > button > span {
   vertical-align: middle;
 }
 
@@ -1681,7 +1684,8 @@ body.fixed-left .side-menu.left {
   transform: rotate(90deg);
 }
 
-#sidebar-menu ul li a i {
+#sidebar-menu ul li a i,
+#sidebar-menu ul li button i {
   display: inline-block;
   font-size: 16px;
   line-height: 17px;
@@ -1692,19 +1696,26 @@ body.fixed-left .side-menu.left {
   width: 20px;
 }
 
-#sidebar-menu ul li a i.md {
+#sidebar-menu ul li a i.md,
+#sidebar-menu ul li button i.md {
   font-size: 18px;
 }
 
-#sidebar-menu > ul > li > a > i.i-right {
+#sidebar-menu > ul > li > a > i.i-right,
+#sidebar-menu > ul > li > div > button > i.i-right {
   float: right;
   margin: 3px 0 0 0;
 }
 
-#sidebar-menu > ul > li > a.active {
+#sidebar-menu > ul > li > a.active,
+#sidebar-menu > ul > li > div > button.active {
   background: #f4f8fb !important;
   border-left: 3px solid #5fbeaa;
   color: #5fbeaa !important;
+}
+
+#sidebar-menu > ul >li.separator{
+  border-top: 1px solid #ebeff2;
 }
 
 .menu-title {
@@ -1721,7 +1732,8 @@ body.fixed-left .side-menu.left {
   text-align: center;
 }
 
-.side-menu-sm #sidebar-menu > ul > li > a > i {
+.side-menu-sm #sidebar-menu > ul > li > a > i,
+.side-menu-sm #sidebar-menu > ul > li > div > button > i {
   display: block;
   font-size: 18px;
   line-height: 24px;
@@ -1820,7 +1832,8 @@ body.fixed-left .side-menu.left {
   white-space: nowrap;
 }
 
-#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > a {
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > a,
+#wrapper.enlarged .left.side-menu #sidebar-menu ul > li:hover > div > button {
   position: relative;
   width: 260px;
   background: #f4f8fb;
@@ -7500,6 +7513,30 @@ div.hopscotch-bubble .hopscotch-bubble-arrow-container.down .hopscotch-bubble-ar
   border: 1px dashed rgba(152, 166, 173, 0.5) !important;
   background-color: rgba(152, 166, 173, 0.2) !important;
   padding: 20px;
+}
+
+.accountQrCodeBl{
+  justify-content: center;
+  display: flex;
+}
+
+.addFundsPlusBtnBl{
+  position: absolute;
+  top: 5px;
+  right: -30px;
+}
+.addFundsPlusBtn{
+  width: 24px;
+  height: 24px;
+  display: block;
+  background: url('../images/plus.png') no-repeat;
+  background-size: 24px;
+}
+
+.startingServiceWrap{
+  height: 100vh;
+  display: flex;
+  align-items: center;
 }
 
 @media only screen and (max-width: 6000px) and (min-width: 700px) {

@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 import { registerBugsnag } from 'utils/bugsnag';
 import { WS } from 'utils/ws';
 import {default as notice, clearNotices } from 'utils/notice';
+import HintComponent from 'common/hintComponent';
 import { translate } from 'react-i18next';
 import {State} from 'typings/state';
 
@@ -74,11 +75,12 @@ class Login extends React.Component<IProps, IState> {
                     await ws.setPassword(pwd);
                     // TODO notice if server returns error (not implemented on dappctrl yet)
                     registerBugsnag(ws);
-                    this.props.history.push(entryPoint);
                 } catch(e) {
                     notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('login:AccessDenied')});
                     this.submitted = false;
+                    return;
                 }
+                this.props.history.push(entryPoint);
             } else {
                 // TODO
             }
@@ -114,6 +116,10 @@ class Login extends React.Component<IProps, IState> {
                 <h4 className='text-center'> {t('LoginTo')} <strong className='text-custom'>Privatix</strong></h4>
             </div>
             <div className='p-20'>
+                <div>
+                    <HintComponent msg={<i>{t('PasswordHint1')}<br />{t('PasswordHint2')}<br />{t('PasswordHint3')}<br />{t('PasswordHint4')}</i>} />
+                </div>
+
                 <form className='form-horizontal m-t-20' onSubmit={this.onSubmit.bind(this)}>
                     <div className='form-group'>
                         <div className='col-12'>

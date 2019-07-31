@@ -5,7 +5,6 @@ import { translate } from 'react-i18next';
 
 import {asyncProviders} from 'redux/actions';
 
-import { WS } from 'utils/ws';
 import {State} from 'typings/state';
 import {Offering} from 'typings/offerings';
 
@@ -20,10 +19,12 @@ interface OwnProps {
 interface Props extends OwnProps {
     lastProcessedBlock: number;
     removePeriod: number;
-    gasPrice: string;
+    gasPrice: number;
+    localSettings: State['localSettings'];
+    accounts: State['accounts'];
     dispatch: Dispatch<any>;
     t: any;
-    ws: WS;
+    ws: State['ws'];
 }
 
 const translated = translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice']);
@@ -44,12 +45,17 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
     removeOffering = async () => {
 
-        const { closeModal, t, ws, offering, removePeriod, gasPrice } = this.props;
+        const { closeModal, t, ws, offering, removePeriod, gasPrice, localSettings, accounts } = this.props;
+        const account = accounts.find(account => account.isDefault);
 
+        if(account.ethBalance < localSettings.gas.removeOffering*gasPrice){
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('ErrorNotEnoughPublishFunds')});
+            return;
+        }
         const removePeriodMinutes = Math.floor(removePeriod/4);
 
         try {
-            await ws.changeOfferingStatus(offering.id, 'deactivate', parseInt(gasPrice, 10));
+            await ws.changeOfferingStatus(offering.id, 'deactivate', gasPrice);
             notice({
                 level: 'info',
                 header: t('utils/notice:Congratulations!'),
@@ -115,13 +121,15 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps) => {
-    const settings = state.settings;
+    const {ws, settings, localSettings, accounts } = state;
     return Object.assign({},
         {
-            ws: state.ws
+            ws
            ,lastProcessedBlock: settings['eth.event.lastProcessedBlock']
            ,removePeriod: settings['psc.periods.remove']
-           ,gasPrice: settings['eth.default.gasprice']
+           ,gasPrice: parseInt(settings['eth.default.gasprice'], 10)
+           ,localSettings
+           ,accounts
         },
         ownProps
     );

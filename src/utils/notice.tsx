@@ -1,7 +1,7 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-interface Notice {
+export interface Notice {
     level: 'info' | 'warning' | 'error';
     header?: string;
     msg: string|JSX.Element;

@@ -1,18 +1,24 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
+import { asyncProviders } from 'redux/actions';
+import { Dispatch } from 'redux';
 import { translate, Trans } from 'react-i18next';
-import {Role} from 'typings/mode';
+import {Mode, Role} from 'typings/mode';
 import {State} from 'typings/state';
 import Submenu from './submenu';
 
 import './navigation.css';
+import ExternalLink from 'common/etc/externalLink';
+import NetworkAndVersion from 'common/networkAndVersion';
 
 interface Props {
     role: Role;
+    mode: Mode;
     t: any;
     serviceName: string;
     location: any;
+    setSimpleMode?(): void;
 }
 
 @translate(['navigation'])
@@ -85,12 +91,43 @@ class Navigation extends React.Component<Props, any> {
         this.setState({submenu: false, activeSub: null});
     }
 
+    setLighweightMode = (evt:any) => {
+        const { setSimpleMode } = this.props;
+        evt.preventDefault();
+        setSimpleMode();
+    }
+
     render() {
         const { t, role, serviceName, location } = this.props;
         const { activeSub } = this.state;
 
         const headerNavigationItems = ['/accounts', '/settings'];
         const useSub = headerNavigationItems.includes(location.pathname) ? null : activeSub;
+
+        const commonLinks = <>
+            <li onClick={this.handleClickFalse} className=''>
+                <NavLink exact to='/logs' activeClassName='active' className='waves-effect'>
+                    <i className='dripicons-blog'></i><span>{t('Logs')}</span>
+                </NavLink>
+            </li>
+            <li onClick={this.handleClickFalse} className='separator'>
+                <NavLink to='/accounts' className='waves-effect'>
+                    <i className='md  md-account-child'></i> <span>{t('Accounts')}</span>
+                </NavLink>
+            </li>
+            <li onClick={this.handleClickFalse} className=''>
+                <ExternalLink
+                    className='waves-effect cursorPoiner'
+                    href={'https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause'}
+                ><i className='md md-help'></i> <span>{t('Help')}</span></ExternalLink>
+            </li>
+            <li onClick={this.handleClickFalse} className=''>
+                <NavLink to='/settings' className='waves-effect'>
+                    <i className='md md-settings'></i> <span>{t('Settings')}</span>
+                </NavLink>
+            </li>
+        </>;
+
 
         return role === Role.AGENT ? <div className='left side-menu'>
             <div className='sidebar-inner slimscrollleft'>
@@ -106,21 +143,12 @@ class Navigation extends React.Component<Props, any> {
 
                         <Submenu submenuData={this.offeringsSubmenuData} active={useSub} onClick={this.changeActive} />
 
-                        <li onClick={this.handleClickFalse} className=''>
-                            <NavLink exact to='/products' activeClassName='active' className='waves-effect'>
-                                <i className='fa fa-server'></i><span>{t('Servers')}</span>
-                            </NavLink>
-                        </li>
-
-                        <li onClick={this.handleClickFalse} className=''>
-                            <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
-                                <i className='dripicons-blog'></i><span>{t('Logs')}</span>
-                            </NavLink>
-                        </li>
+                        {commonLinks}
                     </ul>
                     <div className='clearfix'></div>
                 </div>
                 <div className='clearfix'></div>
+                <NetworkAndVersion className='networkANdBuildVersionAdvanced' />
             </div>
         </div>
         :
@@ -148,17 +176,32 @@ class Navigation extends React.Component<Props, any> {
                                 <i className='fa fa-history'></i><span>{t('History')}</span>
                             </NavLink>
                         </li>
+
+                        {commonLinks}
+
                         <li onClick={this.handleClickFalse} className=''>
-                            <NavLink exact to='/logs' activeClassName='active' className='dropdown-item notify-item'>
-                                <i className='dripicons-blog'></i><span>{t('Logs')}</span>
-                            </NavLink>
+                            <a onClick={this.setLighweightMode} className='waves-effect cursorPoiner'>
+                                <i className='md md-swap-horiz'></i> <span>Simple Mode</span>
+                            </a>
                         </li>
                     </ul>
                     <div className='clearfix'></div>
                 </div>
+                <NetworkAndVersion className='networkANdBuildVersionAdvanced' />
             </div>
         </div>;
     }
 }
 
-export default withRouter(connect( (state: State) => ({role: state.role, serviceName: state.serviceName}) )(Navigation));
+const mapStateToProps = (state: State) => {
+    const { role, mode } = state;
+    return { role, mode, serviceName: state.serviceName };
+};
+
+const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
+    setSimpleMode: () => {
+        dispatch(asyncProviders.setMode(Mode.SIMPLE));
+    }
+});
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navigation));

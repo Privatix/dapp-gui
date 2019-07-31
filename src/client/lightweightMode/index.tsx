@@ -2,15 +2,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-import { asyncProviders } from 'redux/actions';
+import { default as handlers, asyncProviders } from 'redux/actions';
 
-import CopyToClipboard from 'common/copyToClipboard';
+import Noticer from 'common/noticer';
 
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
 import States from './states';
 
 import notice from 'utils/notice';
-import prix from 'utils/prix';
 
 import countryByISO from 'utils/countryByIso';
 
@@ -19,11 +18,22 @@ import { Account } from 'typings/accounts';
 import { Offering, ClientOfferingItem } from 'typings/offerings';
 
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+import ExternalLink from 'common/etc/externalLink';
+import ExitNotice from 'client/exit/notice';
+import ExitScreen from 'client/exit/';
+
+import './lightweightMode.css';
+import ModalWindow from 'common/modalWindow';
+import NetworkAndVersion from 'common/networkAndVersion';
+import GetPrix from 'common/wizard/getPrix';
+import eth from 'utils/eth';
+import prix from 'utils/prix';
 
 type Status = 'disconnected'
             | 'disconnecting'
             | 'connected'
             | 'connecting'
+            | 'resuming'
             | 'pingLocations'
             | 'pingFailed'
             | 'suspended'
@@ -38,6 +48,10 @@ interface IProps {
     account: Account;
     balance: string;
     dispatch?: any;
+    channel: ClientChannel;
+    transferring: boolean;
+    ip: string;
+    stoppingSupervisor: boolean;
 }
 
 interface SelectItem {
@@ -47,64 +61,110 @@ interface SelectItem {
 
 interface IState {
     status: Status;
-    ip: string;
     selectedLocation: SelectItem;
     locations: SelectItem[];
     channel: ClientChannel;
     usage: ClientChannelUsage;
     offeringItem: ClientOfferingItem;
     sessionsDuration: number;
-    topUpInProgress: boolean;
+    reconnectTry: number;
 }
 
 @translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
 class LightWeightClient extends React.Component<IProps, IState> {
 
-    mounted: boolean;
-    subscription: string;
-    offeringsSubscription = null;
-    newOfferingSubscription = null;
-    getIpSubscription = null;
-    firstJobSubscription = null;
-    increaseSubscription = null;
+    private mounted: boolean;
+    private subscription: string;
+    private offeringsSubscription = null;
+    private newOfferingSubscription = null;
+    private firstJobSubscription = null;
 
     private offerings: ClientOfferingItem[] = [];
-    private optimalLocation = {value: 'optimalLocation', label: 'Optimal location'};
     private blackList: Offering[] = [];
 
     constructor(props: IProps){
         super(props);
         this.state = {
             status: 'disconnected'
-           ,ip: ''
            ,selectedLocation: null
            ,locations: null
            ,channel: null
            ,usage: null
            ,offeringItem: {offering: null, rating: 0}
            ,sessionsDuration: 0
-           ,topUpInProgress: false
+           ,reconnectTry: 0
         };
     }
 
     componentDidMount() {
+
+        const { stoppingSupervisor, dispatch, ws } = this.props;
+
         this.mounted = true;
-        this.refresh();
+
+        if(!stoppingSupervisor){
+            this.refresh();
+
+            dispatch(handlers.setAutoTransfer(true));
+            dispatch(asyncProviders.updateAccounts());
+            ws.setGUISettings({mode: 'simple'});
+        }
     }
 
     componentWillUnmount(){
 
-        const { ws } = this.props;
+        const { dispatch } = this.props;
 
         this.mounted = false;
         this.unsubscribe();
-        if(this.increaseSubscription){
-            ws.unsubscribe(this.increaseSubscription);
-            this.increaseSubscription = null;
+
+        dispatch(handlers.setAutoTransfer(false));
+    }
+
+    componentDidUpdate(prevProps: IProps) {
+        if(this.props.channel) {
+            if(!prevProps.channel || prevProps.channel.channelStatus.serviceStatus !== this.props.channel.channelStatus.serviceStatus){
+                this.refresh();
+            }
         }
     }
 
+    static getDerivedStateFromProps(props: IProps, state: IState){
+        const { channel } = props;
+
+        if(!channel){
+            return {channel: null, status: state.status === 'connected' ? 'disconnected' : state.status};
+        }
+
+        let status = state.status;
+        switch(channel.channelStatus.serviceStatus){
+            case 'active':
+                status = 'connected';
+                break;
+            case 'pending':
+            case 'activating':
+                status = 'connecting';
+                break;
+            case 'suspending':
+            case 'suspended':
+                switch(state.status){
+                    case 'connecting':
+                    case 'resuming':
+                    case 'disconnecting':
+                        break;
+                    default:
+                        status = 'suspended';
+                }
+                break;
+            case 'terminating':
+                status = 'disconnecting';
+                break;
+        }
+        return {status};
+    }
+
     private unsubscribe(){
+
         const { ws } = this.props;
 
         if(this.subscription){
@@ -119,49 +179,29 @@ class LightWeightClient extends React.Component<IProps, IState> {
             ws.unsubscribe(this.newOfferingSubscription);
             this.newOfferingSubscription = null;
         }
-        if(this.getIpSubscription){
-            clearTimeout(this.getIpSubscription);
-            this.getIpSubscription = null;
-        }
         if(this.firstJobSubscription){
             ws.unsubscribe(this.firstJobSubscription);
             this.firstJobSubscription = null;
         }
     }
 
-    private async getIp(attempt?: number){
-        if(!this.mounted){
-            return;
-        }
-        const counter = !attempt ? 0 : attempt;
-        if(counter < 5){
-            try{
-                const res = await fetch('https://api.ipify.org?format=json');
-                const json = await res.json();
-                if(this.mounted){
-                    this.setState({ip: json.ip});
-                }
-            }catch(e){
-                this.getIpSubscription = setTimeout(this.getIp.bind(this, counter+1), 3000);
-            }
-        }
+    private notify(msg: string){
+        const notification = new Notification('Privatix', {
+          body: msg
+        });
+        notification.onclick = () => {
+          //
+        };
     }
 
     private checker = (event: any) => {
 
-        const unsubscribe = () => {
-                const { ws } = this.props;
-                ws.unsubscribe(this.firstJobSubscription);
-                this.firstJobSubscription = null;
-        };
         switch(event.job.Status){
             case 'failed':
             case 'canceled':
-                unsubscribe();
                 this.failedJob(null);
                 break;
             case 'done':
-                unsubscribe();
                 this.refresh();
                 break;
         }
@@ -182,21 +222,15 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return;
         }
 
-        const { ws } = this.props;
-
-        const channels = await ws.getNotTerminatedClientChannels();
-
-        if(this.subscription){
-            await ws.unsubscribe(this.subscription);
-            this.subscription = null;
-        }
+        const { ws, channel } = this.props;
 
         this.updateOfferings();
-        if(channels.length){
 
-            const channel = channels[0];
+        if(channel){
 
-            this.subscription = await ws.subscribe('channels', [channel.id], this.eventDispatcher.bind(this, channel.id));
+            if(!this.subscription){
+                this.subscription = await ws.subscribe('channels', [channel.id], this.eventDispatcher.bind(this, channel.id));
+            }
 
             if(['canceled', 'failed'].indexOf(channel.job.status) !== -1){
                 this.failedJob(channel);
@@ -215,34 +249,27 @@ class LightWeightClient extends React.Component<IProps, IState> {
             this.updateCurrentCountry(channel);
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
-                    this.setState({status: 'connected'});
-                    if(!this.state.ip || this.state.ip === ''){
-                        this.getIp();
-                    }
                     this.getSessionsDuration(channel.id);
                     this.checkCountryAccordance(channel);
-                    break;
-                case 'pending':
-                case 'activating':
-                    this.setState({status: 'connecting'});
                     break;
                 case 'suspending':
                 case 'suspended':
                     switch(this.state.status){
                         case 'connecting':
+                            this.setState({status: 'resuming'});
                             ws.changeChannelStatus(channel.id, 'resume');
                             break;
-                        case 'disconnecting':
+                        case 'connected':
+                            this.reconnect();
                             break;
-                        default:
-                            this.setState({status: 'suspended'});
                     }
-                    break;
-                case 'terminating':
-                    this.setState({status: 'disconnecting'});
                     break;
             }
         }else{
+            if(this.subscription){
+                ws.unsubscribe(this.subscription);
+                this.subscription = null;
+            }
             switch(this.state.status){
                 case 'connecting':
                     if(!this.firstJobSubscription){
@@ -250,11 +277,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     }
                     break;
                 default:
-                    if(this.state.channel){
-                        if(this.state.usage && this.state.usage.current === 0){
-                            await ws.changeChannelStatus(this.state.channel.id, 'close');
-                        }
-                    }
                     this.setState({status: 'disconnected', channel: null, usage: null});
                     break;
             }
@@ -269,6 +291,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
         return sessions.length > 0;
 
     }
+
     private async getSessionsDuration(channelId: string){
 
         const { ws } = this.props;
@@ -330,10 +353,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const { ws } = this.props;
         const { offeringItem, selectedLocation } = this.state;
 
-        this.addToBlackList(offeringItem.offering);
+        if(offeringItem){
+            this.addToBlackList(offeringItem.offering);
+        }
         this.updateOfferings();
         this.setState({offeringItem: null});
-        this.onChangeLocation(selectedLocation ? selectedLocation : this.optimalLocation);
+        this.onChangeLocation(selectedLocation);
         if(channel){
             await ws.changeChannelStatus(channel.id, 'terminate');
             await ws.changeChannelStatus(channel.id, 'close');
@@ -354,32 +379,53 @@ class LightWeightClient extends React.Component<IProps, IState> {
             return;
         }
 
-        this.addOffering(event.object);
+        this.addOffering({offering: event.object, rating: 0});
     }
 
 
-    private isNewCountry(offering: Offering, locations: SelectItem[]){
+    private isNewCountry(offeringItem: ClientOfferingItem, locations: SelectItem[]){
+
+        if(!this.isProperOffering(offeringItem)){
+            return false;
+        }
+
+        const offering = offeringItem.offering;
         const country = offering.country.toLowerCase().trim();
+
         if(country === 'zz'){
             return false;
         }
+
         return locations.findIndex(location => location.value === country) === -1;
     }
 
+    private isProperOffering = (item: ClientOfferingItem) => {
+        if(!item || !item.offering){
+            return false;
+        }
+        return (this.blackList.findIndex(wreckOffering => wreckOffering.id === item.offering.id) === -1)
+            && (item.offering.currentSupply > 0)
+            && (!item.offering.maxUnit); // only unlimited offerings
+    }
+
     private addOffering(offeringItem: ClientOfferingItem){
+
+        if(!this.isProperOffering(offeringItem)){
+            return;
+        }
 
         const { locations } = this.state;
 
         this.offerings.push(offeringItem);
         const offering = offeringItem.offering;
 
-        if(this.isNewCountry(offering, locations)){
+        if(this.isNewCountry(offeringItem, locations)){
             const country = offering.country.toLowerCase().trim();
             this.setState({locations: locations.concat({value: country, label: countryByISO(country)})});
         }
     }
 
-    private updateOfferings = async () => {
+    private updateOfferings = async (evt?: any) => {
 
         if(!this.mounted){
             return;
@@ -387,26 +433,32 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const { ws } = this.props;
 
-        const allOfferings = await ws.getClientOfferings('', 0, 0, [], 0, 0);
-        const clientOfferings = allOfferings.items.filter(item => this.blackList.findIndex(wreckOffering => wreckOffering.id === item.offering.id) === -1);
+        const allOfferings = await ws.getClientOfferings('', 0, 0, [], [], 0, 0);
+        const clientOfferings = allOfferings.items.filter(this.isProperOffering);
         const ids = clientOfferings.map(item => item.offering.id);
 
-        if(this.offeringsSubscription){
-            ws.unsubscribe(this.offeringsSubscription);
+        const oldIds = this.offerings.map(item => item.offering.id);
+        if(!oldIds.length || oldIds.some(id => !ids.includes(id)) || ids.some(id => !oldIds.includes(id))){
+            if(this.offeringsSubscription){
+                ws.unsubscribe(this.offeringsSubscription);
+                this.offeringsSubscription = null;
+            }
+
+            this.offeringsSubscription = await ws.subscribe('offering', ids, this.updateOfferings, this.updateOfferings);
+        }else{
+            if(evt){
+                console.log('offering event', evt);
+            }
         }
 
-        this.offeringsSubscription = await ws.subscribe('offering', ids, this.updateOfferings, this.updateOfferings);
         if(!this.newOfferingSubscription){
             this.newOfferingSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish'], this.onNewOffering, this.updateOfferings);
         }
-        this.offerings = clientOfferings.filter(item => item.offering.currentSupply > 0);
+        this.offerings = clientOfferings;
 
         if(!this.state.locations){
             const locations = this.getLocations(this.offerings);
             this.setState({locations});
-            if(!this.state.selectedLocation){
-                this.selectOptimalLocation();
-            }
         }
     }
 
@@ -461,6 +513,72 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }
     }
 
+    private reconnect = async () => {
+
+        const { ws, t, localSettings } = this.props;
+        const { channel, reconnectTry } = this.state;
+
+        if(reconnectTry === 0){
+            this.notify(t('disconnectedMsg'));
+            notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('reconnectMsg')});
+        }
+
+        if(!channel){
+            return;
+        }
+
+        const updatedChannelInfo = await ws.getObject('channel', channel.id);
+        const usage = await ws.getChannelsUsage([channel.id]);
+
+        if(usage[channel.id].cost >= updatedChannelInfo.totalDeposit){
+            return;
+        }
+
+        if(updatedChannelInfo.channelStatus !== 'active'){
+            this.setState({status: 'disconnected', channel: null, usage: null});
+        }else{
+            if(reconnectTry <= localSettings.reconnect.count){
+                this.setState({reconnectTry: reconnectTry + 1});
+                const connected = await this.tryToConnect();
+                if(!connected){
+                    setTimeout(this.reconnect, localSettings.reconnect.delay*Math.pow(localSettings.reconnect.progression, reconnectTry));
+                }else{
+                    this.setState({status: 'connected', reconnectTry: 0});
+                }
+            }else{
+                notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('reconnectFailed')});
+            }
+        }
+    }
+
+    private tryToConnect(){
+        return new Promise(async (resolve: Function, reject: Function) => {
+            const { ws } = this.props;
+            const { channel } = this.state;
+
+            let subscription;
+            const eventDispatcher = (event: any) => {
+                const unsubscribe = () => ws.unsubscribe(subscription);
+
+                if('job' in event){
+                    switch(event.job.Status){
+                        case 'failed':
+                        case 'canceled':
+                            unsubscribe();
+                            resolve(false);
+                            break;
+                        case 'done':
+                            unsubscribe();
+                            resolve(true);
+                            break;
+                    }
+                }
+            };
+            ws.changeChannelStatus(channel.id, 'resume');
+            subscription = await ws.subscribe('channels', [channel.id], eventDispatcher);
+        });
+    }
+
     private getOfferingsIdsForCountry(country: string){
         return this.offerings.filter(offeringItem => offeringItem.offering.country.toLowerCase() === country)
                              .map(offeringItem => offeringItem.offering.id);
@@ -483,88 +601,19 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     private onDisconnect = () => {
 
-        const { ws } = this.props;
-        const { channel } = this.state;
+        const { ws, channel } = this.props;
 
+        this.setState({status: 'disconnected'});
         ws.changeChannelStatus(channel.id, 'terminate');
         this.unsubscribe();
         this.refresh();
-        this.setState({ip: '', status: 'disconnecting'});
     }
 
     private onResume = () => {
 
-        const { ws } = this.props;
-        const { channel } = this.state;
+        const { ws, channel } = this.props;
         ws.changeChannelStatus(channel.id, 'resume');
         this.setState({status: 'connecting'});
-    }
-
-    private shuffle(a: Array<any>): Array<any> {
-        for (let i = a.length - 1; i > 0; i--) {
-            const j = Math.floor(Math.random() * (i + 1));
-            [a[i], a[j]] = [a[j], a[i]];
-        }
-        return a;
-    }
-
-    private selectOptimalLocation = async () => {
-
-        if(!this.mounted){
-            return;
-        }
-
-        const selectedLocation = this.optimalLocation;
-        this.setState({status: 'pingLocations', selectedLocation});
-        const getCountries = () => {
-            return this.shuffle(Object.keys(this.offerings.reduce((registry: any, offeringItem: ClientOfferingItem) => {
-                registry[offeringItem.offering.country.trim().toLowerCase()] = 1;
-                return registry;
-            }, {})));
-        };
-
-        const countries = getCountries();
-
-        for(let i=0; i<countries.length; i++){
-            try{
-                const country = countries[i];
-                const offeringItem = await this.pingLocation(country);
-                this.setState({status: 'disconnected', offeringItem});
-                return;
-            }catch(e){
-                continue;
-            }
-        }
-
-        setTimeout(this.selectOptimalLocation, 3000);
-
-    }
-
-    private pingLocation(country: string): Promise<ClientOfferingItem> {
-
-        return new Promise((resolve, reject) => {
-            const { dispatch } = this.props;
-
-            const ids = this.getOfferingsIdsForCountry(country);
-            const offeringsItems = this.offerings.filter(offeringItem => ids.includes(offeringItem.offering.id));
-
-            dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
-
-                const { offeringsAvailability } = this.props;
-                const { status } = this.state;
-
-                if(this.mounted && status === 'pingLocations'){
-                    const offeringItem = this.flipCoin(offeringsItems);
-                    if(this.isAvailableOffering(offeringsAvailability, offeringItem)){
-                        resolve(offeringItem);
-                    }else{
-                        if(offeringsAvailability.counter === 0){
-                            reject();
-                        }
-                    }
-                }
-            }));
-        });
     }
 
     private getRange(offeringsItems: ClientOfferingItem[]){
@@ -580,24 +629,27 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const probability = Math.random();
         const range = this.selectByProbability(table, probability);
+        console.log('RANGE SELECTED!!!', range);
         const items = offeringsItems.map(offeringItem => ({id: offeringItem.offering.id, rating: offeringItem.rating}));
         const max = Math.max(...items.map(item => item.rating));
 
         if(max === 0){
+            console.log('RATING NOT CALCULATED!!! result:', offeringsItems);
             return offeringsItems;
         }
 
         const k = 1/max;
         const normalizedItems = items.map(item => ({id: item.id, rating: item.rating*k}));
 
-        const res = normalizedItems.filter(item => item.rating >= range.min && item.rating < range.max);
+        const res = normalizedItems.filter(item => item.rating >= range.min && item.rating <= range.max);
         const ids = res.map(item => item.id);
         const offerings = offeringsItems.filter(offeringItem => ids.includes(offeringItem.offering.id));
 
         if(offerings.length > 0){
+            console.log('RESULT: ', offerings);
             return offerings;
         }
-
+        console.log('there are no offerings in selected range, next attempt');
         return this.getRange(offeringsItems);
     }
 
@@ -625,99 +677,95 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const k = items.reduce(((k:number, item: any) => k += item.probability), 0);
 
         if(k === 0){
-            return offerings[Math.floor(Math.random()*offerings.length)];
+            const res = offerings[Math.floor(Math.random()*offerings.length)];
+            console.log('random offering:', res);
+            return res;
         }
 
         const item = this.selectByProbability(items, Math.random()*k);
         const offering = offerings.find(offeringItem => offeringItem.offering.id === item.id);
+        console.log('selected offering: ', offering);
         return offering;
     }
 
     private onChangeLocation = (selectedLocation: SelectItem) => {
 
-        this.setState({selectedLocation, status: 'pingLocations'});
+        if(selectedLocation){
+            this.setState({selectedLocation, status: 'pingLocations'});
 
-        if(selectedLocation.value === this.optimalLocation.value){
-            this.selectOptimalLocation();
-            return;
-        }
+            const { dispatch } = this.props;
 
-        const { dispatch } = this.props;
+            const selectedCountry = selectedLocation.value;
+            const ids = this.getOfferingsIdsForCountry(selectedCountry);
+            const offeringsItems = this.offerings.filter(offeringItem => ids.includes(offeringItem.offering.id));
 
-        const selectedCountry = selectedLocation.value;
-        const ids = this.getOfferingsIdsForCountry(selectedCountry);
-        const offeringsItems = this.offerings.filter(offeringItem => ids.includes(offeringItem.offering.id));
+            dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
 
-        dispatch(asyncProviders.setOfferingsAvailability(ids, () => {
+                const { offeringsAvailability } = this.props;
+                const { status } = this.state;
 
-            const { offeringsAvailability } = this.props;
-            const { status } = this.state;
-
-            if(this.mounted && status === 'pingLocations'){
-                const offeringItem = this.flipCoin(offeringsItems);
-                if(this.isAvailableOffering(offeringsAvailability, offeringItem)){
-                    this.setState({status: 'disconnected', offeringItem});
-                }else{
-                    if(offeringsAvailability.counter === 0){
-                        this.setState({status: 'pingFailed'});
+                if(this.mounted && status === 'pingLocations'){
+                    const offeringItem = this.flipCoin(offeringsItems);
+                    if(this.isAvailableOffering(offeringsAvailability, offeringItem)){
+                        this.setState({status: 'disconnected', offeringItem});
+                    }else{
+                        if(offeringsAvailability.counter === 0){
+                            this.setState({status: 'pingFailed'});
+                        }
                     }
                 }
-            }
-        }));
-    }
-
-    private getOptimalLocation(locations: Offering[]){
-        return locations[Math.floor(Math.random()*locations.length)];
+            }));
+        }
     }
 
     private getLocations(offerings: ClientOfferingItem[]): SelectItem[] {
 
-        const offeringsByCountries = offerings.reduce((registry: {[key: string]: Offering[]}, offeringItem: ClientOfferingItem) => {
+        const countries = offerings.reduce((registry: {[key: string]: boolean}, offeringItem: ClientOfferingItem) => {
             const offering = offeringItem.offering;
             const countries = offering.country.split(',').map(country => country.trim().toLowerCase());
             countries.forEach(country => {
                 if(country !== 'zz' && ! (country in registry)){
-                    registry[country] = [];
+                    registry[country] = true;
                 }
-                registry[country].push(offering);
             });
             return registry;
-        }, {}) as {[key: string]: Offering[]};
+        }, {}) as {[key: string]: boolean};
 
-        const countries = Object.keys(offeringsByCountries).reduce((countries, country) => {
-            countries[country] = this.getOptimalLocation(offeringsByCountries[country]);
-            return countries;
-        }, {});
 
-        const res = Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
-        res.unshift(this.optimalLocation);
-        return res;
+        let countriesArr = Object.keys(countries).map(country => ({value: country, label: countryByISO(country)}));
+        countriesArr.sort((a, b) => (a.label > b.label) ? 1 : ((b.label > a.label) ? -1 : 0));
+
+        return countriesArr;
     }
 
     states: {[key in Status]: any} = {
 
         connected: () => {
 
-            const { usage, ip, channel, selectedLocation, offeringItem, sessionsDuration } = this.state;
-            const props = {usage, ip, channel, selectedLocation, offering: offeringItem.offering, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect, sessionsDuration};
+            const { channel, ip } = this.props;
+            const { usage, selectedLocation, offeringItem, sessionsDuration } = this.state;
+            const props = {usage, ip, channel, selectedLocation, offering: offeringItem ? offeringItem.offering : null, onChangeLocation: this.onChangeLocation, onDisconnect: this.onDisconnect, sessionsDuration};
             return <States.Connected {...props} />;
-            
+
         },
 
         connecting: () => {
 
-            const { channel, selectedLocation, offeringItem } = this.state;
-            const props = { channel, selectedLocation, offering: offeringItem.offering, onChangeLocation: this.onChangeLocation };
+            const { channel } = this.props;
+            const { selectedLocation, offeringItem } = this.state;
+            const props = { channel, selectedLocation, offering: offeringItem ? offeringItem.offering : null, onChangeLocation: this.onChangeLocation };
             return <States.Connecting {...props} />;
-            
+
         },
+
+        resuming: () => this.states.connecting(),
 
         suspended: () => {
 
             const { selectedLocation, offeringItem } = this.state;
-            const props = { selectedLocation, offering: offeringItem.offering, onResume: this.onResume };
+            const props = { selectedLocation, offering: offeringItem ? offeringItem.offering : null, onResume: this.onResume };
             return <States.Suspended {...props} />;
-            
+
         },
 
         pingLocations: () => {
@@ -725,7 +773,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             const { locations, selectedLocation } = this.state;
             const props = { locations, selectedLocation, onChangeLocation: this.onChangeLocation };
             return <States.PingLocations {...props} />;
-            
+
         },
 
         pingFailed: () => {
@@ -739,45 +787,97 @@ class LightWeightClient extends React.Component<IProps, IState> {
         disconnected: () => {
 
             const { locations, selectedLocation, offeringItem } = this.state;
-            const props = { locations, selectedLocation, offering: offeringItem.offering, onChangeLocation: this.onChangeLocation, onConnect: this.onConnect };
+            const props = { locations, selectedLocation, offering: offeringItem ? offeringItem.offering : null, onChangeLocation: this.onChangeLocation, onConnect: this.onConnect };
             return <States.Disconnected {...props} />;
 
         },
 
         disconnecting: () => {
 
-            const { channel, selectedLocation } = this.state;
+            const { channel } = this.props;
+            const { selectedLocation } = this.state;
             const props = { channel, selectedLocation };
             return <States.Disconnecting {...props} />;
-            
+
         }
     };
 
     render(){
 
-        const { t, balance, account } = this.props;
+        const { t, account, transferring, stoppingSupervisor } = this.props;
         const { status } = this.state;
 
-        const ethAddr = account ? `0x${account.ethAddr}` : '';
+        if(stoppingSupervisor){
+            return <ExitScreen />;
+        }
+
+        if(!account){
+            return null;
+        }
+
         return (
             <>
+                <Noticer />
+                <ExitNotice />
+                <NetworkAndVersion className='networkANdBuildVersionSimple' />
                 <style dangerouslySetInnerHTML={{__html: `
                    html { background: white; } body { background: white; }
                 `}} />
-                <div style={ {textAlign: 'right'} }>
-                    <SwitchAdvancedModeButton />
+                <div className='SMHelpBl'>
+                    <ExternalLink
+                        href={'https://docs.privatix.network/knowledge-base/simple-and-advanced-client'}
+                    ><i className='md md-help'></i> <span>{t('Help')}</span></ExternalLink>
                 </div>
                 <div className='widget-chart text-center'>
+
+                    <div className='SMBalanceBl'>
+                        <div className='SMBalance'>
+                            <div className='SMBalanceRow'>
+                                <div className='text'>{t('Account')} :</div>
+                                <div className='value'>{prix(account.ptcBalance)} PRIX | {eth(account.ethBalance)} ETH</div>
+                            </div>
+                            <div className='SMBalanceRow'>
+                                <div className='text'>{t('Marketplace')} :</div>
+                                <div className='value'>{transferring ? <span className='lds-dual-ring-small'></span> : null } {prix(account.pscBalance)} PRIX</div>
+                            </div>
+                            <div className='SMBalanceRow'>
+                                <div className='text'>{t('EscrowLocked')} : </div>
+                                <div className='value'>{prix(account.escrow)} PRIX</div>
+                            </div>
+                        </div>
+
+                        <ModalWindow wrapClass='addFundsPlusBtnBl'
+                                     customClass='addFundsPlusBtn'
+                                     modalTitle={t('addFundsModalTitle')}
+                                     text={''}
+                                     component={<GetPrix entryPoint={'/app'} accountId={account.id} isModal={true} />}
+                        />
+                    </div>
+
                     <div>
-                        <h5 style={ {margin: 'auto', width: '300px'} }>
-                            <span className='shortTableText' style={ {marginRight: '10px'} } >{t('Address')}: </span>
-                            <span className='shortTableText' title={ethAddr}>{ethAddr}</span>
-                            <CopyToClipboard text={ethAddr} />
-                        </h5>
-                        <h5>{t('Balance')}: { balance } PRIX</h5>
                         <img src='images/Privatix_logo.png' alt='image' className='img-fluid spacing' width='250' />
                         <h1 className='spacing'>{t(status)}</h1>
                         { this.states[this.state.status]() }
+                    </div>
+
+                    <div className='simpleModeFooterText'>
+                        <p>{t('footerTextLine0')}</p>
+                        <p>{t('footerTextLine1')}</p>
+                    </div>
+                    <div className='simpleModeFooterMenu'>
+                        <SwitchAdvancedModeButton /> |&nbsp;
+                        <ModalWindow wrapClass='d-inline'
+                                     customClass=''
+                                     modalTitle={t('addFundsModalTitle')}
+                                     text={t('addFunds')}
+                                     component={<GetPrix entryPoint={'/app'} accountId={account.id} isModal={true} />}
+                        /> |&nbsp;
+                        <ExternalLink
+                            href={'https://docs.privatix.network/knowledge-base/how-to-withdraw-funds'}
+                        ><span>{t('withdrawal')}</span></ExternalLink> |&nbsp;
+                        <ExternalLink
+                            href={'https://docs.privatix.network/knowledge-base/terms-of-use'}
+                        ><span>{t('termsOfUse')}</span></ExternalLink>
                     </div>
                 </div>
             </>
@@ -792,7 +892,11 @@ export default connect((state: State) => {
        ,localSettings: state.localSettings
        ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
        ,account
+       ,channel: state.channel
+       ,ip: state.ip
        ,balance: account ? prix(account.pscBalance) : ''
        ,offeringsAvailability: state.offeringsAvailability
+       ,transferring: state.transferring
+       ,stoppingSupervisor: state.stoppingSupervisor
     };
 })(LightWeightClient);

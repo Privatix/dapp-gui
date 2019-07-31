@@ -13,7 +13,8 @@ interface IProps {
     swalTitle: string|JSX.Element;
     swalConfirmBtnText: string;
     text: string|JSX.Element;
-    disabledBtn?: boolean; // what for?
+    disabledBtn?: boolean;
+    isExternalLink?: boolean;
 }
 
 interface IState {
@@ -34,12 +35,15 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
 
     showPopUpSwal = async (event: any) => {
 
-       event.preventDefault();
-        if (this.props.disabledBtn) {
+        const { disabledBtn, beforeAsking } = this.props;
+
+        event.preventDefault();
+        if (disabledBtn) {
             this.showConfirmAlertBtn.current.setAttribute('disabled', 'disabled');
+            return;
         }
-        if('function' === typeof this.props.beforeAsking){
-            this.setState({show: await this.props.beforeAsking()});
+        if('function' === typeof beforeAsking){
+            this.setState({show: await beforeAsking()});
         }else{
             this.setState({show: true});
         }
@@ -47,15 +51,17 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
 
     confirmHandler = async () => {
 
-        if (this.props.disabledBtn) {
+        const { disabledBtn, done } = this.props;
+
+        if (disabledBtn) {
             this.cancelHandler(null, true);
         } else {
             this.cancelHandler();
         }
-        if('done' in this.props && 'function' === typeof this.props.done) {
-            await this.props.done();
+        if('function' === typeof done) {
+            await done();
         }
-        if (this.props.disabledBtn && this.showConfirmAlertBtn.current) {
+        if (disabledBtn && this.showConfirmAlertBtn.current) {
             this.showConfirmAlertBtn.current.removeAttribute('disabled');
         }
     }
@@ -73,27 +79,41 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t, className } = this.props;
+        const { t, isExternalLink, className, title, text, swalTitle, swalConfirmBtnText, swalType } = this.props;
+        const { show } = this.state;
+        const ReactSweetAlertComponent = <ReactSweetAlert
+            show={show}
+            type={swalType}
+            showCancel
+            closeOnClickOutside={false}
+            confirmBtnText={swalConfirmBtnText}
+            cancelBtnText={t('CancelBtn')}
+            confirmBtnCssClass='swal2-styled'
+            confirmBtnBsStyle='link'
+            cancelBtnBsStyle='primary'
+            cancelBtnCssClass='swal2-styled'
+            title={swalTitle}
+            onConfirm={this.confirmHandler}
+            onCancel={this.cancelHandler}
+        >
+            {text}
+        </ReactSweetAlert>;
 
         return (
-            <div>
-                <button onClick={this.showPopUpSwal} className={className} ref={this.showConfirmAlertBtn}>
-                    {this.props.title}
+            !isExternalLink
+            ? <div>
+                <button onClick={this.showPopUpSwal}
+                        className={className}
+                        ref={this.showConfirmAlertBtn}
+                >
+                    {title}
                 </button>
-                <ReactSweetAlert
-                    show={this.state.show}
-                    type={this.props.swalType}
-                    showCancel
-                    closeOnClickOutside={false}
-                    confirmBtnText={this.props.swalConfirmBtnText}
-                    cancelBtnText={t('CancelBtn')}
-                    confirmBtnCssClass='swal2-styled'
-                    cancelBtnCssClass='swal2-styled'
-                    title={this.props.swalTitle}
-                    onConfirm={this.confirmHandler}
-                    onCancel={this.cancelHandler}
-                >{this.props.text}</ReactSweetAlert>
+                {ReactSweetAlertComponent}
             </div>
+            : <>
+                <a href='#' className={className} onClick={this.showPopUpSwal}>{title}</a>
+                {ReactSweetAlertComponent}
+            </>
         );
     }
 }

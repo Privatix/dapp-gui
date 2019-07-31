@@ -1,16 +1,20 @@
-import { Mode } from './mode';
+import { Role, Mode } from './mode';
 
 export interface GasConsumption {
     acceptOffering: number;
     createOffering: number;
     transfer: number;
+    returnBalance: number;
     increaseDeposit: number;
+    removeOffering: number;
+    popupOffering: number;
 }
 
 export interface LocalSettings {
     firstStart: boolean;
     accountCreated: boolean;
     wsEndpoint: string;
+    supervisorEndpoint: string;
     gas: GasConsumption;
     network: string;
     bugsnag: {
@@ -34,6 +38,25 @@ export interface LocalSettings {
             height: number;
         }
     }
+    reconnect: {
+        count: number;
+        delay: number;
+        progression: number;
+    },
+    role: Role;
+    timings: {
+        updateBalances: number;
+        delayBetweenTransferTokensAndUpdateBalance: number;
+    },
+    log: {
+        level: string;
+        console: boolean;
+        file: boolean;
+        fileName: string;
+        filePath: string;
+        fileOverwrite: boolean;
+    },
+    rootpath: string;
 }
 
 export interface DbSetting {

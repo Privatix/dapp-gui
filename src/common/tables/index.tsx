@@ -13,6 +13,7 @@ import JobStatusComponent from 'common/badges/jobStatus';
 import ETHComponent from 'common/badges/ETH';
 import Prix from 'common/badges/PRIX';
 import MB from 'common/badges/MB';
+import RatingComponent from 'common/badges/rating';
 import UsageComponent from 'common/badges/channelUsage';
 import OfferingStatusComponent from 'common/badges/offeringStatus';
 import AvailabilityComponent from 'common/badges/availability';
@@ -182,11 +183,26 @@ export const Country = {
     key: 'country'
 };
 
+export const IpType = {
+    header: i18n.t('common:IPType'),
+    headerStyle: {textAlign: 'center'},
+    key: 'ipType'
+};
+
 export const Price = {
     header: i18n.t('tables:Price'),
     headerStyle: {textAlign: 'center'},
     key: 'price',
     render: amount => <Prix amount={amount} />
+};
+
+export const MaxUnits = {
+    header: i18n.t('tables:MaxUnits'),
+    headerStyle: {textAlign: 'center'},
+    key: 'maxUnits',
+    dataProps: { className: 'text-center'},
+    sortable: true,
+    render: amount => amount ? <MB amount={amount} /> : 'unlimited'
 };
 
 export const AvailableSupply = {
@@ -207,7 +223,8 @@ export const Rating = {
     header: i18n.t('tables:Rating'),
     headerStyle: {textAlign: 'center'},
     key: 'rating',
-    dataProps: { className: 'text-center'}
+    dataProps: { className: 'text-center'},
+    render: amount => <RatingComponent amount={amount} />
 };
 
 export const ServiceName = {
@@ -349,20 +366,28 @@ export const ETH = {
     render: amount => <ETHComponent amount={amount} />
 };
 
-export const ExchangeBalance = {
-    header: i18n.t('tables:ExchangeBalance'),
+export const AccountBalance = {
+    header: i18n.t('tables:Account'),
     headerStyle: {textAlign: 'center'},
-    key: 'exchangeBalance',
+    key: 'account',
     dataProps: {className: 'text-center'},
-    render: amount => <Prix amount={amount} />
+    render: accountBalance => accountBalance
 };
 
-export const ServiceBalance = {
-    header: i18n.t('tables:ServiceBalance'),
+export const Marketplace = {
+    header: i18n.t('tables:Marketplace'),
     headerStyle: {textAlign: 'center'},
-    key: 'serviceBalance',
+    key: 'marketplace',
     dataProps: { className: 'text-center'},
-    render: amount => <Prix amount={amount} />
+    render: marketplace => marketplace
+};
+
+export const Escrow = {
+    header: i18n.t('tables:Escrow'),
+    headerStyle: {textAlign: 'center'},
+    key: 'escrow',
+    dataProps: { className: 'text-center'},
+    render: escrow => escrow
 };
 
 export const IsDefault = {

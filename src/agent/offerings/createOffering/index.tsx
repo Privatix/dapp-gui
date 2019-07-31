@@ -5,6 +5,7 @@ import { translate, Trans } from 'react-i18next';
 import Select from 'react-select';
 
 import notice from 'utils/notice';
+import { ipTypes } from 'utils/ipTypes';
 import prix from 'utils/prix';
 import eth from 'utils/eth';
 
@@ -60,6 +61,7 @@ interface IState {
         minUploadMbits: string;
         additionalParams?: any;
         billingInterval?: number;
+        ipType: string;
     };
     gasPrice?: number;
     blocked?: boolean;
@@ -99,6 +101,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                ,product: productId
                ,minDownloadMbits: ''
                ,minUploadMbits: ''
+               ,ipType: ipTypes[1].type
             }
            ,gasPrice
            ,account
@@ -141,6 +144,11 @@ class CreateOffering extends React.Component<IProps, IState>{
 
         const account = accounts.find(account => account.id === selectedAccount.value);
         this.setState({account, payload: Object.assign({}, payload, {agent: selectedAccount.value})});
+    }
+
+    onIpTypeChanged = (selectedIpType: any) => {
+        const { payload } = this.state;
+        this.setState({payload: Object.assign({}, payload, {ipType: selectedIpType.value})});
     }
 
     onUserInput = (evt: any) => {
@@ -389,10 +397,10 @@ class CreateOffering extends React.Component<IProps, IState>{
     }
 
     redirectToServers = () => {
-        if (this.props.location.pathname === '/products') {
+        if (this.props.location.pathname === '/') {
             this.props.closeModal();
         } else {
-            this.props.history.push('/products');
+            this.props.history.push('/');
         }
     }
 
@@ -413,6 +421,13 @@ class CreateOffering extends React.Component<IProps, IState>{
             clearable={false}
             options={accounts.map(account => ({value: account.id, label: account.name}))}
             onChange={this.onAccountChanged} />;
+
+        const selectIpType = <Select className='form-control'
+             value={payload.ipType}
+             searchable={false}
+             clearable={false}
+             options={ipTypes.map(ipType => ({value: ipType.type, label: ipType.name})) }
+             onChange={this.onIpTypeChanged} />;
 
         const ethBalance = account ? eth(account.ethBalance) : '0';
         const pscBalance = account ? prix(account.pscBalance) : '0';
@@ -478,7 +493,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                                     <button
                                                         className='btn btn-link btnLinkSmallCustom'
                                                         onClick={this.redirectToServers}
-                                                    >Servers</button>
+                                                    >Exit Nodes</button>
                                                     page
                                                 </Trans>
                                             </small>
@@ -501,6 +516,21 @@ class CreateOffering extends React.Component<IProps, IState>{
                                             <small>
                                                 {t('MaximumSupplyOfServices') + ' '}
                                                 {t('ItRepresentsTheMaximum')}
+                                            </small>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div className='form-group row'>
+                                    <label className='col-2 col-form-label'>{t('common:IPType')}:<span className='text-danger'>*</span> </label>
+                                    <div className='col-6'>
+                                        {selectIpType}
+                                        <span className='help-block'>
+                                            <small>
+                                                {t('IpTypeHint') + ' '}
+                                                <ExternalLink
+                                                    className='btn btn-link btnLinkSmallCustom'
+                                                    href={'https://ipx.ac/'}>https://ipx.ac/</ExternalLink>
+                                                {' )'}
                                             </small>
                                         </span>
                                     </div>
@@ -608,7 +638,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder={t('ie') + ' 10'}
+                                                   placeholder={t('ie') + ' 30'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxSuspendTime'
                                                    value={payload.maxSuspendTime}
@@ -630,7 +660,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         <div className='input-group bootstrap-touchspin'>
                                             <input type='text'
                                                    className='form-control'
-                                                   placeholder={t('ie') + ' 10'}
+                                                   placeholder={t('ie') + ' 30'}
                                                    onChange={onUserInput}
                                                    data-payload-value='maxInactiveTimeSec'
                                                    value={payload.maxInactiveTimeSec}

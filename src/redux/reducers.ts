@@ -25,8 +25,20 @@ export default function reducer(state: State = StateDefault, action: Action = {t
         [actions.SET_MODE]                      : (state: State, action: Action) => _.assign({}, state, {mode: action.value}),
         [actions.SET_CHANNEL]                   : (state: State, action: Action) => _.assign({}, state, {channel: action.value}),
         [actions.SET_WS]                        : (state: State, action: Action) => _.assign({}, state, {ws: action.value}),
+        [actions.SET_LOG]                       : (state: State, action: Action) => _.assign({}, state, {log: action.value}),
         [actions.SET_OFFERINGS_AVAILABILITY]    : (state: State, action: Action) => _.assign({}, state, {offeringsAvailability: Object.assign({}, {counter: state.offeringsAvailability.counter - action.value.length}, {statuses: (Object.assign({}, state.offeringsAvailability.statuses, ...action.value))})}),
-        [actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER] : (state: State, action: Action) => _.assign({}, state, {offeringsAvailability: Object.assign({}, {counter: state.offeringsAvailability.counter + action.value, statuses: state.offeringsAvailability.statuses})})
+        [actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER] : (state: State, action: Action) => _.assign({}, state, {offeringsAvailability: Object.assign({}, {counter: state.offeringsAvailability.counter + action.value, statuses: state.offeringsAvailability.statuses})}),
+        [actions.SET_AUTOTRANSFER]              : (state: State, action: Action) => _.assign({}, state, {autoTransfer: action.value}),
+        [actions.ADD_NOTICE]                    : (state: State, action: Action) => _.assign({}, state, {notices: state.notices.concat([action.value])}),
+        [actions.REMOVE_NOTICES]                : (state: State, action: Action) => _.assign({}
+                                                                                            ,state
+                                                                                            ,{notices: state.notices.filter(noticeItem => !action.value.includes(noticeItem))}
+                                                                                            ),
+        [actions.SET_EXIT]                      : (state: State, action: Action) => _.assign({}, state, {exit: action.value}),
+        [actions.SET_STOPPING_SUPERVISOR]       : (state: State, action: Action) => _.assign({}, state, {stoppingSupervisor: action.value}),
+        [actions.SET_TRANSFERRING_FLAG]         : (state: State, action: Action) => _.assign({}, state, {transferring: action.value}),
+        [actions.SET_IP]                        : (state: State, action: Action) => _.assign({}, state, {ip: action.value}),
+        [actions.SAVE_CHANNEL_OBSERVER_CONTEXT] : (state: State, action: Action) => _.assign({}, state, {channelObserverContext: action.value})
     };
 
     return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;

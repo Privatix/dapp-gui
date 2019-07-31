@@ -7,4 +7,5 @@ export interface Account {
     inUse: boolean;
     pscBalance: number;
     ptcBalance: number;
+    escrow?: number;
 }

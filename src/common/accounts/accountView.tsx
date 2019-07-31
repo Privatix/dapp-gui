@@ -8,6 +8,10 @@ import GasRange from 'common/etc/gasRange';
 
 import { WS } from 'utils/ws';
 import notice from 'utils/notice';
+import eth from 'utils/eth';
+import prix from 'utils/prix';
+import drawQrCode from 'utils/qrCode';
+import CopyToClipboard from 'common/copyToClipboard';
 
 import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
@@ -26,6 +30,7 @@ interface IState {
     amount: number;
     destination: 'psc' | 'ptc';
     address: string;
+    transferStarted: boolean;
 }
 
 @translate(['accounts/accountView', 'utils/notice'])
@@ -41,7 +46,12 @@ class AccountView extends React.Component<IProps, IState> {
                      ,amount: 0
                      ,destination: 'psc'
                      ,address: `0x${account.ethAddr}`
+                     ,transferStarted: false
         };
+    }
+
+    componentDidMount() {
+        drawQrCode(`0x${this.props.account.ethAddr}`);
     }
 
     onGasPriceChanged = (evt: any) => {
@@ -81,7 +91,8 @@ class AccountView extends React.Component<IProps, IState> {
             msg += t('ErrorNotEnoughServiceFunds');
         }
 
-        if(localSettings.gas.transfer*gasPrice > account.ethBalance) {
+        const transactionCost = (destination === 'psc' ? localSettings.gas.transfer : localSettings.gas.returnBalance)*gasPrice;
+        if(transactionCost > account.ethBalance) {
             err = true;
             msg += t('ErrorNotEnoughPublishFunds');
         }
@@ -100,11 +111,13 @@ class AccountView extends React.Component<IProps, IState> {
         const { amount, destination, gasPrice } = this.state;
 
         try {
+            this.setState({transferStarted: true});
             await ws.transferTokens(account.id, destination, amount, gasPrice);
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
         } catch ( e ) {
             // TODO something wrong !!!
             console.log('ERROR', e);
+            this.setState({transferStarted: false});
         }
 
     }
@@ -116,111 +129,145 @@ class AccountView extends React.Component<IProps, IState> {
 
     render() {
 
-        const { t, account, localSettings } = this.props;
-        const { destination, address, gasPrice } = this.state;
+        const { t, account } = this.props;
+        const { destination, address, gasPrice, transferStarted } = this.state;
 
-        return <div className='col-lg-9 col-md-8'>
-            <div className='card m-b-20'>
-                <h5 className='card-header'>{t('GeneralInfo')}</h5>
-                <div className='card-body'>
-                    <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('Name')}</label>
-                        <div className='col-9'>
-                            <input type='text' className='form-control' value={account.name} readOnly/>
-                        </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('Address')}</label>
-                        <div className='col-9'>
-                            <input type='text' className='form-control' value={address} readOnly/>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className='card m-b-20'>
-                <h5 className='card-header'>{t('BalanceInfo')}</h5>
-                <div className='card-body'>
-                    <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('ExchangeBalance')}</label>
-                        <div className='col-9'>
-                            <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={account.ptcBalance/1e8} readOnly/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('ServiceBalance')}</label>
-                        <div className='col-9'>
-                            <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={account.pscBalance/1e8} readOnly/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div className='card m-b-20'>
-                <h5 className='card-header'>{t('Transfer')}</h5>
-                <div className='card-body'>
-                    <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('From')}</label>
-                        <div className='col-9'>
-                            <div className='row'>
-                                <div className='col-8'>
-                                    <select className='form-control'
-                                            value={destination === 'psc' ? 'ptc' : 'psc'}
-                                            onChange={this.changeTransferType}>
-                                        <option value='ptc' >{t('ExchangeBalanceOption')}</option>
-                                        <option value='psc' >{t('ServiceBalanceOption')}</option>
-                                    </select>
+        return <div className='row justify-content-center'>
+            <div className='col-xl-9 col-lg-12'>
+                <div className='card m-b-20'>
+                    <h5 className='card-header'>{t('Account')}</h5>
+                    <div className='card-body'>
+                        <div className='row'>
+                            <div className='col-md-9'>
+                                <div className='form-group row'>
+                                    <label className='col-3 col-form-label'>{t('Name')}</label>
+                                    <div className='col-9'>
+                                        <input type='text' className='form-control' value={account.name} readOnly/>
+                                    </div>
                                 </div>
-                                <div className='col-4 col-form-label'>
-                                    <span>{(destination === 'psc' ? account.ptcBalance : account.pscBalance)/1e8}</span> PRIX
+                                <div className='form-group row'>
+                                    <label className='col-3 col-form-label'>{t('Address')}</label>
+                                    <div className='col-9'>
+                                        {/*<input type='text' className='form-control' value={address} readOnly/>*/}
+                                        <div className='input-group bootstrap-touchspin'>
+                                            <input className='form-control'
+                                                   readOnly type='text'
+                                                   defaultValue={address}
+                                            />
+                                            <span style={ {padding: '0'} }
+                                                  className='input-group-addon bootstrap-touchspin-postfix'>
+                                                <CopyToClipboard text={address} className='inputCopyBtn' />
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className='form-group row'>
+                                    <label className='col-3 col-form-label'>{t('Balance')}</label>
+                                    <div className='col-9'>
+                                        <div className='input-group bootstrap-touchspin' style={{marginBottom:'1rem'}}>
+                                            <input type='text' className='form-control' value={prix(account.ptcBalance)} readOnly/>
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                                        </div>
+                                        <div className='input-group bootstrap-touchspin'>
+                                            <input type='text' className='form-control' value={eth(account.ethBalance)} readOnly/>
+                                            <span className='input-group-addon bootstrap-touchspin-postfix'>ETH</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('To')}</label>
-                        <div className='col-9'>
-                            <input type='text'
-                                   className='form-control'
-                                   value={destination === 'psc' ? t('ServiceBalanceOption') : t('ExchangeBalanceOption')}
-                                   readOnly/>
-                        </div>
-                    </div>
-                    <div className='form-group row'>
-                        <label className='col-3 col-form-label'>{t('Amount')}</label>
-                        <div className='col-9'>
-                            <div className='input-group bootstrap-touchspin'>
-                                <input type='text' onChange={this.onTransferAmount} className='form-control'/>
-                                <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                            <div className='col-md-3 accountQrCodeBl'>
+                                <canvas id='qrCode'></canvas>
                             </div>
                         </div>
                     </div>
-                    <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} />
-                    <div className='form-group row'>
-                        <div className='col-12'>
-                            <ConfirmPopupSwal
-                                beforeAsking={this.checkUserInput}
-                                done={this.transferTokens}
-                                title={t('TransferBtn')}
-                                text={<span>
-                                        {destination === 'ptc' ? t('TransferSwalTextFromPscToPtc') : t('TransferSwalTextFromPtcToPsc')}
-                                        <br />{t('TransferSwalTextPart2')}
-                                        <br /><br />{t('TransferSwalTextPart3')}
-                                      </span>}
-                                className={'btn btn-default btn-block btn-custom waves-effect waves-light'}
-                                swalType='warning'
-                                swalConfirmBtnText={t('TransferConfirmBtn')}
-                                swalTitle={t('TransferSwalTitle')} />
+                </div>
+                <div className='card m-b-20'>
+                    <h5 className='card-header'>{t('Marketplace')}</h5>
+                    <div className='card-body'>
+                        <div className='form-group row'>
+                            <label className='col-3 col-form-label'>{t('Balance')}</label>
+                            <div className='col-9'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' className='form-control' value={prix(account.pscBalance)} readOnly/>
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='form-group row'>
+                            <label className='col-3 col-form-label'>{t('Escrow')}</label>
+                            <div className='col-9'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' className='form-control' value={prix(account.escrow)} readOnly/>
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
+                <div className='card m-b-20'>
+                    <h5 className='card-header'>{t('Transfer')}</h5>
+                    <div className='card-body'>
+                        <div className='form-group row'>
+                            <label className='col-3 col-form-label'>{t('From')}</label>
+                            <div className='col-9'>
+                                <div className='row'>
+                                    <div className='col-8'>
+                                        <select className='form-control'
+                                                value={destination === 'psc' ? 'ptc' : 'psc'}
+                                                onChange={this.changeTransferType}>
+                                            <option value='ptc' >{t('AccountOption')}</option>
+                                            <option value='psc' >{t('MarketplaceOption')}</option>
+                                        </select>
+                                    </div>
+                                    <div className='col-4 col-form-label'>
+                                        <span>{(destination === 'psc' ? account.ptcBalance : account.pscBalance)/1e8}</span> PRIX
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className='form-group row'>
+                            <label className='col-3 col-form-label'>{t('To')}</label>
+                            <div className='col-9'>
+                                <input type='text'
+                                       className='form-control'
+                                       value={destination === 'psc' ? t('MarketplaceOption') : t('AccountOption')}
+                                       readOnly/>
+                            </div>
+                        </div>
+                        <div className='form-group row'>
+                            <label className='col-3 col-form-label'>{t('Amount')}</label>
+                            <div className='col-9'>
+                                <div className='input-group bootstrap-touchspin'>
+                                    <input type='text' onChange={this.onTransferAmount} className='form-control'/>
+                                    <span className='input-group-addon bootstrap-touchspin-postfix'>PRIX</span>
+                                </div>
+                            </div>
+                        </div>
+                        <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} />
+                        <div className='form-group row'>
+                            <div className='col-12'>
+                                <ConfirmPopupSwal
+                                    beforeAsking={this.checkUserInput}
+                                    done={this.transferTokens}
+                                    title={t('TransferBtn')}
+                                    text={<span>
+                                            {destination === 'ptc' ? t('TransferSwalTextFromPscToPtc') : t('TransferSwalTextFromPtcToPsc')}
+                                            <br />{t('TransferSwalTextPart2')}
+                                            <br /><br />{t('TransferSwalTextPart3')}
+                                          </span>}
+                                    className={'btn btn-default btn-block btn-custom waves-effect waves-light'}
+                                    swalType='warning'
+                                    swalConfirmBtnText={t('TransferConfirmBtn')}
+                                    swalTitle={t('TransferSwalTitle')}
+                                    disabledBtn={transferStarted}
+                                />
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-            <Transactions accountId={account.id} network={localSettings.network} />
+                <Transactions accountId={account.id} />
+            </div>
         </div>;
     }
 }

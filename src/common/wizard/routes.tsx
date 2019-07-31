@@ -95,7 +95,14 @@ class Routes extends React.Component<IProps, {}> {
                                                />
                               }
                 />,
-                <Route key='/app' path='/app' component={app} />
+                <Route key='/app' path='/app' component={app} />,
+                <Route key='/backup/' path='/backup/:accountId/:from'
+                       render={(props: any) => <Backup entryPoint={'/app'}
+                                                       accountId={props.match.params.accountId}
+                                                       from={props.match.params.from}
+                                               />
+                              }
+                />,
             ];
 
             if(currentState === 'firstStart'){

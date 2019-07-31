@@ -1,30 +1,33 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
 import { translate, Trans } from 'react-i18next';
 
-import { asyncProviders } from 'redux/actions';
-import { Mode } from 'typings/mode';
+import { default as handlers, asyncProviders } from 'redux/actions';
 
 import ExternalLink from 'common/etc/externalLink';
 import CopyToClipboard from 'common/copyToClipboard';
-
-import { WS, ws } from 'utils/ws';
-import notice from 'utils/notice';
+import HintComponent from 'common/hintComponent';
 
 import Steps from './steps';
 import { PreviousButton, FinishButton, back } from './utils';
 import Spinner from './spinner';
 
-
-import * as QRCode from 'qrcode';
+import { State } from 'typings/state';
+import { Mode, Role } from 'typings/mode';
+import drawQrCode from 'utils/qrCode';
 
 interface IProps{
-    ws?: WS;
+    ws?: State['ws'];
     t?: any;
     dispatch?: any;
     history?: any;
     accountId: string;
     entryPoint: string;
+    mode?: State['mode'];
+    role?: State['role'];
+    notices?: State['notices'];
+    isModal?: boolean;
 }
 
 interface IState {
@@ -33,106 +36,67 @@ interface IState {
     didIt: boolean;
     getPrix: boolean;
     done: boolean;
+    err: boolean;
+    accountPSCBalance: number;
 }
 
-@translate(['auth/getPrix', 'auth/generateKey', 'auth/utils'])
+@translate(['auth/getPrix', 'auth/generateKey', 'auth/utils', 'transferTokens'])
 class GetPrix extends React.Component<IProps, IState>{
+
+    static getDerivedStateFromProps(props: IProps, state: IState){
+        return {err: props.notices.findIndex(notice => notice.code === 0) !== -1};
+    }
 
     private observerId = null;
 
     constructor(props:IProps){
         super(props);
-        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false, accountId: props.accountId};
+
+        this.state = {ethAddr: '', didIt: false, getPrix: false, done: false, err: false, accountId: props.accountId, accountPSCBalance: 0};
     }
 
     isSimpleMode(){
-        const { accountId } = this.props;
-        return !accountId || accountId === 'generate';
+        const { mode, role } = this.props;
+        return mode === 'simple' || (mode === 'wizard' && role === Role.CLIENT);
     }
 
     async componentDidMount(){
+        const { ws, accountId, dispatch, isModal } = this.props;
 
-        const { ws, t, accountId } = this.props;
-
-        if(!this.isSimpleMode()){
-            ws.getAccount(accountId)
-              .then(account => {
-                  this.setState({ethAddr: `0x${account.ethAddr}`});
-                  this.drawQRcode(`0x${account.ethAddr}`);
-              });
-        }else{
-            // simple mode!
-            const payload = {
-                isDefault: true
-               ,inUse: true
-               ,name: 'main'
-            };
-
-            try {
-                const accountId = await ws.generateAccount(payload);
-                await ws.setGUISettings({accountCreated:true});
-                ws.getAccount(accountId)
-                  .then(account => {
-                      this.setState({accountId, ethAddr: `0x${account.ethAddr}`});
-                      this.drawQRcode(`0x${account.ethAddr}`);
-                  });
-            } catch (e){
-                const msg = t('auth/generateKey:SomethingWentWrong');
-                notice({level: 'error', header: t('utils/notice:Attention!'), msg});
-            }
+        const account = await ws.getAccount(accountId);
+        this.setState({ethAddr: `0x${account.ethAddr}`, accountPSCBalance: account.pscBalance});
+        drawQrCode(`0x${account.ethAddr}`);
+        if(!isModal){
+            dispatch(handlers.setAutoTransfer(true));
         }
-    }
-
-    private drawQRcode(str: string){
-        const canvas = document.getElementById('qrCode');
-
-        QRCode.toCanvas(canvas, str, {width: 200}, function (error: any) {
-            if (error){
-                console.error(error);
-            }
-        });
     }
 
     componentWillUnmount() {
+
+        const { dispatch, isModal } = this.props;
+
         if(this.observerId){
             clearTimeout(this.observerId);
         }
-    }
-
-    private startObserveAccountBalance = async () => {
-
-        const { ws } = this.props;
-        const { accountId } = this.state;
-
-        const account = await ws.getAccount(accountId);
-        if(account.ptcBalance !== 0 && account.ethBalance !== 0){
-            this.setState({getPrix: true});
-            this.observerId = null;
-            this.transferTokens();
-        }else{
-            this.observerId = setTimeout(this.startObserveAccountBalance, 3000);
+        if(!isModal){
+            dispatch(handlers.setAutoTransfer(false));
         }
-    }
-
-    private transferTokens = async () => {
-        const { ws } = this.props;
-        const { accountId  } = this.state;
-
-        const account = await ws.getAccount(accountId);
-        const settings = await ws.getSettings();
-
-        await ws.transferTokens(accountId, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice'].value));
-        this.startObserveServiceBalance();
     }
 
     private startObserveServiceBalance = async () => {
 
-        const { ws } = this.props;
+        const { ws, t, dispatch } = this.props;
         const { accountId } = this.state;
 
         const account = await ws.getAccount(accountId);
-        if(account.pscBalance !== 0 ){
+
+        if(account.ptcBalance !== 0 && account.ethBalance !== 0){
+            this.setState({getPrix: true});
+        }
+
+        if(account.pscBalance !== this.state.accountPSCBalance ){
             this.setState({done: true});
+            dispatch(handlers.addNotice({code: 1, notice: {level: 'info', msg: t('transferTokens:TransferPRIXCompletedSuccessfully')}}));
             this.observerId = null;
         }else{
             this.observerId = setTimeout(this.startObserveServiceBalance, 3000);
@@ -145,7 +109,7 @@ class GetPrix extends React.Component<IProps, IState>{
 
         evt.preventDefault();
         this.setState({didIt: true});
-        this.startObserveAccountBalance();
+        this.startObserveServiceBalance();
     }
 
     private onFinish = (evt: any) => {
@@ -163,37 +127,41 @@ class GetPrix extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t, accountId } = this.props;
-        const { ethAddr, didIt, getPrix, done } = this.state;
-        const advancedMode = accountId && accountId !== 'generate';
+        const { t, isModal } = this.props;
+        const { ethAddr, didIt, getPrix, done, err } = this.state;
+        const advancedMode = !this.isSimpleMode();
+        const panelHeading = isModal
+            ? ''
+            : <div className='panel-heading'>
+                <h4 className='text-center'>PRIX</h4>
+            </div>;
+        const steps = isModal
+            ? ''
+            : <Steps step={advancedMode ? 6 : 4} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />;
+        const bottomButtons = isModal
+            ? ''
+            : <div className='form-group text-right m-t-40'>
+                {advancedMode ? <PreviousButton onSubmit={this.back} /> : null }
+                {done
+                    ? <FinishButton onSubmit={this.onFinish} />
+                    : <button className='btn btn-default text-uppercase waves-effect waves-light pull-right m-l-5 btnCustomDisabled disabled' >
+                        {t('auth/utils:Finish')}
+                    </button>
+                }
+            </div>;
 
         return <div className='card-box'>
-            <div className='panel-heading'>
-                <h4 className='text-center'>PRIX</h4>
-            </div>
-            <div className='form-horizontal m-t-20'>
-                <div className='p-20 wizard clearfix'>
-                    <Steps step={advancedMode ? 6 : 3} prix={true} shape={advancedMode ? 'advanced' : 'simple' } />
+            {panelHeading}
+            <div className={'form-horizontal ' + (isModal ? '' : 'm-t-20')}>
+                <div className={(isModal ? '' : 'p-20 ') + 'wizard clearfix'}>
+                    {steps}
                     <div className='content clearfix'>
                         <section>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td style={ {verticalAlign: 'top', width: '30' } } >
-                                            <i className='fa fa-info-circle' style={ {fontSize:'22px', color: 'deepskyblue', marginRight:'10px'} }></i>
-                                        </td>
-                                        <td>
-                                            <p>
-                                                <i>{t('intro')}&nbsp;
-                                                    <ExternalLink href='https://help.privatix.network/general/short-explanation-of-core-simple-ui-client'>
-                                                    {t('learnMore')}
-                                                    </ExternalLink>.
-                                                </i>
-                                            </p>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <HintComponent msg={<i>{t('intro')}&nbsp;
+                                <ExternalLink href='https://docs.privatix.network/knowledge-base/simple-and-advanced-client'>
+                                    {t('learnMore')}
+                                </ExternalLink>.
+                            </i>} />
 
                             <h4>{t('fundYourAccount')}</h4>
 
@@ -211,13 +179,13 @@ class GetPrix extends React.Component<IProps, IState>{
                                                     <li>
                                                         <Trans i18nKey='weRecommend'>
                                                             We recommend transferring min 0.005 ETH and min 1 PRIX. Learn about price formation&nbsp;
-                                                            <ExternalLink href='https://help.privatix.network/general/price-formation'>here</ExternalLink>
+                                                            <ExternalLink href='https://docs.privatix.network/knowledge-base/traffic-prices-formation'>here</ExternalLink>
                                                         </Trans>
                                                     </li>
                                                     <li>
                                                         <Trans i18nKey='thisOptionIsGood'>
                                                             This option is good for users who already have PRIX and ETH. If you didn't,&nbsp;
-                                                            <ExternalLink href='https://help.privatix.network/general/how-to-get-prix-token'>
+                                                            <ExternalLink href='https://docs.privatix.network/knowledge-base/how-to-get-prix'>
                                                                 learn how to get them
                                                             </ExternalLink>
                                                         </Trans>
@@ -229,9 +197,9 @@ class GetPrix extends React.Component<IProps, IState>{
                                                            readOnly type='text'
                                                            defaultValue={ethAddr}
                                                     />
-                                                    <span style={ {paddingLeft: '9px', paddingRight: '16px'} }
+                                                    <span style={ {padding: '0'} }
                                                           className='input-group-addon bootstrap-touchspin-postfix'>
-                                                        <CopyToClipboard text={ethAddr} />
+                                                        <CopyToClipboard text={ethAddr}  className='inputCopyBtn' />
                                                     </span>
                                                 </div>
                                             </td>
@@ -278,8 +246,9 @@ class GetPrix extends React.Component<IProps, IState>{
                                     }
                                 </div>
                             </div>
-                            {didIt && (!getPrix || !done)
-                                ? <div className='text-center'>
+                            <div className='text-center'>
+                                {didIt && (!getPrix || !done ) && !err
+                                    ? <>
                                       {getPrix
                                           ? <>
                                               <div>{t('TokensHaveBeenReceived')}</div>
@@ -288,22 +257,14 @@ class GetPrix extends React.Component<IProps, IState>{
                                           : t('PleaseWait')
                                       }
                                       <Spinner />
-                                  </div>
-                                : null
-                            }
-                            <h4 className='text-center'>
-                                {done ? t('AllDonePressFinish') : null }
-                            </h4>
-
-                            <div className='form-group text-right m-t-40'>
-                                {advancedMode ? <PreviousButton onSubmit={this.back} /> : null }
-                                {done
-                                    ? <FinishButton onSubmit={this.onFinish} />
-                                    : <button className='btn btn-default text-uppercase waves-effect waves-light pull-right m-l-5 btnCustomDisabled disabled' >
-                                          {t('auth/utils:Finish')}
-                                      </button>
+                                      </>
+                                    : (done ? t('Congrats') : (err ? t('notEnoughETH') : null))
                                 }
-                           </div>
+                            </div>
+                            <h4 className='text-center'>
+                                {done ? (isModal ? t('AllDoneCloseModal') : t('AllDonePressFinish')) : null }
+                            </h4>
+                            {bottomButtons}
                         </section>
 
                     </div>
@@ -313,4 +274,4 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(withRouter(GetPrix));
+export default connect((state:State, ownProps: IProps) => Object.assign({}, {mode: state.mode, role: state.role, ws: state.ws, notices: state.notices}, ownProps))(withRouter(GetPrix));

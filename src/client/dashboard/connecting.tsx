@@ -42,11 +42,13 @@ const countdownRender = ( { hours, minutes, seconds, completed } ) => {
 
 };
 
-@translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal'])
+@translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal', 'client/simpleMode'])
 class Connecting extends React.Component<any, any>{
 
     subscription: String;
     handler = 0;
+    mounted = false;
+    resuming = false;
 
     constructor(props:any) {
         super(props);
@@ -60,11 +62,13 @@ class Connecting extends React.Component<any, any>{
     }
 
     componentDidMount() {
+        this.mounted = true;
         this.refresh();
     }
 
     componentWillUnmount() {
 
+        this.mounted = false;
         const { ws } = this.props;
 
         if(this.handler !== 0){
@@ -78,26 +82,36 @@ class Connecting extends React.Component<any, any>{
 
     connectHandler(evt: any) {
         evt.preventDefault();
-        this.props.ws.changeChannelStatus(this.state.channel.id, 'resume');
+        if(!this.resuming){
+            this.resuming = true;
+            this.props.ws.changeChannelStatus(this.state.channel.id, 'resume');
+        }
     }
 
     refresh = async () => {
+
+        if(!this.mounted){
+            return;
+        }
 
         const { t, ws } = this.props;
 
         const channels = await ws.getNotTerminatedClientChannels();
 
-        if(this.subscription){
-            await ws.unsubscribe(this.subscription);
-        }
-
         if(channels.length){
 
-            const ids = channels.map(channel => channel.id);
-            this.subscription = await ws.subscribe('channel', ids, this.refresh);
+            if(this.subscription && (!this.state.channel || this.state.channel.id !== channels[0].id)){
+                ws.unsubscribe(this.subscription);
+                this.subscription = null;
+            }
+            if(!this.subscription){
+                this.subscription = await ws.subscribe('channel', [channels[0].id], this.refresh);
+            }
+
             const channel = channels[0];
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
+                    this.resuming = false;
                     const offering = await ws.getOffering(channel.offering);
                     this.setState({status: 'active', channel, offering, pendingTimeCounter: 0});
                     break;

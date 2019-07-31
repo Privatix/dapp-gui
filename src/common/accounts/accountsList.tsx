@@ -14,7 +14,10 @@ import * as api from 'utils/api';
 
 import {State} from 'typings/state';
 
-import { Name, EthereumAddress, ETH, ExchangeBalance, ServiceBalance, IsDefault, Actions } from 'common/tables/';
+import eth from 'utils/eth';
+import prix from 'utils/prix';
+
+import { Name, EthereumAddress, AccountBalance, Marketplace, Escrow, Actions } from 'common/tables/';
 
 interface IProps {
     accounts?: State['accounts'];
@@ -63,7 +66,7 @@ class Accounts extends React.Component<IProps, {}> {
         try{
             await ws.updateAccount(account.id, account.name, true, account.inUse);
         }catch(e){
-            // 
+            //
         }
     }
 
@@ -73,7 +76,6 @@ class Accounts extends React.Component<IProps, {}> {
 
         const accountsDataArr = accounts.map(account => {
 
-            const isDefault = account.isDefault === true ? 'on' : 'off';
             const ethereumAddress = `0x${account.ethAddr}`;
 
             return {
@@ -85,12 +87,9 @@ class Accounts extends React.Component<IProps, {}> {
                                    component={<Account account={account} />}
                       />,
                 ethereumAddress,
-                eth: account.ethBalance,
-                exchangeBalance: account.ptcBalance,
-                serviceBalance: account.pscBalance,
-                isDefault: <span className={'fieldStatusLabel fieldStatus-' + isDefault} onClick={account.isDefault ? null : this.onSetAsDefault.bind(this, account)}>
-                               <i className={'md md-check-box' + (isDefault === 'off' ? '-outline-blank' : '')}></i>
-                           </span>,
+                account: <>{prix(account.ptcBalance)} PRIX&nbsp;&nbsp;{eth(account.ethBalance)} ETH</>,
+                marketplace: prix(account.pscBalance) + ' PRIX',
+                escrow: prix(account.escrow) + ' PRIX',
                 actions: <>
                              <Link to={'#'}
                                    onClick={this.onRefresh.bind(this, account.id)}
@@ -113,10 +112,9 @@ class Accounts extends React.Component<IProps, {}> {
         const columns = [
             Name,
             EthereumAddress,
-            ETH,
-            ExchangeBalance,
-            ServiceBalance,
-            IsDefault,
+            AccountBalance,
+            Marketplace,
+            Escrow,
             Actions
         ];
 
@@ -124,11 +122,6 @@ class Accounts extends React.Component<IProps, {}> {
             <div className='row'>
                 <div className='col-sm-12 m-b-15'>
                     <h3 className='page-title'>{t('Title')}</h3>
-                    <div className='m-t-15'>
-                        <Link to={'/setAccount'} className='btn btn-default btn-custom waves-effect waves-light m-r-15'>
-                            {t('CreateBtn')}
-                        </Link>
-                    </div>
                 </div>
             </div>
             <div className='row'>

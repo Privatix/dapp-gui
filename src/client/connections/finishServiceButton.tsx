@@ -49,7 +49,6 @@ class FinishServiceButton extends React.Component<IProps, {}>{
                 swalType='warning'
                 swalConfirmBtnText={t('YesFinishIt')}
                 swalTitle={t('AreYouSure')}
-                disabledBtn={true}
             />
         </div>;
     }

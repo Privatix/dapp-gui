@@ -9,9 +9,15 @@ import * as sudo from 'sudo-prompt';
 
 import { updateChecker } from './updateChecker';
 
+let smartExit = false;
+
 let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
-
+  settings.rootpath = __dirname;
+  if (settings.log && settings.log.filePath){
+    let userHome = app.getPath('home');
+    settings.log.filePath = settings.log.filePath.replace(/(\~\/|\$HOME)/, userHome);
+  }
   const announce = function(announcement: any){
       win.webContents.send('releases', announcement);
   };
@@ -65,6 +71,14 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         const { width, height } = req.options;
         win.setSize(width, height);
         event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
+    }else if(req.endpoint === '/exit'){
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
+        smartExit = false;
+        win = null;
+        app.quit();
+    }else if(req.endpoint === '/smartExit'){
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
+        smartExit = req.options.body.status;
     }
   });
 
@@ -90,10 +104,15 @@ function createWindow () {
     slashes: true
   }));
 
-  // Open the DevTools.
-  if (process.env.TARGET === 'dev') {
-      win.webContents.openDevTools();
-  }
+  win.on('close', function(e: any){
+    if(smartExit){
+        e.preventDefault();
+        win.webContents.send('exit', {});
+    }else{
+        win = null;
+        app.quit();
+    }
+  });
 
     // Emitted when the window is closed.
   win.on('closed', () => {
@@ -131,6 +150,8 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+app.setAppUserModelId(process.execPath);
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

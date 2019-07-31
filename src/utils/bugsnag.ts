@@ -21,17 +21,11 @@ export const registerBugsnagHandler = async (window, apiKey, release, commit, us
         releaseStage,
     });
 
-    if(ws){
-        const role = await ws.getUserRole();
-        bugsnagClient.user = {
-            id: userId,
-            role
-        };
-    }else{
-        bugsnagClient.user = {
-            id: userId
-        };
-    }
+    const { role } = await api.settings.getLocal();
+    bugsnagClient.user = {
+        id: userId,
+        role
+    };
 
     if (window.onerror) {
 

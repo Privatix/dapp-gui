@@ -15,6 +15,7 @@ import ModalWindow from 'common/modalWindow';
 
 import notice from 'utils/notice';
 import countryByIso from 'utils/countryByIso';
+import { ipTypesAssoc } from 'utils/ipTypes';
 
 import Spinner from './spinner';
 import VPNListTable from './table';
@@ -22,10 +23,12 @@ import SelectByAgent from './selectByAgent';
 import SelectByOffering from './selectByOffering';
 import SelectCountry from './selectCountry';
 import SelectByPrice from './selectByPrice';
+import SelectByIPType from './selectByIPType';
 
 import { State } from 'typings/state';
 import { ClientOfferingItem } from 'typings/offerings';
 import { WS } from 'utils/ws';
+import handlers from 'redux/actions';
 
 interface IProps {
     t?: any;
@@ -45,6 +48,7 @@ interface Filter {
     };
     agent: string;
     offeringHash: string;
+    checkedIPTypes: string[];
     checkedCountries: string[];
     searchCountryStr: string;
 }
@@ -57,6 +61,7 @@ interface IState {
     filter: Filter;
     spinner: boolean;
     countries: string[];
+    maxRating: number;
     filteredCountries: string[];
     activePage: number;
     totalItems: number;
@@ -87,6 +92,7 @@ class VPNList extends React.Component<IProps, IState> {
             agent: '',
             offeringHash: '',
             checkedCountries: [],
+            checkedIPTypes: [],
             searchCountryStr: ''
         };
     }
@@ -105,6 +111,7 @@ class VPNList extends React.Component<IProps, IState> {
             },
             spinner: true,
             countries: [],
+            maxRating: 0,
             filteredCountries: [],
             activePage: 1,
             totalItems: 0,
@@ -171,7 +178,7 @@ class VPNList extends React.Component<IProps, IState> {
             try {
                 const offering = await ws.getObjectByHash('offering', filter.offeringHash.replace(/^0x/, ''));
                 this.setState({
-                    rawOfferings: [{offering: offering.items[0], rating: 0}],
+                    rawOfferings: [{offering, rating: 0}],
                     totalItems: 1
                 });
             } catch (e) {
@@ -196,7 +203,13 @@ class VPNList extends React.Component<IProps, IState> {
         const fromVal = Math.round(from * 1e8);
         const toVal = Math.round(to * 1e8);
 
-        const clientOfferingsLimited = await ws.getClientOfferings(filter.agent.replace(/^0x/, ''), fromVal, toVal, filter.checkedCountries, offset, limit);
+        const clientOfferingsLimited = await ws.getClientOfferings(filter.agent.replace(/^0x/, '')
+                                                                  ,fromVal
+                                                                  ,toVal
+                                                                  ,filter.checkedCountries
+                                                                  ,filter.checkedIPTypes
+                                                                  ,offset
+                                                                  ,limit);
         const {items: clientOfferings} = clientOfferingsLimited;
 
         if (this.handler !== null) {
@@ -220,19 +233,20 @@ class VPNList extends React.Component<IProps, IState> {
             rawOfferings: clientOfferings,
             totalItems: clientOfferingsLimited.totalItems,
             countries: allCountries,
+            maxRating: filterParams.maxRating,
             filteredCountries: filter.searchCountryStr === '' ? allCountries : this.filterCountries(filter.searchCountryStr, allCountries)
         });
         this.updateFilter({price: {userFilter: filter.price.userFilter, min, max, from, to}}, undefined);
     }
 
-    formFilteredDataRow(offeringItem: ClientOfferingItem) {
+    formFilteredDataRow(offeringItem: ClientOfferingItem, maxRating: number) {
 
         const { t, offeringsAvailability } = this.props;
         const offering = offeringItem.offering;
         const offeringHash = '0x' + offering.hash;
 
         const availability = (offering.id in offeringsAvailability.statuses)
-            ? (offeringsAvailability.statuses[offering.id] === true ? 'available' : 'unreachable')
+            ? (offeringsAvailability.statuses[offering.id] === true ? 'available' : (offeringsAvailability.statuses[offering.id] === false ? 'unreachable' : 'unknown' ))
             : 'unknown';
 
         return {
@@ -247,10 +261,12 @@ class VPNList extends React.Component<IProps, IState> {
             />,
             agent: offering.agent,
             country: countryByIso(offering.country),
+            ipType: ipTypesAssoc[offering.ipType],
             price: offering.unitPrice,
             availableSupply: offering.currentSupply,
             supply: offering.supply,
-            rating: offeringItem.rating
+            rating: maxRating ? (100/maxRating)*offeringItem.rating : 0,
+            maxUnits: offering.maxUnit
         };
     }
 
@@ -332,6 +348,18 @@ class VPNList extends React.Component<IProps, IState> {
         }
     }
 
+    filterByIPTypeHandler = (e: any): void => {
+
+        const { filter } = this.state;
+        const changedType = e.target.value;
+
+        if(filter.checkedIPTypes.includes(changedType)){
+            this.updateFilter({checkedIPTypes: filter.checkedIPTypes.filter(IPType => IPType !== changedType)}, this.getClientOfferings);
+        }else{
+            this.updateFilter({checkedIPTypes: filter.checkedIPTypes.concat([changedType])}, this.getClientOfferings);
+        }
+    }
+
     filterByCountryHandler = (e:any): void => {
 
         const { filter } = this.state;
@@ -364,6 +392,7 @@ class VPNList extends React.Component<IProps, IState> {
     onCheckStatus = () => {
         this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
         const offeringsIds = this.state.rawOfferings.map(offeringItem => offeringItem.offering.id);
+        this.props.dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
     }
 
@@ -374,9 +403,9 @@ class VPNList extends React.Component<IProps, IState> {
         }
 
         const { t, localSettings, offeringsAvailability } = this.props;
-        const { rawOfferings, filteredCountries, filter, form, activePage, totalItems } = this.state;
+        const { rawOfferings, filteredCountries, filter, form, activePage, totalItems, maxRating } = this.state;
 
-        const offerings = rawOfferings.map(offeringItem => this.formFilteredDataRow(offeringItem));
+        const offerings = rawOfferings.map(offeringItem => this.formFilteredDataRow(offeringItem, maxRating));
 
         if (offeringsAvailability.counter === 0
             && this.checkAvailabilityBtn.current
@@ -435,6 +464,11 @@ class VPNList extends React.Component<IProps, IState> {
                             step={form.step}
                             start={filter.price.from}
                             end={filter.price.to}
+                        />
+
+                        <SelectByIPType
+                            selectedTypes={filter.checkedIPTypes}
+                            onChange={this.filterByIPTypeHandler}
                         />
 
                         <SelectCountry

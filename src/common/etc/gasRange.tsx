@@ -64,7 +64,7 @@ export default class GasRange extends React.Component<IProps, {}> {
                     <strong>{averageTime} {this.averageTime(value)} {t('AverageTime')}</strong>
                 </div>
                 <div className='col-12 col-form-label'>
-                    <strong>{t('MoreInformation')}</strong> <ExternalLink href='https://ethgasstation.info/' text={extLink} />
+                    <strong>{t('RecommendedGasPricesInformation')}</strong> <ExternalLink href='https://ethgasstation.info/' text={extLink} />
                 </div>
             </div>
         </div>;
