@@ -129,7 +129,7 @@ class AccountView extends React.Component<IProps, IState> {
 
     render() {
 
-        const { t, account, localSettings } = this.props;
+        const { t, account } = this.props;
         const { destination, address, gasPrice, transferStarted } = this.state;
 
         return <div className='row justify-content-center'>
@@ -266,7 +266,7 @@ class AccountView extends React.Component<IProps, IState> {
                     </div>
                 </div>
 
-                <Transactions accountId={account.id} network={localSettings.network} />
+                <Transactions accountId={account.id} />
             </div>
         </div>;
     }
