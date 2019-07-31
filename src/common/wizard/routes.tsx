@@ -48,10 +48,9 @@ class Routes extends React.Component<IProps, {}> {
                                                />
                               }
                 />,
-                <Route key='/getPrix/' path='/getPrix/:accountId/:mode'
+                <Route key='/getPrix/' path='/getPrix/:accountId'
                        render={(props: any) => <GetPrix entryPoint={'/app'}
                                                         accountId={props.match.params.accountId}
-                                                        mode={props.match.params.mode}
                                                />
                               }
                 />,
@@ -90,10 +89,9 @@ class Routes extends React.Component<IProps, {}> {
 
         if( mode === Mode.SIMPLE || mode === Mode.WIZARD){
             let routes = [
-                <Route key='/getPrix/' path='/getPrix/:accountId/:mode'
+                <Route key='/getPrix/' path='/getPrix/:accountId'
                        render={(props: any) => <GetPrix entryPoint={'/app'}
                                                         accountId={props.match.params.accountId}
-                                                        mode={props.match.params.mode}
                                                />
                               }
                 />,
@@ -121,7 +119,6 @@ class Routes extends React.Component<IProps, {}> {
                     <Route key='/' path='/'
                            render={(props: any) => <GetPrix entryPoint={'/app'}
                                                             accountId=''
-                                                            mode={'simple'}
                                                    />
                                   }
                     />,

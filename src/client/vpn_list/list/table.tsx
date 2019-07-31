@@ -2,16 +2,19 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
-import { Availability
-       , Block
-       , Hash
-       , Agent
-       , Country
-       , Price
-       , MaxUnits
-       , AvailableSupply
-       , Supply
-       , Rating } from 'common/tables/';
+import {
+    Availability
+    , Block
+    , Hash
+    , Agent
+    , Country
+    , IpType
+    , Price
+    , MaxUnits
+    , AvailableSupply
+    , Supply
+    , Rating
+} from 'common/tables/';
 
 const translated = translate(['client/vpnList', 'common']);
 
@@ -24,6 +27,7 @@ class VPNListTable extends React.Component<any,any> {
             Hash,
             Agent,
             Country,
+            IpType,
             Price,
             MaxUnits,
             AvailableSupply,

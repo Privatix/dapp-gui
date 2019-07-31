@@ -8,7 +8,6 @@ import { createMemoryHistory } from 'history';
 import Navigation from './navigation/navigation';
 import Header from './header';
 import Settings from './settings/';
-import ExitNotice from 'client/exitNotice';
 
 import Wizard from './wizard/';
 
@@ -26,6 +25,7 @@ import VPNList from 'client/vpn_list/list/';
 import AcceptOffering from 'client/vpn_list/acceptOffering';
 import ClientHistory from 'client/vpn_list/history';
 import ExternalLinkWarning from 'common/externalLinkWarning';
+import ExitNotice from 'client/exit/notice';
 
 import Logs from 'common/logs/logsList';
 
@@ -45,9 +45,8 @@ class App extends React.Component<IProps, {}> {
     render(){
 
         const { role, mode } = this.props;
-
         if(role === Role.CLIENT && mode === Mode.SIMPLE){
-            return <LightClient />;
+             return <LightClient />;
         }
 
         const app = (

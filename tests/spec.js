@@ -23,13 +23,19 @@ describe('Application launch', function () {
   })
 
   it('shows an initial window', function () {
-      return me.app.client.getWindowCount().then(function(count){
-         return me.app.client.windowByIndex(count-1).then(function() {
-          return me.app.client.getTitle().then(function (title) {
-              assert.equal('Privatix service app', title)
-            })
-        });
-      })
+      return me.app.client.getWindowCount()
+         .then(function(count){
+             return me.app.client.windowByIndex(count-1);
+         }).then(function() {
+             return me.app.client.getTitle();
+         }).then(function (title) {
+             assert.equal('Privatix service app', title)
+         }).then(function () {
+             // Stop the application
+             return me.app.stop();
+         }).catch(function (error) {
+             // Log any failures
+             console.error('Test failed', error.message)
+         });
   })
-
 })

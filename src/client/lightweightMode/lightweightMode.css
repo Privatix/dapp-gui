@@ -58,26 +58,3 @@
 .SMBalanceRow:last-child{
     border-bottom: none;
 }
-.addFundsPlusBtnBl{
-    position: absolute;
-    top: 5px;
-    right: -30px;
-}
-.addFundsPlusBtn{
-    font-size: 0;
-    width: 23px;
-    height: 23px;
-    display: block;
-    border-radius: 50%;
-    background: #3BBF1A;
-}
-.addFundsPlusBtn:after{
-    content: '+';
-    font-size: 25px;
-    color: #fff;
-    width: 23px;
-    height: 23px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}

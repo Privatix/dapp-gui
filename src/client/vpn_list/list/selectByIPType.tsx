@@ -7,7 +7,7 @@ interface IProps {
     onChange(evt: any): void;
 }
 
-const translated = translate(['client/vpnList']);
+const translated = translate(['client/vpnList', 'common']);
 
 class SelectByIPType extends React.Component<IProps, {}>{
 
@@ -16,7 +16,7 @@ class SelectByIPType extends React.Component<IProps, {}>{
         const { t, selectedTypes, onChange } = this.props;
 
         const checkboxes = ['residential', 'datacenter', 'mobile'].map(ipType => (
-            <div className='checkbox checkbox-custom'>
+            <div className='checkbox checkbox-custom' key={ipType}>
                 <input id={ipType}
                        type='checkbox'
                        name='checkboxIPType'
@@ -29,7 +29,7 @@ class SelectByIPType extends React.Component<IProps, {}>{
 
         return (
             <div className='card m-t-15 m-b-20 vpnListCountryFilterBl'>
-                <h5 className='card-header'>{t('IPType')}</h5>
+                <h5 className='card-header'>{t('common:IPType')}</h5>
                 <div className='card-body'>
                     { checkboxes }
                 </div>

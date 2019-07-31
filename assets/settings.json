@@ -5,7 +5,10 @@
         "acceptOffering": 75446,
         "createOffering": 112941,
         "transfer": 148755,
-        "increaseDeposit": 45836
+        "returnBalance": 61473,
+        "increaseDeposit": 45836,
+        "removeOffering": 39935,
+        "popupOffering": 42579
    },
    "network": "rinkeby",
    "bugsnag": {
@@ -15,7 +18,7 @@
    },
    "release": "0.18.0",
    "target": "",
-   "role": "client",
+   "role": "agent",
    "logsCountPerPage": 10,
    "elementsPerPage": 10,
    "lang": "en",
@@ -24,7 +27,7 @@
    "updateCheckFreq": 480,
    "window": {
        "advanced": {"width": 1024, "height": 800},
-       "simple": {"width": 600, "height": 800},
+       "simple": {"width": 600, "height": 880},
        "wizard": {"width": 1024, "height": 800}
    },
    "reconnect": {
@@ -32,5 +35,16 @@
        "delay": 3000,
        "progression": 3
    },
-   "role": "client"
+   "timings":{
+       "updateBalances": 60000,
+       "delayBetweenTransferTokensAndUpdateBalance": 120000
+   },
+   "log": {
+       "level": "info",
+       "console": true,
+       "file": true,
+       "fileName": "dapp-gui.log",
+       "filePath": "",
+       "fileOverwrite": true
+   }
 }

@@ -23,19 +23,18 @@ const translated = translate(['client/vpnList']);
 
 class SelectByPrice extends React.Component<IProps, IState>{
 
-    private k = 1000;
 
     onChangeRange = (value: any) => {
-
-        const { onChangeRange } = this.props;
+        const { onChangeRange, max } = this.props;
+        const k = 100000/max;
         const [ from, to ] = value;
-        onChangeRange([from/this.k, to/this.k]);
+        onChangeRange([from/k, to/k]);
     }
 
     render () {
 
         const { t, onChangeMinPrice, onChangeMaxPrice, min, max, step, start, end } = this.props;
-        const k = this.k;
+        const k = 100000/max;
 
         return (
             <div className='card m-b-20'>
@@ -79,7 +78,7 @@ class SelectByPrice extends React.Component<IProps, IState>{
                         <div className='col-12'>
                             <Range value={[start*k, end*k]}
                                    min={min*k}
-                                   max={max*k}
+                                   max={max*k*1.01}
                                    step={step*k}
                                    onChange={this.onChangeRange}
                                    allowCross={false}

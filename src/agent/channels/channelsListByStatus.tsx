@@ -32,6 +32,7 @@ class Channels extends React.Component<Props, any> {
     private subscription: string;
     private onNewChannelSubscription: string;
     polling = null;
+    private mounted = false;
 
     constructor(props: Props) {
         super(props);
@@ -54,10 +55,12 @@ class Channels extends React.Component<Props, any> {
     }
 
     componentDidMount(){
+        this.mounted = true;
         this.refresh();
     }
 
     componentWillUnmount() {
+        this.mounted = false;
         this.stop();
     }
 
@@ -70,7 +73,7 @@ class Channels extends React.Component<Props, any> {
             this.subscription = undefined;
         }
 
-        if (this.subscription) {
+        if (this.onNewChannelSubscription) {
             ws.unsubscribe(this.onNewChannelSubscription);
             this.onNewChannelSubscription = undefined;
         }
@@ -84,6 +87,10 @@ class Channels extends React.Component<Props, any> {
     refresh = async () => {
 
         this.stop();
+
+        if(!this.mounted){
+            return;
+        }
 
         const { ws } = this.props;
         const { status } = this.state;
@@ -127,8 +134,10 @@ class Channels extends React.Component<Props, any> {
             clearTimeout(this.polling);
             this.polling = null;
         }
-        this.polling = setTimeout(this.updateUsage.bind(this, ids), 3000);
-        this.setState({usage: await ws.getChannelsUsage(ids)});
+        if(this.mounted){
+            this.polling = setTimeout(this.updateUsage.bind(this, ids), 3000);
+            this.setState({usage: await ws.getChannelsUsage(ids)});
+        }
     }
 
     static getDerivedStateFromProps(props: any, state: any){

@@ -82,7 +82,7 @@ ul.default li {
 .statusWrap-on{
     color: #81c868;
 }
-@media only screen and (max-width: 1170px) {
+@media only screen and (max-width: 600px) {
     .topPanel li span.balanceText{
         display: none;
     }
@@ -259,6 +259,32 @@ ul.default li {
     animation: lds-dual-ring 1.2s linear infinite;
 }
 @keyframes lds-dual-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.lds-dual-ring-small {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    margin-right: 5px;
+}
+.lds-dual-ring-small:after {
+    content: " ";
+    display: block;
+    width: 16px;
+    height: 16px;
+    margin: 1px;
+    border-radius: 50%;
+    border: 2px solid #fff;
+    border-color: #878787 transparent #878787 transparent;
+    animation: lds-dual-ring-small 1.2s linear infinite;
+}
+@keyframes lds-dual-ring-small {
     0% {
         transform: rotate(0deg);
     }

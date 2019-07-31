@@ -17,4 +17,13 @@ const getIpTypes = function () {
     ];
 };
 
-export default getIpTypes();
+export const ipTypes = getIpTypes();
+
+const getIpTypesAssoc = function () {
+    let ipTypesObj = [];
+    ipTypes.map(ipType => ipTypesObj[ipType.type] = ipType.name);
+
+    return ipTypesObj;
+};
+
+export const ipTypesAssoc = getIpTypesAssoc();

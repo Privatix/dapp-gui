@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import * as uuidv4 from 'uuid/v4';
 
 import * as api from './api';
-
 import { Template, TemplateType } from 'typings/templates';
 import { Endpoint } from 'typings/endpoints';
 import { OfferStatus, Offering, AgentOfferingResponse, ClientOfferingResponse } from 'typings/offerings';
@@ -32,8 +31,10 @@ export class WS {
 //    private reject: Function = null;
     private resolve: Function = null;
     private resolveAuth: Function = null;
+    private log: any;
 
-    constructor() {
+    constructor(log: any) {
+        this.log = log;
         this.ready = new Promise((resolve: Function, reject: Function) => {
             this.resolve = resolve;
         });
@@ -117,6 +118,9 @@ export class WS {
         return this.authorized;
     }
 
+    get passwordIsEntered(){
+        return this.pwd && this.pwd !== '';
+    }
     private async restoreSubscriptions(){
         const toRestore = WS.subscribeRequests;
         WS.subscribeRequests = {};
@@ -142,14 +146,15 @@ export class WS {
                     const usagePolling = async () => {
                         const usage = await this.getChannelsUsage(ids);
                         handler(usage);
-                        WS.pollings[uuid].workerId = setTimeout(usagePolling, 2000);
+                        if(WS.pollings[uuid]){
+                            WS.pollings[uuid].workerId = setTimeout(usagePolling, 2000);
+                        }
                     };
                     WS.pollings[uuid] = {entityType, ids, handler, onReconnect};
                     resolve(uuid);
                     usagePolling();
                     break;
                 case 'channels':
-                    // подписываемся на все каналы и их usage
                     const channelsUUID = uuidv4();
                     this._subscribe(channelsUUID, 'channel', ids, handler, onReconnect)
                         .then(channelsSubscribeId => {
@@ -177,7 +182,7 @@ export class WS {
                         WS.byUUID[uuid] = msg.result;
                         resolve(uuid);
                     };
-
+                    this.log.info('Send wc subscribe request: '+JSON.stringify(req));
                     this.socket.send(JSON.stringify(req));
             }
         }) as Promise<string>;
@@ -250,7 +255,7 @@ export class WS {
                     resolve(res.result);
                 }
             };
-
+            this.log.info('Send wc request: '+JSON.stringify(req));
             WS.handlers[uuid] = handler;
             this.socket.send(JSON.stringify(req));
         });
@@ -417,8 +422,8 @@ export class WS {
         return this.send('ui_getClientOfferingsFilterParams') as Promise<GetClientOfferingsFilterParamsResponse>;
     }
 
-    getObjectByHash(type: 'offering', hash: string) : Promise<AgentOfferingResponse> {
-        return this.send('ui_getObjectByHash', [type, hash]) as Promise<AgentOfferingResponse>;
+    getObjectByHash(type: 'offering', hash: string) : Promise<Offering> {
+        return this.send('ui_getObjectByHash', [type, hash]) as Promise<Offering>;
     }
 
     pingOfferings(offeringsIds: Array<string>) {

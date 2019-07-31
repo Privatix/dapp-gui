@@ -13,7 +13,11 @@ let smartExit = false;
 
 let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
-
+  settings.rootpath = __dirname;
+  if (settings.log && settings.log.filePath){
+    let userHome = app.getPath('home');
+    settings.log.filePath = settings.log.filePath.replace(/(\~\/|\$HOME)/, userHome);
+  }
   const announce = function(announcement: any){
       win.webContents.send('releases', announcement);
   };
@@ -68,6 +72,7 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
         win.setSize(width, height);
         event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
     }else if(req.endpoint === '/exit'){
+        event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
         smartExit = false;
         win = null;
         app.quit();
@@ -145,6 +150,8 @@ app.on('activate', () => {
     createWindow();
   }
 });
+
+app.setAppUserModelId(process.execPath);
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

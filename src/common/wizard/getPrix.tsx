@@ -14,7 +14,7 @@ import { PreviousButton, FinishButton, back } from './utils';
 import Spinner from './spinner';
 
 import { State } from 'typings/state';
-import { Mode } from 'typings/mode';
+import { Mode, Role } from 'typings/mode';
 import drawQrCode from 'utils/qrCode';
 
 interface IProps{
@@ -24,7 +24,8 @@ interface IProps{
     history?: any;
     accountId: string;
     entryPoint: string;
-    mode: 'simple' | 'advanced';
+    mode?: State['mode'];
+    role?: State['role'];
     notices?: State['notices'];
     isModal?: boolean;
 }
@@ -55,28 +56,31 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 
     isSimpleMode(){
-        const { mode } = this.props;
-        return mode === 'simple';
+        const { mode, role } = this.props;
+        return mode === 'simple' || (mode === 'wizard' && role === Role.CLIENT);
     }
 
     async componentDidMount(){
-        const { ws, accountId, dispatch } = this.props;
+        const { ws, accountId, dispatch, isModal } = this.props;
 
         const account = await ws.getAccount(accountId);
         this.setState({ethAddr: `0x${account.ethAddr}`, accountPSCBalance: account.pscBalance});
         drawQrCode(`0x${account.ethAddr}`);
-        dispatch(handlers.setAutoTransfer(true));
+        if(!isModal){
+            dispatch(handlers.setAutoTransfer(true));
+        }
     }
 
     componentWillUnmount() {
 
-        const { dispatch } = this.props;
+        const { dispatch, isModal } = this.props;
 
         if(this.observerId){
             clearTimeout(this.observerId);
         }
-
-        dispatch(handlers.setAutoTransfer(false));
+        if(!isModal){
+            dispatch(handlers.setAutoTransfer(false));
+        }
     }
 
     private startObserveServiceBalance = async () => {
@@ -154,7 +158,7 @@ class GetPrix extends React.Component<IProps, IState>{
                     <div className='content clearfix'>
                         <section>
                             <HintComponent msg={<i>{t('intro')}&nbsp;
-                                <ExternalLink href='https://help.privatix.network/general/short-explanation-of-core-simple-ui-client'>
+                                <ExternalLink href='https://docs.privatix.network/knowledge-base/simple-and-advanced-client'>
                                     {t('learnMore')}
                                 </ExternalLink>.
                             </i>} />
@@ -175,13 +179,13 @@ class GetPrix extends React.Component<IProps, IState>{
                                                     <li>
                                                         <Trans i18nKey='weRecommend'>
                                                             We recommend transferring min 0.005 ETH and min 1 PRIX. Learn about price formation&nbsp;
-                                                            <ExternalLink href='https://help.privatix.network/general/price-formation'>here</ExternalLink>
+                                                            <ExternalLink href='https://docs.privatix.network/knowledge-base/traffic-prices-formation'>here</ExternalLink>
                                                         </Trans>
                                                     </li>
                                                     <li>
                                                         <Trans i18nKey='thisOptionIsGood'>
                                                             This option is good for users who already have PRIX and ETH. If you didn't,&nbsp;
-                                                            <ExternalLink href='https://help.privatix.network/general/how-to-get-prix-token'>
+                                                            <ExternalLink href='https://docs.privatix.network/knowledge-base/how-to-get-prix'>
                                                                 learn how to get them
                                                             </ExternalLink>
                                                         </Trans>
@@ -270,4 +274,4 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 }
 
-export default connect((state:State, ownProps: IProps) => Object.assign({}, {ws: state.ws, notices: state.notices}, ownProps))(withRouter(GetPrix));
+export default connect((state:State, ownProps: IProps) => Object.assign({}, {mode: state.mode, role: state.role, ws: state.ws, notices: state.notices}, ownProps))(withRouter(GetPrix));

@@ -5,6 +5,7 @@ import { createMemoryHistory } from 'history';
 
 import * as api from 'utils/api';
 import { createStorage } from 'utils/storage';
+import handlers from 'redux/actions';
 
 import Wizard from './wizard/';
 import Login from './auth/login';
@@ -86,12 +87,14 @@ export default class Start extends React.Component<{}, IState> {
             return;
         }
 
-        const storage = this.state.storage;
         const { role, supervisorEndpoint } = await api.settings.getLocal();
+        const storage = createStorage();
         if(role === Role.CLIENT){
             try{
                 const res = await fetch(`${supervisorEndpoint}/start`);
                 if(res.status === 200){
+                    const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
+                    storage.dispatch(handlers.setMode(localSettings.mode ? localSettings.mode : 'simple'));
                     this.setState({started: true, storage});
                 }else{
                     setTimeout(this.startWatchingSupervisor, 1000);
@@ -104,7 +107,7 @@ export default class Start extends React.Component<{}, IState> {
         }
     }
 
-    render(){
+    render() {
 
         const { started, component, storage } = this.state;
 
@@ -116,22 +119,24 @@ export default class Start extends React.Component<{}, IState> {
                     </I18nextProvider>
                 </Router>
             </Provider>
-         ):(
-             <I18nextProvider i18n={ i18n }>
-                 <div style={ {textAlign: 'center', margin: 'auto'} }>
-                    <h6>{ i18n.t('start:StartingServices') }<DotProgress /></h6>
+        ):(
+            <div className='startingServiceWrap'>
+                <I18nextProvider i18n={ i18n }>
+                    <div style={ {textAlign: 'center', margin: 'auto'} }>
+                        <h6>{ i18n.t('start:StartingServices') }<DotProgress /></h6>
 
-                    <div className='text-center m-t-15 m-b-15'>
-                        <div className='lds-dual-ring'></div>
+                        <div className='text-center m-t-15 m-b-15'>
+                            <div className='lds-dual-ring'></div>
+                        </div>
+
+                        <div>{ i18n.t('start:UsuallyItTakes') }</div>
+                        <div>{ i18n.t('start:IfSomethingWentWrong') }</div>&nbsp;
+                        <ExternalLink href='https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause'>
+                            { i18n.t('start:HowToDetectATroubleCause') }
+                        </ExternalLink>
                     </div>
-
-                    <div>{ i18n.t('start:UsuallyItTakes') }</div>
-                    <div>{ i18n.t('start:IfSomethingWentWrong') }</div>&nbsp;
-                    <ExternalLink href='https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause'>
-                        { i18n.t('start:HowToDetectATroubleCause') }
-                    </ExternalLink>
-                </div>
-            </I18nextProvider>
-         );
+                </I18nextProvider>
+            </div>
+        );
     }
 }

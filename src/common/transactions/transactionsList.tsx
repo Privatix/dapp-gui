@@ -20,7 +20,6 @@ interface IProps{
     t?: any;
     localSettings?: LocalSettings;
     accountId: string;
-    network: string;
 }
 
 interface IState{
@@ -92,11 +91,13 @@ class Transactions extends React.Component<IProps, IState>{
     }
 
     getTransactionsDataArr(transactions: Transaction[]) {
+        const { localSettings } = this.props;
         return transactions.map((transaction: Transaction) => {
             const tx = `0x${transaction.hash}`;
+            const network = localSettings.network === 'mainnet' ? '' : `${localSettings.network}.`;
             return {
                 date: <PgTime time={transaction.issued} />,
-                ethereumLink: <ExternalLink href={`https://${this.props.network === '' ? '' : this.props.network + '.'}etherscan.io/tx/${tx}`} text={tx} />
+                ethereumLink: <ExternalLink href={`https://${network}etherscan.io/tx/${tx}`} text={tx} />
             };
         });
     }

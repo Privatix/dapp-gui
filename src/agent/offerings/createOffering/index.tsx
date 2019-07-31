@@ -5,7 +5,7 @@ import { translate, Trans } from 'react-i18next';
 import Select from 'react-select';
 
 import notice from 'utils/notice';
-import ipTypes from 'utils/ipTypes';
+import { ipTypes } from 'utils/ipTypes';
 import prix from 'utils/prix';
 import eth from 'utils/eth';
 
@@ -397,10 +397,10 @@ class CreateOffering extends React.Component<IProps, IState>{
     }
 
     redirectToServers = () => {
-        if (this.props.location.pathname === '/products') {
+        if (this.props.location.pathname === '/') {
             this.props.closeModal();
         } else {
-            this.props.history.push('/products');
+            this.props.history.push('/');
         }
     }
 
@@ -493,7 +493,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                                     <button
                                                         className='btn btn-link btnLinkSmallCustom'
                                                         onClick={this.redirectToServers}
-                                                    >Servers</button>
+                                                    >Exit Nodes</button>
                                                     page
                                                 </Trans>
                                             </small>
@@ -521,7 +521,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                     </div>
                                 </div>
                                 <div className='form-group row'>
-                                    <label className='col-2 col-form-label'>{t('IpType')}:<span className='text-danger'>*</span> </label>
+                                    <label className='col-2 col-form-label'>{t('common:IPType')}:<span className='text-danger'>*</span> </label>
                                     <div className='col-6'>
                                         {selectIpType}
                                         <span className='help-block'>

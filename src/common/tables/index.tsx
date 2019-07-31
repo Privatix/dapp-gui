@@ -183,6 +183,12 @@ export const Country = {
     key: 'country'
 };
 
+export const IpType = {
+    header: i18n.t('common:IPType'),
+    headerStyle: {textAlign: 'center'},
+    key: 'ipType'
+};
+
 export const Price = {
     header: i18n.t('tables:Price'),
     headerStyle: {textAlign: 'center'},

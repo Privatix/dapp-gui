@@ -4,7 +4,10 @@ export interface GasConsumption {
     acceptOffering: number;
     createOffering: number;
     transfer: number;
+    returnBalance: number;
     increaseDeposit: number;
+    removeOffering: number;
+    popupOffering: number;
 }
 
 export interface LocalSettings {
@@ -41,6 +44,19 @@ export interface LocalSettings {
         progression: number;
     },
     role: Role;
+    timings: {
+        updateBalances: number;
+        delayBetweenTransferTokensAndUpdateBalance: number;
+    },
+    log: {
+        level: string;
+        console: boolean;
+        file: boolean;
+        fileName: string;
+        filePath: string;
+        fileOverwrite: boolean;
+    },
+    rootpath: string;
 }
 
 export interface DbSetting {

@@ -5,7 +5,6 @@ import { translate } from 'react-i18next';
 
 import {asyncProviders} from 'redux/actions';
 
-import { WS } from 'utils/ws';
 import {State} from 'typings/state';
 import {Offering} from 'typings/offerings';
 
@@ -21,10 +20,12 @@ interface Props extends OwnProps {
     lastProcessedBlock: number;
     removePeriod: number;
     popupPeriod: number;
-    gasPrice: string;
+    gasPrice: number;
+    localSettings: State['localSettings'];
+    accounts: State['accounts'];
     dispatch: Dispatch<any>;
     t: any;
-    ws: WS;
+    ws: State['ws'];
 }
 
 const translated = translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice']);
@@ -45,10 +46,15 @@ class PopupOfferingButton extends React.Component<Props, any>{
 
     popupOffering = async () => {
 
-        const { closeModal, ws, t, offering, gasPrice } = this.props;
+        const { closeModal, ws, t, offering, gasPrice, accounts, localSettings } = this.props;
+        const account = accounts.find(account => account.isDefault);
 
+        if(account.ethBalance < localSettings.gas.popupOffering*gasPrice){
+            notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('ErrorNotEnoughPublishFunds')});
+            return;
+        }
         try {
-            await ws.changeOfferingStatus(offering.id, 'popup', parseInt(gasPrice, 10));
+            await ws.changeOfferingStatus(offering.id, 'popup', gasPrice);
             notice({
                 level: 'info',
                 header: t('utils/notice:Congratulations!'),
@@ -111,13 +117,15 @@ class PopupOfferingButton extends React.Component<Props, any>{
 }
 
 const mapStateToProps = (state: State, ownProps: OwnProps) => {
-    const settings = state.settings;
+    const {ws, settings, localSettings, accounts } = state;
     return Object.assign({},
         {
-            ws: state.ws
+            ws
            ,lastProcessedBlock: settings['eth.event.lastProcessedBlock']
            ,popupPeriod: settings['psc.periods.popup']
-           ,gasPrice: settings['eth.default.gasprice']
+           ,gasPrice: parseInt(settings['eth.default.gasprice'], 10)
+           ,localSettings
+           ,accounts
         },
         ownProps
     );

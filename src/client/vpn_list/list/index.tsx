@@ -15,6 +15,7 @@ import ModalWindow from 'common/modalWindow';
 
 import notice from 'utils/notice';
 import countryByIso from 'utils/countryByIso';
+import { ipTypesAssoc } from 'utils/ipTypes';
 
 import Spinner from './spinner';
 import VPNListTable from './table';
@@ -27,6 +28,7 @@ import SelectByIPType from './selectByIPType';
 import { State } from 'typings/state';
 import { ClientOfferingItem } from 'typings/offerings';
 import { WS } from 'utils/ws';
+import handlers from 'redux/actions';
 
 interface IProps {
     t?: any;
@@ -176,7 +178,7 @@ class VPNList extends React.Component<IProps, IState> {
             try {
                 const offering = await ws.getObjectByHash('offering', filter.offeringHash.replace(/^0x/, ''));
                 this.setState({
-                    rawOfferings: [{offering: offering.items[0], rating: 0}],
+                    rawOfferings: [{offering, rating: 0}],
                     totalItems: 1
                 });
             } catch (e) {
@@ -244,7 +246,7 @@ class VPNList extends React.Component<IProps, IState> {
         const offeringHash = '0x' + offering.hash;
 
         const availability = (offering.id in offeringsAvailability.statuses)
-            ? (offeringsAvailability.statuses[offering.id] === true ? 'available' : 'unreachable')
+            ? (offeringsAvailability.statuses[offering.id] === true ? 'available' : (offeringsAvailability.statuses[offering.id] === false ? 'unreachable' : 'unknown' ))
             : 'unknown';
 
         return {
@@ -259,6 +261,7 @@ class VPNList extends React.Component<IProps, IState> {
             />,
             agent: offering.agent,
             country: countryByIso(offering.country),
+            ipType: ipTypesAssoc[offering.ipType],
             price: offering.unitPrice,
             availableSupply: offering.currentSupply,
             supply: offering.supply,
@@ -389,6 +392,7 @@ class VPNList extends React.Component<IProps, IState> {
     onCheckStatus = () => {
         this.checkAvailabilityBtn.current.setAttribute('disabled', 'disabled');
         const offeringsIds = this.state.rawOfferings.map(offeringItem => offeringItem.offering.id);
+        this.props.dispatch(handlers.incrementOfferingsAvailabilityCounter(offeringsIds.length));
         this.props.dispatch(asyncProviders.setOfferingsAvailability(offeringsIds));
     }
 

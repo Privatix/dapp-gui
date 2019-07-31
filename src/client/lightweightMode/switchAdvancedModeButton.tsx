@@ -12,6 +12,7 @@ import { Mode } from 'typings/mode';
 interface IProps {
     setAdvancedMode?(): void;
     t?: any;
+    ws: State['ws'];
 }
 
 @translate(['client/simpleMode'])
@@ -19,8 +20,9 @@ class SwitchAdvancedModeButton extends React.Component<IProps, {}> {
 
     onClick = (evt) => {
         evt.preventDefault();
-        const { setAdvancedMode } = this.props;
+        const { ws, setAdvancedMode } = this.props;
         setAdvancedMode();
+        ws.setGUISettings({mode: 'advanced'});
     }
 
     render(){
@@ -30,7 +32,7 @@ class SwitchAdvancedModeButton extends React.Component<IProps, {}> {
     }
 }
 
-const mapStateToProps = (state: State) => ({});
+const mapStateToProps = (state: State) => ({ws: state.ws});
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     setAdvancedMode: () => {

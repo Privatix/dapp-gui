@@ -2,6 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 
 import SelectCountry from '../selectCountry/';
+import DotProgress from 'common/progressBars/dotProgress';
 
 import prix from 'utils/prix';
 import mb from 'utils/mb';
@@ -29,6 +30,7 @@ interface IProps {
 interface IState {
     startPoint: number;
     tick: number;
+    disconnecting: boolean;
 }
 
 @translate(['client/simpleMode'])
@@ -38,7 +40,7 @@ export default class Connected extends React.Component<IProps, IState> {
 
     constructor(props: IProps){
         super(props);
-        this.state = {startPoint: 0, tick: 0};
+        this.state = {startPoint: 0, tick: 0, disconnecting: false};
     }
 
     static getDerivedStateFromProps(props: IProps, state: IState){
@@ -70,6 +72,12 @@ export default class Connected extends React.Component<IProps, IState> {
         this.tickerHandler = null;
     }
 
+    onDisconnect = (evt: any) => {
+        const { onDisconnect } = this.props;
+        this.setState({disconnecting: true});
+        onDisconnect(evt);
+    }
+
     getTime(){
         const { startPoint } = this.state;
 
@@ -86,7 +94,8 @@ export default class Connected extends React.Component<IProps, IState> {
 
     render(){
 
-        const { t, usage, ip, selectedLocation, offering, onChangeLocation, onDisconnect } = this.props;
+        const { t, usage, ip, selectedLocation, offering, onChangeLocation } = this.props;
+        const { disconnecting } = this.state;
         const traffic = usage ? mb(usage.current) : null;
         const timer = this.getTime();
 
@@ -100,8 +109,12 @@ export default class Connected extends React.Component<IProps, IState> {
                                    offering={offering}
                     />
                 </div>
-                <button type='button' onClick={onDisconnect} className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
-                    {t('Disconnect')}
+                <button type='button'
+                        onClick={this.onDisconnect}
+                        disabled={disconnecting}
+                        className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'
+                >
+                    {disconnecting ? <>{t('Disconnecting')} <DotProgress /></> : t('Disconnect') }
                 </button>
                 <ul className='list-inline m-t-15 spacing'>
                     <li>

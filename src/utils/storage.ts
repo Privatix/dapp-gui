@@ -1,3 +1,5 @@
+import * as path from 'path';
+import * as fs from 'fs';
 import * as api from './api';
 import { createStore, applyMiddleware, AnyAction } from 'redux';
 import { default as thunk, ThunkMiddleware } from 'redux-thunk';
@@ -11,19 +13,71 @@ import stopSupervisor from 'utils/stopSupervisor';
 import { WS } from 'utils/ws';
 import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
+import * as log from 'electron-log';
+
 
 const localCache = window.localStorage.getItem('localSettings');
 if(!localCache){
     window.localStorage.setItem('localSettings', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en', supervisorEndpoint: 'http://localhost:7777'}));
 }
 
+
+const canReadAndWrite = (targetPath) => {
+    return new Promise((resolve, reject) => {
+        if (fs.existsSync(targetPath)){
+            fs.access(targetPath, fs.constants.W_OK | fs.constants.R_OK, (err) => {
+                if (err) { reject(err); return; }
+                resolve(true);
+            });
+        }else{
+            const dir = path.dirname(targetPath);
+            fs.access(dir, fs.constants.W_OK | fs.constants.R_OK, (err) => {
+                if (err) { reject(err); return; }
+                resolve(false);
+            });
+        }
+    });
+};
+
 export const createStorage = () => {
     const storage = createStore(reducers, applyMiddleware(
         thunk as ThunkMiddleware<State, AnyAction> // lets us dispatch() functions
       ));
-
-    const ws = new WS();
+    
+    const ws = new WS(log);
     storage.dispatch(handlers.setWS(ws));
+    storage.dispatch(handlers.setLOG(log));
+
+    (async () => {
+        const settings = await api.settings.getLocal();
+        log.transports.file.level = false;
+        log.transports.console.level = false;
+        log.transports.mainConsole.level = false;
+        log.transports.remote.level = false;
+        if (settings.log && settings.log.console){
+            log.transports.console.level = settings.log.level as log.ILevelOption;
+            log.transports.mainConsole.level = settings.log.level as log.ILevelOption;
+        }
+        if (settings.log && settings.log.file){
+            const logpath = (!settings.log.filePath?settings.rootpath:settings.log.filePath);
+            if (!fs.existsSync(logpath)){
+                try {
+                    fs.mkdirSync(logpath, { recursive: true } as any);
+                }catch(e){
+                    console.log('Can not write to dir'+logpath,e);
+                    return;
+                }
+            }
+            const filePath = `${logpath}${path.sep}${settings.log.fileName}`;
+            canReadAndWrite(filePath).then(()=> {
+                log.transports.file.level = settings.log.level as log.ILevelOption;
+                log.transports.file.file = filePath;
+                if (settings.log.fileOverwrite && fs.existsSync(filePath)){
+                    log.transports.file.clear();
+                }
+            });
+        }
+    })();
 
     (async () => {
         await ws.whenReady();
@@ -32,9 +86,10 @@ export const createStorage = () => {
                 storage.dispatch(asyncProviders.setRole());
                 const { role } = await api.settings.getLocal();
                 const { firstStart, accountCreated } = await ws.getLocal();
+                const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
                 const mode = (firstStart || !accountCreated) ? Mode.WIZARD
                              : role === Role.AGENT ? Mode.ADVANCED : Mode.SIMPLE;
-                storage.dispatch(asyncProviders.setMode(mode));
+                storage.dispatch(asyncProviders.setMode(localSettings.mode ? localSettings.mode : mode));
                 storage.dispatch(asyncProviders.setRole());
             }
         ));
@@ -95,22 +150,30 @@ export const createStorage = () => {
         }
     });
 
-    api.on('exit', async ()=>{
+    api.on('exit', async () => {
 
         const { ws, role } = storage.getState();
         if(role === Role.CLIENT){
-            const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);
+            console.log(ws, ws.passwordIsEntered);
+            if(ws && ws.passwordIsEntered){
+                await ws.whenAuthorized();
+                const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);
 
-            if(channels.items.length){
-                storage.dispatch(handlers.setExit(true));
+                if(channels.items.length){
+                    storage.dispatch(handlers.setExit(true));
+                }else{
+                    storage.dispatch(handlers.setStoppingSupervisor(true));
+                    await stopSupervisor();
+                    api.exit();
+                }
             }else{
+                storage.dispatch(handlers.setStoppingSupervisor(true));
                 await stopSupervisor();
                 api.exit();
             }
         }else{
             api.exit();
         }
-
     });
 
     const refreshAccounts = function(){
@@ -144,6 +207,9 @@ export const createStorage = () => {
                 storage.dispatch(asyncProviders.updateProducts());
                 storage.dispatch(asyncProviders.updateTotalIncome());
             }
+            if(role === Role.CLIENT){
+                storage.dispatch(asyncProviders.observeChannel());
+            }
 
             if(serviceName === ''){
                 storage.dispatch(asyncProviders.updateServiceName());
@@ -159,10 +225,23 @@ export const createStorage = () => {
     refresh();
 
     (async () => {
-        const { role } = await api.settings.getLocal();
+        const { role, timings } = await api.settings.getLocal();
         if(role === Role.CLIENT){
             api.smartExit(true);
         }
+        const updateBalances = async () => {
+            const { ws } = storage.getState();
+
+            if(ws) {
+
+                await ws.whenAuthorized();
+                const accounts = await ws.getAccounts();
+                accounts.forEach(account => ws.updateBalance(account.id));
+            }
+            setTimeout(updateBalances, timings.updateBalances);
+        };
+
+        updateBalances();
     })();
     return storage;
 };
