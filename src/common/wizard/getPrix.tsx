@@ -158,7 +158,7 @@ class GetPrix extends React.Component<IProps, IState>{
                     <div className='content clearfix'>
                         <section>
                             <HintComponent msg={<i>{t('intro')}&nbsp;
-                                <ExternalLink href='https://help.privatix.network/general/short-explanation-of-core-simple-ui-client'>
+                                <ExternalLink href='https://docs.privatix.network/knowledge-base/simple-and-advanced-client'>
                                     {t('learnMore')}
                                 </ExternalLink>.
                             </i>} />
@@ -179,13 +179,13 @@ class GetPrix extends React.Component<IProps, IState>{
                                                     <li>
                                                         <Trans i18nKey='weRecommend'>
                                                             We recommend transferring min 0.005 ETH and min 1 PRIX. Learn about price formation&nbsp;
-                                                            <ExternalLink href='https://help.privatix.network/general/price-formation'>here</ExternalLink>
+                                                            <ExternalLink href='https://docs.privatix.network/knowledge-base/traffic-prices-formation'>here</ExternalLink>
                                                         </Trans>
                                                     </li>
                                                     <li>
                                                         <Trans i18nKey='thisOptionIsGood'>
                                                             This option is good for users who already have PRIX and ETH. If you didn't,&nbsp;
-                                                            <ExternalLink href='https://help.privatix.network/general/how-to-get-prix-token'>
+                                                            <ExternalLink href='https://docs.privatix.network/knowledge-base/how-to-get-prix'>
                                                                 learn how to get them
                                                             </ExternalLink>
                                                         </Trans>

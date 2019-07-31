@@ -825,7 +825,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 `}} />
                 <div className='SMHelpBl'>
                     <ExternalLink
-                        href={'https://help.privatix.network/core-software/simple-mode'}
+                        href={'https://docs.privatix.network/knowledge-base/simple-and-advanced-client'}
                     ><i className='md md-help'></i> <span>{t('Help')}</span></ExternalLink>
                 </div>
                 <div className='widget-chart text-center'>
@@ -873,10 +873,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
                                      component={<GetPrix entryPoint={'/app'} accountId={account.id} isModal={true} />}
                         /> |&nbsp;
                         <ExternalLink
-                            href={'https://help.privatix.network/core-software/withdrawal-funds'}
+                            href={'https://docs.privatix.network/knowledge-base/how-to-withdraw-funds'}
                         ><span>{t('withdrawal')}</span></ExternalLink> |&nbsp;
                         <ExternalLink
-                            href={'https://help.privatix.network/core-software/terms-of-use'}
+                            href={'https://docs.privatix.network/knowledge-base/terms-of-use'}
                         ><span>{t('termsOfUse')}</span></ExternalLink>
                     </div>
                 </div>
