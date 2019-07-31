@@ -137,7 +137,7 @@ export default (dispatch: any) => {
                 {
                     label: i18n.t('electronMenu:Documentation'),
                     click: function() {
-                        dispatch(handlers.showExternalLinkWarning(true, 'https://privatix.atlassian.net/wiki/spaces/BVP/pages/270762169/Privatix+DApp+High-level+design'));
+                        dispatch(handlers.showExternalLinkWarning(true, 'https://docs.privatix.network/'));
                     }
                 },
                 {

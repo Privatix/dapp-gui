@@ -118,7 +118,7 @@ class Navigation extends React.Component<Props, any> {
             <li onClick={this.handleClickFalse} className=''>
                 <ExternalLink
                     className='waves-effect cursorPoiner'
-                    href={'https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause'}
+                    href={'https://docs.privatix.network/support/feedback/how-to-detect-a-trouble-cause'}
                 ><i className='md md-help'></i> <span>{t('Help')}</span></ExternalLink>
             </li>
             <li onClick={this.handleClickFalse} className=''>

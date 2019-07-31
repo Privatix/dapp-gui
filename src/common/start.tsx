@@ -131,7 +131,7 @@ export default class Start extends React.Component<{}, IState> {
 
                         <div>{ i18n.t('start:UsuallyItTakes') }</div>
                         <div>{ i18n.t('start:IfSomethingWentWrong') }</div>&nbsp;
-                        <ExternalLink href='https://privatix.atlassian.net/wiki/spaces/BVP/pages/297304077/How+to+detect+a+trouble+cause'>
+                        <ExternalLink href='https://docs.privatix.network/support/feedback/how-to-detect-a-trouble-cause'>
                             { i18n.t('start:HowToDetectATroubleCause') }
                         </ExternalLink>
                     </div>
