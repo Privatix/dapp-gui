@@ -108,10 +108,8 @@ export const asyncProviders = {
             };
             const { channel, ws, ip, mode } = getState();
             if(evt){
-
                 if(evt.object.serviceStatus === 'terminating' && mode === Mode.SIMPLE){
-                    const usage = await ws.getChannelsUsage([evt.object.id]);
-                    if(usage[evt.object.id] && usage[evt.object.id].current === 0){
+                    if(evt.object.receiptBalance === 0){
                         startWatchingClosing(evt.object.id);
                     }
                 }
