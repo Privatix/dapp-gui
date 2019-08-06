@@ -16,6 +16,7 @@ import {State} from 'typings/state';
 
 import eth from 'utils/eth';
 import prix from 'utils/prix';
+import addFileExt from 'utils/addFileExt';
 
 import { Name, EthereumAddress, AccountBalance, Marketplace, Escrow, Actions } from 'common/tables/';
 
@@ -43,7 +44,14 @@ class Accounts extends React.Component<IProps, {}> {
         evt.preventDefault();
 
         const { t, ws } = this.props;
-        const fileName = remote.dialog.showSaveDialog({});
+        let fileName = remote.dialog.showSaveDialog({
+            filters: [{
+                name: 'json',
+                extensions: ['json']
+            }]
+        });
+
+        fileName = addFileExt('json', fileName);
 
         if(fileName){
             try {
