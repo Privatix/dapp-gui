@@ -259,7 +259,7 @@ export const asyncProviders = {
 
             let ledger = {};
             if(role === Role.CLIENT){
-                const channels = await ws.getClientChannels(['wait_coop', 'wait_challenge', 'wait_uncoop', 'pending', 'active'], [], 0, 0);
+                const channels = await ws.getClientChannels(['wait_coop', 'wait_challenge', 'in_challenge', 'wait_uncoop', 'pending', 'active'], [], 0, 0);
                 ledger = channels.items.reduce((ledger: {[key:string]: number}, channel: ClientChannel) => {
                     const address = channel.client.toLowerCase();
                     if(!(address in ledger)){

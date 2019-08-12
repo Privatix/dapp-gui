@@ -97,8 +97,9 @@ class ClientHistory extends React.Component<IProps, IState> {
         const { t } = this.props;
         const { allTerminatedChannels } = this.state;
 
-        const historyChannels = allTerminatedChannels.filter(channel => channel.channelStatus.channelStatus !== 'active');
-        const activeContractChannels = allTerminatedChannels.filter(channel => channel.channelStatus.channelStatus === 'active');
+        const activeStatuses = ['active', 'wait_coop', 'wait_challenge', 'in_challenge', 'wait_coop'];
+        const historyChannels = allTerminatedChannels.filter(channel => !activeStatuses.includes(channel.channelStatus.channelStatus));
+        const activeContractChannels = allTerminatedChannels.filter(channel => activeStatuses.includes(channel.channelStatus.channelStatus));
 
         const historyChannelsView = historyChannels.map(channel => {
             return {
