@@ -97,7 +97,9 @@ class Connecting extends React.Component<any, any>{
         const { t, ws } = this.props;
 
         const channels = await ws.getNotTerminatedClientChannels();
-
+        if(!this.mounted){
+            return;
+        }
         if(channels.length){
 
             if(this.subscription && (!this.state.channel || this.state.channel.id !== channels[0].id)){
@@ -109,15 +111,24 @@ class Connecting extends React.Component<any, any>{
             }
 
             const channel = channels[0];
+            if(!this.mounted){
+                return;
+            }
             switch(channel.channelStatus.serviceStatus){
                 case 'active':
                     this.resuming = false;
                     const offering = await ws.getOffering(channel.offering);
+                    if(!this.mounted){
+                        return;
+                    }
                     this.setState({status: 'active', channel, offering, pendingTimeCounter: 0});
                     break;
                 case 'suspended':
                     let countryAlert = '';
                     const endpoint = await ws.getEndpoints(channel.id);
+                    if(!this.mounted){
+                        return;
+                    }
                     if (endpoint[0]) {
                         const ip = endpoint[0].serviceEndpointAddress;
                         const countryStatus = endpoint[0].countryStatus;
