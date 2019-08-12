@@ -7,7 +7,7 @@ import Select from 'react-select';
 
 import notice from 'utils/notice';
 import prix from 'utils/prix';
-import eth from 'utils/prix';
+import eth from 'utils/eth';
 
 import GasRange from 'common/etc/gasRange';
 
