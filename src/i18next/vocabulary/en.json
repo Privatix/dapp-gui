@@ -54,13 +54,14 @@
         "SomethingWentWrong": "Something went wrong. Please, check the file or enter a valid password.",
         "PathToJSONKeystoreFile": "Path to JSON Keystore File",
         "PasswordWillBeUsed": "Password (will be used to decrypt JSON)",
-        "MoreInformation": "More information about Ethereum Private Key"
+        "MoreInformation": "More about Ethereum keystore"
     },
     "auth/importHexKey": {
         "PleaseInputHexRepresentation": "Please, input hex representation of your Private Key for address, that holds PRIX",
         "PrivateKey": "Private key",
         "PrivateKeyMustHave": "Private key must have exactly 64 hex symbols.",
-        "SomethingWentWrong": "Something went wrong. Please, check the key."
+        "SomethingWentWrong": "Something went wrong. Please, check the key.",
+        "MoreInformationPrivateKey": "More about Ethereum Private Key"
     },
     "auth/backup": {
         "Backup": "Backup",

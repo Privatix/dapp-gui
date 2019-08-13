@@ -150,7 +150,7 @@ class ImportJsonKey extends React.Component<IProps, IState>{
                                 />
                               </div>
                            </div>
-                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('MoreInformation')}</a>
+                           <a href='https://theethereum.wiki/w/index.php/Accounts,_Addresses,_Public_And_Private_Keys,_And_Tokens#UTC_JSON_Keystore_File' target='_blank'>{t('auth/importJsonKey:MoreInformation')}</a>
                            <div className='form-group text-right m-t-40'>
                                 <PreviousButton onSubmit={this.back} />
                                 <NextButton onSubmit={this.onSubmit} />

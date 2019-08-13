@@ -130,7 +130,7 @@ class ImportHexKey extends React.Component<IProps, IState>{
                                 <textarea className='form-control' onChange={this.onPrivateKeyChanged} ></textarea>
                               </div>
                            </div>
-                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('auth/importJsonKey:MoreInformation')}</a>
+                           <a href='https://en.wikipedia.org/wiki/Ethereum' target='_blank'>{t('auth/importHexKey:MoreInformationPrivateKey')}</a>
                            <div className='form-group text-right m-t-40'>
                                 <PreviousButton onSubmit={this.back} />
                                 <NextButton onSubmit={this.onSubmit} />
