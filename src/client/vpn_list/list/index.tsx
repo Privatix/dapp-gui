@@ -168,7 +168,11 @@ class VPNList extends React.Component<IProps, IState> {
                || filter.price.userFilter;
     }
 
-    async getClientOfferings() {
+    newSelect = () => {
+            this.setState({activePage: 0}, this.getClientOfferings);
+    }
+
+    getClientOfferings = async () => {
 
         const { ws, localSettings } = this.props;
         const { filter, activePage } = this.state;
@@ -303,7 +307,7 @@ class VPNList extends React.Component<IProps, IState> {
         if(this.checkFilters()){
             const [ from, to ] = value;
             if(from !== filter.price.from || to !== filter.price.to){
-                this.updateFilter({price: Object.assign({}, filter.price, {userFilter: true, from, to})}, this.getClientOfferings);
+                this.updateFilter({price: Object.assign({}, filter.price, {userFilter: true, from, to})}, this.newSelect);
             }
         }
     }
@@ -319,7 +323,7 @@ class VPNList extends React.Component<IProps, IState> {
             const filteredCountries = this.filterCountries(searchText, this.state.countries);
 
             this.setState({filteredCountries});
-            this.updateFilter({searchCountryStr: searchText}, this.getClientOfferings);
+            this.updateFilter({searchCountryStr: searchText}, this.newSelect);
         }
     }
 
@@ -329,7 +333,7 @@ class VPNList extends React.Component<IProps, IState> {
 
         const agent = e.target.value.toLowerCase().trim();
         if(this.state.filter.offeringHash.trim() === ''){
-            this.updateFilter({agent}, this.getClientOfferings);
+            this.updateFilter({agent}, this.newSelect);
         }else{
             notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('ClearOfferingHashToUseOtherFilters')});
         }
@@ -342,7 +346,7 @@ class VPNList extends React.Component<IProps, IState> {
 
         const offeringHash = e.target.value.toLowerCase().trim();
         if(filter.agent.trim() === ''){
-            this.updateFilter({offeringHash}, this.getClientOfferings);
+            this.updateFilter({offeringHash}, this.newSelect);
         }else{
             notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('ClearAgentHashToUseOtherFilters')});
         }
@@ -354,9 +358,9 @@ class VPNList extends React.Component<IProps, IState> {
         const changedType = e.target.value;
 
         if(filter.checkedIPTypes.includes(changedType)){
-            this.updateFilter({checkedIPTypes: filter.checkedIPTypes.filter(IPType => IPType !== changedType)}, this.getClientOfferings);
+            this.updateFilter({checkedIPTypes: filter.checkedIPTypes.filter(IPType => IPType !== changedType)}, this.newSelect);
         }else{
-            this.updateFilter({checkedIPTypes: filter.checkedIPTypes.concat([changedType])}, this.getClientOfferings);
+            this.updateFilter({checkedIPTypes: filter.checkedIPTypes.concat([changedType])}, this.newSelect);
         }
     }
 
@@ -376,8 +380,7 @@ class VPNList extends React.Component<IProps, IState> {
                 checkedCountries.splice(checkedCountries.indexOf(country), 1);
             }
 
-            this.updateFilter({checkedCountries}, undefined);
-            this.setState({activePage: 0}, this.getClientOfferings);
+            this.updateFilter({checkedCountries}, this.newSelect);
         }
     }
 
@@ -386,7 +389,7 @@ class VPNList extends React.Component<IProps, IState> {
     }
 
     resetFilters = () => {
-        this.updateFilter(this.defaultFilter, this.getClientOfferings);
+        this.updateFilter(this.defaultFilter, this.newSelect);
     }
 
     onCheckStatus = () => {
