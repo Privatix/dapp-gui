@@ -21,7 +21,6 @@ interface IProps {
     ws?: WS;
     t?: any;
     localSettings?: LocalSettings;
-    gasPrice?: number;
     account: Account;
 }
 
@@ -40,9 +39,9 @@ class AccountView extends React.Component<IProps, IState> {
 
         super(props);
 
-        const { gasPrice, account } = props;
+        const { account } = props;
 
-        this.state = {gasPrice
+        this.state = {gasPrice: 1
                      ,amount: 0
                      ,destination: 'psc'
                      ,address: `0x${account.ethAddr}`
@@ -50,8 +49,11 @@ class AccountView extends React.Component<IProps, IState> {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+        const { ws } = this.props;
         drawQrCode(`0x${this.props.account.ethAddr}`);
+        const gasPrice = await ws.suggestGasPrice();
+        this.setState({gasPrice});
     }
 
     onGasPriceChanged = (evt: any) => {
@@ -275,6 +277,5 @@ class AccountView extends React.Component<IProps, IState> {
 export default connect( (state: State, ownProps: IProps) => {
     return Object.assign({}, {
     ws: state.ws
-   ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
    ,localSettings: state.localSettings
 }, ownProps);} )(AccountView);

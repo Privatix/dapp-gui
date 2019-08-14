@@ -19,7 +19,6 @@ interface OwnProps {
 interface Props extends OwnProps {
     lastProcessedBlock: number;
     removePeriod: number;
-    gasPrice: number;
     localSettings: State['localSettings'];
     accounts: State['accounts'];
     dispatch: Dispatch<any>;
@@ -33,9 +32,20 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
     constructor(props:any){
         super(props);
+        this.state = {gasPrice: 1};
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+
+        const { ws } = this.props;
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            this.setState({gasPrice});
+        }catch(e){
+            // DO NOTHING
+        }
+
         this.update();
     }
 
@@ -45,7 +55,9 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
     removeOffering = async () => {
 
-        const { closeModal, t, ws, offering, removePeriod, gasPrice, localSettings, accounts } = this.props;
+        const { closeModal, t, ws, offering, removePeriod, localSettings, accounts } = this.props;
+        const { gasPrice } = this.state;
+
         const account = accounts.find(account => account.isDefault);
 
         if(account.ethBalance < localSettings.gas.removeOffering*gasPrice){
@@ -127,7 +139,6 @@ const mapStateToProps = (state: State, ownProps: OwnProps) => {
             ws
            ,lastProcessedBlock: settings['eth.event.lastProcessedBlock']
            ,removePeriod: settings['psc.periods.remove']
-           ,gasPrice: parseInt(settings['eth.default.gasprice'], 10)
            ,localSettings
            ,accounts
         },

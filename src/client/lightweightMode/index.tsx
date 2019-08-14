@@ -45,7 +45,6 @@ interface IProps {
     localSettings: State['localSettings'];
     offeringsAvailability: State['offeringsAvailability'];
     t?: any;
-    gasPrice: number;
     account: Account;
     balance: string;
     dispatch?: any;
@@ -476,8 +475,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     private async connect(offering: Offering){
 
-        const { t, ws, localSettings, gasPrice, account } = this.props;
-
+        const { t, ws, localSettings, account } = this.props;
+        const gasPrice = await ws.suggestGasPrice();
         const deposit = offering.unitPrice * offering.minUnits;
 
         let err = false;
@@ -892,7 +891,6 @@ export default connect((state: State) => {
     return {
         ws: state.ws
        ,localSettings: state.localSettings
-       ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
        ,account
        ,channel: state.channel
        ,ip: state.ip

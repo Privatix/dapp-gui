@@ -246,12 +246,15 @@ export const asyncProviders = {
             const accounts = await ws.getAccounts();
 
             const account = accounts.find(account => account.isDefault);
-            const { settings, transferring } = getState();
+            const { transferring } = getState();
             if(account && account.ptcBalance !== 0 && autoTransfer && !transferring){
-                if(localSettings.gas.transfer*settings['eth.default.gasprice'] <= account.ethBalance){
+
+                const gasPrice = await ws.suggestGasPrice();
+
+                if(localSettings.gas.transfer*gasPrice <= account.ethBalance){
                     dispatch(handlers.setTransferringFlag(true));
                     startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
-                    ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice']));
+                    ws.transferTokens(account.id, 'psc', account.ptcBalance, gasPrice);
                 }else{
                     dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
                 }

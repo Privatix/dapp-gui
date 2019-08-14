@@ -35,7 +35,6 @@ type IProps = RouteComponentProps<any> & {
     closeModal?: Function;
     accounts?: Account[];
     products?: Product[];
-    gasPrice?: number;
 };
 
 interface IState {
@@ -63,7 +62,7 @@ interface IState {
         billingInterval?: number;
         ipType: string;
     };
-    gasPrice?: number;
+    gasPrice: number;
     blocked?: boolean;
     account?: Account;
     errMsg?: string;
@@ -74,7 +73,7 @@ class CreateOffering extends React.Component<IProps, IState>{
 
     get defaultState(){
 
-        const { accounts, products, product, gasPrice } = this.props;
+        const { accounts, products, product } = this.props;
         const account = accounts.find(account => account.isDefault);
         const productId = product ? product : products[0].id;
         const currentProduct = products.find(product => product.id === productId);
@@ -103,7 +102,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                ,minUploadMbits: ''
                ,ipType: ipTypes[1].type
             }
-           ,gasPrice
+           ,gasPrice: 1
            ,account
            ,blocked: false
         };
@@ -112,6 +111,17 @@ class CreateOffering extends React.Component<IProps, IState>{
     constructor(props: IProps){
         super(props);
         this.state = this.defaultState;
+    }
+
+    async componentDidMount(){
+        const { ws } = this.props;
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            this.setState({gasPrice});
+        }catch(e){
+            // DO NOTHING
+        }
     }
 
     onGasPriceChanged = (evt:any) => {
@@ -781,7 +791,6 @@ export default withRouter(connect( (state: State, ownProps: IProps) => {
     return (
         Object.assign({}
                      ,{ws, accounts, products, localSettings}
-                     ,{gasPrice: parseFloat(state.settings['eth.default.gasprice'])}
                      ,ownProps
                      )
     );

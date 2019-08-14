@@ -25,7 +25,6 @@ interface IProps{
     t?: any;
     localSettings?: LocalSettings;
     accounts?: Account[];
-    gasPrice?: number;
     history?: any;
     offering: Offering;
     mode?: string;
@@ -48,20 +47,29 @@ class AcceptOffering extends React.Component<IProps, IState>{
     constructor(props:IProps){
         super(props);
 
-        const { gasPrice, offering, accounts } = props;
+        const { offering, accounts } = props;
 
         this.acceptBtn = React.createRef();
 
         this.state = {
             deposit: offering.unitPrice * offering.minUnits,
             customDeposit: offering.unitPrice * offering.minUnits,
-            gasPrice: gasPrice,
+            gasPrice: 1,
             account: accounts.find((account: Account) => account.isDefault),
             thereAreActiveChannels: false
         };
     }
 
     async componentDidMount(){
+
+        const { ws } = this.props;
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            this.setState({gasPrice});
+        }catch(e){
+            // DO NOTHING
+        }
 
         this.getNotTerminatedConnections();
     }
@@ -327,7 +335,6 @@ class AcceptOffering extends React.Component<IProps, IState>{
 export default connect( (state: State, ownProps: IProps) => {
     return Object.assign({}, {
     ws: state.ws
-   ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
    ,localSettings: state.localSettings
    ,accounts: state.accounts
    ,serviceName: state.serviceName

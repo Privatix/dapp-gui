@@ -484,6 +484,10 @@ export class WS {
         return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
     }
 
+    suggestGasPrice() : Promise<number>{
+        return this.send('ui_suggestGasPrice') as Promise<number>;
+    }
+
     getSettings() {
         return this.send('ui_getSettings');
     }
