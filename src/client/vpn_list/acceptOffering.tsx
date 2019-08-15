@@ -159,8 +159,8 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t, offering, accounts, serviceName } = this.props;
-        const { account, customDeposit, thereAreActiveChannels } = this.state;
+        const { t, offering, localSettings, accounts, serviceName } = this.props;
+        const { account, customDeposit, thereAreActiveChannels, gasPrice } = this.state;
 
         const acceptOfferingBtnBl = thereAreActiveChannels
             ? <div className='form-group row'>
@@ -314,12 +314,16 @@ class AcceptOffering extends React.Component<IProps, IState>{
                                     </span>
                                 </div>
                             </div>
-                            <GasRange onChange={this.onGasPriceChanged} value={Math.floor(this.state.gasPrice/1e9)}
-                                      extLinkText='Information about Gas price' averageTimeText={t('utils/gasRange:AverageAcceptanceTimeText')} />
+                            <GasRange onChange={this.onGasPriceChanged}
+                                      value={Math.floor(gasPrice/1e9)}
+                                      extLinkText='Information about Gas price'
+                                      averageTimeText={t('utils/gasRange:AverageAcceptanceTimeText')}
+                            />
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>{t('AcceptancePrice')}</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{prix(customDeposit)} PRIX</strong>
+                                    <div><strong>{prix(customDeposit)} PRIX</strong></div>
+                                    <div><strong>{eth(localSettings.gas.acceptOffering*gasPrice)} ETH</strong></div>
                                 </div>
                             </div>
                         </div>

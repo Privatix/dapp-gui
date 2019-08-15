@@ -131,7 +131,7 @@ class AccountView extends React.Component<IProps, IState> {
 
     render() {
 
-        const { t, account } = this.props;
+        const { t, account, localSettings } = this.props;
         const { destination, address, gasPrice, transferStarted } = this.state;
 
         return <div className='row justify-content-center'>
@@ -245,7 +245,7 @@ class AccountView extends React.Component<IProps, IState> {
                                 </div>
                             </div>
                         </div>
-                        <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} />
+                        <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} transactionFee={localSettings.gas.transfer} />
                         <div className='form-group row'>
                             <div className='col-12'>
                                 <ConfirmPopupSwal

@@ -180,7 +180,7 @@ class IncreaseDepositView extends React.Component<IProps, any> {
 
     render(){
 
-        const { t, channel, accounts } = this.props;
+        const { t, channel, accounts, localSettings } = this.props;
         const { account, offering, gasPrice } = this.state;
 
         let value = '';
@@ -246,7 +246,11 @@ class IncreaseDepositView extends React.Component<IProps, any> {
                             <span className='help-block'><small>{maxUnitsHint}</small></span>
                         </div>
                     </div>
-                    <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} averageTimeText={t('AverageTimeToAddTheDeposit')} />
+                    <GasRange onChange={this.onGasPriceChanged}
+                              value={gasPrice/1e9}
+                              transactionFee={localSettings.gas.increaseDeposit}
+                              averageTimeText={t('AverageTimeToAddTheDeposit')}
+                    />
                     <div className='form-group row'>
                         <div className='col-12'>
                             <ConfirmPopupSwal

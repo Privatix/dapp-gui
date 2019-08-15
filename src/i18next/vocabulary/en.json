@@ -391,6 +391,7 @@
     },
     "utils/gasRange": {
         "GasPrice": "Gas price",
+        "TransactionFee": "Transaction Fee:",
         "AveragePublicationTimeText": "Average publication time:",
         "AverageAcceptanceTimeText": "Average acceptance time:",
         "AverageTime": "min",

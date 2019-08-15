@@ -9,6 +9,7 @@ import {State} from 'typings/state';
 import {Offering} from 'typings/offerings';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
+import eth from 'utils/eth';
 import notice from 'utils/notice';
 
 interface OwnProps {
@@ -83,8 +84,8 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
     render(){
 
-        const { t, offering, lastProcessedBlock, removePeriod } = this.props;
-
+        const { t, offering, lastProcessedBlock, removePeriod, localSettings } = this.props;
+        const { gasPrice } = this.state;
         const removePeriodMinutes = Math.floor(removePeriod/4);
 
         const offeringStatus = offering.status;
@@ -105,6 +106,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
                     <p className='card-text'>{t('removeInfo')}</p>
                     <p className='card-text'>{t('removeInfoDisabled', {minutes: removePeriodMinutes, blocks: removePeriod})}</p>
                     <p className='card-text'>{t('lastAction', {lastAction: offeringAge, lastActionMinutes: offeringAgeMinutes})}</p>
+                    <span>{t('utils/gasRange:TransactionFee')} {eth(localSettings.gas.removeOffering*gasPrice)} ETH</span><br />
                     <p>
                         <button className='btn btn-block btnCustomDisabled disabled'>{t('Remove')}</button>
                     </p>
@@ -116,6 +118,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
             <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <h5 className='card-title'>{t('WarningArea')}</h5>
                 <p className='card-text'>{t('removeInfo')}</p>
+                <span>{t('utils/gasRange:TransactionFee')} {eth(localSettings.gas.removeOffering*gasPrice)} ETH</span><br />
                 <ConfirmPopupSwal
                     title={t('Remove')}
                     text={<span>{t('removeInfo')}<br />

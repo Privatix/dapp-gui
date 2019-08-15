@@ -1,21 +1,45 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
+import eth from 'utils/eth';
 
-import { WS, ws } from 'utils/ws';
+import { State } from 'typings/state';
 
 interface IProps {
-    ws?: WS;
+    ws?: State['ws'];
     t?: any;
     status: string;
     payment: any;
     channelId: string;
     done: Function;
+    transactionFee?: number;
 }
 
-@translate('client/terminateContractBlock')
-class TerminateContractButton extends React.Component<IProps, any>{
+interface IState {
+    gasPrice: number;
+}
+
+@translate('client/terminateContractBlock', 'utils/gasRange')
+class TerminateContractButton extends React.Component<IProps, IState>{
+
+    constructor(props: IProps){
+        super(props);
+        this.state = {gasPrice: 1};
+    }
+
+    async componentDidMount(){
+
+        const { ws } = this.props;
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            this.setState({gasPrice});
+        }catch(e){
+            // DO NOTHING
+        }
+    }
 
     done = () => {
         const { ws, channelId } = this.props;
@@ -27,21 +51,23 @@ class TerminateContractButton extends React.Component<IProps, any>{
 
     render(){
 
-        const { t, status, payment } = this.props;
+        const { t, status, payment, transactionFee } = this.props;
+        const { gasPrice } = this.state;
 
         return status === 'disabled'
             ? <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <span>{t('ToOpenDisputeFinishService')}</span><br />
+                <span>{t('utils/gasRange:TransactionFee')} {eth(transactionFee*gasPrice)} ETH</span><br />
                 <button className='btn btnCustomDisabled btn-block disabled' >{t('TerminateContract')}</button>
               </div>
             : <div className='card m-b-20 card-body text-xs-center warningAreaCard'>
                 <form>
                     <h5 className='card-title'>{t('WarningArea')}</h5>
                     <p className='card-text'>{t('RequestFullDepositReturn')}</p>
+                    <span>{t('utils/gasRange:TransactionFee')} {eth(transactionFee*gasPrice)} ETH</span><br />
                     {payment
                         ? <p className='card-text'>
                             {t('UseIfAgentDoNotCloseContract')}<br />
-                            {t('YouPayMultipleTransactionFees')}
                           </p>
                         : null
                     }
@@ -51,7 +77,7 @@ class TerminateContractButton extends React.Component<IProps, any>{
                             {payment
                                 ? <span>
                                     {t('UseIfAgentDoNotCloseContract')}<br />
-                                    {t('YouPayMultipleTransactionFees')}
+                                    <span>{t('utils/gasRange:TransactionFee')} {eth(transactionFee*gasPrice)} ETH</span><br />
                                 </span>
                                 : null
                             }
@@ -66,4 +92,4 @@ class TerminateContractButton extends React.Component<IProps, any>{
     }
 }
 
-export default ws<IProps>(TerminateContractButton);
+export default connect((state: State) => ({ws: state.ws, transactionFee: state.localSettings.gas.terminateContract}))(TerminateContractButton);

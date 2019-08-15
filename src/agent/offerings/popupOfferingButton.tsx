@@ -5,6 +5,8 @@ import { translate } from 'react-i18next';
 
 import {asyncProviders} from 'redux/actions';
 
+import eth from 'utils/eth';
+
 import {State} from 'typings/state';
 import {Offering} from 'typings/offerings';
 
@@ -27,7 +29,7 @@ interface Props extends OwnProps {
     ws: State['ws'];
 }
 
-const translated = translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice']);
+const translated = translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice', 'utils/gasRange']);
 
 class PopupOfferingButton extends React.Component<Props, any>{
 
@@ -81,7 +83,8 @@ class PopupOfferingButton extends React.Component<Props, any>{
 
     render(){
 
-        const { t, offering, lastProcessedBlock, popupPeriod } = this.props;
+        const { t, offering, lastProcessedBlock, popupPeriod, localSettings } = this.props;
+        const { gasPrice } = this.state;
 
         const popupPeriodMinutes = Math.floor(popupPeriod/4);
 
@@ -102,7 +105,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
                     <p className='card-text'>{t('popupInfo')}</p>
                     <p className='card-text'>{t('popupInfoDisabled', {min: popupPeriodMinutes, blocks: popupPeriod})}</p>
                     <p className='card-text'>{t('lastActionPopup', {lastAction: offeringAge})}</p>
-
+                    <span>{t('utils/gasRange:TransactionFee')} {eth(localSettings.gas.popupOffering*gasPrice)} ETH</span><br />
                     <p>
                         <button className='btn btn-block btnCustomDisabled disabled'>{t('Popup')}</button>
                     </p>
@@ -114,6 +117,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
         return (
             <div className='card m-b-20 card-body text-xs-center'>
                 <p className='card-text'>{t('popupInfo')}</p>
+                <span>{t('utils/gasRange:TransactionFee')} {eth(localSettings.gas.popupOffering*gasPrice)} ETH</span><br />
                 <ConfirmPopupSwal
                     done={this.popupOffering}
                     title={t('Popup')}

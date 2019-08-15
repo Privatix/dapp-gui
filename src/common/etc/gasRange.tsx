@@ -1,7 +1,9 @@
 import * as React from 'react';
-import ExternalLink from './externalLink';
-import isString = require('lodash.isstring'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 import { translate } from 'react-i18next';
+import isString = require('lodash.isstring'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
+import eth from 'utils/eth';
+
+import ExternalLink from './externalLink';
 
 interface IProps {
     onChange: Function;
@@ -9,6 +11,7 @@ interface IProps {
     t?: any;
     extLinkText?: string;
     averageTimeText?: string;
+    transactionFee?: number;
 }
 
 @translate('utils/gasRange')
@@ -36,7 +39,7 @@ export default class GasRange extends React.Component<IProps, {}> {
     }
 
     render() {
-        const { value, t, extLinkText, averageTimeText } = this.props;
+        const { value, t, extLinkText, averageTimeText, transactionFee } = this.props;
 
         const extLink = (isString(extLinkText)) ? extLinkText : 'https://ethgasstation.info/';
         const averageTime = isString(averageTimeText) ? averageTimeText : t('AveragePublicationTimeText');
@@ -59,6 +62,18 @@ export default class GasRange extends React.Component<IProps, {}> {
                     <span>{Number(value).toFixed(2)}</span> Gwei
                 </div>
             </div>
+            {transactionFee
+                ? <div className='form-group row'>
+                    <label className='col-3 col-form-label'>{t('TransactionFee')}</label>
+                    <div className='col-9'>
+                        <div className='input-group bootstrap-touchspin'>
+                            <input type='text' readOnly className='form-control' value={eth(transactionFee*value*1e9)} />
+                            <span className='input-group-addon bootstrap-touchspin-postfix'>ETH</span>
+                        </div>
+                    </div>
+                </div>
+                : null
+            }
             <div className='form-group row'>
                 <div className='col-12 col-form-label'>
                     <strong>{averageTime} {this.averageTime(value)} {t('AverageTime')}</strong>

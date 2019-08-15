@@ -415,7 +415,7 @@ class CreateOffering extends React.Component<IProps, IState>{
     }
 
     render(){
-        const { t, accounts, products } = this.props;
+        const { t, accounts, products, localSettings } = this.props;
         const { payload, account, gasPrice, blocked } = this.state;
 
         const selectProduct = <Select className='form-control'
@@ -765,7 +765,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         </span>
                                     </div>
                                 </div>
-                                <GasRange onChange={this.onGasPriceChanged} value={Math.floor(gasPrice/1e9)} />
+                                <GasRange onChange={this.onGasPriceChanged} value={Math.floor(gasPrice/1e9)} transactionFee={localSettings.gas.createOffering} />
                             </div>
                         </div>
                         <div className='form-group'>

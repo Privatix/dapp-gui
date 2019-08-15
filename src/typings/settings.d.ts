@@ -8,6 +8,7 @@ export interface GasConsumption {
     increaseDeposit: number;
     removeOffering: number;
     popupOffering: number;
+    terminateContract: number;
 }
 
 export interface LocalSettings {
