@@ -6,7 +6,6 @@ import Transactions from 'common/transactions/transactionsList';
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import GasRange from 'common/etc/gasRange';
 
-import { WS } from 'utils/ws';
 import notice from 'utils/notice';
 import eth from 'utils/eth';
 import prix from 'utils/prix';
@@ -18,7 +17,7 @@ import { Account } from 'typings/accounts';
 import {LocalSettings} from 'typings/settings';
 
 interface IProps {
-    ws?: WS;
+    ws?: State['ws'];
     t?: any;
     localSettings?: LocalSettings;
     account: Account;
