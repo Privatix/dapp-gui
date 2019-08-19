@@ -315,7 +315,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                                 </div>
                             </div>
                             <GasRange onChange={this.onGasPriceChanged}
-                                      value={Math.floor(gasPrice/1e9)}
+                                      value={gasPrice/1e9}
                                       extLinkText='Information about Gas price'
                                       averageTimeText={t('utils/gasRange:AverageAcceptanceTimeText')}
                             />

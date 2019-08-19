@@ -2,6 +2,7 @@ import * as React from 'react';
 import { translate } from 'react-i18next';
 import isString = require('lodash.isstring'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 import eth from 'utils/eth';
+import gwei from 'utils/gwei';
 
 import ExternalLink from './externalLink';
 
@@ -59,7 +60,7 @@ export default class GasRange extends React.Component<IProps, {}> {
                     />
                 </div>
                 <div className='col-4 col-form-label'>
-                    <span>{Number(value).toFixed(2)}</span> Gwei
+                    <span>{gwei(value*1e9)}</span> Gwei
                 </div>
             </div>
             {transactionFee
