@@ -1,6 +1,7 @@
 import { Role, Mode } from './mode';
 
 export interface GasConsumption {
+    defaultGasPrice: number;
     acceptOffering: number;
     createOffering: number;
     transfer: number;

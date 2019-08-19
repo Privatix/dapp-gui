@@ -30,10 +30,10 @@ class IncreaseDepositView extends React.Component<IProps, any> {
     constructor(props: IProps) {
 
         super(props);
-        const { channel, accounts } = props;
+        const { channel, accounts, localSettings } = props;
 
         this.state = {
-            gasPrice: 1,
+            gasPrice: localSettings.gas.defaultGasPrice,
             account: accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === channel.client.toLowerCase()),
             deposit: channel.totalDeposit,
             offering: null,
@@ -47,7 +47,9 @@ class IncreaseDepositView extends React.Component<IProps, any> {
         const { ws, channel, dispatch } = this.props;
         try {
             const gasPrice = await ws.suggestGasPrice();
-            this.setState({gasPrice});
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
         }catch(e){
             // DO NOTHING
         }

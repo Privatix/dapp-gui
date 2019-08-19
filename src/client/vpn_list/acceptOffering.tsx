@@ -47,14 +47,14 @@ class AcceptOffering extends React.Component<IProps, IState>{
     constructor(props:IProps){
         super(props);
 
-        const { offering, accounts } = props;
+        const { offering, accounts, localSettings } = props;
 
         this.acceptBtn = React.createRef();
 
         this.state = {
             deposit: offering.unitPrice * offering.minUnits,
             customDeposit: offering.unitPrice * offering.minUnits,
-            gasPrice: 1,
+            gasPrice: localSettings.gas.defaultGasPrice,
             account: accounts.find((account: Account) => account.isDefault),
             thereAreActiveChannels: false
         };
@@ -66,7 +66,9 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
         try {
             const gasPrice = await ws.suggestGasPrice();
-            this.setState({gasPrice});
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
         }catch(e){
             // DO NOTHING
         }

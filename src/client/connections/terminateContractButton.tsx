@@ -15,6 +15,7 @@ interface IProps {
     channelId: string;
     done: Function;
     transactionFee?: number;
+    localSettings?: State['localSettings'];
 }
 
 interface IState {
@@ -26,7 +27,7 @@ class TerminateContractButton extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
         super(props);
-        this.state = {gasPrice: 1};
+        this.state = {gasPrice: props.localSettings.gas.defaultGasPrice};
     }
 
     async componentDidMount(){
@@ -35,7 +36,9 @@ class TerminateContractButton extends React.Component<IProps, IState>{
 
         try {
             const gasPrice = await ws.suggestGasPrice();
-            this.setState({gasPrice});
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
         }catch(e){
             // DO NOTHING
         }
@@ -92,4 +95,8 @@ class TerminateContractButton extends React.Component<IProps, IState>{
     }
 }
 
-export default connect((state: State) => ({ws: state.ws, transactionFee: state.localSettings.gas.terminateContract}))(TerminateContractButton);
+export default connect((state: State) => ({
+     ws: state.ws
+    ,localSettings: state.localSettings
+    ,transactionFee: state.localSettings.gas.terminateContract
+}))(TerminateContractButton);

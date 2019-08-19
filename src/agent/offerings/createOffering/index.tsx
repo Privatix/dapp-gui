@@ -73,7 +73,7 @@ class CreateOffering extends React.Component<IProps, IState>{
 
     get defaultState(){
 
-        const { accounts, products, product } = this.props;
+        const { accounts, products, product, localSettings } = this.props;
         const account = accounts.find(account => account.isDefault);
         const productId = product ? product : products[0].id;
         const currentProduct = products.find(product => product.id === productId);
@@ -102,7 +102,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                ,minUploadMbits: ''
                ,ipType: ipTypes[1].type
             }
-           ,gasPrice: 1
+           ,gasPrice: localSettings.gas.defaultGasPrice
            ,account
            ,blocked: false
         };
@@ -113,12 +113,19 @@ class CreateOffering extends React.Component<IProps, IState>{
         this.state = this.defaultState;
     }
 
-    async componentDidMount(){
+    componentDidMount(){
+        this.updateGasPrice();
+    }
+
+    updateGasPrice = async () => {
+
         const { ws } = this.props;
 
         try {
             const gasPrice = await ws.suggestGasPrice();
-            this.setState({gasPrice});
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
         }catch(e){
             // DO NOTHING
         }
@@ -392,7 +399,7 @@ class CreateOffering extends React.Component<IProps, IState>{
             this.setState({blocked: true});
             const offeringId = await ws.createOffering(payload);
             await ws.changeOfferingStatus(offeringId, 'publish', gasPrice);
-            this.setState(this.defaultState);
+            this.setState(this.defaultState, this.updateGasPrice);
 
             if(typeof closeModal === 'function'){
                 closeModal();

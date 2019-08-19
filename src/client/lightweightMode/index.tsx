@@ -476,7 +476,17 @@ class LightWeightClient extends React.Component<IProps, IState> {
     private async connect(offering: Offering){
 
         const { t, ws, localSettings, account } = this.props;
-        const gasPrice = await ws.suggestGasPrice();
+
+        let gasPrice = localSettings.gas.defaultGasPrice;
+        try {
+            const suggestedGasPrice = await ws.suggestGasPrice();
+            if(typeof suggestedGasPrice === 'number' && suggestedGasPrice !== 0){
+                gasPrice = suggestedGasPrice;
+            }
+        }catch(e){
+            // DO NOTHING
+        }
+
         const deposit = offering.unitPrice * offering.minUnits;
 
         let err = false;

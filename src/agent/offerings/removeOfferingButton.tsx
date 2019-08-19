@@ -33,7 +33,7 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
     constructor(props:any){
         super(props);
-        this.state = {gasPrice: 1};
+        this.state = {gasPrice: props.localSettings.gas.defaultGasPrice};
     }
 
     async componentDidMount() {
@@ -42,7 +42,9 @@ class RemoveOfferingButton extends React.Component<Props, any>{
 
         try {
             const gasPrice = await ws.suggestGasPrice();
-            this.setState({gasPrice});
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
         }catch(e){
             // DO NOTHING
         }

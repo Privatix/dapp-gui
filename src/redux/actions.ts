@@ -249,7 +249,15 @@ export const asyncProviders = {
             const { transferring } = getState();
             if(account && account.ptcBalance !== 0 && autoTransfer && !transferring){
 
-                const gasPrice = await ws.suggestGasPrice();
+                let gasPrice = localSettings.gas.defaultGasPrice;
+                try {
+                    const suggestedGasPrice = await ws.suggestGasPrice();
+                    if(typeof suggestedGasPrice === 'number' && suggestedGasPrice !== 0){
+                        gasPrice = suggestedGasPrice;
+                    }
+                }catch(e){
+                    // DO NOTHING
+                }
 
                 if(localSettings.gas.transfer*gasPrice <= account.ethBalance){
                     dispatch(handlers.setTransferringFlag(true));

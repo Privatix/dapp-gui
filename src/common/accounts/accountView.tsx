@@ -38,9 +38,9 @@ class AccountView extends React.Component<IProps, IState> {
 
         super(props);
 
-        const { account } = props;
+        const { account, localSettings } = props;
 
-        this.state = {gasPrice: 1
+        this.state = {gasPrice: localSettings.gas.defaultGasPrice
                      ,amount: 0
                      ,destination: 'psc'
                      ,address: `0x${account.ethAddr}`
@@ -49,10 +49,19 @@ class AccountView extends React.Component<IProps, IState> {
     }
 
     async componentDidMount() {
+
         const { ws } = this.props;
+
         drawQrCode(`0x${this.props.account.ethAddr}`);
-        const gasPrice = await ws.suggestGasPrice();
-        this.setState({gasPrice});
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
+        }catch(e){
+            // DO NOTHING
+        }
     }
 
     onGasPriceChanged = (evt: any) => {
