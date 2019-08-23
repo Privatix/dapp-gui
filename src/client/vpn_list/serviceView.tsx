@@ -14,8 +14,8 @@ import { Offering } from 'typings/offerings';
 interface IProps {
     service: ClientChannel;
     t?: any;
-    history: any;
     render: any;
+    closeModal: any;
 }
 
 interface IState {
@@ -27,7 +27,7 @@ class ServiceView extends React.Component <IProps, IState> {
 
     render() {
 
-        const { t, history, service, render } = this.props;
+        const { t, service, render, closeModal } = this.props;
 
         return <>
             <div className='row'>
@@ -45,7 +45,9 @@ class ServiceView extends React.Component <IProps, IState> {
                                 level: 'info',
                                 msg: t('ContractHasBeenTerminated')
                             });
-                            history.push('/client-dashboard-start');
+                            if(closeModal){
+                                closeModal();
+                            }
                         }}
                     />
                 </div>
