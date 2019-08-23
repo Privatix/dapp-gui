@@ -1,16 +1,15 @@
 declare module 'path';
 
-import {app, ipcMain, BrowserWindow} from 'electron';
+import {app, BrowserWindow, ipcMain} from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
 import * as fse from 'fs-extra';
 import * as sudo from 'sudo-prompt';
 
-import { updateChecker } from './updateChecker';
+import {updateChecker} from './updateChecker';
 
 let smartExit = false;
-
 let win:BrowserWindow = null;
 let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encoding: 'utf8'}));
   settings.rootpath = __dirname;
@@ -127,12 +126,36 @@ function createWindow () {
       win.webContents.send('localSettings', settings);
       updateChecker.start(settings, announce);
   });
+
+  return win;
 }
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+        win = createWindow();
+
+        function log(text: any) {
+            win.webContents.executeJavaScript('console.log(\'' + text + '\');')
+                .then(_ => {
+                    // empty
+                });
+        }
+
+        if (process.platform === 'win32') {
+            // replace "Program Files" by GUID
+            // https://docs.microsoft.com/en-us/windows/win32/shell/knownfolderid
+            //
+            // Todo: @drew2a maybe better way is to get AppUserModelId by using something like
+            //  get-StartApps | ? {$_.name -match "Privatix"}
+            let appId = process.execPath.replace(new RegExp('^[\\w]:\\\\(Program Files|PROGRA~1)', 'gm'),
+                '{6D809377-6AF0-444b-8957-A3773F02200E}');
+            log('Set AppId: ' + JSON.stringify(appId));
+            app.setAppUserModelId(appId);
+        }
+    }
+);
 
 // Quit when all windows are closed.
 app.on('window-all-closed', () => {
@@ -151,7 +174,7 @@ app.on('activate', () => {
   }
 });
 
-app.setAppUserModelId(process.execPath);
+
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
