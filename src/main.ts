@@ -149,7 +149,7 @@ app.on('ready', () => {
             //
             // Todo: @drew2a maybe better way is to get AppUserModelId by using something like
             //  get-StartApps | ? {$_.name -match "Privatix"}
-            let appId = process.execPath.replace(new RegExp('^[\\w]:\\\\Program Files', 'gm'),
+            let appId = process.execPath.replace(new RegExp('^[\\w]:\\\\(Program Files|PROGRA~1)', 'gm'),
                 '{6D809377-6AF0-444b-8957-A3773F02200E}');
             log('Set AppId: ' + JSON.stringify(appId));
             app.setAppUserModelId(appId);
