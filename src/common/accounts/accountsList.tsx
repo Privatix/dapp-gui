@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import { remote } from 'electron';
 
+import { asyncProviders } from 'redux/actions';
+
 import SortableTable from 'react-sortable-table-vilan';
 
 import ModalWindow from 'common/modalWindow';
@@ -24,10 +26,16 @@ interface IProps {
     accounts?: State['accounts'];
     t?: any;
     ws?: State['ws'];
+    dispatch: any;
 }
 
 @translate(['accounts/accountsList', 'auth/backup', 'utils/notice'])
 class Accounts extends React.Component<IProps, {}> {
+
+    componentDidMount(){
+        const { dispatch } = this.props;
+        dispatch(asyncProviders.updateAccounts());
+    }
 
     async onRefresh(accountId:string, evt: any){
 
