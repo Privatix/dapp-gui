@@ -1,3 +1,4 @@
+import { remote } from 'electron';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as api from './api';
@@ -15,6 +16,7 @@ import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
 import * as log from 'electron-log';
 
+const { app } = remote;
 
 const localCache = window.localStorage.getItem('localSettings');
 if(!localCache){
@@ -59,7 +61,8 @@ export const createStorage = () => {
             log.transports.mainConsole.level = settings.log.level as log.ILevelOption;
         }
         if (settings.log && settings.log.file){
-            const logpath = (!settings.log.filePath?settings.rootpath:settings.log.filePath);
+            const logpath = settings.target === 'win' ? `${app.getPath('appData')}${path.sep}Roaming${path.sep}Privatix`
+                                                      : (!settings.log.filePath?settings.rootpath:settings.log.filePath);
             if (!fs.existsSync(logpath)){
                 try {
                     fs.mkdirSync(logpath, { recursive: true } as any);
