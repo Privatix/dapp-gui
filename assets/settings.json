@@ -25,7 +25,7 @@
    "elementsPerPage": 10,
    "lang": "en",
    "releasesEndpoint": "https://api.github.com/repos/Privatix/privatix/releases",
-   "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/${version}/versions.txt",
+   "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/%version%/versions.txt",
    "updateCheckFreq": 480,
    "window": {
        "advanced": {"width": 1024, "height": 800},
