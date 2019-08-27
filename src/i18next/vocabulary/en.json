@@ -307,6 +307,7 @@
         "Offerings": "Offerings",
         "Servers": "Servers",
         "Logs": "Logs",
+        "Jobs": "Jobs",
         "ClientDashboard": "Client dashboard",
         "ServiceList": "{{serviceName}} list"
     },
@@ -349,6 +350,13 @@
     "logs/logsContext": {
         "Key": "Key",
         "Value": "Value"
+    },
+    "jobs/jobsList": {
+        "JobsHeader": "Jobs list",
+        "RestartJobInfo": "Restart a job is complicated and potentially dangerous operation. Please don't restart a job if you don't know what you're doing.",
+        "Restart": "Restart",
+        "JobData": "Job data",
+        "ShowBtn": "show"
     },
     "accounts/accountsList": {
         "Title": "Accounts",
@@ -743,6 +751,11 @@
         "ContractStatus": "Contract Status",
         "ServiceStatus": "Service Status",
         "JobStatus": "Job status",
+        "JobStatusSimple": "Status",
+        "JobType": "Type",
+        "JobCreatedAt": "Created at",
+        "JobData": "Data",
+        "JobActions": "Actions",
         "Usage": "Usage:",
         "CostPRIX": "Cost (PRIX)",
         "IncomePRIX": "Price",
