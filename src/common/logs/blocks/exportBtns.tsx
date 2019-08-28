@@ -1,16 +1,18 @@
-import * as React from 'react';
-import { translate } from 'react-i18next';
-import * as os from 'os';
 import { exec } from 'child_process';
+import * as os from 'os';
+import * as path from 'path';
+import {remote} from 'electron';
+const { dialog, app } = remote;
+
+import * as React from 'react';
+import {connect} from 'react-redux';
+import { translate } from 'react-i18next';
+
 import notice from 'utils/notice';
 import * as api from 'utils/api';
-import {remote} from 'electron';
-const {dialog} = remote;
-const {app} = remote;
-import * as path from 'path';
-import {connect} from 'react-redux';
-import {State} from '../../../typings/state';
-import {LocalSettings} from '../../../typings/settings';
+
+import {State} from 'typings/state';
+import {LocalSettings} from 'typings/settings';
 
 interface IProps {
     t?: any;
@@ -23,7 +25,6 @@ interface IState {
 }
 
 @translate('logs/logsList')
-
 class ExportBtns extends React.Component<IProps, IState> {
 
     archiveName = 'dump.zip';

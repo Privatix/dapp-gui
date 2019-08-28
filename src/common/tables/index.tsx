@@ -121,6 +121,40 @@ export const JobStatus = {
         return <div className='noWrap'><JobName jobtype={job.jobtype} /><br /> (<JobStatusComponent jobStatus={job.status} /> {jobTime})</div>;
     }
 };
+export const JobStatusSimple = {
+    header: i18n.t('tables:JobStatusSimple'),
+    headerStyle: {textAlign: 'center'},
+    key: 'jobStatusSimple',
+    sortable: false,
+    render: status => <JobStatusComponent jobStatus={status} />
+};
+export const JobCreatedAt = {
+    header: i18n.t('tables:JobCreatedAt'),
+    headerStyle: {textAlign: 'center'},
+    key: 'jobCreatedAt',
+    sortable: false,
+    render: date => <PgTime time={date} />
+};
+export const JobType = {
+    header: i18n.t('tables:JobType'),
+    headerStyle: {textAlign: 'center'},
+    key: 'jobType',
+    sortable: false
+};
+
+export const JobData = {
+    header: i18n.t('tables:JobData'),
+    headerStyle: {textAlign: 'center'},
+    key: 'jobData',
+    sortable: false
+};
+
+export const JobActions = {
+    header: i18n.t('tables:JobActions'),
+    headerStyle: {textAlign: 'center'},
+    key: 'jobActions',
+    sortable: false
+};
 
 export const PlainUsage = {
     header: i18n.t('tables:Usage'),

@@ -58,7 +58,7 @@ class Transactions extends React.Component<IProps, IState>{
 
         const { ws, accountId, localSettings } = this.props;
 
-        const limit = localSettings.elementsPerPage;
+        const limit = localSettings.paging.transactions;
         const offset = activePage > 1 ? (activePage - 1) * limit : this.state.offset;
 
         const transactions = await ws.getTransactions('accountAggregated', accountId, offset, limit);
@@ -106,7 +106,7 @@ class Transactions extends React.Component<IProps, IState>{
 
         const { t, localSettings } = this.props;
         const { transactions, activePage, totalItems } = this.state;
-        const { elementsPerPage } = localSettings;
+        const elementsPerPage = localSettings.paging.transactions;
 
         const transactionsDataArr = this.getTransactionsDataArr(transactions);
 
