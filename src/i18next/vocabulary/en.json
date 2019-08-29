@@ -406,7 +406,10 @@
         "RecommendedGasPricesInformation": "Recommended Gas prices information:"
     },
     "transactions/transactionsList": {
+        "TransactionsHeader": "Transactions list",
         "TransactionLog": "Transaction Log",
+        "TransactionsList": "Transactions list",
+        "Resend": "Resend",
         "Date": "Date",
         "EthereumLink": "Ethereum link"
     },

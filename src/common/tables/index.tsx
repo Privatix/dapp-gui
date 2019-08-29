@@ -156,6 +156,13 @@ export const JobActions = {
     sortable: false
 };
 
+
+export const TransactionActions = {
+    header: i18n.t('tables:Actions'),
+    headerStyle: {textAlign: 'center'},
+    key: 'transactionActions',
+    sortable: false
+};
 export const PlainUsage = {
     header: i18n.t('tables:Usage'),
     headerStyle: {textAlign: 'center'},

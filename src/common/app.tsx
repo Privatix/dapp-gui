@@ -29,6 +29,7 @@ import ExitNotice from 'client/exit/notice';
 
 import Logs from 'common/logs/logsList';
 import Jobs from 'common/jobs/jobsList';
+import Transactions from 'common/transactions/';
 
 import { State } from 'typings/state';
 import { Role, Mode } from 'typings/mode';
@@ -74,6 +75,7 @@ class App extends React.Component<IProps, {}> {
                                 <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} />} />
                                 <Route path='/logs' component={Logs} />
                                 <Route path='/jobs' component={Jobs} />
+                                <Route path='/transactions' component={Transactions} />
 
                                 <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
                                 <Route exact path='/client-dashboard-connecting' component={ClientDashboardConnecting} />
