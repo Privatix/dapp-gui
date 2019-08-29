@@ -62,18 +62,16 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 
     async saveUbuntuLogs() {
-        const appPath = app.getAppPath();
-        const utilPath = path.join(appPath, '../../../util/dump/');
-        const util = path.join(utilPath, 'dump_ubuntu.sh');
-        const archivePath = path.join(appPath, '../../../../');
+        const privatixApplicationFolder = path.join(app.getAppPath(), '../../../../');
+        const executeCommand = 'machinectl -q shell ${this.props.localSettings.role} /bin/sh -c \'/util/dump/dump_ubuntu.sh ../..\'';
 
-        console.log(`${util} ${archivePath}`);
+        console.log(executeCommand);
+        const { error } = await api.exec(executeCommand);
 
-        const { error } = await api.exec(`${util} ${archivePath}`);
         if(error){
             console.log(error);
         }
-        this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
+        this.saveDialogHandler(privatixApplicationFolder + 'dump.tar.gz', 'dump.tar.gz');
     }
 
     saveWindowsLogs() {
