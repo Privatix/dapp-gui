@@ -6,6 +6,6 @@ export default async function(){
     try{
         await fetch(`${supervisorEndpoint}/stop`);
     }catch(e){
-        log.log(e);
+        log.error(e);
     }
 }

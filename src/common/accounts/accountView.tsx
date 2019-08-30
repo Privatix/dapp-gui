@@ -126,8 +126,7 @@ class AccountView extends React.Component<IProps, IState> {
             await ws.transferTokens(account.id, destination, amount, gasPrice);
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
         } catch ( e ) {
-            // TODO something wrong !!!
-            log.log('ERROR', e);
+            log.error('ERROR', e);
             this.setState({transferStarted: false});
         }
 

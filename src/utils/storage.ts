@@ -67,7 +67,7 @@ export const createStorage = () => {
                 try {
                     fs.mkdirSync(logpath, { recursive: true } as any);
                 }catch(e){
-                    log.log('Can not write to dir'+logpath,e);
+                    log.error('Can not write to dir'+logpath,e);
                     return;
                 }
             }
