@@ -15,6 +15,7 @@ import CopyToClipboard from 'common/copyToClipboard';
 import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
 import {LocalSettings} from 'typings/settings';
+import * as log from 'electron-log';
 
 interface IProps {
     ws?: State['ws'];
@@ -126,7 +127,7 @@ class AccountView extends React.Component<IProps, IState> {
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
         } catch ( e ) {
             // TODO something wrong !!!
-            console.log('ERROR', e);
+            log.log('ERROR', e);
             this.setState({transferStarted: false});
         }
 
