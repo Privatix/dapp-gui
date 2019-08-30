@@ -29,6 +29,7 @@ import NetworkAndVersion from 'common/networkAndVersion';
 import GetPrix from 'common/wizard/getPrix';
 import eth from 'utils/eth';
 import prix from 'utils/prix';
+import * as log from 'electron-log';
 
 type Status = 'disconnected'
             | 'disconnecting'
@@ -447,7 +448,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             this.offeringsSubscription = await ws.subscribe('offering', ids, this.updateOfferings, this.updateOfferings);
         }else{
             if(evt){
-                console.log('offering event', evt);
+                log.log('offering event', evt);
             }
         }
 
@@ -639,12 +640,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const probability = Math.random();
         const range = this.selectByProbability(table, probability);
-        console.log('RANGE SELECTED!!!', range);
+        log.log('RANGE SELECTED!!!', range);
         const items = offeringsItems.map(offeringItem => ({id: offeringItem.offering.id, rating: offeringItem.rating}));
         const max = Math.max(...items.map(item => item.rating));
 
         if(max === 0){
-            console.log('RATING NOT CALCULATED!!! result:', offeringsItems);
+            log.log('RATING NOT CALCULATED!!! result:', offeringsItems);
             return offeringsItems;
         }
 
@@ -656,10 +657,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const offerings = offeringsItems.filter(offeringItem => ids.includes(offeringItem.offering.id));
 
         if(offerings.length > 0){
-            console.log('RESULT: ', offerings);
+            log.log('RESULT: ', offerings);
             return offerings;
         }
-        console.log('there are no offerings in selected range, next attempt');
+        log.log('there are no offerings in selected range, next attempt');
         return this.getRange(offeringsItems);
     }
 
@@ -688,13 +689,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(k === 0){
             const res = offerings[Math.floor(Math.random()*offerings.length)];
-            console.log('random offering:', res);
+            log.log('random offering:', res);
             return res;
         }
 
         const item = this.selectByProbability(items, Math.random()*k);
         const offering = offerings.find(offeringItem => offeringItem.offering.id === item.id);
-        console.log('selected offering: ', offering);
+        log.log('selected offering: ', offering);
         return offering;
     }
 
