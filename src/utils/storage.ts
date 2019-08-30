@@ -77,6 +77,9 @@ export const createStorage = () => {
                 }
             });
         }
+
+        // catch and log unhandled errors/rejected promises:
+        log.catchErrors( {});
     })();
 
     (async () => {
