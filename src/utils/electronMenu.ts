@@ -1,10 +1,14 @@
-import {remote} from 'electron';
-import i18n from 'i18next/init';
+import { remote } from 'electron';
 import handlers from 'redux/actions';
 
-export default (dispatch: any) => {
-    const {Menu} = remote;
-    let template:Electron.MenuItemConstructorOptions[] = [
+import { State } from 'typings/state';
+
+export default (storage: any) => {
+
+    const { Menu } = remote;
+    const { i18n } = storage.getState() as State;
+
+    const template:Electron.MenuItemConstructorOptions[] = [
         {
             label: i18n.t('electronMenu:File'),
             submenu: [
@@ -131,25 +135,25 @@ export default (dispatch: any) => {
                 {
                     label: i18n.t('electronMenu:AboutProject'),
                     click: function() {
-                        dispatch(handlers.showExternalLinkWarning(true, 'https://privatix.io'));
+                        storage.dispatch(handlers.showExternalLinkWarning(true, 'https://privatix.io'));
                     }
                 },
                 {
                     label: i18n.t('electronMenu:Documentation'),
                     click: function() {
-                        dispatch(handlers.showExternalLinkWarning(true, 'https://docs.privatix.network/'));
+                        storage.dispatch(handlers.showExternalLinkWarning(true, 'https://docs.privatix.network/'));
                     }
                 },
                 {
                     label: i18n.t('electronMenu:SearchIssues'),
                     click: function() {
-                        dispatch(handlers.showExternalLinkWarning(true, 'https://github.com/Privatix/dapp-gui/issues'));
+                        storage.dispatch(handlers.showExternalLinkWarning(true, 'https://github.com/Privatix/dapp-gui/issues'));
                     }
                 },
                 {
                     label: i18n.t('electronMenu:CommunityDiscussion'),
                     click: function() {
-                        dispatch(handlers.showExternalLinkWarning(true, 'https://t.me/Privatix'));
+                        storage.dispatch(handlers.showExternalLinkWarning(true, 'https://t.me/Privatix'));
                     }
                 }
             ]

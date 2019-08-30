@@ -1,85 +1,54 @@
-import { remote } from 'electron';
-import * as path from 'path';
-import * as fs from 'fs';
-import * as api from './api';
+import * as log from 'electron-log';
+
 import { createStore, applyMiddleware, AnyAction } from 'redux';
 import { default as thunk, ThunkMiddleware } from 'redux-thunk';
-import {valid as isValid, gt } from 'semver';
-
 import reducers from 'redux/reducers';
 import { asyncProviders, default as handlers } from 'redux/actions';
 
-import stopSupervisor from 'utils/stopSupervisor';
+import {valid as isValid, gt } from 'semver';
 
+import i18n from 'i18next/init';
+
+import * as api from 'utils/api';
+import stopSupervisor from 'utils/stopSupervisor';
 import { WS } from 'utils/ws';
+import initElectronMenu from 'utils/electronMenu';
+
+import setupLog from './workers/log';
+import subscribeAccounts from './workers/accounts';
+
 import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
-import * as log from 'electron-log';
-
-const { app } = remote;
 
 const localCache = window.localStorage.getItem('localSettings');
+
 if(!localCache){
     window.localStorage.setItem('localSettings', JSON.stringify({firstStart: true, accountCreated: false, lang: 'en', supervisorEndpoint: 'http://localhost:7777'}));
 }
 
 
-const canReadAndWrite = (targetPath) => {
-    return new Promise((resolve, reject) => {
-        if (fs.existsSync(targetPath)){
-            fs.access(targetPath, fs.constants.W_OK | fs.constants.R_OK, (err) => {
-                if (err) { reject(err); return; }
-                resolve(true);
-            });
-        }else{
-            const dir = path.dirname(targetPath);
-            fs.access(dir, fs.constants.W_OK | fs.constants.R_OK, (err) => {
-                if (err) { reject(err); return; }
-                resolve(false);
-            });
-        }
-    });
-};
-
 export const createStorage = () => {
     const storage = createStore(reducers, applyMiddleware(
         thunk as ThunkMiddleware<State, AnyAction> // lets us dispatch() functions
       ));
-    
+
+    storage.dispatch(handlers.setI18N(i18n));
+
     const ws = new WS(log);
-    storage.dispatch(handlers.setWS(ws));
-    storage.dispatch(handlers.setLOG(log));
 
     (async () => {
-        const settings = await api.settings.getLocal();
-        log.transports.file.level = false;
-        log.transports.console.level = false;
-        log.transports.mainConsole.level = false;
-        log.transports.remote.level = false;
-        if (settings.log && settings.log.console){
-            log.transports.console.level = settings.log.level as log.ILevelOption;
-            log.transports.mainConsole.level = settings.log.level as log.ILevelOption;
-        }
-        if (settings.log && settings.log.file){
-            const logpath = settings.target === 'win' ? `${app.getPath('appData')}${path.sep}Roaming${path.sep}Privatix`
-                                                      : (!settings.log.filePath?settings.rootpath:settings.log.filePath);
-            if (!fs.existsSync(logpath)){
-                try {
-                    fs.mkdirSync(logpath, { recursive: true } as any);
-                }catch(e){
-                    console.log('Can not write to dir'+logpath,e);
-                    return;
-                }
-            }
-            const filePath = `${logpath}${path.sep}${settings.log.fileName}`;
-            canReadAndWrite(filePath).then(()=> {
-                log.transports.file.level = settings.log.level as log.ILevelOption;
-                log.transports.file.file = filePath;
-                if (settings.log.fileOverwrite && fs.existsSync(filePath)){
-                    log.transports.file.clear();
-                }
-            });
-        }
+
+        const localSettings = await api.settings.getLocal();
+
+        i18n.changeLanguage(localSettings.lang);
+        initElectronMenu(storage);
+
+        storage.dispatch(handlers.setWS(ws));
+        storage.dispatch(handlers.setLOG(log));
+
+        setupLog(log, localSettings);
+        subscribeAccounts(storage, localSettings);
+
     })();
 
     (async () => {
@@ -179,24 +148,6 @@ export const createStorage = () => {
         }
     });
 
-    const refreshAccounts = function(){
-        storage.dispatch(asyncProviders.updateAccounts());
-    };
-
-    const subscribeAccounts = (async () => {
-
-        const { ws } = storage.getState();
-
-        if(ws) {
-            await ws.whenAuthorized();
-            refreshAccounts();
-            ws.subscribe('account', ['afterAccountAddBalanceApprove', 'afterAccountAddBalance', 'accountUpdateBalances'], refreshAccounts, refreshAccounts);
-        }else{
-            setTimeout(subscribeAccounts, 1000);
-        }
-    });
-
-    subscribeAccounts();
 
     const refresh = async function(){
 
@@ -228,23 +179,10 @@ export const createStorage = () => {
     refresh();
 
     (async () => {
-        const { role, timings } = await api.settings.getLocal();
+        const { role } = await api.settings.getLocal();
         if(role === Role.CLIENT){
             api.smartExit(true);
         }
-        const updateBalances = async () => {
-            const { ws } = storage.getState();
-
-            if(ws) {
-
-                await ws.whenAuthorized();
-                const accounts = await ws.getAccounts();
-                accounts.forEach(account => ws.updateBalance(account.id));
-            }
-            setTimeout(updateBalances, timings.updateBalances);
-        };
-
-        updateBalances();
     })();
     return storage;
 };

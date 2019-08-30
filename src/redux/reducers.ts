@@ -25,6 +25,7 @@ export default function reducer(state: State = StateDefault, action: Action = {t
         [actions.SET_MODE]                      : (state: State, action: Action) => _.assign({}, state, {mode: action.value}),
         [actions.SET_CHANNEL]                   : (state: State, action: Action) => _.assign({}, state, {channel: action.value}),
         [actions.SET_WS]                        : (state: State, action: Action) => _.assign({}, state, {ws: action.value}),
+        [actions.SET_I18N]                      : (state: State, action: Action) => _.assign({}, state, {i18n: action.value}),
         [actions.SET_LOG]                       : (state: State, action: Action) => _.assign({}, state, {log: action.value}),
         [actions.SET_OFFERINGS_AVAILABILITY]    : (state: State, action: Action) => _.assign({}, state, {offeringsAvailability: Object.assign({}, {counter: state.offeringsAvailability.counter - action.value.length}, {statuses: (Object.assign({}, state.offeringsAvailability.statuses, ...action.value))})}),
         [actions.INCREMENT_OFFERINGS_AVAILABILITY_COUNTER] : (state: State, action: Action) => _.assign({}, state, {offeringsAvailability: Object.assign({}, {counter: state.offeringsAvailability.counter + action.value, statuses: state.offeringsAvailability.statuses})}),

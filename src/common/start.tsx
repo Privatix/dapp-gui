@@ -17,8 +17,6 @@ import ExternalLink from 'common/etc/externalLink';
 import { I18nextProvider} from 'react-i18next';
 import i18n from 'i18next/init';
 
-import initElectronMenu from './electronMenu';
-
 import { Role } from 'typings/mode';
 
 interface IState {
@@ -49,11 +47,7 @@ export default class Start extends React.Component<{}, IState> {
 
         super(props);
 
-        const localSettings = JSON.parse(window.localStorage.getItem('localSettings'));
-        i18n.changeLanguage(localSettings.lang);
-
-        const storage = createStorage();
-        initElectronMenu(storage.dispatch);
+        const localSettings = JSON.parse(window.localStorage.getItem('localSettings')); 
 
         let component;
         if(localSettings.firstStart){
@@ -64,7 +58,7 @@ export default class Start extends React.Component<{}, IState> {
             component = login;
         }
 
-        this.state = { started: false, component, storage };
+        this.state = { started: false, component, storage: null };
     }
 
     async componentDidMount(){
@@ -111,15 +105,19 @@ export default class Start extends React.Component<{}, IState> {
 
         const { started, component, storage } = this.state;
 
-        return started ? (
-            <Provider store={storage}>
-                <Router history={memoryHistory}>
-                    <I18nextProvider i18n={ i18n }>
-                        { component }
-                    </I18nextProvider>
-                </Router>
-            </Provider>
-        ):(
+        if(started){
+            const { i18n } = storage.getState();
+            return (
+                <Provider store={storage}>
+                    <Router history={memoryHistory}>
+                        <I18nextProvider i18n={ i18n }>
+                            { component }
+                        </I18nextProvider>
+                    </Router>
+                </Provider>
+            );
+        }
+        return(
             <div className='startingServiceWrap'>
                 <I18nextProvider i18n={ i18n }>
                     <div style={ {textAlign: 'center', margin: 'auto'} }>
