@@ -231,7 +231,7 @@ export class WS {
             WS.groups[id].forEach(uuid => this.unsubscribe(uuid));
             delete WS.groups[id];
         }else {
-            console.error('unsubscribe: unknown subscription', id);
+            log.error('unsubscribe: unknown subscription', id);
         }
     }
 
