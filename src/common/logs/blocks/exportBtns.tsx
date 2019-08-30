@@ -1,22 +1,24 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import {translate} from 'react-i18next';
 import * as os from 'os';
-import { exec } from 'child_process';
+import {exec} from 'child_process';
 import notice from 'utils/notice';
 import * as api from 'utils/api';
 import {remote} from 'electron';
-const {dialog} = remote;
-const {app} = remote;
 import * as path from 'path';
 import {connect} from 'react-redux';
 import {State} from '../../../typings/state';
 import {LocalSettings} from '../../../typings/settings';
 import * as log from 'electron-log';
 
+const {dialog} = remote;
+const {app} = remote;
+
 interface IProps {
     t?: any;
     localSettings?: LocalSettings;
-    exportControllerLogsToFile(evt:any): void;
+
+    exportControllerLogsToFile(evt: any): void;
 }
 
 interface IState {
@@ -63,18 +65,17 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 
     async saveUbuntuLogs() {
-        const appPath = app.getAppPath();
-        const utilPath = path.join(appPath, '../../../util/dump/');
-        const util = path.join(utilPath, 'dump_ubuntu.sh');
-        const archivePath = path.join(appPath, '../../../../');
+        const role = this.props.localSettings.role;
+        const privatixApplicationFolder = path.join(app.getAppPath(), '../../../');
+        const executeCommand = 'machinectl -q shell ' + role + ' /bin/sh -c \'/util/dump/dump_ubuntu.sh ../..\'';
 
-        log.log(`${util} ${archivePath}`);
+        log.log(executeCommand);
+        const {error} = await api.exec(executeCommand);
 
-        const { error } = await api.exec(`${util} ${archivePath}`);
-        if(error){
-            log.log(error);
+        if (error) {
+            log.error(error);
         }
-        this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
+        this.saveDialogHandler(privatixApplicationFolder + 'dump.tar.gz', 'dump.tar.gz');
     }
 
     saveWindowsLogs() {
@@ -86,8 +87,8 @@ class ExportBtns extends React.Component<IProps, IState> {
         const cmd = `"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${installDir}" -outFile "${archive}"`;
         log.log(cmd);
         exec(cmd, (error) => {
-            if(error){
-                log.log(error);
+            if (error) {
+                log.error(error);
             }
             this.saveDialogHandler(archive, archiveName);
         });
@@ -101,8 +102,8 @@ class ExportBtns extends React.Component<IProps, IState> {
 
         log.log(`${util} ${archivePath}`);
         exec(`${util} ${archivePath}`, (error) => {
-            if(error){
-                log.log(error);
+            if (error) {
+                log.error(error);
             }
             this.saveDialogHandler(archivePath + this.archiveName);
         });
@@ -149,14 +150,14 @@ class ExportBtns extends React.Component<IProps, IState> {
         return (
             <div>
                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-30 m-r-20'
-                    onClick={this.props.exportControllerLogsToFile}>{t('ExportControllerLogsBtn')}</button>
+                        onClick={this.props.exportControllerLogsToFile}>{t('ExportControllerLogsBtn')}</button>
 
                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-30'
-                    onClick={this.exportAllLogsToFile}
-                    disabled={this.state.disabledBtn}>{t('ExportAllLogsBtn')}</button>
+                        onClick={this.exportAllLogsToFile}
+                        disabled={this.state.disabledBtn}>{t('ExportAllLogsBtn')}</button>
             </div>
         );
     }
 }
 
-export default connect( (state: State) => ({localSettings: state.localSettings}) )(ExportBtns);
+export default connect((state: State) => ({localSettings: state.localSettings}))(ExportBtns);
