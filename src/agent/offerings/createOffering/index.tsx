@@ -81,7 +81,7 @@ class CreateOffering extends React.Component<IProps, IState>{
 
         return {
             payload: {
-                agent: account.id
+                agent: account ? account.id : null
                ,serviceName: ''
                ,description: ''
                ,country: country ? country.toUpperCase() : ''
@@ -279,12 +279,16 @@ class CreateOffering extends React.Component<IProps, IState>{
                 }
             }
         }
-        if(payload.deposit !== payload.deposit || payload.deposit > account.pscBalance){
-            err = true;
-        }
+        if(account){
+            if(payload.deposit !== payload.deposit || payload.deposit > account.pscBalance){
+                err = true;
+            }
 
-        if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
-            err=true;
+            if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
+                err=true;
+            }
+        }else{
+            err = true;
         }
 
         if (parseFloat(payload.maxSuspendTime) < 10 || parseFloat(payload.maxInactiveTimeSec) < 10){
@@ -336,11 +340,15 @@ class CreateOffering extends React.Component<IProps, IState>{
             if(parseFloatPrix(payload.unitPrice) <= 0){
                 msg += t('UnitPriceMustBeMoreThen0') + ' ';
             }
-            if(payload.deposit === payload.deposit && payload.deposit > account.pscBalance){
-                msg += t('DepositIsGreaterThenServiceBalance') + ' ';
-            }
-            if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
-                msg += t('NotEnoughFunds') + ' ';
+            if(account){
+                if(payload.deposit === payload.deposit && payload.deposit > account.pscBalance){
+                    msg += t('DepositIsGreaterThenServiceBalance') + ' ';
+                }
+                if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
+                    msg += t('NotEnoughFunds') + ' ';
+                }
+            }else{
+                msg += t('AccountNotSpecified') + ' ';
             }
             if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
                 if (payload.maxUnit !== '') {
