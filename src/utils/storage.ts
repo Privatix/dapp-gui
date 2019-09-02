@@ -67,7 +67,7 @@ export const createStorage = () => {
                 try {
                     fs.mkdirSync(logpath, { recursive: true } as any);
                 }catch(e){
-                    console.log('Can not write to dir'+logpath,e);
+                    log.error('Can not write to dir'+logpath,e);
                     return;
                 }
             }
@@ -80,6 +80,9 @@ export const createStorage = () => {
                 }
             });
         }
+
+        // catch and log unhandled errors/rejected promises:
+        log.catchErrors({});
     })();
 
     (async () => {
@@ -157,7 +160,7 @@ export const createStorage = () => {
 
         const { ws, role } = storage.getState();
         if(role === Role.CLIENT){
-            console.log(ws, ws.passwordIsEntered);
+            log.log(ws, ws.passwordIsEntered);
             if(ws && ws.passwordIsEntered){
                 await ws.whenAuthorized();
                 const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);
