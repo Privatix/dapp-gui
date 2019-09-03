@@ -1,6 +1,6 @@
 declare module 'path';
 
-import {app, BrowserWindow, ipcMain} from 'electron';
+import {app, BrowserWindow, ipcMain, screen } from 'electron';
 import * as path from 'path';
 import * as url from 'url';
 import * as fs from 'fs';
@@ -70,6 +70,8 @@ let settings = JSON.parse(fs.readFileSync(`${__dirname}/settings.json`, {encodin
     }else if(req.endpoint === '/resizeWindow'){
         const { width, height } = req.options;
         win.setSize(width, height);
+        const workArea = screen.getPrimaryDisplay().workAreaSize;
+        win.setPosition((Math.floor(workArea.width-width)/2), Math.floor((workArea.height-height)/2));
         event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
     }else if(req.endpoint === '/exit'){
         event.sender.send('api-reply', JSON.stringify({req: msg, res: 'ok'}));
