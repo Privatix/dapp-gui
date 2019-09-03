@@ -2,13 +2,14 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-import initElectronMenu from 'common/electronMenu';
 import Select from 'react-select';
 
-import { State } from 'typings/state';
 import { WS } from 'utils/ws';
+import initElectronMenu from 'utils/electronMenu';
 
 import { langs } from './init';
+
+import { State } from 'typings/state';
 
 interface IProps {
     ws?: WS;
