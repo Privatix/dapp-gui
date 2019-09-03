@@ -2,6 +2,7 @@ import { Role, Mode } from './mode';
 
 export interface GasConsumption {
     defaultGasPrice: number;
+    maxPossibleGasPrice: number;
     acceptOffering: number;
     createOffering: number;
     transfer: number;

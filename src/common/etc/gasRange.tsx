@@ -1,10 +1,14 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 import isString = require('lodash.isstring'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
+
 import eth from 'utils/eth';
 import gwei from 'utils/gwei';
 
 import ExternalLink from './externalLink';
+
+import {State} from 'typings/state';
 
 interface IProps {
     onChange: Function;
@@ -13,10 +17,11 @@ interface IProps {
     extLinkText?: string;
     averageTimeText?: string;
     transactionFee?: number;
+    maxPossibleGasPrice?: number;
 }
 
 @translate('utils/gasRange')
-export default class GasRange extends React.Component<IProps, {}> {
+class GasRange extends React.Component<IProps, {}> {
 
     changeGasPrice = (evt: any) => {
         if(typeof this.props.onChange === 'function'){
@@ -40,7 +45,7 @@ export default class GasRange extends React.Component<IProps, {}> {
     }
 
     render() {
-        const { value, t, extLinkText, averageTimeText, transactionFee } = this.props;
+        const { value, t, extLinkText, averageTimeText, transactionFee, maxPossibleGasPrice } = this.props;
 
         const extLink = (isString(extLinkText)) ? extLinkText : 'https://ethgasstation.info/';
         const averageTime = isString(averageTimeText) ? averageTimeText : t('AveragePublicationTimeText');
@@ -54,7 +59,7 @@ export default class GasRange extends React.Component<IProps, {}> {
                            type='range'
                            name='range'
                            min='0'
-                           max='20'
+                           max={maxPossibleGasPrice}
                            step='any'
                            value={value}
                     />
@@ -86,3 +91,5 @@ export default class GasRange extends React.Component<IProps, {}> {
         </div>;
     }
 }
+
+export default connect((state: State) => ({maxPossibleGasPrice: Math.ceil(state.localSettings.gas.maxPossibleGasPrice/1e9)}))(GasRange);

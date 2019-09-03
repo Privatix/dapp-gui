@@ -3,6 +3,7 @@
    "supervisorEndpoint": "http://localhost:7777",
    "gas": {
         "defaultGasPrice": 20000000000,
+        "maxPossibleGasPrice": 50000000000,
         "acceptOffering": 75446,
         "createOffering": 112941,
         "transfer": 148755,
