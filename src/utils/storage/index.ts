@@ -126,7 +126,7 @@ export const createStorage = () => {
 
         const { ws, role } = storage.getState();
         if(role === Role.CLIENT){
-            console.log(ws, ws.passwordIsEntered);
+            log.log(ws, ws.passwordIsEntered);
             if(ws && ws.passwordIsEntered){
                 await ws.whenAuthorized();
                 const channels = await ws.getClientChannels([], ['active', 'activating', 'pending'], 0, 0);

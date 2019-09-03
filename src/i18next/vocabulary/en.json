@@ -174,6 +174,7 @@
         "UnitPriceMustBeMoreThen0": "Unit price must be more then 0.",
         "DepositIsGreaterThenServiceBalance": "Not enough PRIX on the Marketplace. Deposit is greater than the Marketplace balance.",
         "NotEnoughFunds": "Not enough ETH for publish transaction.",
+        "AccountNotSpecified": "Account not specified",
         "MaximumUnitsMustBeEqual": "Maximum units must be equal or greater then minimum units.",
         "Field": "Field",
         "Field_plural": "Fields",

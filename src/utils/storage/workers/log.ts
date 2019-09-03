@@ -51,4 +51,7 @@ export default async (log: any, settings: any) => {
             }
         });
     }
+
+    // catch and log unhandled errors/rejected promises:
+    log.catchErrors({});
 };
