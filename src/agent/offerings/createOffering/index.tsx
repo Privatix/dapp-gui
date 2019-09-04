@@ -780,7 +780,11 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         </span>
                                     </div>
                                 </div>
-                                <GasRange onChange={this.onGasPriceChanged} value={Math.floor(gasPrice/1e9)} transactionFee={localSettings.gas.createOffering} />
+                                <GasRange onChange={this.onGasPriceChanged}
+                                          value={Math.floor(gasPrice/1e9)}
+                                          transactionFee={localSettings.gas.createOffering}
+                                          tab={2}
+                                />
                             </div>
                         </div>
                         <div className='form-group'>

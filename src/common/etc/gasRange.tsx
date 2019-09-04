@@ -18,6 +18,7 @@ interface IProps {
     averageTimeText?: string;
     transactionFee?: number;
     maxPossibleGasPrice?: number;
+    tab?: number;
 }
 
 @translate('utils/gasRange')
@@ -45,14 +46,14 @@ class GasRange extends React.Component<IProps, {}> {
     }
 
     render() {
-        const { value, t, extLinkText, averageTimeText, transactionFee, maxPossibleGasPrice } = this.props;
+        const { value, t, tab, extLinkText, averageTimeText, transactionFee, maxPossibleGasPrice } = this.props;
 
         const extLink = (isString(extLinkText)) ? extLinkText : 'https://ethgasstation.info/';
         const averageTime = isString(averageTimeText) ? averageTimeText : t('AveragePublicationTimeText');
 
         return <div>
             <div className='form-group row'>
-                <label className='col-2 col-form-label'>{t('GasPrice')}</label>
+                <label className={`col-${tab ? tab : 3} col-form-label`}>{t('GasPrice')}</label>
                 <div className='col-md-6'>
                     <input className='form-control'
                            onChange={this.changeGasPrice}
@@ -70,7 +71,7 @@ class GasRange extends React.Component<IProps, {}> {
             </div>
             {transactionFee
                 ? <div className='form-group row'>
-                    <label className='col-3 col-form-label'>{t('TransactionFee')}</label>
+                    <label className={`col-${tab ? tab : 3} col-form-label`}>{t('TransactionFee')}</label>
                     <div className='col-9'>
                         <div className='input-group bootstrap-touchspin'>
                             <input type='text' readOnly className='form-control' value={eth(transactionFee*value*1e9)} />
