@@ -11,7 +11,7 @@
         "increaseDeposit": 45836,
         "removeOffering": 58728,
         "popupOffering": 42579,
-        "terminateContract": 100000
+        "terminateContract": 108459
    },
    "network": "rinkeby",
    "bugsnag": {
