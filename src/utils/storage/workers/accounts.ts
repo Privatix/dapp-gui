@@ -2,7 +2,6 @@ import { asyncProviders } from 'redux/actions';
 
 const subscribe = async (storage: any, localSettings: any) => {
 
-    console.log('LOCAL SETTINGS!!!', localSettings);
     const subscribeAccounts = async() => {
 
         const refreshAccounts = function(){
@@ -27,8 +26,13 @@ const subscribe = async (storage: any, localSettings: any) => {
         if(ws) {
             await ws.whenAuthorized();
             const accounts = await ws.getAccounts();
-            console.log('UPDATE BALANCES!!');
-            accounts.forEach(account => ws.updateBalance(account.id));
+            accounts.forEach(account => {
+                try{
+                    ws.updateBalance(account.id);
+                }catch{
+                    // DO NOTHING
+                }
+            });
         }
         setTimeout(updateBalances, timings.updateBalances);
     };
