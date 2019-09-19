@@ -362,7 +362,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.onChangeLocation(selectedLocation);
         if(channel){
             await ws.changeChannelStatus(channel.id, 'terminate');
-            await ws.changeChannelStatus(channel.id, 'close');
         }
     }
 
@@ -624,7 +623,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const { ws, channel } = this.props;
         ws.changeChannelStatus(channel.id, 'resume');
-        this.setState({status: 'connecting'});
+        this.setState({status: 'resuming'});
     }
 
     private getRange(offeringsItems: ClientOfferingItem[]){

@@ -362,7 +362,8 @@
         "BackupBtn": "Backup",
         "BackupSuccessMsg": "Private key successfully saved.",
         "ModalTitle": "Account",
-        "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes."
+        "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes.",
+        "RefreshingAccountBalanceErrorMsg": "Balance updating is being processed. Please wait."
     },
     "accounts/accountView": {
         "ErrorMoreThanZero": "Amount must be more than zero.",
@@ -638,6 +639,8 @@
         "Value": "Value",
         "Description": "Description",
         "error_sendremote_Name": "Error reporting",
+        "eth_default_gasprice_Name": "Default gas price",
+        "eth_default_gasprice_Description": "Default GAS price for transactions.",
         "eth_challenge_period_Name": "Challenge period",
         "eth_event_blocklimit_Name": "Maximum events blocks",
         "eth_event_freshblocks_Name": "Last events blocks",

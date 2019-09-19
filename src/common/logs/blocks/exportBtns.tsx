@@ -10,6 +10,7 @@ import {connect} from 'react-redux';
 import {State} from '../../../typings/state';
 import {LocalSettings} from '../../../typings/settings';
 import * as log from 'electron-log';
+import * as sudo from 'sudo-prompt';
 
 const {dialog} = remote;
 const {app} = remote;
@@ -100,13 +101,16 @@ class ExportBtns extends React.Component<IProps, IState> {
         const util = path.join(utilPath, 'dump_mac.sh');
         const archivePath = path.join(appPath, '/../../../../../../');
 
-        log.log(`${util} ${archivePath}`);
-        exec(`${util} ${archivePath}`, (error) => {
-            if (error) {
-                log.error(error);
+        log.log(`sudo ${util} ${archivePath}`);
+        sudo.exec(util + ' ' + archivePath, {name: 'Privatix Network'},
+            (error) => {
+                if (error) {
+                    log.error(error);
+                }
+
+                this.saveDialogHandler(archivePath + this.archiveName);
             }
-            this.saveDialogHandler(archivePath + this.archiveName);
-        });
+        );
     }
 
     saveDialogHandler(archive: string, archiveName: string = null) {
