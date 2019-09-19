@@ -23,12 +23,14 @@ export const enum actions {
     SET_CHANNEL,
     SET_WS,
     SET_LOG,
+    SET_I18N,
     SET_OFFERINGS_AVAILABILITY,
     INCREMENT_OFFERINGS_AVAILABILITY_COUNTER,
     SET_AUTOTRANSFER,
     ADD_NOTICE,
     REMOVE_NOTICES,
     SET_EXIT,
+    SET_EXTERNAL_LINK_WARNING,
     SET_STOPPING_SUPERVISOR,
     SET_TRANSFERRING_FLAG,
     SET_IP,
@@ -48,6 +50,7 @@ const handlers  = {
     setChannel                 : function(channel: State['channel']){ return { type: actions.SET_CHANNEL, value: channel };},
     setWS                      : function(ws: State['ws']){ return { type: actions.SET_WS, value: ws};},
     setLOG                     : function(log: State['log']){ return { type: actions.SET_LOG, value: log};},
+    setI18N                    : function(i18n: any){ return {type: actions.SET_I18N, value: i18n};},
     setOfferingsAvailability   : function(offeringsAvailability: State['offeringsAvailability']['statuses'][]){
                                      return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};
                                  },
@@ -56,6 +59,7 @@ const handlers  = {
     addNotice                  : function(msg: {code: number,  notice: Notice}){ return { type: actions.ADD_NOTICE, value: msg };},
     removeNotices              : function(notices: State['notices']){ return { type: actions.REMOVE_NOTICES, value: notices };},
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
+    showExternalLinkWarning    : function(showExternalLink: boolean, externalLink: string){ return { type: actions.SET_EXTERNAL_LINK_WARNING, value: {showExternalLink, externalLink} };},
     setStoppingSupervisor      : function(flag: boolean){ return { type: actions.SET_STOPPING_SUPERVISOR, value: flag };},
     setTransferringFlag        : function(flag: boolean){ return { type: actions.SET_TRANSFERRING_FLAG, value: flag };},
     setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};},
@@ -244,12 +248,23 @@ export const asyncProviders = {
             const accounts = await ws.getAccounts();
 
             const account = accounts.find(account => account.isDefault);
-            const { settings, transferring } = getState();
+            const { transferring } = getState();
             if(account && account.ptcBalance !== 0 && autoTransfer && !transferring){
-                if(localSettings.gas.transfer*settings['eth.default.gasprice'] <= account.ethBalance){
+
+                let gasPrice = localSettings.gas.defaultGasPrice;
+                try {
+                    const suggestedGasPrice = await ws.suggestGasPrice();
+                    if(typeof suggestedGasPrice === 'number' && suggestedGasPrice !== 0){
+                        gasPrice = suggestedGasPrice;
+                    }
+                }catch(e){
+                    // DO NOTHING
+                }
+
+                if(localSettings.gas.transfer*gasPrice <= account.ethBalance){
                     dispatch(handlers.setTransferringFlag(true));
                     startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
-                    ws.transferTokens(account.id, 'psc', account.ptcBalance, parseFloat(settings['eth.default.gasprice']));
+                    ws.transferTokens(account.id, 'psc', account.ptcBalance, gasPrice);
                 }else{
                     dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
                 }
@@ -257,7 +272,7 @@ export const asyncProviders = {
 
             let ledger = {};
             if(role === Role.CLIENT){
-                const channels = await ws.getClientChannels(['wait_coop', 'wait_challenge', 'wait_uncoop', 'pending', 'active'], [], 0, 0);
+                const channels = await ws.getClientChannels(['wait_coop', 'wait_challenge', 'in_challenge', 'wait_uncoop', 'pending', 'active'], [], 0, 0);
                 ledger = channels.items.reduce((ledger: {[key:string]: number}, channel: ClientChannel) => {
                     const address = channel.client.toLowerCase();
                     if(!(address in ledger)){

@@ -56,7 +56,9 @@ class ActiveConnection extends React.Component<IProps, IState>{
     async subscribeUsage(){
         const { ws, channels } = this.props;
         const ids = channels.map(channel => channel.id);
-        this.subscribeId = await ws.subscribe('usage', ids, this.updateUsage);
+        if(ids.length){
+            this.subscribeId = await ws.subscribe('usage', ids, this.updateUsage);
+        }
     }
 
     unsubscribeUsage(){

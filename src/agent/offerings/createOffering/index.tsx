@@ -35,7 +35,6 @@ type IProps = RouteComponentProps<any> & {
     closeModal?: Function;
     accounts?: Account[];
     products?: Product[];
-    gasPrice?: number;
 };
 
 interface IState {
@@ -63,7 +62,7 @@ interface IState {
         billingInterval?: number;
         ipType: string;
     };
-    gasPrice?: number;
+    gasPrice: number;
     blocked?: boolean;
     account?: Account;
     errMsg?: string;
@@ -74,7 +73,7 @@ class CreateOffering extends React.Component<IProps, IState>{
 
     get defaultState(){
 
-        const { accounts, products, product, gasPrice } = this.props;
+        const { accounts, products, product, localSettings } = this.props;
         const account = accounts.find(account => account.isDefault);
         const productId = product ? product : products[0].id;
         const currentProduct = products.find(product => product.id === productId);
@@ -82,7 +81,7 @@ class CreateOffering extends React.Component<IProps, IState>{
 
         return {
             payload: {
-                agent: account.id
+                agent: account ? account.id : null
                ,serviceName: ''
                ,description: ''
                ,country: country ? country.toUpperCase() : ''
@@ -103,7 +102,7 @@ class CreateOffering extends React.Component<IProps, IState>{
                ,minUploadMbits: ''
                ,ipType: ipTypes[1].type
             }
-           ,gasPrice
+           ,gasPrice: localSettings.gas.defaultGasPrice
            ,account
            ,blocked: false
         };
@@ -112,6 +111,24 @@ class CreateOffering extends React.Component<IProps, IState>{
     constructor(props: IProps){
         super(props);
         this.state = this.defaultState;
+    }
+
+    componentDidMount(){
+        this.updateGasPrice();
+    }
+
+    updateGasPrice = async () => {
+
+        const { ws } = this.props;
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
+        }catch(e){
+            // DO NOTHING
+        }
     }
 
     onGasPriceChanged = (evt:any) => {
@@ -262,12 +279,16 @@ class CreateOffering extends React.Component<IProps, IState>{
                 }
             }
         }
-        if(payload.deposit !== payload.deposit || payload.deposit > account.pscBalance){
-            err = true;
-        }
+        if(account){
+            if(payload.deposit !== payload.deposit || payload.deposit > account.pscBalance){
+                err = true;
+            }
 
-        if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
-            err=true;
+            if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
+                err=true;
+            }
+        }else{
+            err = true;
         }
 
         if (parseFloat(payload.maxSuspendTime) < 10 || parseFloat(payload.maxInactiveTimeSec) < 10){
@@ -319,11 +340,15 @@ class CreateOffering extends React.Component<IProps, IState>{
             if(parseFloatPrix(payload.unitPrice) <= 0){
                 msg += t('UnitPriceMustBeMoreThen0') + ' ';
             }
-            if(payload.deposit === payload.deposit && payload.deposit > account.pscBalance){
-                msg += t('DepositIsGreaterThenServiceBalance') + ' ';
-            }
-            if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
-                msg += t('NotEnoughFunds') + ' ';
+            if(account){
+                if(payload.deposit === payload.deposit && payload.deposit > account.pscBalance){
+                    msg += t('DepositIsGreaterThenServiceBalance') + ' ';
+                }
+                if(account.ethBalance < localSettings.gas.createOffering*gasPrice){
+                    msg += t('NotEnoughFunds') + ' ';
+                }
+            }else{
+                msg += t('AccountNotSpecified') + ' ';
             }
             if(!wrongKeys.includes('maxUnit') && !wrongKeys.includes('minUnits')){
                 if (payload.maxUnit !== '') {
@@ -382,7 +407,7 @@ class CreateOffering extends React.Component<IProps, IState>{
             this.setState({blocked: true});
             const offeringId = await ws.createOffering(payload);
             await ws.changeOfferingStatus(offeringId, 'publish', gasPrice);
-            this.setState(this.defaultState);
+            this.setState(this.defaultState, this.updateGasPrice);
 
             if(typeof closeModal === 'function'){
                 closeModal();
@@ -405,7 +430,7 @@ class CreateOffering extends React.Component<IProps, IState>{
     }
 
     render(){
-        const { t, accounts, products } = this.props;
+        const { t, accounts, products, localSettings } = this.props;
         const { payload, account, gasPrice, blocked } = this.state;
 
         const selectProduct = <Select className='form-control'
@@ -755,7 +780,11 @@ class CreateOffering extends React.Component<IProps, IState>{
                                         </span>
                                     </div>
                                 </div>
-                                <GasRange onChange={this.onGasPriceChanged} value={Math.floor(gasPrice/1e9)} />
+                                <GasRange onChange={this.onGasPriceChanged}
+                                          value={Math.floor(gasPrice/1e9)}
+                                          transactionFee={localSettings.gas.createOffering}
+                                          tab={2}
+                                />
                             </div>
                         </div>
                         <div className='form-group'>
@@ -781,7 +810,6 @@ export default withRouter(connect( (state: State, ownProps: IProps) => {
     return (
         Object.assign({}
                      ,{ws, accounts, products, localSettings}
-                     ,{gasPrice: parseFloat(state.settings['eth.default.gasprice'])}
                      ,ownProps
                      )
     );

@@ -2,18 +2,20 @@ import * as React from 'react';
 import { connect } from 'react-redux';
 import { translate } from 'react-i18next';
 
-import initElectronMenu from 'common/electronMenu';
 import Select from 'react-select';
 
-import { State } from 'typings/state';
 import { WS } from 'utils/ws';
+import initElectronMenu from 'utils/electronMenu';
 
 import { langs } from './init';
+
+import { State } from 'typings/state';
 
 interface IProps {
     ws?: WS;
     lang?: string;
     i18n?: any;
+    dispatch?: any;
 }
 
 interface IState {
@@ -35,7 +37,7 @@ class SelectLanguage extends React.Component<IProps, IState> {
         i18n.changeLanguage(lang.value, () => {
             ws.setGUISettings({lang: lang.value});
             // From custom electron menu
-            initElectronMenu();
+            initElectronMenu(this.props.dispatch);
         });
         this.setState({lang: lang.value});
     }

@@ -1,7 +1,7 @@
 {
     "name": "dappctrlgui",
     "description": "Privatix Network GUI",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "main": "build/main.js",
     "devDependencies": {
         "@types/colors": "^1.1.3",
@@ -19,7 +19,7 @@
         "electron-react-devtools": "^0.5.3",
         "mocha": "^5.0.1",
         "shx": "^0.2.2",
-        "spectron": "^3.8.0",
+        "spectron": "^7.0.0",
         "style-loader": "^0.21.0",
         "ts-loader": "^4.5.0",
         "tsconfig-paths-webpack-plugin": "^3.0.3",
@@ -81,7 +81,7 @@
         "react-router-dom": "5.0.0",
         "react-select": "^1.2.1",
         "react-sortable-table-vilan": "^1.0.0",
-        "react-sweetalert-vilan": "^1.0.0",
+        "react-sweetalert-vilan": "^1.1.0",
         "react-table": "^6.8.5",
         "react-toggle": "^4.0.2",
         "react-tooltip": "^3.8.4",

@@ -6,7 +6,6 @@ import Transactions from 'common/transactions/transactionsList';
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import GasRange from 'common/etc/gasRange';
 
-import { WS } from 'utils/ws';
 import notice from 'utils/notice';
 import eth from 'utils/eth';
 import prix from 'utils/prix';
@@ -16,12 +15,12 @@ import CopyToClipboard from 'common/copyToClipboard';
 import { State } from 'typings/state';
 import { Account } from 'typings/accounts';
 import {LocalSettings} from 'typings/settings';
+import * as log from 'electron-log';
 
 interface IProps {
-    ws?: WS;
+    ws?: State['ws'];
     t?: any;
     localSettings?: LocalSettings;
-    gasPrice?: number;
     account: Account;
 }
 
@@ -40,9 +39,9 @@ class AccountView extends React.Component<IProps, IState> {
 
         super(props);
 
-        const { gasPrice, account } = props;
+        const { account, localSettings } = props;
 
-        this.state = {gasPrice
+        this.state = {gasPrice: localSettings.gas.defaultGasPrice
                      ,amount: 0
                      ,destination: 'psc'
                      ,address: `0x${account.ethAddr}`
@@ -50,8 +49,20 @@ class AccountView extends React.Component<IProps, IState> {
         };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+
+        const { ws } = this.props;
+
         drawQrCode(`0x${this.props.account.ethAddr}`);
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
+        }catch(e){
+            // DO NOTHING
+        }
     }
 
     onGasPriceChanged = (evt: any) => {
@@ -115,8 +126,7 @@ class AccountView extends React.Component<IProps, IState> {
             await ws.transferTokens(account.id, destination, amount, gasPrice);
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
         } catch ( e ) {
-            // TODO something wrong !!!
-            console.log('ERROR', e);
+            log.error('ERROR', e);
             this.setState({transferStarted: false});
         }
 
@@ -129,7 +139,7 @@ class AccountView extends React.Component<IProps, IState> {
 
     render() {
 
-        const { t, account } = this.props;
+        const { t, account, localSettings } = this.props;
         const { destination, address, gasPrice, transferStarted } = this.state;
 
         return <div className='row justify-content-center'>
@@ -243,7 +253,7 @@ class AccountView extends React.Component<IProps, IState> {
                                 </div>
                             </div>
                         </div>
-                        <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} />
+                        <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} transactionFee={localSettings.gas.transfer} />
                         <div className='form-group row'>
                             <div className='col-12'>
                                 <ConfirmPopupSwal
@@ -275,6 +285,5 @@ class AccountView extends React.Component<IProps, IState> {
 export default connect( (state: State, ownProps: IProps) => {
     return Object.assign({}, {
     ws: state.ws
-   ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
    ,localSettings: state.localSettings
 }, ownProps);} )(AccountView);

@@ -19,6 +19,7 @@ import { Offering, ClientOfferingItem } from 'typings/offerings';
 
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 import ExternalLink from 'common/etc/externalLink';
+import ExternalLinkWarning from 'common/externalLinkWarning';
 import ExitNotice from 'client/exit/notice';
 import ExitScreen from 'client/exit/';
 
@@ -28,6 +29,7 @@ import NetworkAndVersion from 'common/networkAndVersion';
 import GetPrix from 'common/wizard/getPrix';
 import eth from 'utils/eth';
 import prix from 'utils/prix';
+import * as log from 'electron-log';
 
 type Status = 'disconnected'
             | 'disconnecting'
@@ -44,7 +46,6 @@ interface IProps {
     localSettings: State['localSettings'];
     offeringsAvailability: State['offeringsAvailability'];
     t?: any;
-    gasPrice: number;
     account: Account;
     balance: string;
     dispatch?: any;
@@ -361,7 +362,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.onChangeLocation(selectedLocation);
         if(channel){
             await ws.changeChannelStatus(channel.id, 'terminate');
-            await ws.changeChannelStatus(channel.id, 'close');
         }
     }
 
@@ -447,7 +447,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
             this.offeringsSubscription = await ws.subscribe('offering', ids, this.updateOfferings, this.updateOfferings);
         }else{
             if(evt){
-                console.log('offering event', evt);
+                log.log('offering event', evt);
             }
         }
 
@@ -475,7 +475,17 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     private async connect(offering: Offering){
 
-        const { t, ws, localSettings, gasPrice, account } = this.props;
+        const { t, ws, localSettings, account } = this.props;
+
+        let gasPrice = localSettings.gas.defaultGasPrice;
+        try {
+            const suggestedGasPrice = await ws.suggestGasPrice();
+            if(typeof suggestedGasPrice === 'number' && suggestedGasPrice !== 0){
+                gasPrice = suggestedGasPrice;
+            }
+        }catch(e){
+            // DO NOTHING
+        }
 
         const deposit = offering.unitPrice * offering.minUnits;
 
@@ -613,7 +623,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const { ws, channel } = this.props;
         ws.changeChannelStatus(channel.id, 'resume');
-        this.setState({status: 'connecting'});
+        this.setState({status: 'resuming'});
     }
 
     private getRange(offeringsItems: ClientOfferingItem[]){
@@ -629,12 +639,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         const probability = Math.random();
         const range = this.selectByProbability(table, probability);
-        console.log('RANGE SELECTED!!!', range);
+        log.log('RANGE SELECTED!!!', range);
         const items = offeringsItems.map(offeringItem => ({id: offeringItem.offering.id, rating: offeringItem.rating}));
         const max = Math.max(...items.map(item => item.rating));
 
         if(max === 0){
-            console.log('RATING NOT CALCULATED!!! result:', offeringsItems);
+            log.log('RATING NOT CALCULATED!!! result:', offeringsItems);
             return offeringsItems;
         }
 
@@ -646,10 +656,10 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const offerings = offeringsItems.filter(offeringItem => ids.includes(offeringItem.offering.id));
 
         if(offerings.length > 0){
-            console.log('RESULT: ', offerings);
+            log.log('RESULT: ', offerings);
             return offerings;
         }
-        console.log('there are no offerings in selected range, next attempt');
+        log.log('there are no offerings in selected range, next attempt');
         return this.getRange(offeringsItems);
     }
 
@@ -678,13 +688,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(k === 0){
             const res = offerings[Math.floor(Math.random()*offerings.length)];
-            console.log('random offering:', res);
+            log.log('random offering:', res);
             return res;
         }
 
         const item = this.selectByProbability(items, Math.random()*k);
         const offering = offerings.find(offeringItem => offeringItem.offering.id === item.id);
-        console.log('selected offering: ', offering);
+        log.log('selected offering: ', offering);
         return offering;
     }
 
@@ -820,6 +830,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                 <Noticer />
                 <ExitNotice />
                 <NetworkAndVersion className='networkANdBuildVersionSimple' />
+                <ExternalLinkWarning />
                 <style dangerouslySetInnerHTML={{__html: `
                    html { background: white; } body { background: white; }
                 `}} />
@@ -890,7 +901,6 @@ export default connect((state: State) => {
     return {
         ws: state.ws
        ,localSettings: state.localSettings
-       ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
        ,account
        ,channel: state.channel
        ,ip: state.ip

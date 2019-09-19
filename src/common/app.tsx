@@ -24,6 +24,7 @@ import ClientDashboardConnecting from 'client/dashboard/connecting';
 import VPNList from 'client/vpn_list/list/';
 import AcceptOffering from 'client/vpn_list/acceptOffering';
 import ClientHistory from 'client/vpn_list/history';
+import ExternalLinkWarning from 'common/externalLinkWarning';
 import ExitNotice from 'client/exit/notice';
 
 import Logs from 'common/logs/logsList';
@@ -53,6 +54,7 @@ class App extends React.Component<IProps, {}> {
                 <div id='wrapper'>
                     <Header />
                     <Navigation />
+                    <ExternalLinkWarning />
                     {role === Role.CLIENT ? <ExitNotice /> : null }
                     <div className='content-page'>
                         <div className='content'>

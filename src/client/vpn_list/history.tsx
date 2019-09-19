@@ -52,12 +52,12 @@ class ClientHistory extends React.Component<IProps, IState> {
     refresh = async () => {
 
         const { ws } = this.props;
-        const allTerminatedChannels = (await ws.getClientChannels([], ['terminated'], 0, 0)).items;
 
-        const allClientChannels = await ws.getClientChannels([], [], 0, 0);
+        const allTerminatedChannels = (await ws.getClientChannels([], ['terminated'], 0, 0)).items;
+        const allClientChannels = (await ws.getClientChannels([], [], 0, 0)).items;
 
         if(this.mounted){
-            this.subscribe(allClientChannels.items);
+            this.subscribe(allClientChannels);
             this.setState({allTerminatedChannels});
         }
     }
@@ -78,7 +78,9 @@ class ClientHistory extends React.Component<IProps, IState> {
             await ws.unsubscribe(this.subscribeId);
         }
         const ids = channels.map(channel => channel.id);
-        this.subscribeId = await ws.subscribe('channels', ids, this.eventDispatcher);
+        if(ids.length){
+            this.subscribeId = await ws.subscribe('channels', ids, this.eventDispatcher);
+        }
     }
 
     updateUsage(usages: {[key: string]: ClientChannelUsage}){
@@ -97,8 +99,9 @@ class ClientHistory extends React.Component<IProps, IState> {
         const { t } = this.props;
         const { allTerminatedChannels } = this.state;
 
-        const historyChannels = allTerminatedChannels.filter(channel => channel.channelStatus.channelStatus !== 'active');
-        const activeContractChannels = allTerminatedChannels.filter(channel => channel.channelStatus.channelStatus === 'active');
+        const activeStatuses = ['active', 'wait_coop', 'wait_challenge', 'in_challenge', 'wait_coop'];
+        const historyChannels = allTerminatedChannels.filter(channel => !activeStatuses.includes(channel.channelStatus.channelStatus));
+        const activeContractChannels = allTerminatedChannels.filter(channel => activeStatuses.includes(channel.channelStatus.channelStatus));
 
         const historyChannelsView = historyChannels.map(channel => {
             return {

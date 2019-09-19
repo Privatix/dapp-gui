@@ -19,7 +19,6 @@ interface IProps {
     accounts: State['accounts'];
     localSettings: State['localSettings'];
     channel: ClientChannel;
-    gasPrice: number;
     dispatch: any;
     t?: any;
     closeModal?: any;
@@ -31,10 +30,10 @@ class IncreaseDepositView extends React.Component<IProps, any> {
     constructor(props: IProps) {
 
         super(props);
-        const { gasPrice, channel, accounts } = props;
+        const { channel, accounts, localSettings } = props;
 
         this.state = {
-            gasPrice: gasPrice ? gasPrice : 0,
+            gasPrice: localSettings.gas.defaultGasPrice,
             account: accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === channel.client.toLowerCase()),
             deposit: channel.totalDeposit,
             offering: null,
@@ -45,15 +44,18 @@ class IncreaseDepositView extends React.Component<IProps, any> {
 
     async componentDidMount(){
 
-        const { channel, dispatch } = this.props;
-
+        const { ws, channel, dispatch } = this.props;
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
+        }catch(e){
+            // DO NOTHING
+        }
         await this.getOffering(channel.offering );
 
         dispatch(asyncProviders.updateSettings());
-    }
-
-    static getDerivedStateFromProps(props: IProps, state: any) {
-        return state.gasPrice === 0 && props.gasPrice ? {gasPrice: props.gasPrice} : null;
     }
 
     async getOffering(id: string) {
@@ -180,7 +182,7 @@ class IncreaseDepositView extends React.Component<IProps, any> {
 
     render(){
 
-        const { t, channel, accounts } = this.props;
+        const { t, channel, accounts, localSettings } = this.props;
         const { account, offering, gasPrice } = this.state;
 
         let value = '';
@@ -246,7 +248,11 @@ class IncreaseDepositView extends React.Component<IProps, any> {
                             <span className='help-block'><small>{maxUnitsHint}</small></span>
                         </div>
                     </div>
-                    <GasRange onChange={this.onGasPriceChanged} value={gasPrice/1e9} averageTimeText={t('AverageTimeToAddTheDeposit')} />
+                    <GasRange onChange={this.onGasPriceChanged}
+                              value={gasPrice/1e9}
+                              transactionFee={localSettings.gas.increaseDeposit}
+                              averageTimeText={t('AverageTimeToAddTheDeposit')}
+                    />
                     <div className='form-group row'>
                         <div className='col-12'>
                             <ConfirmPopupSwal
@@ -270,6 +276,5 @@ export default connect( (state: State) => {
     return {
     ws: state.ws
    ,accounts: state.accounts
-   ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
    ,localSettings: state.localSettings
 };} )(IncreaseDepositView);

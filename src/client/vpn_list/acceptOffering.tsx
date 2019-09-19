@@ -7,7 +7,7 @@ import Select from 'react-select';
 
 import notice from 'utils/notice';
 import prix from 'utils/prix';
-import eth from 'utils/prix';
+import eth from 'utils/eth';
 
 import GasRange from 'common/etc/gasRange';
 
@@ -25,7 +25,6 @@ interface IProps{
     t?: any;
     localSettings?: LocalSettings;
     accounts?: Account[];
-    gasPrice?: number;
     history?: any;
     offering: Offering;
     mode?: string;
@@ -48,20 +47,31 @@ class AcceptOffering extends React.Component<IProps, IState>{
     constructor(props:IProps){
         super(props);
 
-        const { gasPrice, offering, accounts } = props;
+        const { offering, accounts, localSettings } = props;
 
         this.acceptBtn = React.createRef();
 
         this.state = {
             deposit: offering.unitPrice * offering.minUnits,
             customDeposit: offering.unitPrice * offering.minUnits,
-            gasPrice: gasPrice,
+            gasPrice: localSettings.gas.defaultGasPrice,
             account: accounts.find((account: Account) => account.isDefault),
             thereAreActiveChannels: false
         };
     }
 
     async componentDidMount(){
+
+        const { ws } = this.props;
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
+        }catch(e){
+            // DO NOTHING
+        }
 
         this.getNotTerminatedConnections();
     }
@@ -151,8 +161,8 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
     render(){
 
-        const { t, offering, accounts, serviceName } = this.props;
-        const { account, customDeposit, thereAreActiveChannels } = this.state;
+        const { t, offering, localSettings, accounts, serviceName } = this.props;
+        const { account, customDeposit, thereAreActiveChannels, gasPrice } = this.state;
 
         const acceptOfferingBtnBl = thereAreActiveChannels
             ? <div className='form-group row'>
@@ -306,12 +316,16 @@ class AcceptOffering extends React.Component<IProps, IState>{
                                     </span>
                                 </div>
                             </div>
-                            <GasRange onChange={this.onGasPriceChanged} value={Math.floor(this.state.gasPrice/1e9)}
-                                      extLinkText='Information about Gas price' averageTimeText={t('utils/gasRange:AverageAcceptanceTimeText')} />
+                            <GasRange onChange={this.onGasPriceChanged}
+                                      value={gasPrice/1e9}
+                                      extLinkText='Information about Gas price'
+                                      averageTimeText={t('utils/gasRange:AverageAcceptanceTimeText')}
+                            />
                             <div className='form-group row'>
                                 <div className='col-2 col-form-label font-18'><strong>{t('AcceptancePrice')}</strong></div>
                                 <div className='col-6 col-form-label font-18'>
-                                    <strong>{prix(customDeposit)} PRIX</strong>
+                                    <div><strong>{prix(customDeposit)} PRIX</strong></div>
+                                    <div><strong>{eth(localSettings.gas.acceptOffering*gasPrice)} ETH</strong></div>
                                 </div>
                             </div>
                         </div>
@@ -327,7 +341,6 @@ class AcceptOffering extends React.Component<IProps, IState>{
 export default connect( (state: State, ownProps: IProps) => {
     return Object.assign({}, {
     ws: state.ws
-   ,gasPrice: parseFloat(state.settings['eth.default.gasprice'])
    ,localSettings: state.localSettings
    ,accounts: state.accounts
    ,serviceName: state.serviceName

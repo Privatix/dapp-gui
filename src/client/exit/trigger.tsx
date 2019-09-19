@@ -6,6 +6,7 @@ import { Mode } from 'typings/mode';
 import { State } from 'typings/state';
 
 import { asyncProviders } from 'redux/actions';
+import * as log from 'electron-log';
 
 interface IProps {
     stoppingSupervisor?: boolean;
@@ -30,7 +31,7 @@ class Trigger extends React.Component<IProps, {}> {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     setSimpleMode: () => {
-        console.log('SET SIMPLE MODE');
+        log.log('SET SIMPLE MODE');
         dispatch(asyncProviders.setMode(Mode.SIMPLE));
     }
 });

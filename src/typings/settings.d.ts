@@ -1,6 +1,8 @@
 import { Role, Mode } from './mode';
 
 export interface GasConsumption {
+    defaultGasPrice: number;
+    maxPossibleGasPrice: number;
     acceptOffering: number;
     createOffering: number;
     transfer: number;
@@ -8,6 +10,7 @@ export interface GasConsumption {
     increaseDeposit: number;
     removeOffering: number;
     popupOffering: number;
+    terminateContract: number;
 }
 
 export interface LocalSettings {

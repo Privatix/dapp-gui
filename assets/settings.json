@@ -2,13 +2,16 @@
    "wsEndpoint": "ws://localhost:8888/ws",
    "supervisorEndpoint": "http://localhost:7777",
    "gas": {
+        "defaultGasPrice": 20000000000,
+        "maxPossibleGasPrice": 50000000000,
         "acceptOffering": 75446,
         "createOffering": 112941,
         "transfer": 148755,
         "returnBalance": 61473,
         "increaseDeposit": 45836,
-        "removeOffering": 39935,
-        "popupOffering": 42579
+        "removeOffering": 58728,
+        "popupOffering": 42579,
+        "terminateContract": 108459
    },
    "network": "rinkeby",
    "bugsnag": {
@@ -23,7 +26,7 @@
    "elementsPerPage": 10,
    "lang": "en",
    "releasesEndpoint": "https://api.github.com/repos/Privatix/privatix/releases",
-   "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/${version}/versions.txt",
+   "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/%version%/versions.txt",
    "updateCheckFreq": 480,
    "window": {
        "advanced": {"width": 1024, "height": 800},

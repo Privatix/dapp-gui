@@ -1,5 +1,4 @@
 export default function (props: any): string {
-
     const { number, significant } = props;
     let fixed = props.fixed;
 

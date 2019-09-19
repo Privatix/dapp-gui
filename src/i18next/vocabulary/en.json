@@ -54,13 +54,14 @@
         "SomethingWentWrong": "Something went wrong. Please, check the file or enter a valid password.",
         "PathToJSONKeystoreFile": "Path to JSON Keystore File",
         "PasswordWillBeUsed": "Password (will be used to decrypt JSON)",
-        "MoreInformation": "More information about Ethereum Private Key"
+        "MoreInformation": "More about Ethereum keystore"
     },
     "auth/importHexKey": {
         "PleaseInputHexRepresentation": "Please, input hex representation of your Private Key for address, that holds PRIX",
         "PrivateKey": "Private key",
         "PrivateKeyMustHave": "Private key must have exactly 64 hex symbols.",
-        "SomethingWentWrong": "Something went wrong. Please, check the key."
+        "SomethingWentWrong": "Something went wrong. Please, check the key.",
+        "MoreInformationPrivateKey": "More about Ethereum Private Key"
     },
     "auth/backup": {
         "Backup": "Backup",
@@ -173,6 +174,7 @@
         "UnitPriceMustBeMoreThen0": "Unit price must be more then 0.",
         "DepositIsGreaterThenServiceBalance": "Not enough PRIX on the Marketplace. Deposit is greater than the Marketplace balance.",
         "NotEnoughFunds": "Not enough ETH for publish transaction.",
+        "AccountNotSpecified": "Account not specified",
         "MaximumUnitsMustBeEqual": "Maximum units must be equal or greater then minimum units.",
         "Field": "Field",
         "Field_plural": "Fields",
@@ -360,7 +362,8 @@
         "BackupBtn": "Backup",
         "BackupSuccessMsg": "Private key successfully saved.",
         "ModalTitle": "Account",
-        "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes."
+        "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes.",
+        "RefreshingAccountBalanceErrorMsg": "Balance updating is being processed. Please wait."
     },
     "accounts/accountView": {
         "ErrorMoreThanZero": "Amount must be more than zero.",
@@ -390,6 +393,7 @@
     },
     "utils/gasRange": {
         "GasPrice": "Gas price",
+        "TransactionFee": "Transaction Fee:",
         "AveragePublicationTimeText": "Average publication time:",
         "AverageAcceptanceTimeText": "Average acceptance time:",
         "AverageTime": "min",
@@ -635,8 +639,9 @@
         "Value": "Value",
         "Description": "Description",
         "error_sendremote_Name": "Error reporting",
-        "eth_challenge_period_Name": "Challenge period",
         "eth_default_gasprice_Name": "Default gas price",
+        "eth_default_gasprice_Description": "Default GAS price for transactions.",
+        "eth_challenge_period_Name": "Challenge period",
         "eth_event_blocklimit_Name": "Maximum events blocks",
         "eth_event_freshblocks_Name": "Last events blocks",
         "eth_event_maxretry_Name": "Event processing max retry",
@@ -659,7 +664,6 @@
         "rating_ranking_steps_Name": "Rating ranking steps",
         "error_sendremote_Description": "Allow error reporting to send logs to Privatix.",
         "eth_challenge_period_Description": "Number of blocks to wait from an uncooperativeClose initiated by the Client in order to give the Agent a chance to respond with a balance proof in case the Client cheats. After the challenge period, the Client can settle and delete the channel. Number of blocks Agent will wait from registerServiceOffering or from createChannel before he can delete service offering and recieve Agent's deposit back_",
-        "eth_default_gasprice_Description": "Default GAS price for transactions.",
         "eth_event_blocklimit_Description": "Maximum number of ethereum blocks that is used to scan for new events. It is used as pagination mechanism while querying ethereum JSON RPC. If eth.event.blocklimit is null or zero then no pagination is used, which is not recommended.",
         "eth_event_freshblocks_Description": "Defines number of latest ethereum blocks to retrieve. If eth.event.freshblocks is null or zero then all events will be downloaded.",
         "eth_event_maxretry_Description": "Have value (stored as string) that is null or integer and represents how many times event should try to create job, until it is ignored. null or zero considered unlimited.",
@@ -679,7 +683,11 @@
         "client_min_deposit_Description": "This value will override min. deposit proposed by Agent in auto-increase mode, if greater than proposed.",
         "client_autoincrease_percent_Description": "This setting specifies when to increase deposit. Increase deposit, when current usage is equal to this percent of total used units.",
         "client_autoincrease_deposit_Description": "Enable or disable auto-increase mode. Only for client.",
-        "rating_ranking_steps_Description": "Number of iterations to compute rank in ratings calculation"
+        "rating_ranking_steps_Description": "Number of iterations to compute rank in ratings calculation",
+        "eth_event_lastBackSearchBlock_Name": "Last back search block",
+        "eth_event_lastBackSearchBlock_Description": "The last block offerings searched from",
+        "eth_event_offeringsfreshblocks_Name": "Offerings last events blocks",
+        "eth_event_offeringsfreshblocks_Description": "For clients, defines number of latest ethereum blocks to retrieve offerings from. If eth.event.offeringsfreshblocks is null or zero then events starting from the latest block will be downloaded."
     },
     "copyToClipboard": {
         "Copied": "Copied!",

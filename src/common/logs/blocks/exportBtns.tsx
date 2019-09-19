@@ -1,21 +1,25 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import {translate} from 'react-i18next';
 import * as os from 'os';
-import { exec } from 'child_process';
+import {exec} from 'child_process';
 import notice from 'utils/notice';
 import * as api from 'utils/api';
 import {remote} from 'electron';
-const {dialog} = remote;
-const {app} = remote;
 import * as path from 'path';
 import {connect} from 'react-redux';
 import {State} from '../../../typings/state';
 import {LocalSettings} from '../../../typings/settings';
+import * as log from 'electron-log';
+import * as sudo from 'sudo-prompt';
+
+const {dialog} = remote;
+const {app} = remote;
 
 interface IProps {
     t?: any;
     localSettings?: LocalSettings;
-    exportControllerLogsToFile(evt:any): void;
+
+    exportControllerLogsToFile(evt: any): void;
 }
 
 interface IState {
@@ -62,18 +66,17 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 
     async saveUbuntuLogs() {
-        const appPath = app.getAppPath();
-        const utilPath = path.join(appPath, '../../../util/dump/');
-        const util = path.join(utilPath, 'dump_ubuntu.sh');
-        const archivePath = path.join(appPath, '../../../../');
+        const role = this.props.localSettings.role;
+        const privatixApplicationFolder = path.join(app.getAppPath(), '../../../');
+        const executeCommand = 'machinectl -q shell ' + role + ' /bin/sh -c \'/util/dump/dump_ubuntu.sh ../..\'';
 
-        console.log(`${util} ${archivePath}`);
+        log.log(executeCommand);
+        const {error} = await api.exec(executeCommand);
 
-        const { error } = await api.exec(`${util} ${archivePath}`);
-        if(error){
-            console.log(error);
+        if (error) {
+            log.error(error);
         }
-        this.saveDialogHandler(archivePath + 'dump.tar.gz', 'dump.tar.gz');
+        this.saveDialogHandler(privatixApplicationFolder + 'dump.tar.gz', 'dump.tar.gz');
     }
 
     saveWindowsLogs() {
@@ -83,10 +86,10 @@ class ExportBtns extends React.Component<IProps, IState> {
         const archive = path.join(app.getPath('temp'), archiveName);
 
         const cmd = `"${utilPath}ps-runner.exe" -script "${utilPath}new-dump.ps1" -installDir "${installDir}" -outFile "${archive}"`;
-        console.log(cmd);
+        log.log(cmd);
         exec(cmd, (error) => {
-            if(error){
-                console.log(error);
+            if (error) {
+                log.error(error);
             }
             this.saveDialogHandler(archive, archiveName);
         });
@@ -98,13 +101,16 @@ class ExportBtns extends React.Component<IProps, IState> {
         const util = path.join(utilPath, 'dump_mac.sh');
         const archivePath = path.join(appPath, '/../../../../../../');
 
-        console.log(`${util} ${archivePath}`);
-        exec(`${util} ${archivePath}`, (error) => {
-            if(error){
-                console.log(error);
+        log.log(`sudo ${util} ${archivePath}`);
+        sudo.exec(util + ' ' + archivePath, {name: 'Privatix Network'},
+            (error) => {
+                if (error) {
+                    log.error(error);
+                }
+
+                this.saveDialogHandler(archivePath + this.archiveName);
             }
-            this.saveDialogHandler(archivePath + this.archiveName);
-        });
+        );
     }
 
     saveDialogHandler(archive: string, archiveName: string = null) {
@@ -123,7 +129,7 @@ class ExportBtns extends React.Component<IProps, IState> {
                 api.fs.copyFile(archive, pathToArchive)
                     .then(res => {
                         if (res.err) {
-                            console.log(res.err);
+                            log.log(res.err);
                             if (res.err.code === 'EACCES') {
                                 notice({level: 'error', msg: t('PermissionDenied')});
                             } else {
@@ -148,14 +154,14 @@ class ExportBtns extends React.Component<IProps, IState> {
         return (
             <div>
                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-30 m-r-20'
-                    onClick={this.props.exportControllerLogsToFile}>{t('ExportControllerLogsBtn')}</button>
+                        onClick={this.props.exportControllerLogsToFile}>{t('ExportControllerLogsBtn')}</button>
 
                 <button className='btn btn-default btn-custom waves-effect waves-light m-b-30'
-                    onClick={this.exportAllLogsToFile}
-                    disabled={this.state.disabledBtn}>{t('ExportAllLogsBtn')}</button>
+                        onClick={this.exportAllLogsToFile}
+                        disabled={this.state.disabledBtn}>{t('ExportAllLogsBtn')}</button>
             </div>
         );
     }
 }
 
-export default connect( (state: State) => ({localSettings: state.localSettings}) )(ExportBtns);
+export default connect((state: State) => ({localSettings: state.localSettings}))(ExportBtns);

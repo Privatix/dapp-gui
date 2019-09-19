@@ -19,6 +19,7 @@ interface State {
     role: Role;
     mode: Mode;
     ws: WS;
+    i18n: any;
     log: any;
     totalIncome: number;
     offeringsAvailability: {
@@ -29,6 +30,8 @@ interface State {
     transferring: boolean;
     notices: {code: number, notice: Notice}[];
     exit: boolean;
+    showExternalLink: boolean;
+    externalLink: string;
     stoppingSupervisor: boolean;
     ip: string;
     channelObserverContext: {
@@ -49,6 +52,7 @@ const StateDefault: State = {
     role: null,
     mode: null,
     ws: null,
+    i18n: null,
     log: null,
     totalIncome: 0,
     offeringsAvailability: {
@@ -59,6 +63,8 @@ const StateDefault: State = {
     transferring: false,
     notices: [],
     exit: false,
+    showExternalLink: false,
+    externalLink: '',
     stoppingSupervisor: false,
     ip: '',
     channelObserverContext: {

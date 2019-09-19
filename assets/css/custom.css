@@ -768,6 +768,7 @@ ul.react-datepicker__time-list li.react-datepicker__time-list-item {
     position: absolute;
     bottom: 20px;
     left: 25px;
+    text-align: left;
 }
 
 @media only screen and (min-width: 1200px) and (max-width: 1600px) {

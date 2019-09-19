@@ -5,6 +5,8 @@ import { translate } from 'react-i18next';
 
 import {asyncProviders} from 'redux/actions';
 
+import eth from 'utils/eth';
+
 import {State} from 'typings/state';
 import {Offering} from 'typings/offerings';
 
@@ -20,7 +22,6 @@ interface Props extends OwnProps {
     lastProcessedBlock: number;
     removePeriod: number;
     popupPeriod: number;
-    gasPrice: number;
     localSettings: State['localSettings'];
     accounts: State['accounts'];
     dispatch: Dispatch<any>;
@@ -28,15 +29,28 @@ interface Props extends OwnProps {
     ws: State['ws'];
 }
 
-const translated = translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice']);
+const translated = translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice', 'utils/gasRange']);
 
 class PopupOfferingButton extends React.Component<Props, any>{
 
     constructor(props:any){
         super(props);
+        this.state = { gasPrice: props.localSettings.gas.defaultGasPrice };
     }
 
-    componentDidMount() {
+    async componentDidMount() {
+
+        const { ws } = this.props;
+
+        try {
+            const gasPrice = await ws.suggestGasPrice();
+            if(typeof gasPrice === 'number' && gasPrice !== 0){
+                this.setState({gasPrice});
+            }
+        }catch(e){
+            // DO NOTHING
+        }
+
         this.update();
     }
 
@@ -46,7 +60,9 @@ class PopupOfferingButton extends React.Component<Props, any>{
 
     popupOffering = async () => {
 
-        const { closeModal, ws, t, offering, gasPrice, accounts, localSettings } = this.props;
+        const { closeModal, ws, t, offering, accounts, localSettings } = this.props;
+        const { gasPrice } = this.state;
+
         const account = accounts.find(account => account.isDefault);
 
         if(account.ethBalance < localSettings.gas.popupOffering*gasPrice){
@@ -69,7 +85,8 @@ class PopupOfferingButton extends React.Component<Props, any>{
 
     render(){
 
-        const { t, offering, lastProcessedBlock, popupPeriod } = this.props;
+        const { t, offering, lastProcessedBlock, popupPeriod, localSettings } = this.props;
+        const { gasPrice } = this.state;
 
         const popupPeriodMinutes = Math.floor(popupPeriod/4);
 
@@ -90,7 +107,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
                     <p className='card-text'>{t('popupInfo')}</p>
                     <p className='card-text'>{t('popupInfoDisabled', {min: popupPeriodMinutes, blocks: popupPeriod})}</p>
                     <p className='card-text'>{t('lastActionPopup', {lastAction: offeringAge})}</p>
-
+                    <span>{t('utils/gasRange:TransactionFee')} {eth(localSettings.gas.popupOffering*gasPrice)} ETH</span><br />
                     <p>
                         <button className='btn btn-block btnCustomDisabled disabled'>{t('Popup')}</button>
                     </p>
@@ -102,6 +119,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
         return (
             <div className='card m-b-20 card-body text-xs-center'>
                 <p className='card-text'>{t('popupInfo')}</p>
+                <span>{t('utils/gasRange:TransactionFee')} {eth(localSettings.gas.popupOffering*gasPrice)} ETH</span><br />
                 <ConfirmPopupSwal
                     done={this.popupOffering}
                     title={t('Popup')}
@@ -123,7 +141,6 @@ const mapStateToProps = (state: State, ownProps: OwnProps) => {
             ws
            ,lastProcessedBlock: settings['eth.event.lastProcessedBlock']
            ,popupPeriod: settings['psc.periods.popup']
-           ,gasPrice: parseInt(settings['eth.default.gasprice'], 10)
            ,localSettings
            ,accounts
         },

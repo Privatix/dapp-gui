@@ -8,6 +8,7 @@ import {default as notice, clearNotices } from 'utils/notice';
 import HintComponent from 'common/hintComponent';
 import { translate } from 'react-i18next';
 import {State} from 'typings/state';
+import ExternalLinkWarning from 'common/externalLinkWarning';
 
 interface IOwnProps {
     entryPoint: any;
@@ -139,6 +140,7 @@ class Login extends React.Component<IProps, IState> {
                     </div>
                 </form>
             </div>
+            <ExternalLinkWarning />
         </div>;
     }
 }

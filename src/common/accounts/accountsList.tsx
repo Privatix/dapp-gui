@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import { translate } from 'react-i18next';
 import { remote } from 'electron';
 
+import { asyncProviders } from 'redux/actions';
+
 import SortableTable from 'react-sortable-table-vilan';
 
 import ModalWindow from 'common/modalWindow';
@@ -16,6 +18,7 @@ import {State} from 'typings/state';
 
 import eth from 'utils/eth';
 import prix from 'utils/prix';
+import addFileExt from 'utils/addFileExt';
 
 import { Name, EthereumAddress, AccountBalance, Marketplace, Escrow, Actions } from 'common/tables/';
 
@@ -23,10 +26,16 @@ interface IProps {
     accounts?: State['accounts'];
     t?: any;
     ws?: State['ws'];
+    dispatch: any;
 }
 
 @translate(['accounts/accountsList', 'auth/backup', 'utils/notice'])
 class Accounts extends React.Component<IProps, {}> {
+
+    componentDidMount(){
+        const { dispatch } = this.props;
+        dispatch(asyncProviders.updateAccounts());
+    }
 
     async onRefresh(accountId:string, evt: any){
 
@@ -34,8 +43,12 @@ class Accounts extends React.Component<IProps, {}> {
 
         const { t, ws } = this.props;
 
-        await ws.updateBalance(accountId);
-        notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
+        try{
+            await ws.updateBalance(accountId);
+            notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
+        }catch(e){
+            notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('RefreshingAccountBalanceErrorMsg')});
+        }
     }
 
     async onBackup(accountId:string, evt: any){
@@ -43,7 +56,14 @@ class Accounts extends React.Component<IProps, {}> {
         evt.preventDefault();
 
         const { t, ws } = this.props;
-        const fileName = remote.dialog.showSaveDialog({});
+        let fileName = remote.dialog.showSaveDialog({
+            filters: [{
+                name: 'json',
+                extensions: ['json']
+            }]
+        });
+
+        fileName = addFileExt('json', fileName);
 
         if(fileName){
             try {

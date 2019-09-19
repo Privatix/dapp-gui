@@ -9,6 +9,7 @@ import { WS, ws } from 'utils/ws';
 import notice from 'utils/notice';
 import Steps from './steps';
 import {NextButton} from './utils';
+import addFileExt from 'utils/addFileExt';
 
 type From = 'generateKey' | 'importHexKey' | 'importJsonKey' | 'simpleMode';
 
@@ -74,7 +75,14 @@ class Backup extends React.Component<IProps, IState>{
     saveDialog = (e: any) => {
         e.preventDefault();
 
-        let fileName = remote.dialog.showSaveDialog({});
+        let fileName = remote.dialog.showSaveDialog({
+            filters: [{
+                name: 'Json',
+                extensions: ['json']
+            }]
+        });
+
+        fileName = addFileExt('json', fileName);
 
         this.setState({fileName: 'string' === typeof fileName ? fileName : ''});
     }
@@ -93,7 +101,7 @@ class Backup extends React.Component<IProps, IState>{
 
         try{
             const acc = await ws.exportAccount(accountId);
-            const response = await api.fs.saveAs(fileName + '.json', atob(acc));
+            const response = await api.fs.saveAs(fileName, atob(acc));
             if(response.err){
                 throw new Error();
             }

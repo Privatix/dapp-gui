@@ -94,8 +94,8 @@ class GetPrix extends React.Component<IProps, IState>{
             this.setState({getPrix: true});
         }
 
-        if(account.pscBalance !== this.state.accountPSCBalance ){
-            this.setState({done: true});
+        if(account.pscBalance !== 0 ){
+            this.setState({done: true, getPrix: true});
             dispatch(handlers.addNotice({code: 1, notice: {level: 'info', msg: t('transferTokens:TransferPRIXCompletedSuccessfully')}}));
             this.observerId = null;
         }else{
