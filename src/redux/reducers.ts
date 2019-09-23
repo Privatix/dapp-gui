@@ -38,9 +38,7 @@ export default function reducer(state: State = StateDefault, action: Action = {t
         [actions.SET_EXIT]                      : (state: State, action: Action) => _.assign({}, state, {exit: action.value}),
         [actions.SET_EXTERNAL_LINK_WARNING]     : (state: State, action: Action) => _.assign({}, state, {showExternalLink: action.value.showExternalLink, externalLink: action.value.externalLink}),
         [actions.SET_STOPPING_SUPERVISOR]       : (state: State, action: Action) => _.assign({}, state, {stoppingSupervisor: action.value}),
-        [actions.SET_TRANSFERRING_FLAG]         : (state: State, action: Action) => _.assign({}, state, {transferring: action.value}),
-        [actions.SET_IP]                        : (state: State, action: Action) => _.assign({}, state, {ip: action.value}),
-        [actions.SAVE_CHANNEL_OBSERVER_CONTEXT] : (state: State, action: Action) => _.assign({}, state, {channelObserverContext: action.value})
+        [actions.SET_TRANSFERRING_FLAG]         : (state: State, action: Action) => _.assign({}, state, {transferring: action.value})
     };
 
     return handlers.hasOwnProperty(action.type) ? handlers[action.type](state, action) : state;

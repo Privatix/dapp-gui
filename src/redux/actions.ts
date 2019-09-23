@@ -32,9 +32,7 @@ export const enum actions {
     SET_EXIT,
     SET_EXTERNAL_LINK_WARNING,
     SET_STOPPING_SUPERVISOR,
-    SET_TRANSFERRING_FLAG,
-    SET_IP,
-    SAVE_CHANNEL_OBSERVER_CONTEXT
+    SET_TRANSFERRING_FLAG
 }
 
 const handlers  = {
@@ -61,9 +59,7 @@ const handlers  = {
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
     showExternalLinkWarning    : function(showExternalLink: boolean, externalLink: string){ return { type: actions.SET_EXTERNAL_LINK_WARNING, value: {showExternalLink, externalLink} };},
     setStoppingSupervisor      : function(flag: boolean){ return { type: actions.SET_STOPPING_SUPERVISOR, value: flag };},
-    setTransferringFlag        : function(flag: boolean){ return { type: actions.SET_TRANSFERRING_FLAG, value: flag };},
-    setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};},
-    saveChannelObserverContext : function(context: State['channelObserverContext']){ return {type: actions.SAVE_CHANNEL_OBSERVER_CONTEXT, value: context};}
+    setTransferringFlag        : function(flag: boolean){ return { type: actions.SET_TRANSFERRING_FLAG, value: flag };}
 };
 
 const notify = function(msg: string){
@@ -79,6 +75,7 @@ export const asyncProviders = {
     observeChannel: function(){
 
         const refresh = async function(dispatch: any, getState: Function, evt?: any){
+            let context = {} as any;
             const startWatchingClosing = async (channelId: string) => {
 
                 const { ws } = getState();
@@ -110,7 +107,7 @@ export const asyncProviders = {
                 const watcher = new Watcher();
                 watcher.subscriptionId = await ws.subscribe('channel', [channelId], watcher.checkIfComplete);
             };
-            const { channel, ws, ip, mode } = getState();
+            const { channel, ws, mode } = getState();
             if(evt){
                 if(evt.object.serviceStatus === 'terminating' && mode === Mode.SIMPLE){
                     if(evt.object.receiptBalance === 0){
@@ -118,45 +115,15 @@ export const asyncProviders = {
                     }
                 }
             }
-            const saveContext = (context: State['channelObserverContext']) => {
-                dispatch(handlers.saveChannelObserverContext(Object.assign({}, context)));
-            };
-
-            const getIP = async function(attempt?: number){
-                const counter = !attempt ? 0 : attempt;
-                if(counter < 5){
-                    try{
-                        const res = await fetch('https://api.ipify.org?format=json');
-                        const json = await res.json();
-                        dispatch(handlers.setIP(json.ip));
-                    }catch(e){
-                        const { channelObserverContext: context } = getState();
-                        context.ipSubscription = setTimeout(getIP.bind(null, counter+1), 3000);
-                        saveContext(context);
-                    }
-                }
-            };
 
             const handler = refresh.bind(null, dispatch, getState);
             const channels = await ws.getNotTerminatedClientChannels();
-            const { channelObserverContext } = getState();
-            if(!channelObserverContext.createChannelSubscription){
-                const id = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
-                const { channelObserverContext: updatedContext } = getState();
-                updatedContext.createChannelSubscription = id;
-                saveContext(updatedContext);
-            }
-
-            const { channelObserverContext: context } = getState();
+            
             if(channels.length){
                 dispatch(handlers.setChannel(channels[0]));
                 if(channels[0].channelStatus.serviceStatus === 'active'){
-                    if(!ip){
-                        getIP();
-                    }
                     if(context.connected === false){
                         context.connected = true;
-                        saveContext(context);
                         notify(i18n.t('client/simpleMode:connectedMsg'));
                     }
                 }
@@ -164,13 +131,11 @@ export const asyncProviders = {
                     if(context.channelSubscription){
                         ws.unsubscribe(context.channelSubscription);
                         context.channelSubscription = null;
-                        saveContext(context);
                     }
                     const channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
                     const { channelObserverContext: updatedContext } = getState();
                     if(!updatedContext.channelSubscription){
                         updatedContext.channelSubscription = channelSubscription;
-                        saveContext(updatedContext);
                     }else{
                         ws.unsubscribe(channelSubscription);
                     }
@@ -179,7 +144,7 @@ export const asyncProviders = {
                 dispatch(handlers.setChannel(null));
                 if(context.connected === true){
                     notify(i18n.t('client/simpleMode:disconnectedMsg'));
-                    dispatch(handlers.setIP(''));
+                    // dispatch(handlers.setIP(''));
                 }
                 context.connected = false;
 
@@ -187,7 +152,6 @@ export const asyncProviders = {
                     ws.unsubscribe(context.channelSubscription);
                     context.channelSubscription = null;
                 }
-                saveContext(context);
             }
         };
 
