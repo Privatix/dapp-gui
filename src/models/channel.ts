@@ -362,6 +362,9 @@ export default class Channel {
         if(this.listeners[evtName]){
             this.listeners[evtName]();
         }
+        if(this.listeners['*']){
+            this.listeners['*']();
+        }
     }
 
     reconnectHandler(){

@@ -8,6 +8,7 @@ import { Notice } from 'utils/notice';
 import { OfferingAvailabilityResponse } from './offerings';
 import { LocalSettings } from './settings';
 import Channel  from 'models/channel';
+import Offerings  from 'models/offerings';
 
 interface State {
     accounts: Account[];
@@ -16,6 +17,7 @@ interface State {
     settings: {[key: string]: string};
     localSettings: LocalSettings;
     channel: Channel;
+    offerings: Offerings;
     role: Role;
     mode: Mode;
     ws: WS;
@@ -42,6 +44,7 @@ const StateDefault: State = {
     settings: {},
     localSettings: null,
     channel: null,
+    offerings: null,
     role: null,
     mode: null,
     ws: null,

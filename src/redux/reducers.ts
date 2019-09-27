@@ -24,6 +24,7 @@ export default function reducer(state: State = StateDefault, action: Action = {t
         [actions.SET_ROLE]                      : (state: State, action: Action) => _.assign({}, state, {role: action.value}),
         [actions.SET_MODE]                      : (state: State, action: Action) => _.assign({}, state, {mode: action.value}),
         [actions.SET_CHANNEL]                   : (state: State, action: Action) => _.assign({}, state, {channel: action.value}),
+        [actions.SET_OFFERINGS]                 : (state: State, action: Action) => _.assign({}, state, {offerings: action.value}),
         [actions.SET_WS]                        : (state: State, action: Action) => _.assign({}, state, {ws: action.value}),
         [actions.SET_I18N]                      : (state: State, action: Action) => _.assign({}, state, {i18n: action.value}),
         [actions.SET_LOG]                       : (state: State, action: Action) => _.assign({}, state, {log: action.value}),

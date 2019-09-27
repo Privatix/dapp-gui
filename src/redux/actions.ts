@@ -17,10 +17,10 @@ export const enum actions {
     UPDATE_PRODUCTS,
     UPDATE_SETTINGS,
     UPDATE_LOCAL_SETTINGS,
-    UPDATE_OFFERINGS,
     UPDATE_TOTAL_INCOME,
     UPDATE_SERVICE_NAME,
     SET_CHANNEL,
+    SET_OFFERINGS,
     SET_WS,
     SET_LOG,
     SET_I18N,
@@ -40,12 +40,12 @@ const handlers  = {
     updateProducts             : function(products: State['products']){ return { type: actions.UPDATE_PRODUCTS, value: products };},
     updateSettings             : function(settings: State['settings']){ return { type: actions.UPDATE_SETTINGS, value: settings };},
     updateLocalSettings        : function(settings: State['localSettings']){ return { type: actions.UPDATE_LOCAL_SETTINGS, value: settings };},
-    updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     updateServiceName          : function(serviceName: string){ return { type: actions.UPDATE_SERVICE_NAME, value: serviceName };},
     setRole                    : function(role: State['role']){ return { type: actions.SET_ROLE, value: role };},
     setMode                    : function(mode: State['mode']){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channel: State['channel']){ return { type: actions.SET_CHANNEL, value: channel };},
+    setOfferings               : function(offerings: State['offerings']){ return { type: actions.SET_OFFERINGS, value: offerings };},
     setWS                      : function(ws: State['ws']){ return { type: actions.SET_WS, value: ws};},
     setLOG                     : function(log: State['log']){ return { type: actions.SET_LOG, value: log};},
     setI18N                    : function(i18n: any){ return {type: actions.SET_I18N, value: i18n};},
@@ -307,15 +307,6 @@ export const asyncProviders = {
                     if(cb){
                         cb();
                     }
-                });
-        };
-    },
-    updateOfferings: function(){
-        return function(dispatch: any, getState: Function){
-            const { ws } = getState();
-            ws.getAgentOfferings()
-                .then(offerings => {
-                    dispatch(handlers.updateOfferings(offerings.items));
                 });
         };
     },
