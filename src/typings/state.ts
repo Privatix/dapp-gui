@@ -7,7 +7,8 @@ import { Notice } from 'utils/notice';
 
 import { OfferingAvailabilityResponse } from './offerings';
 import { LocalSettings } from './settings';
-import { ClientChannel } from './channels';
+import Channel  from 'models/channel';
+import Offerings  from 'models/offerings';
 
 interface State {
     accounts: Account[];
@@ -15,7 +16,8 @@ interface State {
     serviceName: string;
     settings: {[key: string]: string};
     localSettings: LocalSettings;
-    channel: ClientChannel;
+    channel: Channel;
+    offerings: Offerings;
     role: Role;
     mode: Mode;
     ws: WS;
@@ -33,13 +35,6 @@ interface State {
     showExternalLink: boolean;
     externalLink: string;
     stoppingSupervisor: boolean;
-    ip: string;
-    channelObserverContext: {
-        createChannelSubscription: string;
-        channelSubscription: string;
-        connected: boolean;
-        ipSubscription: string;
-    };
 }
 
 const StateDefault: State = {
@@ -49,6 +44,7 @@ const StateDefault: State = {
     settings: {},
     localSettings: null,
     channel: null,
+    offerings: null,
     role: null,
     mode: null,
     ws: null,
@@ -66,13 +62,6 @@ const StateDefault: State = {
     showExternalLink: false,
     externalLink: '',
     stoppingSupervisor: false,
-    ip: '',
-    channelObserverContext: {
-        createChannelSubscription: null,
-        channelSubscription: null,
-        connected: null,
-        ipSubscription: null
-    }
 };
 
 export {

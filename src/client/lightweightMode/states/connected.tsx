@@ -8,7 +8,8 @@ import prix from 'utils/prix';
 import mb from 'utils/mb';
 
 import { Offering } from 'typings/offerings';
-import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+import { ClientChannelUsage } from 'typings/channels';
+// import Channel from 'models/channel';
 
 interface SelectItem {
     value: string;
@@ -17,9 +18,9 @@ interface SelectItem {
 
 interface IProps {
     t?: any;
-    ip: string;
     selectedLocation: SelectItem;
-    channel: ClientChannel;
+    // channel: Channel;
+    ip: string;
     usage: ClientChannelUsage;
     offering: Offering;
     sessionsDuration: number;

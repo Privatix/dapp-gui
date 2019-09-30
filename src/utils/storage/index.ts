@@ -17,6 +17,9 @@ import initElectronMenu from 'utils/electronMenu';
 import setupLog from './workers/log';
 import subscribeAccounts from './workers/accounts';
 
+import Channel from 'models/channel';
+import Offerings from 'models/offerings';
+
 import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
 
@@ -151,7 +154,7 @@ export const createStorage = () => {
 
     const refresh = async function(){
 
-        const { ws, role, serviceName } = storage.getState();
+        const { ws, role, serviceName, channel, offerings } = storage.getState();
 
         if(ws) {
 
@@ -162,7 +165,15 @@ export const createStorage = () => {
                 storage.dispatch(asyncProviders.updateTotalIncome());
             }
             if(role === Role.CLIENT){
-                storage.dispatch(asyncProviders.observeChannel());
+                if(!channel){
+                    const channel = new Channel(ws);
+                    storage.dispatch(handlers.setChannel(channel));
+                }
+                if(!offerings){
+                    const offerings = new Offerings(ws);
+                    offerings.init();
+                    storage.dispatch(handlers.setOfferings(offerings));
+                }
             }
 
             if(serviceName === ''){
