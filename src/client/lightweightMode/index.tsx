@@ -148,8 +148,6 @@ class LightWeightClient extends React.Component<IProps, IState> {
         const { offerings } = this.props;
         this.offerings = offerings.getOfferings();
 
-        // возможно стоит проверять текущий выбранный офферинг
-
         this.setState({locations: this.getLocations(this.offerings)});
     }
 
@@ -309,6 +307,12 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
         if(offeringItem){
             offerings.addToBlackList(offeringItem.offering);
+        }
+        this.updateOfferings();
+        this.setState({offeringItem: null});
+        this.onChangeLocation(selectedLocation);
+        if(channel){
+            await ws.changeChannelStatus(channel.id, 'terminate');
         }
         if(this.mounted){
             this.setState({offeringItem: null});
