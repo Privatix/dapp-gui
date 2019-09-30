@@ -133,8 +133,13 @@ class LightWeightClient extends React.Component<IProps, IState> {
         this.unsubscribe();
 
         dispatch(handlers.setAutoTransfer(false));
+
+        channel.removeEventListener('StatusChanged', this.onStatusChanged);
+        channel.removeEventListener('ipChanged', this.onIpChanged);
+        channel.removeEventListener('UsageChanged', this.onUsageChanged);
         channel.setMode('advanced');
 
+        offerings.removeEventListener('*', this.onOfferingsChange);
         offerings.useUnlimitedOnly = false;
     }
 
@@ -439,8 +444,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
                     }
                 }
             };
-            ws.changeChannelStatus(channel.model.id, 'resume');
-            subscription = await ws.subscribe('channels', [channel.model.id], eventDispatcher);
+            channel.resume();
+            subscription = await ws.subscribe('channel', [channel.model.id], eventDispatcher);
         });
     }
 

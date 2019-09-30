@@ -33,15 +33,13 @@ export default class Offerings {
 
 
     private onNewOffering = (evt: any) => {
-        console.log('newOffering', evt);
-
         if(evt.job.Status !== 'done'){
-            // TODO проверять fail?
+            // TODO check fault?
             return;
         }
 
         if(evt.object.currentSupply <= 0){
-            // TODO вычеркивать из списка?
+            // TODO ?
             return;
         }
 
@@ -54,11 +52,15 @@ export default class Offerings {
     }
 
     private onDeleteOffering = (evt: any) => {
+        this.offerings = this.offerings.filter(item => item.offering.id !== evt.object.id);
         this.emit('deleteOffering');
         console.log('deleteOffering', evt);
     }
 
     private onSupplyChange = (evt: any) => {
+        const current = this.offerings.find(item => item.offering.id === evt.object.id);
+        this.offerings = this.offerings.filter(item => item.offering.id !== evt.object.id);
+        this.addOffering({offering: evt.object, rating: current.rating});
         this.emit('supplyChange');
         console.log('supplyChange', evt);
     }
@@ -73,8 +75,7 @@ export default class Offerings {
     }
 
     getOfferings(){
-        // TODO фильтровать по черному списку
-        return this.offerings;
+        return this.offerings.filter(item => !this.blackList.some(banned => banned.id === item.offering.id));
     }
 
     addToBlackList(offering: Offering){
@@ -82,16 +83,26 @@ export default class Offerings {
     }
 
     addEventListener(evtName: string, listener: Function){
-        this.listeners[evtName] = listener;
+        if(!this.listeners[evtName]){
+            this.listeners[evtName] = [];
+        }
+        this.listeners[evtName].push(listener);
+    }
+
+    removeEventListener(evtName: string, listener: Function){
+        if(!this.listeners[evtName]){
+            return;
+        }
+        this.listeners[evtName] = this.listeners[evtName].filter(handler => handler !== listener);
     }
 
     private emit(evtName: string){
         console.log(evtName);
-        if(evtName !== '*' && this.listeners[evtName]){
-            this.listeners[evtName]();
+        if(this.listeners[evtName] && this.listeners[evtName].length){
+            this.listeners[evtName].forEach(listener => listener());
         }
-        if(this.listeners['*']){
-            this.listeners['*']();
+        if(evtName !== '*' && this.listeners['*'] && this.listeners['*'].length){
+            this.listeners['*'].forEach(listener => listener());
         }
     }
 }

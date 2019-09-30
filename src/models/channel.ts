@@ -22,12 +22,11 @@ export default class Channel {
     private status: Status = 'disconnected';
     private listeners = [];
     // subscriptions
-    public newChannelSubscription: string; // временно public
-    public channelSubscription: string; // временно public
-    public usageSubscription: any; // временно public
+    public newChannelSubscription: string;
+    public channelSubscription: string;
+    public usageSubscription: any;
 
-    private mode: 'advanced' | 'simple'; // надо от этого избавляться, мы не хотим тут знать про режимы
-    // мы хотим имет набор свойств, а каждый режим их задает как ему нужно
+    private mode: 'advanced' | 'simple';
 
     public reconnect = false;
 
@@ -42,11 +41,9 @@ export default class Channel {
     async checkChannels(){
         const ws = this.ws;
         const channels = await ws.getNotTerminatedClientChannels();
-        console.log('CHANNELS!!!', channels);
         if(channels.length){
             if(this.model){
-                // пока шел ответ уже создался канал
-                // тут думать как реагировать
+                // 
             }else{
                 const id = await ws.subscribe('channel', [channels[0].id], this._onChannelChanged);
                 this.checkStatus(channels[0]);
@@ -132,7 +129,7 @@ export default class Channel {
                 setTimeout(this.checkIp, 3000);
             }
         }else{
-            // TODO не удалось получить ip
+            // TODO
         }
     }
 
@@ -144,49 +141,24 @@ export default class Channel {
         if(this.model){
             throw new Error('already created channel');
         }else{
-            // тут создаем канал и отслеживаем его статус
             try{
                 const acceptRes = await this.ws.acceptOffering(account.ethAddr, offeringId, deposit, gasPrice);
                 if(typeof acceptRes === 'string') {
-                    // тут дергаем onAcceptOffering
+                    // TODO onAcceptOffering
                 }else{
-                    // тут дергаем onAcceptOfferingFailed
+                    // TODO onAcceptOfferingFailed
                 }
             }catch(e){
-                // тут дергаем onAcceptOfferingFailed
+                // TODO onAcceptOfferingFailed
             }
         }
     }
 
     private _onChannelCreated = async (evt: any) => {
-        // наш обработчик на создание канала
-        // подписываемся на созданный канал
-        // запускаем поллинг usage
-        console.log('NEW CHANNEL!!!', evt);
         await this.checkChannels();
-        /*
-        if(this.mode === 'simple'){
-            this.resume();
-        }
-       */
-    }
-
-    onChannelCreated(){
-        // ставим свой хук на создание канала
-        // тут думать что делать с прежним
-        // сколько хуков может быть?
     }
 
     private _onChannelChanged = async (evt: any) => {
-        console.log('CHANNEL CHANGED!!!', evt);
-        // наш обработчик изменений канала
-        // в том числе сбрасывает данные если канал закрылся
-
-        // const channel = evt.object;
-        // в симпл моде и при нулевом балансе мы должны сделать uncooperative close
-        // после закрытия канала
-        // делаем это отдельным "потоком"
-        // так как пока это происходит может быть создан новый канал
         if(evt.object.serviceStatus === 'terminated'){
             this.status = 'disconnected';
             if(this.channelSubscription){
@@ -198,7 +170,6 @@ export default class Channel {
             this.emit('StatusChanged');
         }else{
             const channel = await this.ws.getNotTerminatedClientChannels();
-            console.log('CHANNEL?', channel);
             if(channel.length){
                 this.checkStatus(channel[0]);
             }
@@ -206,7 +177,6 @@ export default class Channel {
     }
 
     checkStatus(channel: ClientChannel){
-        console.log('CHECK STATUS!!!', channel);
         const model = this.model;
         this.model = channel;
 
@@ -327,7 +297,7 @@ export default class Channel {
             this.sessionsDuration = 0;
             this.emit('StatusChanged');
         }catch(e){
-            // onTerminateFailed
+            // TODO onTerminateFailed
         }
     }
 
@@ -354,16 +324,26 @@ export default class Channel {
     }
 
     addEventListener(evtName: string, listener: Function){
-        this.listeners[evtName] = listener;
+        if(!this.listeners[evtName]){
+            this.listeners[evtName] = [];
+        }
+        this.listeners[evtName].push(listener);
+    }
+
+    removeEventListener(evtName: string, listener: Function){
+        if(!this.listeners[evtName]){
+            return;
+        }
+        this.listeners[evtName] = this.listeners[evtName].filter(handler => handler !== listener);
     }
 
     private emit(evtName: string){
         console.log(evtName);
-        if(this.listeners[evtName]){
-            this.listeners[evtName]();
+        if(this.listeners[evtName] && this.listeners[evtName].length){
+            this.listeners[evtName].forEach(listener => listener());
         }
-        if(this.listeners['*']){
-            this.listeners['*']();
+        if(evtName !== '*' && this.listeners['*'] && this.listeners['*'].length){
+            this.listeners['*'].forEach(listener => listener());
         }
     }
 
