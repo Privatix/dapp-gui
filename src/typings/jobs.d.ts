@@ -1,4 +1,4 @@
-import { PaginatedResponse } from 'typings/paginatedResponse';
+import { AnotherPaginatedResponse } from 'typings/paginatedResponse';
 
 export interface Job {
     id: string;
@@ -7,4 +7,17 @@ export interface Job {
     createdAt: string;
 }
 
-export type JobResponse = PaginatedResponse<Job[]>;
+export interface JobType {
+    ID: string;
+    CreatedAt: string;
+    CreatedBy: string;
+    Data: string;
+    NotBefore: string;
+    RelatedID: string;
+    RelatedType: string;
+    Status: string;
+    TryCount: number;
+    Type: string;
+}
+
+export type JobResponse = AnotherPaginatedResponse<JobType[]>;

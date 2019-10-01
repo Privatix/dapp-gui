@@ -491,13 +491,12 @@ export class WS {
     }
 
 // jobs
-    getJobs(statuses: Array<string>, jobType: string, from: string, to: string, offset:number, limit: number): Promise<JobResponse> {
-        return this.send('ui_getJobs', [statuses, jobType, from, to, offset, limit]) as Promise<JobResponse>;
-        /*
-        return new Promise(function(resolve: any, reject: any){
-            resolve({items: [{id: 456789, jobtype: 'clientPreChannelCreate', status: 'active', createdAt: '2019-08-26 12:16:49.236081+03'}], totalItems: 1});
-        }) as Promise<JobResponse>;
-       */
+    getJobs(jobType: string, from: string, to: string, statuses: Array<string>, offset:number, limit: number): Promise<JobResponse> {
+        return this.send('ui_getJobs', [jobType, from, to, statuses, offset, limit]) as Promise<JobResponse>;
+    }
+
+    reactivateJob(id: string): Promise<any>{
+        return this.send('ui_reactivateJob', [id]) as Promise<any>;
     }
 
     suggestGasPrice() : Promise<number>{

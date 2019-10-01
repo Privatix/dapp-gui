@@ -4,7 +4,7 @@ import { translate } from 'react-i18next';
 import Pagination from 'react-js-pagination';
 
 import {State} from 'typings/state';
-import { Job } from 'typings/jobs';
+import { JobType } from 'typings/jobs';
 
 import StatusFilter from './blocks/statusFilter';
 import JobsTable from './blocks/table';
@@ -16,7 +16,7 @@ interface IProps {
 }
 
 interface IState {
-    jobsData: Job[];
+    jobsData: JobType[];
     activePage: number;
     pages: number;
     offset: number;
@@ -50,17 +50,21 @@ class Jobs extends React.Component <IProps, IState> {
         this.getJobsData(statuses, offset, limit);
     }
 
+    refresh = () => {
+        this.handlePageChange(this.state.activePage);
+    }
+
     async getJobsData(statuses:string[], offset: number, limit: number) {
 
         const { ws } = this.props;
 
-        const jobs = await ws.getJobs(statuses, '', '', '', offset, limit);
+        const jobs = await ws.getJobs('', '', '', statuses, offset, limit);
 
-        const pages = Math.ceil(jobs.totalItems / limit);
+        const pages = Math.ceil(jobs.TotalItems / limit);
         this.setState({
             jobsData: jobs.items ? jobs.items : [],
             pages,
-            totalItems: jobs.totalItems
+            totalItems: jobs.TotalItems
         });
 
     }
@@ -144,7 +148,7 @@ class Jobs extends React.Component <IProps, IState> {
 
                             </div>
 
-                            <JobsTable jobs={jobsData} />
+                            <JobsTable jobs={jobsData} onEvent={this.refresh} />
 
                             <div>{pagination}</div>
 
