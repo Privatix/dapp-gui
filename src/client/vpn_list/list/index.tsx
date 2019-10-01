@@ -191,7 +191,7 @@ class VPNList extends React.Component<IProps, IState> {
             return;
         }
 
-        const limit = localSettings.elementsPerPage;
+        const limit = localSettings.paging.offerings;
         const offset = activePage > 1 ? (activePage - 1) * limit : 0;
 
         const filterParams = await ws.getClientOfferingsFilterParams();
@@ -404,11 +404,11 @@ class VPNList extends React.Component<IProps, IState> {
             this.checkAvailabilityBtn.current.removeAttribute('disabled');
         }
 
-        const pagination = totalItems <= localSettings.elementsPerPage ? null :
+        const pagination = totalItems <= localSettings.paging.offerings ? null :
             <div>
                 <Pagination
                     activePage={activePage}
-                    itemsCountPerPage={localSettings.elementsPerPage}
+                    itemsCountPerPage={localSettings.paging.offerings}
                     totalItemsCount={totalItems}
                     pageRangeDisplayed={10}
                     onChange={this.handlePageChange}

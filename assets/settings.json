@@ -11,7 +11,8 @@
         "increaseDeposit": 45836,
         "removeOffering": 58728,
         "popupOffering": 42579,
-        "terminateContract": 108459
+        "terminateContract": 108459,
+        "transactionIncreaseCoefficient": 1.1
    },
    "network": "rinkeby",
    "bugsnag": {
@@ -22,8 +23,12 @@
    "release": "0.18.0",
    "target": "",
    "role": "agent",
-   "logsCountPerPage": 10,
-   "elementsPerPage": 10,
+   "paging": {
+        "logs": 10,
+        "jobs": 10,
+        "transactions": 10,
+        "offerings": 10
+   },
    "lang": "en",
    "releasesEndpoint": "https://api.github.com/repos/Privatix/privatix/releases",
    "platformsEndpoint": "https://github.com/Privatix/privatix/releases/download/%version%/versions.txt",

@@ -12,6 +12,7 @@ import { Product } from 'typings/products';
 import { Session } from 'typings/session';
 import { Channel, ClientChannel, ClientChannelUsage, ChannelResponse, ClientChannelResponse } from 'typings/channels';
 import { LogResponse } from 'typings/logs';
+import { JobResponse } from 'typings/jobs';
 import { State } from 'typings/state';
 import { GetClientOfferingsFilterParamsResponse } from 'typings/paginatedResponse';
 import * as log from 'electron-log';
@@ -477,12 +478,26 @@ export class WS {
         return this.send('ui_getEthTransactions', [type, id, offset, limit]) as Promise<TransactionResponse>;
     }
 
+    increaseTxGasPrice(id: string, gasPrice: number){
+        return this.send('ui_increaseTxGasPrice', [id, gasPrice]) as Promise<any>;
+    }
+
     getTotalIncome(): Promise<number> {
         return this.send('ui_getTotalIncome', []) as Promise<number>;
     }
 // logs
     getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
         return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
+    }
+
+// jobs
+    getJobs(statuses: Array<string>, jobType: string, from: string, to: string, offset:number, limit: number): Promise<JobResponse> {
+        return this.send('ui_getJobs', [statuses, jobType, from, to, offset, limit]) as Promise<JobResponse>;
+        /*
+        return new Promise(function(resolve: any, reject: any){
+            resolve({items: [{id: 456789, jobtype: 'clientPreChannelCreate', status: 'active', createdAt: '2019-08-26 12:16:49.236081+03'}], totalItems: 1});
+        }) as Promise<JobResponse>;
+       */
     }
 
     suggestGasPrice() : Promise<number>{

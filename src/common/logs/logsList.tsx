@@ -57,7 +57,7 @@ class Logs extends React.Component <IProps, IState> {
             activePage: 1,
             pages: 1,
             offset: 0,
-            limit: localSettings.logsCountPerPage,
+            limit: localSettings.paging.logs,
             totalItems: 0,
             levels: [],
             lang: localSettings.lang

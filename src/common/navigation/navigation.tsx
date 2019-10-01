@@ -110,6 +110,16 @@ class Navigation extends React.Component<Props, any> {
                     <i className='dripicons-blog'></i><span>{t('Logs')}</span>
                 </NavLink>
             </li>
+            <li onClick={this.handleClickFalse} className=''>
+                <NavLink exact to='/jobs' activeClassName='active' className='waves-effect'>
+                    <i className='dripicons-blog'></i><span>{t('Jobs')}</span>
+                </NavLink>
+            </li>
+            <li onClick={this.handleClickFalse} className=''>
+                <NavLink exact to='/transactions' activeClassName='active' className='waves-effect'>
+                    <i className='dripicons-blog'></i><span>{t('Transactions')}</span>
+                </NavLink>
+            </li>
             <li onClick={this.handleClickFalse} className='separator'>
                 <NavLink to='/accounts' className='waves-effect'>
                     <i className='md  md-account-child'></i> <span>{t('Accounts')}</span>
