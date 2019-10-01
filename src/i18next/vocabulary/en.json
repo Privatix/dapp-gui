@@ -174,6 +174,7 @@
         "UnitPriceMustBeMoreThen0": "Unit price must be more then 0.",
         "DepositIsGreaterThenServiceBalance": "Not enough PRIX on the Marketplace. Deposit is greater than the Marketplace balance.",
         "NotEnoughFunds": "Not enough ETH for publish transaction.",
+        "AccountNotSpecified": "Account not specified",
         "MaximumUnitsMustBeEqual": "Maximum units must be equal or greater then minimum units.",
         "Field": "Field",
         "Field_plural": "Fields",
@@ -308,6 +309,7 @@
         "Servers": "Servers",
         "Logs": "Logs",
         "Jobs": "Jobs",
+        "Transactions": "Transactions",
         "ClientDashboard": "Client dashboard",
         "ServiceList": "{{serviceName}} list"
     },
@@ -369,7 +371,8 @@
         "BackupBtn": "Backup",
         "BackupSuccessMsg": "Private key successfully saved.",
         "ModalTitle": "Account",
-        "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes."
+        "RefreshingAccountBalanceMsg": "Refreshing account balance. Please wait 1-2 minutes.",
+        "RefreshingAccountBalanceErrorMsg": "Balance updating is being processed. Please wait."
     },
     "accounts/accountView": {
         "ErrorMoreThanZero": "Amount must be more than zero.",
@@ -408,7 +411,8 @@
     "transactions/transactionsList": {
         "TransactionLog": "Transaction Log",
         "Date": "Date",
-        "EthereumLink": "Ethereum link"
+        "EthereumLink": "Ethereum link",
+        "Resend": "Resend"
     },
     "confirmPopupSwal": {
         "CancelBtn": "Cancel",
@@ -645,6 +649,8 @@
         "Value": "Value",
         "Description": "Description",
         "error_sendremote_Name": "Error reporting",
+        "eth_default_gasprice_Name": "Default gas price",
+        "eth_default_gasprice_Description": "Default GAS price for transactions.",
         "eth_challenge_period_Name": "Challenge period",
         "eth_event_blocklimit_Name": "Maximum events blocks",
         "eth_event_freshblocks_Name": "Last events blocks",
@@ -687,7 +693,11 @@
         "client_min_deposit_Description": "This value will override min. deposit proposed by Agent in auto-increase mode, if greater than proposed.",
         "client_autoincrease_percent_Description": "This setting specifies when to increase deposit. Increase deposit, when current usage is equal to this percent of total used units.",
         "client_autoincrease_deposit_Description": "Enable or disable auto-increase mode. Only for client.",
-        "rating_ranking_steps_Description": "Number of iterations to compute rank in ratings calculation"
+        "rating_ranking_steps_Description": "Number of iterations to compute rank in ratings calculation",
+        "eth_event_lastBackSearchBlock_Name": "Last back search block",
+        "eth_event_lastBackSearchBlock_Description": "The last block offerings searched from",
+        "eth_event_offeringsfreshblocks_Name": "Offerings last events blocks",
+        "eth_event_offeringsfreshblocks_Description": "For clients, defines number of latest ethereum blocks to retrieve offerings from. If eth.event.offeringsfreshblocks is null or zero then events starting from the latest block will be downloaded."
     },
     "copyToClipboard": {
         "Copied": "Copied!",

@@ -7,7 +7,7 @@ import StepProgress from 'common/progressBars/stepProgress';
 import SelectCountry from '../selectCountry/';
 
 import { Offering } from 'typings/offerings';
-import { ClientChannel } from 'typings/channels';
+import Channel from 'models/channel';
 
 interface SelectItem {
     value: string;
@@ -17,7 +17,7 @@ interface SelectItem {
 interface IProps {
     t?: any;
     selectedLocation: SelectItem;
-    channel: ClientChannel;
+    channel: Channel;
     offering: Offering;
     onChangeLocation: Function;
 }
@@ -48,7 +48,7 @@ export default class Connecting extends React.Component<IProps, {}> {
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Connecting')} <DotProgress />
                 </button>
-                <StepProgress steps={steps} lastDoneStep={ channel ? channel.job.jobtype : null } />
+                <StepProgress steps={steps} lastDoneStep={ channel && channel.model ? channel.model.job.jobtype : null } />
             </>
         );
     }

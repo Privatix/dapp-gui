@@ -6,7 +6,7 @@ import StepProgress from 'common/progressBars/stepProgress';
 
 import SelectCountry from '../selectCountry/';
 
-import { ClientChannel } from 'typings/channels';
+import Channel from 'models/channel';
 
 interface SelectItem {
     value: string;
@@ -16,7 +16,7 @@ interface SelectItem {
 interface IProps {
     t?: any;
     selectedLocation: SelectItem;
-    channel: ClientChannel;
+    channel: Channel;
 }
 
 @translate(['client/simpleMode'])
@@ -41,7 +41,7 @@ export default class Disconnecting extends React.Component<IProps, {}> {
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Disconnecting')} <DotProgress />
                 </button>
-                <StepProgress steps={steps} lastDoneStep={channel.job.jobtype} />
+                <StepProgress steps={steps} lastDoneStep={channel.model.job.jobtype} />
             </>
         );
     }

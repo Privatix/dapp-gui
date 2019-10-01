@@ -43,8 +43,12 @@ class Accounts extends React.Component<IProps, {}> {
 
         const { t, ws } = this.props;
 
-        await ws.updateBalance(accountId);
-        notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
+        try{
+            await ws.updateBalance(accountId);
+            notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('RefreshingAccountBalanceMsg')});
+        }catch(e){
+            notice({level: 'warning', header: t('utils/notice:Attention!'), msg: t('RefreshingAccountBalanceErrorMsg')});
+        }
     }
 
     async onBackup(accountId:string, evt: any){

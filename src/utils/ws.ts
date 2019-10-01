@@ -15,6 +15,7 @@ import { LogResponse } from 'typings/logs';
 import { JobResponse } from 'typings/jobs';
 import { State } from 'typings/state';
 import { GetClientOfferingsFilterParamsResponse } from 'typings/paginatedResponse';
+import * as log from 'electron-log';
 
 export class WS {
 
@@ -64,7 +65,7 @@ export class WS {
         }
 
         socket.onopen = async () => {
-          console.log('Connection established.');
+          log.log('Connection established.');
           if(this.pwd){
               const token = await this.getToken();
               this.token = token;
@@ -79,11 +80,11 @@ export class WS {
 
         socket.onclose = (event: any) => {
             if (event.wasClean) {
-                console.log('Connection closed.');
+                log.log('Connection closed.');
             } else {
-                console.log('Connection interrupted.');
+                log.log('Connection interrupted.');
             }
-            console.log('Code: ' + event.code + ' reason: ' + event.reason);
+            log.log('Code: ' + event.code + ' reason: ' + event.reason);
             setTimeout(this.reconnect.bind(this, endpoint), 1000);
         };
 
@@ -102,11 +103,11 @@ export class WS {
            } else {
                // ignore
            }
-          // console.log('Data received: ' + event.data);
+          // log.log('Data received: ' + event.data);
         };
 
         socket.onerror = function(error: any) {
-          // console.log('Error ' + error.message);
+          // log.log('Error ' + error.message);
         };
 
     }
@@ -231,7 +232,7 @@ export class WS {
             WS.groups[id].forEach(uuid => this.unsubscribe(uuid));
             delete WS.groups[id];
         }else {
-            console.error('unsubscribe: unknown subscription', id);
+            log.error('unsubscribe: unknown subscription', id);
         }
     }
 
@@ -477,6 +478,10 @@ export class WS {
         return this.send('ui_getEthTransactions', [type, id, offset, limit]) as Promise<TransactionResponse>;
     }
 
+    increaseTxGasPrice(id: string, gasPrice: number){
+        return this.send('ui_increaseTxGasPrice', [id, gasPrice]) as Promise<any>;
+    }
+
     getTotalIncome(): Promise<number> {
         return this.send('ui_getTotalIncome', []) as Promise<number>;
     }
@@ -486,11 +491,13 @@ export class WS {
     }
 
 // jobs
-    getJobs(statuses: Array<string>, offset:number, limit: number): Promise<JobResponse> {
-        // return this.send('ui_getJobs', [statuses, offset, limit]) as Promise<JobResponse>;
+    getJobs(statuses: Array<string>, jobType: string, from: string, to: string, offset:number, limit: number): Promise<JobResponse> {
+        return this.send('ui_getJobs', [statuses, jobType, from, to, offset, limit]) as Promise<JobResponse>;
+        /*
         return new Promise(function(resolve: any, reject: any){
             resolve({items: [{id: 456789, jobtype: 'clientPreChannelCreate', status: 'active', createdAt: '2019-08-26 12:16:49.236081+03'}], totalItems: 1});
         }) as Promise<JobResponse>;
+       */
     }
 
     suggestGasPrice() : Promise<number>{

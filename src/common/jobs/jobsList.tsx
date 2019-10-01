@@ -54,7 +54,7 @@ class Jobs extends React.Component <IProps, IState> {
 
         const { ws } = this.props;
 
-        const jobs = await ws.getJobs(statuses, offset, limit);
+        const jobs = await ws.getJobs(statuses, '', '', '', offset, limit);
 
         const pages = Math.ceil(jobs.totalItems / limit);
         this.setState({

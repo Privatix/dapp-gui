@@ -17,12 +17,13 @@ export const enum actions {
     UPDATE_PRODUCTS,
     UPDATE_SETTINGS,
     UPDATE_LOCAL_SETTINGS,
-    UPDATE_OFFERINGS,
     UPDATE_TOTAL_INCOME,
     UPDATE_SERVICE_NAME,
     SET_CHANNEL,
+    SET_OFFERINGS,
     SET_WS,
     SET_LOG,
+    SET_I18N,
     SET_OFFERINGS_AVAILABILITY,
     INCREMENT_OFFERINGS_AVAILABILITY_COUNTER,
     SET_AUTOTRANSFER,
@@ -31,9 +32,7 @@ export const enum actions {
     SET_EXIT,
     SET_EXTERNAL_LINK_WARNING,
     SET_STOPPING_SUPERVISOR,
-    SET_TRANSFERRING_FLAG,
-    SET_IP,
-    SAVE_CHANNEL_OBSERVER_CONTEXT
+    SET_TRANSFERRING_FLAG
 }
 
 const handlers  = {
@@ -41,14 +40,15 @@ const handlers  = {
     updateProducts             : function(products: State['products']){ return { type: actions.UPDATE_PRODUCTS, value: products };},
     updateSettings             : function(settings: State['settings']){ return { type: actions.UPDATE_SETTINGS, value: settings };},
     updateLocalSettings        : function(settings: State['localSettings']){ return { type: actions.UPDATE_LOCAL_SETTINGS, value: settings };},
-    updateOfferings            : function(offerings: Offering[]){ return { type: actions.UPDATE_OFFERINGS, value: offerings };},
     updateTotalIncome          : function(totalIncome: number){ return { type: actions.UPDATE_TOTAL_INCOME, value: totalIncome };},
     updateServiceName          : function(serviceName: string){ return { type: actions.UPDATE_SERVICE_NAME, value: serviceName };},
     setRole                    : function(role: State['role']){ return { type: actions.SET_ROLE, value: role };},
     setMode                    : function(mode: State['mode']){ return { type: actions.SET_MODE, value: mode };},
     setChannel                 : function(channel: State['channel']){ return { type: actions.SET_CHANNEL, value: channel };},
+    setOfferings               : function(offerings: State['offerings']){ return { type: actions.SET_OFFERINGS, value: offerings };},
     setWS                      : function(ws: State['ws']){ return { type: actions.SET_WS, value: ws};},
     setLOG                     : function(log: State['log']){ return { type: actions.SET_LOG, value: log};},
+    setI18N                    : function(i18n: any){ return {type: actions.SET_I18N, value: i18n};},
     setOfferingsAvailability   : function(offeringsAvailability: State['offeringsAvailability']['statuses'][]){
                                      return { type: actions.SET_OFFERINGS_AVAILABILITY, value: offeringsAvailability};
                                  },
@@ -59,9 +59,7 @@ const handlers  = {
     setExit                    : function(exit: boolean){ return { type: actions.SET_EXIT, value: exit };},
     showExternalLinkWarning    : function(showExternalLink: boolean, externalLink: string){ return { type: actions.SET_EXTERNAL_LINK_WARNING, value: {showExternalLink, externalLink} };},
     setStoppingSupervisor      : function(flag: boolean){ return { type: actions.SET_STOPPING_SUPERVISOR, value: flag };},
-    setTransferringFlag        : function(flag: boolean){ return { type: actions.SET_TRANSFERRING_FLAG, value: flag };},
-    setIP                      : function(ip: string){ return {type: actions.SET_IP, value: ip};},
-    saveChannelObserverContext : function(context: State['channelObserverContext']){ return {type: actions.SAVE_CHANNEL_OBSERVER_CONTEXT, value: context};}
+    setTransferringFlag        : function(flag: boolean){ return { type: actions.SET_TRANSFERRING_FLAG, value: flag };}
 };
 
 const notify = function(msg: string){
@@ -77,6 +75,7 @@ export const asyncProviders = {
     observeChannel: function(){
 
         const refresh = async function(dispatch: any, getState: Function, evt?: any){
+            let context = {} as any;
             const startWatchingClosing = async (channelId: string) => {
 
                 const { ws } = getState();
@@ -108,7 +107,7 @@ export const asyncProviders = {
                 const watcher = new Watcher();
                 watcher.subscriptionId = await ws.subscribe('channel', [channelId], watcher.checkIfComplete);
             };
-            const { channel, ws, ip, mode } = getState();
+            const { channel, ws, mode } = getState();
             if(evt){
                 if(evt.object.serviceStatus === 'terminating' && mode === Mode.SIMPLE){
                     if(evt.object.receiptBalance === 0){
@@ -116,45 +115,15 @@ export const asyncProviders = {
                     }
                 }
             }
-            const saveContext = (context: State['channelObserverContext']) => {
-                dispatch(handlers.saveChannelObserverContext(Object.assign({}, context)));
-            };
-
-            const getIP = async function(attempt?: number){
-                const counter = !attempt ? 0 : attempt;
-                if(counter < 5){
-                    try{
-                        const res = await fetch('https://api.ipify.org?format=json');
-                        const json = await res.json();
-                        dispatch(handlers.setIP(json.ip));
-                    }catch(e){
-                        const { channelObserverContext: context } = getState();
-                        context.ipSubscription = setTimeout(getIP.bind(null, counter+1), 3000);
-                        saveContext(context);
-                    }
-                }
-            };
 
             const handler = refresh.bind(null, dispatch, getState);
             const channels = await ws.getNotTerminatedClientChannels();
-            const { channelObserverContext } = getState();
-            if(!channelObserverContext.createChannelSubscription){
-                const id = await ws.subscribe('channel', ['clientPreChannelCreate'], handler, handler);
-                const { channelObserverContext: updatedContext } = getState();
-                updatedContext.createChannelSubscription = id;
-                saveContext(updatedContext);
-            }
-
-            const { channelObserverContext: context } = getState();
+            
             if(channels.length){
                 dispatch(handlers.setChannel(channels[0]));
                 if(channels[0].channelStatus.serviceStatus === 'active'){
-                    if(!ip){
-                        getIP();
-                    }
                     if(context.connected === false){
                         context.connected = true;
-                        saveContext(context);
                         notify(i18n.t('client/simpleMode:connectedMsg'));
                     }
                 }
@@ -162,13 +131,11 @@ export const asyncProviders = {
                     if(context.channelSubscription){
                         ws.unsubscribe(context.channelSubscription);
                         context.channelSubscription = null;
-                        saveContext(context);
                     }
                     const channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
                     const { channelObserverContext: updatedContext } = getState();
                     if(!updatedContext.channelSubscription){
                         updatedContext.channelSubscription = channelSubscription;
-                        saveContext(updatedContext);
                     }else{
                         ws.unsubscribe(channelSubscription);
                     }
@@ -177,7 +144,7 @@ export const asyncProviders = {
                 dispatch(handlers.setChannel(null));
                 if(context.connected === true){
                     notify(i18n.t('client/simpleMode:disconnectedMsg'));
-                    dispatch(handlers.setIP(''));
+                    // dispatch(handlers.setIP(''));
                 }
                 context.connected = false;
 
@@ -185,7 +152,6 @@ export const asyncProviders = {
                     ws.unsubscribe(context.channelSubscription);
                     context.channelSubscription = null;
                 }
-                saveContext(context);
             }
         };
 
@@ -341,15 +307,6 @@ export const asyncProviders = {
                     if(cb){
                         cb();
                     }
-                });
-        };
-    },
-    updateOfferings: function(){
-        return function(dispatch: any, getState: Function){
-            const { ws } = getState();
-            ws.getAgentOfferings()
-                .then(offerings => {
-                    dispatch(handlers.updateOfferings(offerings.items));
                 });
         };
     },

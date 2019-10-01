@@ -31,6 +31,7 @@ import { ClientOfferingItem } from 'typings/offerings';
 interface IProps {
     t?: any;
     ws?: State['ws'];
+    offerings: State['offerings'];
     dispatch?: any;
     offeringsAvailability?: State['offeringsAvailability'];
     localSettings?: State['localSettings'];
@@ -75,8 +76,6 @@ interface IState {
 class VPNList extends React.Component<IProps, IState> {
 
     checkAvailabilityBtn = null;
-    handler = null;
-    newOfferingSubscription = null;
 
     get defaultFilter(){
         return {
@@ -119,20 +118,22 @@ class VPNList extends React.Component<IProps, IState> {
     }
 
     async componentDidMount() {
+
+        const { offerings } = this.props;
+
+        offerings.addEventListener('*', this.refresh);
+        offerings.useUnlimitedOnly = false;
+
         this.getClientOfferings();
     }
 
     componentWillUnmount(){
 
-        const { ws } = this.props;
+        const { offerings } = this.props;
 
-        if (this.handler !== null) {
-            clearTimeout(this.handler);
-            this.handler = null;
-        }
-        if(this.newOfferingSubscription){
-            ws.unsubscribe(this.newOfferingSubscription);
-        }
+        offerings.removeEventListener('*', this.refresh);
+        offerings.useUnlimitedOnly = false;
+
     }
 
     refresh = async () => {
@@ -214,20 +215,10 @@ class VPNList extends React.Component<IProps, IState> {
                                                                   ,limit);
         const {items: clientOfferings} = clientOfferingsLimited;
 
-        if (this.handler !== null) {
-            clearInterval(this.handler);
-            this.handler = null;
-        }
-
         // Show loader when downloading VPN list
         if (clientOfferings.length === 0 && !this.isFiltered()) {
             this.setState({spinner: true});
-            this.handler = setTimeout(this.refresh, 5000);
             return;
-        }
-
-        if(!this.newOfferingSubscription){
-            this.newOfferingSubscription = await ws.subscribe('offering', ['clientAfterOfferingMsgBCPublish'], this.refresh, this.refresh);
         }
 
         this.setState({
@@ -494,6 +485,7 @@ class VPNList extends React.Component<IProps, IState> {
 
 export default connect( (state: State) => (
     {ws: state.ws
+    ,offerings: state.offerings
     ,offeringsAvailability: state.offeringsAvailability
     ,localSettings: state.localSettings
     }) )(VPNList);
