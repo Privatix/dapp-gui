@@ -140,7 +140,7 @@ class Channels extends React.Component<Props, any> {
         }
     }
 
-    static getDerivedStateFromProps(props: any, state: any){
+    static getDerivedStateFromProps(props: any){
         return {status: props.status};
     }
 

@@ -72,7 +72,7 @@ class SelectCountry extends React.Component<IProps, IState>{
                 <div className='card-body'>
                     {searchHtml}
 
-                    {(showAllCountries ? allCountries : allCountries.slice(0, defaultShowCountriesCount)).map((country, key) => (
+                    {(showAllCountries ? allCountries : allCountries.slice(0, defaultShowCountriesCount)).map(country => (
                         <div className='checkbox checkbox-custom' key={country}>
                             <input id={country}
                                    type='checkbox'

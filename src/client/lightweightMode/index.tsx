@@ -413,11 +413,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }else{
             if(reconnectTry <= localSettings.reconnect.count){
                 this.setState({reconnectTry: reconnectTry + 1});
-                const connected = await this.tryToConnect();
-                if(!connected){
-                    setTimeout(this.reconnect, localSettings.reconnect.delay*Math.pow(localSettings.reconnect.progression, reconnectTry));
-                }else{
+                try {
+                    await this.tryToConnect();
                     this.setState({status: 'connected', reconnectTry: 0});
+                } catch(e) {
+                    setTimeout(this.reconnect, localSettings.reconnect.delay*Math.pow(localSettings.reconnect.progression, reconnectTry));
                 }
             }else{
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('reconnectFailed')});
@@ -439,7 +439,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         case 'failed':
                         case 'canceled':
                             unsubscribe();
-                            resolve(false);
+                            reject();
                             break;
                         case 'done':
                             unsubscribe();

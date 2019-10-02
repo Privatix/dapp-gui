@@ -15,7 +15,7 @@ class OfferingsListByStatus extends React.Component<any, any>{
         };
     }
 
-    static getDerivedStateFromProps(props:any, state:any) {
+    static getDerivedStateFromProps(props:any) {
         return {
             products: props.products,
             offerings: props.offerings,

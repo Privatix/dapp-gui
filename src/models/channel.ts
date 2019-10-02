@@ -154,7 +154,7 @@ export default class Channel {
         }
     }
 
-    private _onChannelCreated = async (evt: any) => {
+    private _onChannelCreated = async () => {
         await this.checkChannels();
     }
 

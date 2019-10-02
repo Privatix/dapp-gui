@@ -6,6 +6,8 @@
         "target": "ESNext",
         "module": "CommonJS",
         "noImplicitAny": false,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
         "outDir": "../build/",
         "removeComments": false,
         "preserveConstEnums": true,

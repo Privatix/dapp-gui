@@ -41,7 +41,7 @@ class Offerings extends React.Component<IProps, any>{
         this.refresh();
     }
 
-    componentDidUpdate(prevProps:any, prevState:any) {
+    componentDidUpdate(prevProps:any) {
         if (this.props.statuses !== prevProps.statuses) {
             this.refresh();
         }

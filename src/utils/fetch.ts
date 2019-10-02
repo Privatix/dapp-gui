@@ -1,4 +1,5 @@
 import {ipcRenderer} from 'electron';
+import * as log from 'electron-log';
 
 const queue = {};
 const listen = function(msg: string) {
@@ -14,7 +15,7 @@ const listen = function(msg: string) {
 const fetchFactory = function(ipcRenderer: any){
 
     ipcRenderer.on('api-reply', (event, arg) => {
-        // console.log(arg); // prints "pong"
+        log.log(event, arg);
         const response = JSON.parse(arg);
         if(response.req in queue){
             const handler = queue[response.req].pop();

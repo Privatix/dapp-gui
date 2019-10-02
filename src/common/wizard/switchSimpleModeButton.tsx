@@ -6,7 +6,6 @@ import { asyncProviders } from 'redux/actions';
 
 import { Dispatch } from 'redux';
 
-import { State } from 'typings/state';
 import { Mode } from 'typings/mode';
 
 interface IProps {
@@ -31,7 +30,7 @@ class SwitchSimpleModeButton extends React.Component<IProps, {}> {
     }
 }
 
-const mapStateToProps = (state: State) => ({});
+const mapStateToProps = () => ({});
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ 
     setSimpleMode: () => {

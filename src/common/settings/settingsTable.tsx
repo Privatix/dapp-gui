@@ -35,7 +35,7 @@ class SettingsTable extends React.Component<IProps, IState> {
         };
     }
 
-    static getDerivedStateFromProps(props:IProps, state:IState) {
+    static getDerivedStateFromProps(props:IProps) {
         return {data: props.options};
     }
 

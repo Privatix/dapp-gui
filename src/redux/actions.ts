@@ -161,7 +161,7 @@ export const asyncProviders = {
         return async function(dispatch: any, getState: Function){
             const { ws, role, autoTransfer, localSettings } = getState();
 
-            const startWatchingTransfer = async (accountId: string, address: string, amount: number) => {
+            const startWatchingTransfer = async (accountId: string) => {
 
                 const Watcher = class {
                     private _subscriptionId = null;
@@ -227,7 +227,7 @@ export const asyncProviders = {
 
                 if(localSettings.gas.transfer*gasPrice <= account.ethBalance){
                     dispatch(handlers.setTransferringFlag(true));
-                    startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
+                    startWatchingTransfer(account.id);
                     ws.transferTokens(account.id, 'psc', account.ptcBalance, gasPrice);
                 }else{
                     dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
@@ -328,7 +328,7 @@ export const asyncProviders = {
         };
     },
     setMode: function(mode: Mode){
-        return async function(dispatch: any, getState: Function){
+        return async function(dispatch: any){
 
             const { window } = await api.settings.getLocal();
             let { width, height } = window[mode];

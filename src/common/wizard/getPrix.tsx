@@ -43,7 +43,7 @@ interface IState {
 @translate(['auth/getPrix', 'auth/generateKey', 'auth/utils', 'transferTokens'])
 class GetPrix extends React.Component<IProps, IState>{
 
-    static getDerivedStateFromProps(props: IProps, state: IState){
+    static getDerivedStateFromProps(props: IProps){
         return {err: props.notices.findIndex(notice => notice.code === 0) !== -1};
     }
 

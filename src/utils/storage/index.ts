@@ -102,7 +102,7 @@ export const createStorage = () => {
 
 
     api.on('releases', async function(event: any, data: any){
-
+        log.log(event, data);
         const { ws } = storage.getState();
         if(ws){
             await ws.whenAuthorized();

@@ -15,7 +15,7 @@ interface IProps {
 }
 class Trigger extends React.Component<IProps, {}> {
 
-    componentDidUpdate(prevProps: IProps){
+    componentDidUpdate(){
         const { mode, setSimpleMode, stoppingSupervisor } = this.props;
         if(stoppingSupervisor && mode !== Mode.SIMPLE){
             setSimpleMode();
