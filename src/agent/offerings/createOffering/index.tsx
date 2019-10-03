@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { translate, Trans } from 'react-i18next';
+import { WithTranslation, withTranslation, Trans } from 'react-i18next';
 import Select from 'react-select';
 
 import notice from 'utils/notice';
@@ -29,13 +29,12 @@ import {LocalSettings} from 'typings/settings';
 type IProps = RouteComponentProps<any> & {
     product?: string;
     ws?: WS;
-    t?: any;
     localSettings?: LocalSettings;
     done?: Function;
     closeModal?: Function;
     accounts?: Account[];
     products?: Product[];
-};
+} & WithTranslation;
 
 interface IState {
     payload?: {
@@ -68,7 +67,8 @@ interface IState {
     errMsg?: string;
 }
 
-@translate(['offerings/createOffering', 'common', 'utils/notice'])
+const translate = withTranslation(['offerings/createOffering', 'common', 'utils/notice']);
+
 class CreateOffering extends React.Component<IProps, IState>{
 
     get defaultState(){
@@ -805,7 +805,7 @@ class CreateOffering extends React.Component<IProps, IState>{
 }
 
 // export default withRouter(CreateOffering);
-export default withRouter(connect( (state: State, ownProps: IProps) => {
+export default withRouter(connect( (state: State, ownProps: any) => {
     const { ws, accounts, products, localSettings } = state;
     return (
         Object.assign({}
@@ -813,4 +813,4 @@ export default withRouter(connect( (state: State, ownProps: IProps) => {
                      ,ownProps
                      )
     );
-} )(CreateOffering));
+} )(translate(CreateOffering)));

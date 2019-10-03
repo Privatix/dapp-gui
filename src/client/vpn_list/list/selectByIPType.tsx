@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     selectedTypes: string[];
     onChange(evt: any): void;
 }
 
-const translated = translate(['client/vpnList', 'common']);
+const translated = withTranslation(['client/vpnList', 'common']);
 
 class SelectByIPType extends React.Component<IProps, {}>{
 

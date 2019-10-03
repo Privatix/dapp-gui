@@ -1,12 +1,11 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import DatePicker from 'react-datepicker';
 import 'react-datepicker/dist/react-datepicker.css';
 
-const translated = translate('logs/logsList');
+const translated = withTranslation('logs/logsList');
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     blockClass: string;
     label: string;
     id: string;

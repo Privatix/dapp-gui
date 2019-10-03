@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import ChannelsListSortTable from './channelsListSortTable';
 
 import Channel from './channel';
@@ -18,15 +18,15 @@ interface IProps{
     status?: ServiceStatus;
 }
 
-interface Props {
+interface Props extends WithTranslation {
     status?: ServiceStatus;
     products: ProductType[];
     dispatch: any;
-    t?: any;
     ws: WS;
 }
 
-@translate(['channels/channelsList'])
+const translate = withTranslation(['channels/channelsList']);
+
 class Channels extends React.Component<Props, any> {
 
     private subscription: string;
@@ -187,4 +187,4 @@ class Channels extends React.Component<Props, any> {
     }
 }
 
-export default connect( (state: State, ownProps: IProps) => Object.assign({}, {products: state.products, ws: state.ws}, ownProps))(Channels);
+export default connect( (state: State, ownProps: IProps) => Object.assign({}, {products: state.products, ws: state.ws}, ownProps))(translate(Channels));

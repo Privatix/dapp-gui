@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import countryByIso from 'utils/countryByIso';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     selectedCountries: string[];
     allCountries: string[];
     searchStr: string;
@@ -17,7 +16,7 @@ interface IState {
     defaultShowCountriesCount: number;
 }
 
-const translated = translate(['client/vpnList']);
+const translated = withTranslation(['client/vpnList']);
 
 class SelectCountry extends React.Component<IProps, IState>{
 

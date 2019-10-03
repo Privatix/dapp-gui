@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Dispatch } from 'redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import {asyncProviders} from 'redux/actions';
 
@@ -13,7 +13,7 @@ import {Offering} from 'typings/offerings';
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import notice from 'utils/notice';
 
-interface OwnProps {
+interface OwnProps extends WithTranslation {
     offering: Offering;
     closeModal: Function;
 }
@@ -25,11 +25,10 @@ interface Props extends OwnProps {
     localSettings: State['localSettings'];
     accounts: State['accounts'];
     dispatch: Dispatch<any>;
-    t: any;
     ws: State['ws'];
 }
 
-const translated = translate(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice', 'utils/gasRange']);
+const translate = withTranslation(['offerings/offeringTools', 'confirmPopupSwal', 'utils/notice', 'utils/gasRange']);
 
 class PopupOfferingButton extends React.Component<Props, any>{
 
@@ -134,7 +133,7 @@ class PopupOfferingButton extends React.Component<Props, any>{
     }
 }
 
-const mapStateToProps = (state: State, ownProps: OwnProps) => {
+const mapStateToProps = (state: State, ownProps: any) => {
     const {ws, settings, localSettings, accounts } = state;
     return Object.assign({},
         {
@@ -151,4 +150,4 @@ const mapStateToProps = (state: State, ownProps: OwnProps) => {
 
 const mapDispatchToProps = (dispatch: Dispatch<any>) => ({ dispatch});
 
-export default connect(mapStateToProps, mapDispatchToProps)(translated(PopupOfferingButton));
+export default connect(mapStateToProps, mapDispatchToProps)(translate(PopupOfferingButton));

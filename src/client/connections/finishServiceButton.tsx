@@ -1,18 +1,15 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 
 import { WS, ws } from 'utils/ws';
 import { ClientChannel } from 'typings/channels';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     channel: ClientChannel;
 }
-
-@translate('client/connections/finishServiceButton')
 
 class FinishServiceButton extends React.Component<IProps, {}>{
 
@@ -54,4 +51,4 @@ class FinishServiceButton extends React.Component<IProps, {}>{
     }
 }
 
-export default ws<IProps>(FinishServiceButton);
+export default ws<IProps>(withTranslation('client/connections/finishServiceButton')(FinishServiceButton));

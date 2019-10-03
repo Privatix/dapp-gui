@@ -1,18 +1,17 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { ClientChannelUsage } from 'typings/channels';
 
 import Prix from './PRIX';
 import MB from './MB';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     usage: ClientChannelUsage;
     mode: string;
 }
 
-const translated = translate('client/connections/usage');
+const translate = withTranslation('client/connections/usage');
 
 class Usage extends React.Component<IProps, {}>{
 
@@ -37,4 +36,4 @@ class Usage extends React.Component<IProps, {}>{
     }
 }
 
-export default translated(Usage);
+export default translate(Usage);

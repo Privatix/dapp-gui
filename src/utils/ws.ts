@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as uuidv4 from 'uuid/v4';
+import uuidv4 from 'uuid/v4';
 
 import * as api from './api';
 import { Template, TemplateType } from 'typings/templates';
@@ -546,7 +546,7 @@ export class WS {
 }
 
 export const ws = function<T>(constructor: React.ComponentType){
-    return connect( (state: State, onProps: T) => {
-        return (Object.assign({}, {ws: state.ws}, onProps));
+    return connect( (state: State, ownProps: any) => {
+        return (Object.assign({}, {ws: state.ws}, ownProps) as T);
     } )(constructor);
 };

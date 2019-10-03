@@ -1,17 +1,17 @@
-import * as React from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import Steps from './steps';
 import {NextButton} from './utils';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     history?: any;
     isDefault: boolean;
 }
 
-@translate('auth/setAccount')
+const translate = withTranslation('auth/setAccount');
+
 class SetAccount extends React.Component<IProps, {}> {
 
     keyType: string;
@@ -114,4 +114,4 @@ class SetAccount extends React.Component<IProps, {}> {
     }
 }
 
-export default withRouter(SetAccount);
+export default withRouter(translate(SetAccount));

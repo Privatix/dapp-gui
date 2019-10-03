@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import Pagination from 'react-js-pagination';
 
 import SortableTable from 'react-sortable-table-vilan';
@@ -16,9 +16,8 @@ import { State } from 'typings/state';
 import { LocalSettings } from 'typings/settings';
 import { Transaction } from 'typings/transactions';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     localSettings?: LocalSettings;
     accountId: string;
 }
@@ -29,7 +28,8 @@ interface IState{
     activePage: number;
 }
 
-@translate('transactions/transactionsList')
+const translate = withTranslation('transactions/transactionsList');
+
 class Transactions extends React.Component<IProps, IState>{
 
     handler = null;
@@ -145,4 +145,4 @@ class Transactions extends React.Component<IProps, IState>{
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(Transactions);
+export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(translate(Transactions));

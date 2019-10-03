@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import Select from 'react-select';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
@@ -14,17 +14,15 @@ import { asyncProviders } from 'redux/actions';
 import { State } from 'typings/state';
 import { ClientChannel } from 'typings/channels';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws: State['ws'];
     accounts: State['accounts'];
     localSettings: State['localSettings'];
     channel: ClientChannel;
     dispatch: any;
-    t?: any;
     closeModal?: any;
 }
 
-@translate(['client/connections/increaseDepositView', 'utils/notice'])
 class IncreaseDepositView extends React.Component<IProps, any> {
 
     constructor(props: IProps) {
@@ -277,4 +275,4 @@ export default connect( (state: State) => {
     ws: state.ws
    ,accounts: state.accounts
    ,localSettings: state.localSettings
-};} )(IncreaseDepositView);
+};} )(withTranslation(['client/connections/increaseDepositView', 'utils/notice'])(IncreaseDepositView));

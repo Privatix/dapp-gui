@@ -1,4 +1,5 @@
-import i18next from 'i18next';
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 import { langsList } from './langs';
 
@@ -11,7 +12,8 @@ const resources = langs.map(lang => lang.value).reduce((acc, lang) => {
     return acc;
 }, {});
 
-export default i18next
+i18n
+  .use(initReactI18next)
   .init({
     debug: false,
     fallbackLng: defLang,
@@ -23,3 +25,5 @@ export default i18next
     },
     resources
   });
+
+export default i18n;

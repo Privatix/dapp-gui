@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
 
 import { WS, ws } from 'utils/ws';
 
-import {ClientChannel} from 'typings/channels';
+import { ClientChannel } from 'typings/channels';
 
 import { Id, Agent, Server, Started, Stopped, LastUsed, ClientIP } from 'common/tables/';
 
@@ -16,9 +16,8 @@ import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
 import IncreaseDepositButton from './increaseDepositButton';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     history?: any;
     channel: ClientChannel;
     render?: Function;
@@ -28,7 +27,6 @@ interface IState {
     sessions: any[];
 }
 
-@translate('client/connections/connection', 'tables')
 class Connection extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
@@ -130,4 +128,4 @@ class Connection extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(withRouter(Connection));
+export default ws<IProps>(withRouter(withTranslation(['client/connections/connection', 'tables'])(Connection)));

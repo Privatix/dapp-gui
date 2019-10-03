@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
 import JobDataComponent from '../jobData';
@@ -11,13 +11,12 @@ import { JobStatusSimple, CopyableId, JobType, JobCreatedAt, JobData, JobActions
 
 import { JobType as Job } from 'typings/jobs';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     jobs: Job[];
     onEvent: Function;
 }
 
-const translated = translate(['jobs/jobsList', 'common']);
+const translated = withTranslation(['jobs/jobsList', 'common']);
 
 function jobsTable(props: IProps) {
 

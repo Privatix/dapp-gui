@@ -1,10 +1,10 @@
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
-import * as ReactTooltip from 'react-tooltip';
+import { WithTranslation, withTranslation } from 'react-i18next';
+import ReactTooltip from 'react-tooltip';
 
-import {NextButton, PreviousButton, back} from './utils';
+import { NextButton, PreviousButton, back} from './utils';
 import Steps from './steps';
 
 import { registerBugsnag } from 'utils/bugsnag';
@@ -14,12 +14,11 @@ import { WS } from 'utils/ws';
 import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation{
     ws?: WS;
     dispatch?: any;
     history?: any;
-    role?: Role;
+    role: Role;
 }
 
 interface IOwnProps extends IProps {
@@ -32,7 +31,6 @@ interface IState {
 }
 
 
-@translate(['auth/setPassword', 'utils/notice'])
 class SetPassword extends React.Component<IOwnProps, IState>{
 
     private submitted = false;
@@ -90,7 +88,6 @@ class SetPassword extends React.Component<IOwnProps, IState>{
 
         const { t, ws, mode, role } = this.props;
         const { pwd, conf } = this.state;
-
         this.submitted = true;
         let msg = '';
         let err = false;
@@ -194,7 +191,7 @@ class SetPassword extends React.Component<IOwnProps, IState>{
     }
 }
 
-export default withRouter(connect<IProps>((state:State) => ({
+export default withRouter(connect((state:State) => ({
     ws: state.ws
    ,role: state.role
-}))(SetPassword));
+}))(withTranslation(['auth/setPassword', 'utils/notice'])(SetPassword)));

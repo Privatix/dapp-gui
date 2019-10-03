@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import DotProgress from 'common/progressBars/dotProgress';
 import StepProgress from 'common/progressBars/stepProgress';
@@ -14,16 +14,16 @@ interface SelectItem {
     label: string;
 }
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     selectedLocation: SelectItem;
     channel: Channel;
     offering: Offering;
     onChangeLocation: Function;
 }
 
-@translate(['client/simpleMode'])
-export default class Connecting extends React.Component<IProps, {}> {
+const translate = withTranslation(['client/simpleMode']);
+
+class Connecting extends React.Component<IProps, {}> {
 
     render(){
 
@@ -53,3 +53,5 @@ export default class Connecting extends React.Component<IProps, {}> {
         );
     }
 }
+
+export default translate(Connecting);

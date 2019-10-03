@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import SortableTable from 'react-sortable-table-vilan';
 
@@ -16,8 +16,7 @@ import { Id, Agent, Offering, ContractStatus, ServiceStatus, JobStatus, Usage, C
 import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 import { State } from 'typings/state';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     channel: State['channel'];
 }
 interface IState {
@@ -26,7 +25,8 @@ interface IState {
     status: string;
 }
 
-@translate('client/connections/active')
+const translate = withTranslation('client/connections/active');
+
 class ActiveConnection extends React.Component<IProps, IState>{
 
     subscribeId = null;
@@ -146,4 +146,4 @@ export default connect((state: State) => {
     return {
         channel: state.channel
     };
-})(withRouter(ActiveConnection));
+})(withRouter(translate(ActiveConnection)));

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate, Trans } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 import Countdown from 'react-countdown-now';
 
 import { default as handlers, asyncProviders } from 'redux/actions';
@@ -19,14 +19,14 @@ import { ClientChannel } from 'typings/channels';
 const countdownRender = ( { hours, minutes, seconds, completed } ) => {
 
     if(completed) {
-        const View = translate('client/dashboard/connecting')(({t}) => {
+        const View = withTranslation('client/dashboard/connecting')(({t}) => {
             return <p className='card-text text-muted'>{t('WaitingTimeIsOver')}</p>;
         });
 
         return <View />;
     } else {
 
-        const View = translate('client/dashboard/connecting')(({t}) => {
+        const View = withTranslation('client/dashboard/connecting')(({t}) => {
             return (
                 <React.Fragment>
                     <p className='card-text remainingText'>{t('Remaining')}:&nbsp;
@@ -44,7 +44,8 @@ const countdownRender = ( { hours, minutes, seconds, completed } ) => {
 
 };
 
-@translate(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal', 'client/simpleMode'])
+const translate = withTranslation(['client/dashboard/connecting', 'utils/notice', 'confirmPopupSwal', 'client/simpleMode']);
+
 class Connecting extends React.Component<any, any>{
 
     mounted = false;
@@ -383,4 +384,4 @@ export default connect((state: State) => ({
    ,channel: state.channel
    ,serviceName: state.serviceName
    ,stoppingSupervisor: state.stoppingSupervisor
-}))(withRouter(Connecting));
+}))(withRouter(translate(Connecting)));

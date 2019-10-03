@@ -1,10 +1,9 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-const translated = translate('logs/logsList');
+const translated = withTranslation('logs/logsList');
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     searchText: string;
     handleSearch(evt: any): void;
     handleChangeSearch(evt: any): void;

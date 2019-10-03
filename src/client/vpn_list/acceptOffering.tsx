@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate, Trans } from 'react-i18next';
+import { WithTranslation, withTranslation, Trans } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 
 import Select from 'react-select';
@@ -20,9 +20,8 @@ import { Account } from 'typings/accounts';
 import { LocalSettings } from 'typings/settings';
 import { WS } from 'utils/ws';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     localSettings?: LocalSettings;
     accounts?: Account[];
     history?: any;
@@ -39,7 +38,8 @@ interface IState{
     thereAreActiveChannels: boolean;
 }
 
-@translate(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice', 'common'])
+const translate = withTranslation(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice', 'common']);
+
 class AcceptOffering extends React.Component<IProps, IState>{
 
     acceptBtn = null;
@@ -262,7 +262,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                         <label className='col-3 col-form-label'>{t('offerings/createOffering:MaxUnits')}:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={Math.ceil(offering.maxUnit) === 0 ? t('unlimited') : Math.ceil(offering.maxUnit) } readOnly/>
+                                <input type='text' className='form-control' value={Math.ceil(offering.maxUnit) === 0 ? t('unlimited') as string : Math.ceil(offering.maxUnit) } readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>{offering.unitName}</span>
                             </div>
                             <span className='help-block'>
@@ -338,10 +338,10 @@ class AcceptOffering extends React.Component<IProps, IState>{
     }
 }
 
-export default connect( (state: State, ownProps: IProps) => {
+export default connect( (state: State, ownProps: any) => {
     return Object.assign({}, {
     ws: state.ws
    ,localSettings: state.localSettings
    ,accounts: state.accounts
    ,serviceName: state.serviceName
-}, ownProps);} )(withRouter(AcceptOffering));
+}, ownProps);} )(withRouter(translate(AcceptOffering)));

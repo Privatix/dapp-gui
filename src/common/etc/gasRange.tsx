@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import isString = require('lodash.isstring'); // https://github.com/lodash/lodash/issues/3192#issuecomment-359642822
 
 import eth from 'utils/eth';
@@ -10,10 +10,9 @@ import ExternalLink from './externalLink';
 
 import {State} from 'typings/state';
 
-interface IProps {
+interface IProps extends WithTranslation{
     onChange: Function;
     value: number;
-    t?: any;
     extLinkText?: string;
     averageTimeText?: string;
     transactionFee?: number;
@@ -21,7 +20,8 @@ interface IProps {
     tab?: number;
 }
 
-@translate('utils/gasRange')
+const translate = withTranslation('utils/gasRange');
+
 class GasRange extends React.Component<IProps, {}> {
 
     changeGasPrice = (evt: any) => {
@@ -93,4 +93,4 @@ class GasRange extends React.Component<IProps, {}> {
     }
 }
 
-export default connect((state: State) => ({maxPossibleGasPrice: Math.ceil(state.localSettings.gas.maxPossibleGasPrice/1e9)}))(GasRange);
+export default connect((state: State) => ({maxPossibleGasPrice: Math.ceil(state.localSettings.gas.maxPossibleGasPrice/1e9)}))(translate(GasRange));

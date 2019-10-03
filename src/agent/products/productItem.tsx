@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import ModalWindow from 'common/modalWindow';
 import CreateOffering from 'agent/offerings/createOffering/';
@@ -9,14 +9,14 @@ import Product from './product';
 import { WS, ws } from 'utils/ws';
 import {Product as ProductType} from 'typings/products';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     history?: any;
     product: ProductType;
 }
 
-@translate(['products/productItem', 'offerings', 'offerings/offerings'])
+const translate = withTranslation(['products/productItem', 'offerings', 'offerings/offerings']);
+
 class ProductItem extends React.Component<IProps, any>{
 
     constructor(props:IProps){
@@ -100,4 +100,4 @@ class ProductItem extends React.Component<IProps, any>{
     }
 }
 
-export default ws<IProps>(withRouter(ProductItem));
+export default ws<IProps>(withRouter(translate(ProductItem)));

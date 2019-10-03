@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import ChannelsListByStatus from './channelsListByStatus';
 
-@translate(['channels/channelsByStatus', 'common'])
-export default class ChannelsByStatus extends React.Component <any,any> {
+const translate = withTranslation(['channels/channelsByStatus', 'common']);
+
+class ChannelsByStatus extends React.Component <any,any> {
 
     constructor(props: any) {
         super(props);
@@ -32,3 +33,5 @@ export default class ChannelsByStatus extends React.Component <any,any> {
         </div>;
     }
 }
+
+export default translate(ChannelsByStatus);

@@ -1,13 +1,13 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     jobtype: string;
     className?: string;
 }
 
-@translate('jobName')
+const translate = withTranslation('jobName');
+
 class JobStatus extends React.Component<IProps, {}>{
 
     render() {
@@ -19,4 +19,4 @@ class JobStatus extends React.Component<IProps, {}>{
     }
 }
 
-export default JobStatus;
+export default translate(JobStatus);

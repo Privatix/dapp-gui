@@ -1,7 +1,7 @@
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate, Trans } from 'react-i18next';
+import { WithTranslation, withTranslation, Trans } from 'react-i18next';
 
 import { default as handlers, asyncProviders } from 'redux/actions';
 
@@ -17,9 +17,8 @@ import { State } from 'typings/state';
 import { Mode, Role } from 'typings/mode';
 import drawQrCode from 'utils/qrCode';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: State['ws'];
-    t?: any;
     dispatch?: any;
     history?: any;
     accountId: string;
@@ -40,7 +39,8 @@ interface IState {
     accountPSCBalance: number;
 }
 
-@translate(['auth/getPrix', 'auth/generateKey', 'auth/utils', 'transferTokens'])
+const translate = withTranslation(['auth/getPrix', 'auth/generateKey', 'auth/utils', 'transferTokens']);
+
 class GetPrix extends React.Component<IProps, IState>{
 
     static getDerivedStateFromProps(props: IProps){
@@ -274,4 +274,11 @@ class GetPrix extends React.Component<IProps, IState>{
     }
 }
 
-export default connect((state:State, ownProps: IProps) => Object.assign({}, {mode: state.mode, role: state.role, ws: state.ws, notices: state.notices}, ownProps))(withRouter(GetPrix));
+export default connect((state:State, ownProps: any) => Object.assign({}
+                                                                       ,{mode: state.mode
+                                                                        ,role: state.role
+                                                                        ,ws: state.ws
+                                                                        ,notices: state.notices
+                                                                       }
+                                                                       ,ownProps
+                                                                       ))(withRouter(translate(GetPrix)));

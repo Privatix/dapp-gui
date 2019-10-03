@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { default as handlers, asyncProviders } from 'redux/actions';
 
@@ -37,11 +37,10 @@ import * as log from 'electron-log';
 
 import { Status} from 'models/channel';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws: State['ws'];
     localSettings: State['localSettings'];
     offeringsAvailability: State['offeringsAvailability'];
-    t?: any;
     account: Account;
     balance: string;
     dispatch?: any;
@@ -70,7 +69,8 @@ interface IState {
     reconnectTry: number;
 }
 
-@translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
+const translate = withTranslation(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering']);
+
 class LightWeightClient extends React.Component<IProps, IState> {
 
     private mounted: boolean;
@@ -770,4 +770,4 @@ export default connect((state: State) => {
        ,transferring: state.transferring
        ,stoppingSupervisor: state.stoppingSupervisor
     };
-})(LightWeightClient);
+})(translate(LightWeightClient));

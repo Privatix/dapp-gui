@@ -1,10 +1,10 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate, Trans } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import {State} from 'typings/state';
 
-const translated = translate(['client/vpnList']);
+const translated = withTranslation(['client/vpnList']);
 
 class Spinner extends React.Component<any,any> {
 

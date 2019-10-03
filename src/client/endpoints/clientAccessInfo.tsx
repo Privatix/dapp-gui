@@ -1,13 +1,12 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { WS, ws } from 'utils/ws';
 import { ClientChannel } from 'typings/channels';
 import { Endpoint } from 'typings/endpoints';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     channel: ClientChannel;
 }
 
@@ -15,7 +14,6 @@ interface IState {
     endpoint: Endpoint;
 }
 
-@translate('client/clientAccessInfo')
 class ClientAccessInfo extends React.Component <IProps, IState> {
 
     constructor(props:IProps) {
@@ -71,4 +69,4 @@ class ClientAccessInfo extends React.Component <IProps, IState> {
     }
 }
 
-export default ws<IProps>(ClientAccessInfo);
+export default ws<IProps>(withTranslation('client/clientAccessInfo')(ClientAccessInfo));

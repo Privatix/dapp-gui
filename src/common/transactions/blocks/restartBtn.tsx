@@ -1,13 +1,12 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import {State} from 'typings/state';
 import {LocalSettings} from 'typings/settings';
 import { Transaction } from 'typings/transactions';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     localSettings?: LocalSettings;
     ws?: State['ws'];
     transaction: Transaction;
@@ -17,7 +16,8 @@ interface IState {
     disabledBtn: boolean;
 }
 
-@translate('transactions/transactionsList')
+const translate = withTranslation('transactions/transactionsList');
+
 class RestartBtn extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
@@ -47,4 +47,4 @@ class RestartBtn extends React.Component<IProps, IState> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(RestartBtn);
+export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(translate(RestartBtn));

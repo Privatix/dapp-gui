@@ -1,13 +1,12 @@
-import * as React from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-const translated = translate('auth/steps');
+const translate = withTranslation('auth/steps');
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     step: number;
-    prix: boolean;
+    prix?: boolean;
     shape: 'simple' | 'advanced';
 }
 
@@ -111,4 +110,4 @@ class Steps extends React.Component<IProps, {}>{
     }
 }
 
-export default translated(Steps);
+export default translate(Steps);

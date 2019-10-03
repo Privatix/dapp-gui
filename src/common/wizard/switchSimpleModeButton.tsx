@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { asyncProviders } from 'redux/actions';
 
@@ -8,12 +8,12 @@ import { Dispatch } from 'redux';
 
 import { Mode } from 'typings/mode';
 
-interface IProps {
+interface IProps extends WithTranslation {
     setSimpleMode?(): void;
-    t?: any;
 }
 
-@translate(['client/simpleMode'])
+const translate = withTranslation(['client/simpleMode']);
+
 class SwitchSimpleModeButton extends React.Component<IProps, {}> {
 
     onClick = (evt) => {
@@ -38,4 +38,4 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     }
 });
 
-export default connect<IProps>(mapStateToProps, mapDispatchToProps)(SwitchSimpleModeButton);
+export default connect(mapStateToProps, mapDispatchToProps)(translate(SwitchSimpleModeButton));

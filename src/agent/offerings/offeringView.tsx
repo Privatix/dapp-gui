@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import countryByIso from 'utils/countryByIso';
 import { ipTypes } from 'utils/ipTypes';
@@ -7,8 +7,9 @@ import ProductNameByOffering from 'agent/products/productNameByOffering';
 
 import prix from 'utils/prix';
 
-@translate(['offerings/createOffering', 'common'])
-export default class OfferingView extends React.Component<any, {}>{
+const translate = withTranslation(['offerings/createOffering', 'common']);
+
+class OfferingView extends React.Component<any, {}>{
 
     render(){
 
@@ -165,3 +166,5 @@ export default class OfferingView extends React.Component<any, {}>{
         </div>;
     }
 }
+
+export default translate(OfferingView);

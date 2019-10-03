@@ -1,17 +1,17 @@
 import * as React from 'react';
 
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { WS, ws } from 'utils/ws';
 import {Channel} from 'typings/channels';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     channel: Channel;
 }
 
-@translate('channels/channelView')
+const translate = withTranslation('channels/channelView');
+
 class AgentAccessInfo extends React.Component <IProps, any> {
 
     constructor(props:any) {
@@ -66,4 +66,4 @@ class AgentAccessInfo extends React.Component <IProps, any> {
     }
 }
 
-export default ws<IProps>(AgentAccessInfo);
+export default ws<IProps>(translate(AgentAccessInfo));

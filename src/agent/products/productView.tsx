@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { withRouter, RouteComponentProps } from 'react-router';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import Select from 'react-select';
 
 import countries from 'utils/countries';
@@ -12,9 +12,8 @@ import { Product } from 'typings/products';
 type IProps = RouteComponentProps<{}> & {
     product: Product;
     dispatch: any;
-    t?: any;
     ws?: WS;
-};
+} & WithTranslation;
 
 interface IState {
     product: Product;
@@ -22,7 +21,8 @@ interface IState {
     country: string;
 }
 
-@translate(['products/productView', 'utils/notice', 'common'])
+const translate = withTranslation(['products/productView', 'utils/notice', 'common']);
+
 class ProductView extends React.Component <IProps, IState> {
 
     constructor(props:IProps) {
@@ -111,4 +111,4 @@ class ProductView extends React.Component <IProps, IState> {
     }
 }
 
-export default withRouter<IProps>(ws<IProps>(ProductView));
+export default withRouter(ws<IProps>(translate(ProductView)));

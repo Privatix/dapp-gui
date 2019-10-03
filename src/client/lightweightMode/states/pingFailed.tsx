@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import SelectCountry from '../selectCountry/';
 
@@ -8,15 +8,15 @@ interface SelectItem {
     label: string;
 }
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     locations: SelectItem[];
     selectedLocation: SelectItem;
     onChangeLocation: Function;
 }
 
-@translate(['client/simpleMode'])
-export default class PingFailed extends React.Component<IProps, {}> {
+const translate = withTranslation(['client/simpleMode']);
+
+class PingFailed extends React.Component<IProps, {}> {
 
     render(){
 
@@ -38,3 +38,5 @@ export default class PingFailed extends React.Component<IProps, {}> {
         );
     }
 }
+
+export default translate(PingFailed);

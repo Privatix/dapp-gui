@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { asyncProviders } from 'redux/actions';
 
@@ -9,13 +9,13 @@ import { Dispatch } from 'redux';
 import { State } from 'typings/state';
 import { Mode } from 'typings/mode';
 
-interface IProps {
+interface IProps extends WithTranslation {
     setAdvancedMode?(): void;
-    t?: any;
     ws: State['ws'];
 }
 
-@translate(['client/simpleMode'])
+const translate = withTranslation(['client/simpleMode']);
+
 class SwitchAdvancedModeButton extends React.Component<IProps, {}> {
 
     onClick = (evt) => {
@@ -40,4 +40,4 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     }
 });
 
-export default connect<IProps>(mapStateToProps, mapDispatchToProps)(SwitchAdvancedModeButton);
+export default connect(mapStateToProps, mapDispatchToProps)(translate(SwitchAdvancedModeButton));

@@ -1,7 +1,7 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
-const translated = translate(['client/vpnList']);
+const translated = withTranslation(['client/vpnList']);
 
 class SelectByAgent extends React.Component<any,any> {
 

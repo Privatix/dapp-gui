@@ -1,10 +1,9 @@
 import * as React from 'react';
 
 import ReactSweetAlert from 'react-sweetalert-vilan';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     beforeAsking?: Function;
     done?: Function;
     className: string;
@@ -21,9 +20,9 @@ interface IState {
     show: boolean;
 }
 
-@translate('confirmPopupSwal')
+const translate = withTranslation('confirmPopupSwal');
 
-export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
+class ConfirmPopupSwal extends React.Component<IProps, IState>{
 
     showConfirmAlertBtn = null;
 
@@ -117,3 +116,5 @@ export default class ConfirmPopupSwal extends React.Component<IProps, IState>{
         );
     }
 }
+
+export default translate(ConfirmPopupSwal);

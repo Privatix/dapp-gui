@@ -6,16 +6,15 @@ import { registerBugsnag } from 'utils/bugsnag';
 import { WS } from 'utils/ws';
 import {default as notice, clearNotices } from 'utils/notice';
 import HintComponent from 'common/hintComponent';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import {State} from 'typings/state';
 import ExternalLinkWarning from 'common/externalLinkWarning';
 
-interface IOwnProps {
+interface IOwnProps extends WithTranslation {
     entryPoint: any;
 }
 
 interface IProps extends IOwnProps{
-    t?: any;
     ws?: WS;
     dispatch?: any;
     history: any;
@@ -25,7 +24,8 @@ interface IState {
     password: string;
 }
 
-@translate('login', 'utils/notice')
+const translate = withTranslation(['login', 'utils/notice']);
+
 class Login extends React.Component<IProps, IState> {
 
     private submitted = false;
@@ -145,6 +145,6 @@ class Login extends React.Component<IProps, IState> {
     }
 }
 
-export default connect( (state: State, ownProps: IOwnProps) => {
+export default connect( (state: State, ownProps: any) => {
     return Object.assign({}, {ws: state.ws}, ownProps);
-} )(withRouter(Login));
+} )(withRouter(translate(Login)));
