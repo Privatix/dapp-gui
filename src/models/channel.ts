@@ -334,6 +334,10 @@ export default class Channel {
         }
     }
 
+    topUp(deposit: number, gasPrice: number){
+        return this.ws.topUp(this.model.id, deposit, gasPrice);
+    }
+
     addEventListener(evtName: string, listener: Function){
         if(!this.listeners[evtName]){
             this.listeners[evtName] = [];

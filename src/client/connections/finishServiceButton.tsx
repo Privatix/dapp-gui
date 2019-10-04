@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { withRouter } from 'react-router-dom';
 import { WithTranslation, withTranslation } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
@@ -9,6 +10,7 @@ import { State } from 'typings/state';
 interface IProps extends WithTranslation {
     channel: State['channel'];
     usage: ClientChannelUsage;
+    history?: any;
 }
 
 class FinishServiceButton extends React.Component<IProps, {}>{
@@ -16,6 +18,7 @@ class FinishServiceButton extends React.Component<IProps, {}>{
     done = async () => {
         const { channel } = this.props;
         await channel.terminate();
+        this.props.history.push('/');
     }
 
     render(){
@@ -55,4 +58,4 @@ class FinishServiceButton extends React.Component<IProps, {}>{
     }
 }
 
-export default withTranslation('client/connections/finishServiceButton')(FinishServiceButton);
+export default withRouter(withTranslation('client/connections/finishServiceButton')(FinishServiceButton));
