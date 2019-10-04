@@ -49,8 +49,8 @@ class Logs extends React.Component <IProps, IState> {
 
         this.state = {
             logsData: [],
-            dateFrom: moment().subtract(1, 'day'),
-            dateTo: moment(),
+            dateFrom: moment().subtract(1, 'day').toDate(),
+            dateTo: new Date(),
             searchText: '',
             activePage: 1,
             pages: 1,
@@ -147,7 +147,7 @@ class Logs extends React.Component <IProps, IState> {
     }
 
     handleNow = () => {
-        this.handleChangeDateTo(moment());
+        this.handleChangeDateTo(new Date());
     }
 
     handlePageChange = (activePage:number) => {
@@ -267,7 +267,6 @@ class Logs extends React.Component <IProps, IState> {
                                     lang={lang}
                                     handleChangeDate={this.handleChangeDateFrom}
                                 />
-
                                 <TimeFilter
                                     blockClass='logsTimeFilterToBl'
                                     label={t('LogsFilterTo')}

@@ -38,7 +38,7 @@ function timeFilter(props: IProps) {
                             showTimeSelect
                             timeFormat='HH:mm'
                             timeIntervals={10}
-                            dateFormat='h:mm A DD-MMM-YY'
+                            dateFormat='hh:mm d-MM-yy'
                             timeCaption={t('LogsFilterTime')}
                             className='form-control form-control-datepicker'
                             onChange={props.handleChangeDate}
