@@ -90,9 +90,25 @@ class Connecting extends React.Component<any, any>{
     }
 
     onStatusChanged = () => {
+
         const { channel } = this.props;
-        console.log('CHANNEL!!!', channel);
+        const { offering } = this.state;
+
         this.setState({status: channel.model.channelStatus.serviceStatus, job: channel.getJob()});
+        if(!offering){
+            this.setOffering();
+        }
+    }
+
+    async setOffering(){
+
+        const { ws, channel } = this.props;
+
+        const offering = await ws.getOffering(channel.model.offering);
+        if(!this.mounted){
+            return;
+        }
+        this.setState({status: 'active', offering, pendingTimeCounter: 0});
     }
 
     onUsageChanged = () => {
@@ -117,18 +133,16 @@ class Connecting extends React.Component<any, any>{
         }
 
         const { t, ws, channel } = this.props;
-        const { usage } = this.state;
+        const { usage, offering } = this.state;
 
         if(channel.model){
 
             switch(channel.model.channelStatus.serviceStatus){
                 case 'active':
                     this.resuming = false;
-                    const offering = await ws.getOffering(channel.model.offering);
-                    if(!this.mounted){
-                        return;
+                    if(!offering){
+                        this.setOffering();
                     }
-                    this.setState({status: 'active', offering, pendingTimeCounter: 0});
                     break;
                 case 'suspended':
                     let countryAlert = '';
