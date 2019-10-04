@@ -22,6 +22,10 @@ class FinishServiceButton extends React.Component<IProps, {}>{
 
         const { t, usage } = this.props;
 
+        if(!usage){
+            return null;
+        }
+
         return <div className='card m-b-20 card-body text-xs-center buttonBlock'>
             <div>
                 <p className='card-text'>{t('PermanentlyStopUsingService')}</p>

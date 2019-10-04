@@ -273,7 +273,11 @@ class Connecting extends React.Component<any, any>{
         const { t, serviceName, channel } = this.props;
         const { usage } = this.state;
 
-        const deadlineStamp = this.getDeadLine(channel.channelStatus);
+        if(!channel){
+            return null;
+        }
+
+        const deadlineStamp = this.getDeadLine(channel.model.channelStatus);
 
         const countryAlert = this.state.countryAlert === '' ? '' :
             <div className='alert alert-warning clientCountryAlert'>{this.state.countryAlert}</div>;

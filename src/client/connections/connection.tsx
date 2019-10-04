@@ -102,7 +102,7 @@ class Connection extends React.Component<IProps, IState>{
 
                     <TerminateContractButton
                         status='disabled'
-                        payment={usage.cost}
+                        payment={usage ? usage.cost : 0}
                         channelId={channelModel.id}
                         done={() => this.props.history.push('/client-history')}
                     />
