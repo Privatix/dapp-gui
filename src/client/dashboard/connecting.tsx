@@ -93,10 +93,11 @@ class Connecting extends React.Component<any, any>{
 
         const { channel } = this.props;
         const { offering } = this.state;
-
-        this.setState({status: channel.model.channelStatus.serviceStatus, job: channel.getJob()});
-        if(!offering){
-            this.setOffering();
+        if(channel && channel.model){
+            this.setState({status: channel.model.channelStatus.serviceStatus, job: channel.getJob()});
+            if(!offering){
+                this.setOffering();
+            }
         }
     }
 
@@ -269,8 +270,8 @@ class Connecting extends React.Component<any, any>{
 
     suspended(){
 
-        const { t, serviceName } = this.props;
-        const channel = this.props.channel.model;
+        const { t, serviceName, channel } = this.props;
+        const { usage } = this.state;
 
         const deadlineStamp = this.getDeadLine(channel.channelStatus);
 
@@ -298,7 +299,7 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-0 col-xl-2'></div>
 
                 <div className='col-6 col-xl-5 clientConnectionBl'>
-                    <FinishServiceButton channel={channel} />
+                    <FinishServiceButton channel={channel} usage={usage} />
                 </div>
 
             </div>
@@ -309,13 +310,11 @@ class Connecting extends React.Component<any, any>{
 
     active(){
 
-        const { t, ws, serviceName } = this.props;
-        const { offering } = this.state;
-
-        const channel = this.props.channel.model;
+        const { t, serviceName, channel } = this.props;
+        const { offering, usage } = this.state;
 
         const done = () => {
-            ws.changeChannelStatus(channel.id, 'pause');
+            channel.pause();
         };
 
         const maxSuspendTimeMinutes = offering ? Math.ceil(offering.maxSuspendTime / 60) : 0;
@@ -351,7 +350,7 @@ class Connecting extends React.Component<any, any>{
                 </div>
 
                 <div className='col-4 col-xl-4 buttonBlock'>
-                    <FinishServiceButton channel={channel} />
+                    <FinishServiceButton channel={channel} usage={usage} />
                 </div>
             </div>
 
@@ -361,10 +360,10 @@ class Connecting extends React.Component<any, any>{
 
     paused(){
 
-        const { t } = this.props;
-        const channel = this.props.channel.model;
+        const { t, channel } = this.props;
+        const { usage } = this.state;
 
-        const deadlineStamp = this.getDeadLine(channel.channelStatus);
+        const deadlineStamp = this.getDeadLine(channel.model.channelStatus);
 
         return <div className='container-fluid'>
             <div className='row m-t-20 clientConnectionBl'>
@@ -380,7 +379,7 @@ class Connecting extends React.Component<any, any>{
                 <div className='col-0 col-xl-2'></div>
 
                 <div className='col-6 col-xl-5'>
-                    <FinishServiceButton channel={channel} />
+                    <FinishServiceButton channel={channel} usage={usage} />
                 </div>
             </div>
 

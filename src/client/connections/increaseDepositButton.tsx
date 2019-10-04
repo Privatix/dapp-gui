@@ -7,7 +7,7 @@ import IncreaseDepositView from './increaseDepositView';
 
 import {State} from 'typings/state';
 
-class IncreaseDepositButton extends React.Component<any, any>{
+class IncreaseDepositButton extends React.Component<any, {}>{
 
     openIncreaseDepositModal = (evt:any) => {
         evt.preventDefault();

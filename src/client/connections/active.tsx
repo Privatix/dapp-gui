@@ -13,7 +13,7 @@ import ModalWindow from 'common/modalWindow';
 
 import { Id, Agent, Offering, ContractStatus, ServiceStatus, JobStatus, Usage, CostPRIX } from 'common/tables/';
 
-import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+import { ClientChannelUsage } from 'typings/channels';
 import { State } from 'typings/state';
 
 interface IProps extends WithTranslation {
@@ -91,37 +91,35 @@ class ActiveConnection extends React.Component<IProps, IState>{
     render() {
 
         const { t, channel } = this.props;
-        const { usage } = this.state;
+        const { usage, popup } = this.state;
 
-        const connections = channel.model ? [((channel: ClientChannel) => {
-
-            channel.usage = usage;
+        const connections = channel.model ? [((channel: State['channel']) => {
 
             return {
                 id: <ModalWindow
                     visible={this.state.popup}
                     customClass='shortTableText'
                     modalTitle={t('Connection')}
-                    text={channel.id}
+                    text={channel.model.id}
                     copyToClipboard={true}
                     component={<Connection channel={channel} />}
                 />,
                 offering: <ModalWindow
-                    visible={this.state.popup}
+                    visible={popup}
                     customClass='shortTableText'
                     modalTitle={t('Offering')}
-                    text={channel.offeringHash}
+                    text={channel.model.offeringHash}
                     copyToClipboard={true}
-                    component={<OfferingById offeringId={channel.offering} />}
+                    component={<OfferingById offeringId={channel.model.offering} />}
                 />,
-                agent: channel.agent,
-                contractStatus: channel.channelStatus.channelStatus,
-                serviceStatus: channel.channelStatus.serviceStatus,
-                jobStatus: channel.job,
+                agent: channel.model.agent,
+                contractStatus: channel.model.channelStatus.channelStatus,
+                serviceStatus: channel.model.channelStatus.serviceStatus,
+                jobStatus: channel.model.job,
                 usage: usage,
                 costPRIX: usage,
             };
-        })(channel.model)] : [];
+        })(channel)] : [];
 
         return <div className='row'>
             <div className='col-12'>

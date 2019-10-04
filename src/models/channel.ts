@@ -312,6 +312,17 @@ export default class Channel {
         }
     }
 
+    async pause(){
+        if(!this.model){
+            throw new Error('there is no channel');
+        }
+        try{
+            await this.ws.changeChannelStatus(this.model.id, 'pause');
+        }catch(e){
+            // TODO onPauseFailed
+        }
+    }
+
     async resume(){
         if(!this.model){
             throw new Error('there is no channel');

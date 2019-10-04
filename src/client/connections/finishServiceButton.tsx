@@ -3,30 +3,30 @@ import { WithTranslation, withTranslation } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 
-import { WS, ws } from 'utils/ws';
-import { ClientChannel } from 'typings/channels';
+import { ClientChannelUsage } from 'typings/channels';
+import { State } from 'typings/state';
 
 interface IProps extends WithTranslation {
-    ws?: WS;
-    channel: ClientChannel;
+    channel: State['channel'];
+    usage: ClientChannelUsage;
 }
 
 class FinishServiceButton extends React.Component<IProps, {}>{
 
     done = async () => {
-        const { ws, channel } = this.props;
-        await ws.changeChannelStatus(channel.id, 'terminate');
+        const { channel } = this.props;
+        await channel.terminate();
     }
 
     render(){
 
-        const { t, channel } = this.props;
+        const { t, usage } = this.props;
 
         return <div className='card m-b-20 card-body text-xs-center buttonBlock'>
             <div>
                 <p className='card-text'>{t('PermanentlyStopUsingService')}</p>
                 <p className='card-text'>
-                    {channel.usage.cost === 0
+                    {usage.cost === 0
                         ? t('CanRequestFullDepositReturn')
                         : t('RemainingDepositWillBeReturned')
                     }
@@ -37,7 +37,7 @@ class FinishServiceButton extends React.Component<IProps, {}>{
                 title={t('Finish')}
                 text={
                     <span>{t('PermanentlyStopUsingService')}<br />
-                        {channel.usage.cost === 0
+                        {usage.cost === 0
                             ? t('CanRequestFullDepositReturn')
                             : t('RemainingDepositWillBeReturned')
                         }
@@ -51,4 +51,4 @@ class FinishServiceButton extends React.Component<IProps, {}>{
     }
 }
 
-export default ws<IProps>(withTranslation('client/connections/finishServiceButton')(FinishServiceButton));
+export default withTranslation('client/connections/finishServiceButton')(FinishServiceButton);
