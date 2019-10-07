@@ -689,14 +689,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     render(){
 
-        const { t, account, transferring, stoppingSupervisor } = this.props;
+        const { t, account, channel, transferring, stoppingSupervisor } = this.props;
         const { status } = this.state;
 
         if(stoppingSupervisor){
             return <ExitScreen />;
         }
 
-        if(!account){
+        if(!account || !channel){
             return null;
         }
 

@@ -157,7 +157,12 @@ export const createStorage = () => {
         const { ws, role, serviceName, channel, offerings } = storage.getState();
 
         if(ws) {
-
+            if(role === Role.CLIENT){
+                if(!channel){
+                    const channel = new Channel(ws);
+                    storage.dispatch(handlers.setChannel(channel));
+                }
+            }
             await ws.whenAuthorized();
 
             if(role === Role.AGENT){
@@ -165,10 +170,6 @@ export const createStorage = () => {
                 storage.dispatch(asyncProviders.updateTotalIncome());
             }
             if(role === Role.CLIENT){
-                if(!channel){
-                    const channel = new Channel(ws);
-                    storage.dispatch(handlers.setChannel(channel));
-                }
                 if(!offerings){
                     const offerings = new Offerings(ws);
                     offerings.init();

@@ -40,6 +40,7 @@ export default class Channel {
 
     async checkChannels(){
         const ws = this.ws;
+        await ws.whenAuthorized();
         const channels = await ws.getNotTerminatedClientChannels();
         if(channels.length){
             if(this.model){
@@ -54,6 +55,7 @@ export default class Channel {
     }
 
     async subscribeOnNewChannel(){
+        await this.ws.whenAuthorized();
         const id = await this.ws.subscribe('channel', ['clientPreChannelCreate'], this._onChannelCreated);
         this.newChannelSubscription = id;
     }

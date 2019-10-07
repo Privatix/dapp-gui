@@ -413,6 +413,9 @@ class Connecting extends React.Component<any, any>{
     }
 
     render(){
+        if(!this.props.channel){
+            return null;
+        }
         return this[this.state.status]();
     }
 }
