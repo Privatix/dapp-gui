@@ -130,7 +130,7 @@ class Connecting extends React.Component<any, any>{
         if(!this.mounted){
             return;
         }
-        this.setState({status: 'active', offering, pendingTimeCounter: 0});
+        this.setState({offering});
     }
 
     onUsageChanged = () => {
@@ -158,13 +158,14 @@ class Connecting extends React.Component<any, any>{
         const { usage, offering } = this.state;
 
         if(channel.model){
+            if(!offering){
+                this.setOffering();
+            }
 
             switch(channel.model.channelStatus.serviceStatus){
                 case 'active':
                     this.resuming = false;
-                    if(!offering){
-                        this.setOffering();
-                    }
+                    this.setState({status: 'active', pendingTimeCounter: 0});
                     break;
                 case 'suspended':
                     let countryAlert = '';
@@ -217,7 +218,9 @@ class Connecting extends React.Component<any, any>{
     }
 
     getDeadLine(channelStatus: ClientChannel['channelStatus']){
-        return Date.parse(channelStatus.lastChanged) + channelStatus.maxInactiveTime*1000;
+        const { offering } = this.state;
+        console.log('DEADLINE!!!', offering);
+        return offering ? Date.parse(channelStatus.lastChanged) + offering.maxSuspendTime*1000 : null;
     }
 
     waiting(){
@@ -307,9 +310,12 @@ class Connecting extends React.Component<any, any>{
             <div className='row m-t-20'>
                 <div className='col-6 col-xl-5 clientConnectionBl'>
                     <div className='card m-b-20 card-body buttonBlock'>
-                        <Countdown date={deadlineStamp}
-                                   renderer={countdownRender}
-                        />
+                        {deadlineStamp === null
+                            ? null
+                            : <Countdown date={deadlineStamp}
+                                       renderer={countdownRender}
+                            />
+                        }
                         <p className='card-text m-t-5'><strong>
                             <Trans i18nKey='YouCanStartUsingService' values={{serviceName}} >
                                 You can start using { {serviceName} }
@@ -394,9 +400,12 @@ class Connecting extends React.Component<any, any>{
             <div className='row m-t-20 clientConnectionBl'>
                 <div className='col-6 col-xl-5'>
                     <div className='card m-b-20 card-body'>
-                        <Countdown date={deadlineStamp}
-                                   renderer={countdownRender}
-                        />
+                        { deadlineStamp === null
+                            ? null
+                            : <Countdown date={deadlineStamp}
+                                       renderer={countdownRender}
+                            />
+                        }
                         <button className='btn btn-primary btn-custom btn-block' onClick={this.connectHandler}>{t('Resume')}</button>
                     </div>
                 </div>

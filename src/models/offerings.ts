@@ -18,6 +18,7 @@ export default class Offerings {
     }
 
     async init(){
+        await this.ws.whenAuthorized();
         const allOfferings = await this.ws.getClientOfferings('', 0, 0, [], [], 0, 0);
         const clientOfferings = allOfferings.items.filter(this.isProperOffering);
         this.offerings = clientOfferings;

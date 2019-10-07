@@ -162,19 +162,17 @@ export const createStorage = () => {
                     const channel = new Channel(ws);
                     storage.dispatch(handlers.setChannel(channel));
                 }
+                if(!offerings){
+                    const offerings = new Offerings(ws);
+                    offerings.init();
+                    storage.dispatch(handlers.setOfferings(offerings));
+                }
             }
             await ws.whenAuthorized();
 
             if(role === Role.AGENT){
                 storage.dispatch(asyncProviders.updateProducts());
                 storage.dispatch(asyncProviders.updateTotalIncome());
-            }
-            if(role === Role.CLIENT){
-                if(!offerings){
-                    const offerings = new Offerings(ws);
-                    offerings.init();
-                    storage.dispatch(handlers.setOfferings(offerings));
-                }
             }
 
             if(serviceName === ''){
