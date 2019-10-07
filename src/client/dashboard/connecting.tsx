@@ -219,7 +219,6 @@ class Connecting extends React.Component<any, any>{
 
     getDeadLine(channelStatus: ClientChannel['channelStatus']){
         const { offering } = this.state;
-        console.log('DEADLINE!!!', offering);
         return offering ? Date.parse(channelStatus.lastChanged) + offering.maxSuspendTime*1000 : null;
     }
 
