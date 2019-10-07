@@ -71,7 +71,7 @@ class Connecting extends React.Component<any, any>{
 
             dispatch(handlers.setAutoTransfer(false));
             dispatch(asyncProviders.updateAccounts());
-            ws.setGUISettings({mode: 'anvanced'});
+            ws.setGUISettings({mode: 'advanced'});
             channel.addEventListener('StatusChanged', this.onStatusChanged);
             channel.addEventListener('UsageChanged', this.onUsageChanged);
             channel.addEventListener('Connected', this.onConnected);
