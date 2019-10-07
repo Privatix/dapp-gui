@@ -9,7 +9,7 @@ import Noticer from 'common/noticer';
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
 import States from './states';
 
-import notice from 'utils/notice';
+import { default as notice, notify } from 'utils/notice';
 
 import countryByISO from 'utils/countryByIso';
 
@@ -110,6 +110,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
             channel.addEventListener('StatusChanged', this.onStatusChanged);
             channel.addEventListener('ipChanged', this.onIpChanged);
             channel.addEventListener('UsageChanged', this.onUsageChanged);
+            channel.addEventListener('Connected', this.onConnected);
+            channel.addEventListener('Disconnected', this.onDisconnected);
             channel.setMode('simple');
 
             offerings.addEventListener('*', this.onOfferingsChange);
@@ -137,10 +139,22 @@ class LightWeightClient extends React.Component<IProps, IState> {
         channel.removeEventListener('StatusChanged', this.onStatusChanged);
         channel.removeEventListener('ipChanged', this.onIpChanged);
         channel.removeEventListener('UsageChanged', this.onUsageChanged);
+        channel.removeEventListener('Connected', this.onConnected);
+        channel.removeEventListener('Disconnected', this.onDisconnected);
         channel.setMode('advanced');
 
         offerings.removeEventListener('*', this.onOfferingsChange);
         offerings.useUnlimitedOnly = false;
+    }
+
+    onConnected = () => {
+        const { t } = this.props;
+        notify(t('client/simpleMode:connectedMsg'));
+    }
+
+    onDisconnected = () => {
+        const { t } = this.props;
+        notify(t('client/simpleMode:disconnectedMsg'));
     }
 
     onOfferingsChange = () => {

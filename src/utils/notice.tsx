@@ -79,3 +79,12 @@ export const clearNotices = function(){
 export const isNotice = function(elem:any){
     return document.getElementById('noticeHolder').contains(elem);
 };
+
+export const notify = function(msg: string){
+    const notification = new Notification('Privatix', {
+      body: msg
+    });
+    notification.onclick = () => {
+      //
+    };
+};

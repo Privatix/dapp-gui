@@ -11,7 +11,7 @@ import FinishServiceButton from 'client/connections/finishServiceButton';
 import IncreaseDepositButton from 'client/connections/increaseDepositButton';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
-import notice from 'utils/notice';
+import { default as notice, notify } from 'utils/notice';
 
 import { State } from 'typings/state';
 import { ClientChannel } from 'typings/channels';
@@ -74,6 +74,8 @@ class Connecting extends React.Component<any, any>{
             ws.setGUISettings({mode: 'anvanced'});
             channel.addEventListener('StatusChanged', this.onStatusChanged);
             channel.addEventListener('UsageChanged', this.onUsageChanged);
+            channel.addEventListener('Connected', this.onConnected);
+            channel.addEventListener('Disconnected', this.onDisconnected);
             channel.setMode('advanced');
 
             this.onUsageChanged();
@@ -87,6 +89,18 @@ class Connecting extends React.Component<any, any>{
         this.mounted = false;
         channel.removeEventListener('StatusChanged', this.onStatusChanged);
         channel.removeEventListener('UsageChanged', this.onUsageChanged);
+        channel.removeEventListener('Connected', this.onConnected);
+        channel.removeEventListener('Disconnected', this.onDisconnected);
+    }
+
+    onConnected = () => {
+        const { t } = this.props;
+        notify(t('client/simpleMode:connectedMsg'));
+    }
+
+    onDisconnected = () => {
+        const { t } = this.props;
+        notify(t('client/simpleMode:disconnectedMsg'));
     }
 
     onStatusChanged = () => {

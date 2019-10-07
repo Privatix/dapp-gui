@@ -291,7 +291,11 @@ export default class Channel {
             throw new Error('there is no channel');
         }
         try{
+            const serviceStatus = this.model.channelStatus.serviceStatus;
             await this.ws.changeChannelStatus(this.model.id, 'terminate');
+            if(serviceStatus === 'active'){
+                this.emit('Disconnected');
+            }
             this.status = 'disconnecting';
             this.usage = null;
             this.sessionsDuration = 0;
@@ -318,6 +322,7 @@ export default class Channel {
         }
         try{
             await this.ws.changeChannelStatus(this.model.id, 'pause');
+            this.emit('Disconnected');
         }catch(e){
             // TODO onPauseFailed
         }
