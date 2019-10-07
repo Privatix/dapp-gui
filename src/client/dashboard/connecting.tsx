@@ -76,6 +76,7 @@ class Connecting extends React.Component<any, any>{
             channel.addEventListener('UsageChanged', this.onUsageChanged);
             channel.addEventListener('Connected', this.onConnected);
             channel.addEventListener('Disconnected', this.onDisconnected);
+            channel.addEventListener('Terminated', this.onTerminated);
             channel.setMode('advanced');
 
             this.onUsageChanged();
@@ -91,6 +92,7 @@ class Connecting extends React.Component<any, any>{
         channel.removeEventListener('UsageChanged', this.onUsageChanged);
         channel.removeEventListener('Connected', this.onConnected);
         channel.removeEventListener('Disconnected', this.onDisconnected);
+        channel.removeEventListener('Terminated', this.onTerminated);
     }
 
     onConnected = () => {
@@ -103,15 +105,20 @@ class Connecting extends React.Component<any, any>{
         notify(t('client/simpleMode:disconnectedMsg'));
     }
 
+    onTerminated = () => {
+        const { history } = this.props;
+        history.push('/client-dashboard-start');
+    }
+
     onStatusChanged = () => {
 
-        const { channel } = this.props;
-        const { offering } = this.state;
+        const { channel, history } = this.props;
+
         if(channel && channel.model){
             this.setState({status: channel.model.channelStatus.serviceStatus, job: channel.getJob()});
-            if(!offering){
-                this.setOffering();
-            }
+            this.refresh();
+        }else{
+            history.push('/client-dashboard-start');
         }
     }
 

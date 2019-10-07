@@ -300,6 +300,7 @@ export default class Channel {
             this.usage = null;
             this.sessionsDuration = 0;
             this.emit('StatusChanged');
+            this.emit('Terminated');
         }catch(e){
             // TODO onTerminateFailed
         }
