@@ -58,10 +58,12 @@ export default class Offerings {
     }
 
     private onSupplyChange = (evt: any) => {
-        const current = this.offerings.find(item => item.offering.id === evt.object.id);
-        this.offerings = this.offerings.filter(item => item.offering.id !== evt.object.id);
-        this.addOffering({offering: evt.object, rating: current.rating});
-        this.emit('supplyChange');
+        if(evt.object){
+            const current = this.offerings.find(item => item.offering.id === evt.object.id);
+            this.offerings = this.offerings.filter(item => item.offering.id !== evt.object.id);
+            this.addOffering({offering: evt.object, rating: current ? current.rating : 0});
+            this.emit('supplyChange');
+        }
         console.log('supplyChange', evt);
     }
 
