@@ -300,6 +300,7 @@ export default class Channel {
             }
             this.status = 'disconnecting';
             this.usage = null;
+            this.model = null;
             this.sessionsDuration = 0;
             this.emit('StatusChanged');
             this.emit('Terminated');
@@ -314,6 +315,7 @@ export default class Channel {
         }
         try{
             await this.ws.changeChannelStatus(this.model.id, 'close');
+            this.usage = null;
         }catch(e){
             // TODO onCloseFailed
         }

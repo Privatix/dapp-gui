@@ -43,6 +43,7 @@ const translate = withTranslation(['client/acceptOffering', 'offerings/createOff
 class AcceptOffering extends React.Component<IProps, IState>{
 
     acceptBtn = null;
+    mounted: boolean;
 
     constructor(props:IProps){
         super(props);
@@ -62,11 +63,13 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
     async componentDidMount(){
 
+        this.mounted = true;
+
         const { ws } = this.props;
 
         try {
             const gasPrice = await ws.suggestGasPrice();
-            if(typeof gasPrice === 'number' && gasPrice !== 0){
+            if(typeof gasPrice === 'number' && gasPrice !== 0 && this.mounted){
                 this.setState({gasPrice});
             }
         }catch(e){
@@ -76,13 +79,18 @@ class AcceptOffering extends React.Component<IProps, IState>{
         this.getNotTerminatedConnections();
     }
 
+    componentWillUnmount(){
+        this.mounted = false;
+    }
+
     async getNotTerminatedConnections() {
 
         const { ws } = this.props;
 
         const activeChannels = await ws.getNotTerminatedClientChannels();
-        this.setState({thereAreActiveChannels: activeChannels.length > 0});
-
+        if(this.mounted){
+            this.setState({thereAreActiveChannels: activeChannels.length > 0});
+        }
     }
 
     onAccountChanged = (selectedAccount: any) => {

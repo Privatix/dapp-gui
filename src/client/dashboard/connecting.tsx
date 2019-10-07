@@ -72,14 +72,16 @@ class Connecting extends React.Component<any, any>{
             dispatch(handlers.setAutoTransfer(false));
             dispatch(asyncProviders.updateAccounts());
             ws.setGUISettings({mode: 'advanced'});
-            channel.addEventListener('StatusChanged', this.onStatusChanged);
-            channel.addEventListener('UsageChanged', this.onUsageChanged);
-            channel.addEventListener('Connected', this.onConnected);
-            channel.addEventListener('Disconnected', this.onDisconnected);
-            channel.addEventListener('Terminated', this.onTerminated);
-            channel.setMode('advanced');
+            if(channel){
+                channel.addEventListener('StatusChanged', this.onStatusChanged);
+                channel.addEventListener('UsageChanged', this.onUsageChanged);
+                channel.addEventListener('Connected', this.onConnected);
+                channel.addEventListener('Disconnected', this.onDisconnected);
+                channel.addEventListener('Terminated', this.onTerminated);
+                channel.setMode('advanced');
 
-            this.onUsageChanged();
+                this.onUsageChanged();
+            }
         }
     }
 
@@ -88,11 +90,13 @@ class Connecting extends React.Component<any, any>{
         const { channel } = this.props;
 
         this.mounted = false;
-        channel.removeEventListener('StatusChanged', this.onStatusChanged);
-        channel.removeEventListener('UsageChanged', this.onUsageChanged);
-        channel.removeEventListener('Connected', this.onConnected);
-        channel.removeEventListener('Disconnected', this.onDisconnected);
-        channel.removeEventListener('Terminated', this.onTerminated);
+        if(channel){
+            channel.removeEventListener('StatusChanged', this.onStatusChanged);
+            channel.removeEventListener('UsageChanged', this.onUsageChanged);
+            channel.removeEventListener('Connected', this.onConnected);
+            channel.removeEventListener('Disconnected', this.onDisconnected);
+            channel.removeEventListener('Terminated', this.onTerminated);
+        }
     }
 
     onConnected = () => {
