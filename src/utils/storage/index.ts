@@ -164,8 +164,8 @@ export const createStorage = () => {
                 }
                 if(!offerings){
                     const offerings = new Offerings(ws);
-                    offerings.init();
                     storage.dispatch(handlers.setOfferings(offerings));
+                    offerings.init();
                 }
             }
             await ws.whenAuthorized();

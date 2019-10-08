@@ -18,10 +18,10 @@ import { State } from 'typings/state';
 import { Offering } from 'typings/offerings';
 import { Account } from 'typings/accounts';
 import { LocalSettings } from 'typings/settings';
-import { WS } from 'utils/ws';
 
 interface IProps extends WithTranslation {
-    ws?: WS;
+    ws?: State['ws'];
+    channel?: State['channel'];
     localSettings?: LocalSettings;
     accounts?: Account[];
     history?: any;
@@ -118,7 +118,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
         let err = false;
         let msg = '';
 
-        const { t, ws, localSettings, offering } = this.props;
+        const { t, channel, localSettings, offering } = this.props;
         const { deposit, customDeposit, account, gasPrice } = this.state;
 
         if(customDeposit < deposit) {
@@ -151,7 +151,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
         }
 
         try {
-            const acceptRes = await ws.acceptOffering(account.ethAddr, offering.id, customDeposit, gasPrice);
+            const acceptRes = await channel.acceptOffering(offering.id, account, customDeposit, gasPrice);
             if (typeof acceptRes === 'string') {
                 notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('OfferingAccepted')});
                 this.acceptBtn.current.removeAttribute('disabled');
@@ -349,6 +349,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
 export default connect( (state: State, ownProps: any) => {
     return Object.assign({}, {
     ws: state.ws
+   ,channel: state.channel
    ,localSettings: state.localSettings
    ,accounts: state.accounts
    ,serviceName: state.serviceName

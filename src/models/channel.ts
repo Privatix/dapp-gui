@@ -143,6 +143,7 @@ export default class Channel {
         if(this.model){
             throw new Error('already created channel');
         }else{
+            this.usage = null;
             try{
                 const acceptRes = await this.ws.acceptOffering(account.ethAddr, offeringId, deposit, gasPrice);
                 if(typeof acceptRes === 'string') {
@@ -150,6 +151,7 @@ export default class Channel {
                 }else{
                     // TODO onAcceptOfferingFailed
                 }
+                return acceptRes;
             }catch(e){
                 // TODO onAcceptOfferingFailed
             }
@@ -227,6 +229,7 @@ export default class Channel {
                 startWatchingClosing(channel.id);
             }
         }
+
         switch(channel.channelStatus.serviceStatus){
             case 'active':
                 if(model && model.channelStatus.serviceStatus !== 'active'){
@@ -285,6 +288,12 @@ export default class Channel {
                     this.emit('StatusChanged');
                 }
                 break;
+            case 'terminated':
+                if(this.mode === Mode.SIMPLE && model && model.id === channel.id){
+                    this.model = null;
+                    this.usage = null;
+                }
+                break;
         }
     }
 
@@ -299,8 +308,10 @@ export default class Channel {
                 this.emit('Disconnected');
             }
             this.status = 'disconnecting';
+            if(this.mode === 'advanced'){
+                this.model = null;
+            }
             this.usage = null;
-            this.model = null;
             this.sessionsDuration = 0;
             this.emit('StatusChanged');
             this.emit('Terminated');
