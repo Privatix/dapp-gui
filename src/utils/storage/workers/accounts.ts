@@ -26,9 +26,9 @@ const subscribe = async (storage: any, localSettings: any) => {
         if(ws) {
             await ws.whenAuthorized();
             const accounts = await ws.getAccounts();
-            accounts.forEach(account => {
+            accounts.forEach(async account => {
                 try{
-                    ws.updateBalance(account.id);
+                    await ws.updateBalance(account.id);
                 }catch{
                     // DO NOTHING
                 }
