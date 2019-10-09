@@ -34,18 +34,20 @@ export default class Offerings {
 
 
     private onNewOffering = (evt: any) => {
-        if(evt.job.Status !== 'done'){
-            // TODO check fault?
-            return;
-        }
+        if(evt && evt.job && evt.object){
+            if(evt.job.Status !== 'done'){
+                // TODO check fault?
+                return;
+            }
 
-        if(evt.object.currentSupply <= 0){
-            // TODO ?
-            return;
-        }
+            if(evt.object.currentSupply <= 0){
+                // TODO ?
+                return;
+            }
 
-        this.addOffering({offering: evt.object, rating: 0});
-        this.emit('newOffering');
+            this.addOffering({offering: evt.object, rating: 0});
+            this.emit('newOffering');
+        }
     }
 
     private addOffering(offeringItem: ClientOfferingItem){
