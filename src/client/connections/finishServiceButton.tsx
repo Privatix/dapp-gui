@@ -25,15 +25,13 @@ class FinishServiceButton extends React.Component<IProps, {}>{
 
         const { t, usage } = this.props;
 
-        if(!usage){
-            return null;
-        }
+        const cost = usage ? usage.cost : 0;
 
         return <div className='card m-b-20 card-body text-xs-center buttonBlock'>
             <div>
                 <p className='card-text'>{t('PermanentlyStopUsingService')}</p>
                 <p className='card-text'>
-                    {usage.cost === 0
+                    {cost === 0
                         ? t('CanRequestFullDepositReturn')
                         : t('RemainingDepositWillBeReturned')
                     }
@@ -44,7 +42,7 @@ class FinishServiceButton extends React.Component<IProps, {}>{
                 title={t('Finish')}
                 text={
                     <span>{t('PermanentlyStopUsingService')}<br />
-                        {usage.cost === 0
+                        {cost === 0
                             ? t('CanRequestFullDepositReturn')
                             : t('RemainingDepositWillBeReturned')
                         }
