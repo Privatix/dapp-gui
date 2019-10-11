@@ -1,11 +1,11 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 import SortableTable from 'react-sortable-table-vilan';
 
-import { WS, ws } from 'utils/ws';
+import { ws } from 'utils/ws';
 
-import {ClientChannel} from 'typings/channels';
+import { State } from 'typings/state';
 
 import { Id, Agent, Server, Started, Stopped, LastUsed, ClientIP } from 'common/tables/';
 
@@ -16,11 +16,10 @@ import TerminateContractButton from './terminateContractButton';
 import FinishServiceButton from './finishServiceButton';
 import IncreaseDepositButton from './increaseDepositButton';
 
-interface IProps{
-    ws?: WS;
-    t?: any;
+interface IProps extends WithTranslation {
+    ws?: State['ws'];
     history?: any;
-    channel: ClientChannel;
+    channel: State['channel'];
     render?: Function;
 }
 
@@ -28,7 +27,6 @@ interface IState {
     sessions: any[];
 }
 
-@translate('client/connections/connection', 'tables')
 class Connection extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
@@ -38,15 +36,15 @@ class Connection extends React.Component<IProps, IState>{
 
     async componentDidMount(){
         const { ws, channel } = this.props;
-        const sessionsRaw = await ws.getSessions(channel.id);
-        const offering = await ws.getOffering(channel.offering);
+        const sessionsRaw = await ws.getSessions(channel.model.id);
+        const offering = await ws.getOffering(channel.model.offering);
         if (!offering) {
             return false;
         }
         const sessions = sessionsRaw.map(session => (
             {
                 id: session.channel,
-                agent: channel.agent,
+                agent: channel.model.agent,
                 server: offering.serviceName,
                 started: session.started,
                 stopped: session.stopped,
@@ -68,8 +66,9 @@ class Connection extends React.Component<IProps, IState>{
             return null;
         }
 
-        channel.usage.cost = channel.usage.cost || 0;
-        channel.totalDeposit = channel.totalDeposit || 0;
+        const usage = channel.getUsage();
+        const channelModel = channel.model;
+        channelModel.totalDeposit = channelModel.totalDeposit || 0;
 
         const sessionsColumns = [
             Id,
@@ -89,22 +88,22 @@ class Connection extends React.Component<IProps, IState>{
             ClientIP
         ];
 
-        const serviceStatus = channel.channelStatus.serviceStatus;
+        const serviceStatus = channelModel.channelStatus.serviceStatus;
 
         return <>
             <div className='row'>
                 <div className='col-8'>
-                    <ChannelCommonInfo channel={channel} render={render} />
-                    <ClientAccessInfo channel={channel} />
+                    <ChannelCommonInfo channel={channel.model} render={render} />
+                    <ClientAccessInfo channel={channel.model} />
                 </div>
                 <div className='col-4'>
-                    {serviceStatus === 'active' ? <IncreaseDepositButton channel={channel} render={render} /> : '' }
-                    { !['terminating', 'terminated'].includes(serviceStatus) ? <FinishServiceButton channel={channel} /> : ''}
+                    {serviceStatus === 'active' ? <IncreaseDepositButton channel={channelModel} render={render} /> : '' }
+                    { !['terminating', 'terminated'].includes(serviceStatus) ? <FinishServiceButton channel={channel} usage={usage} /> : ''}
 
                     <TerminateContractButton
                         status='disabled'
-                        payment={channel.usage.cost}
-                        channelId={channel.id}
+                        payment={usage ? usage.cost : 0}
+                        channelId={channelModel.id}
                         done={() => this.props.history.push('/client-history')}
                     />
                 </div>
@@ -130,4 +129,4 @@ class Connection extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(withRouter(Connection));
+export default ws<IProps>(withRouter(withTranslation(['client/connections/connection', 'tables'])(Connection)));

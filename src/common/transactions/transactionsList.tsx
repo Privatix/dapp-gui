@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import Pagination from 'react-js-pagination';
 
 import SortableTable from 'react-sortable-table-vilan';
@@ -8,16 +8,16 @@ import SortableTable from 'react-sortable-table-vilan';
 import ExternalLink from 'common/etc/externalLink';
 import PgTime from 'common/etc/pgTime';
 
-import { DateCol, EthereumLink } from 'common/tables/';
+import { DateCol, EthereumLink, Actions } from 'common/tables/';
+import Restart from './blocks/restartBtn';
 
 import { WS } from 'utils/ws';
 import { State } from 'typings/state';
 import { LocalSettings } from 'typings/settings';
 import { Transaction } from 'typings/transactions';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     localSettings?: LocalSettings;
     accountId: string;
 }
@@ -26,16 +26,16 @@ interface IState{
     transactions: Transaction[];
     totalItems: number;
     activePage: number;
-    offset: number;
 }
 
-@translate('transactions/transactionsList')
+const translate = withTranslation('transactions/transactionsList');
+
 class Transactions extends React.Component<IProps, IState>{
 
     handler = null;
 
     get columns() {
-        return [ DateCol, EthereumLink ];
+        return [ DateCol, EthereumLink, Actions ];
     }
 
     constructor(props: IProps) {
@@ -45,8 +45,7 @@ class Transactions extends React.Component<IProps, IState>{
         this.state = {
             transactions: [],
             totalItems: 0,
-            activePage: 1,
-            offset: 0
+            activePage: 1
         };
     }
 
@@ -54,14 +53,15 @@ class Transactions extends React.Component<IProps, IState>{
         this.startRefreshing();
     }
 
-    async getTransactions(activePage:number = 1) {
+    async getTransactions() {
 
         const { ws, accountId, localSettings } = this.props;
+        const { activePage } = this.state;
 
-        const limit = localSettings.elementsPerPage;
-        const offset = activePage > 1 ? (activePage - 1) * limit : this.state.offset;
+        const limit = localSettings.paging.transactions;
+        const offset = (activePage - 1) * limit;
 
-        const transactions = await ws.getTransactions('accountAggregated', accountId, offset, limit);
+        const transactions = await ws.getTransactions(accountId ? 'accountAggregated' : '', accountId ? accountId : '', offset, limit);
 
         this.setState({
             transactions: transactions.items,
@@ -70,12 +70,13 @@ class Transactions extends React.Component<IProps, IState>{
         });
     }
 
-    handlePageChange = (pageNumber:number) => {
-        this.getTransactions(pageNumber);
+    handlePageChange = (activePage:number) => {
+        this.setState({activePage});
+        this.getTransactions();
     }
 
     startRefreshing = () => {
-        this.getTransactions(this.state.activePage);
+        this.getTransactions();
         this.handler = setTimeout(this.startRefreshing, 3000);
     }
 
@@ -97,7 +98,8 @@ class Transactions extends React.Component<IProps, IState>{
             const network = localSettings.network === 'mainnet' ? '' : `${localSettings.network}.`;
             return {
                 date: <PgTime time={transaction.issued} />,
-                ethereumLink: <ExternalLink href={`https://${network}etherscan.io/tx/${tx}`} text={tx} />
+                ethereumLink: <ExternalLink href={`https://${network}etherscan.io/tx/${tx}`} text={tx} />,
+                actions: transaction.status === 'sent' ? <Restart transaction={transaction} /> : null
             };
         });
     }
@@ -106,7 +108,7 @@ class Transactions extends React.Component<IProps, IState>{
 
         const { t, localSettings } = this.props;
         const { transactions, activePage, totalItems } = this.state;
-        const { elementsPerPage } = localSettings;
+        const elementsPerPage = localSettings.paging.transactions;
 
         const transactionsDataArr = this.getTransactionsDataArr(transactions);
 
@@ -143,4 +145,4 @@ class Transactions extends React.Component<IProps, IState>{
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(Transactions);
+export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(translate(Transactions));

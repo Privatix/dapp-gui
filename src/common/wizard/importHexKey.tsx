@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import Steps from './steps';
 import { PreviousButton, NextButton, back } from './utils';
@@ -8,9 +8,8 @@ import notice from 'utils/notice';
 
 import { WS, ws } from 'utils/ws';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     history?: any;
     isDefault: boolean;
 }
@@ -20,7 +19,8 @@ interface IState {
     privateKey: string;
 }
 
-@translate(['auth/importHexKey', 'auth/setAccount', 'auth/generateKey', 'auth/importJsonKey', 'utils/notice'])
+const translate = withTranslation(['auth/importHexKey', 'auth/setAccount', 'auth/generateKey', 'auth/importJsonKey', 'utils/notice']);
+
 class ImportHexKey extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
@@ -143,4 +143,4 @@ class ImportHexKey extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(withRouter(ImportHexKey));
+export default ws<IProps>(withRouter(translate(ImportHexKey)));

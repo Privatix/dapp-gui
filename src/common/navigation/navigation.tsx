@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 import { NavLink, withRouter } from 'react-router-dom';
 import { asyncProviders } from 'redux/actions';
 import { Dispatch } from 'redux';
-import { translate, Trans } from 'react-i18next';
+import { WithTranslation, withTranslation, Trans } from 'react-i18next';
 import {Mode, Role} from 'typings/mode';
 import {State} from 'typings/state';
 import Submenu from './submenu';
@@ -12,16 +12,16 @@ import './navigation.css';
 import ExternalLink from 'common/etc/externalLink';
 import NetworkAndVersion from 'common/networkAndVersion';
 
-interface Props {
+interface Props extends WithTranslation {
     role: Role;
     mode: Mode;
-    t: any;
     serviceName: string;
     location: any;
     setSimpleMode?(): void;
 }
 
-@translate(['navigation'])
+const translate = withTranslation(['navigation']);
+
 class Navigation extends React.Component<Props, any> {
 
     constructor(props: Props) {
@@ -108,6 +108,16 @@ class Navigation extends React.Component<Props, any> {
             <li onClick={this.handleClickFalse} className=''>
                 <NavLink exact to='/logs' activeClassName='active' className='waves-effect'>
                     <i className='dripicons-blog'></i><span>{t('Logs')}</span>
+                </NavLink>
+            </li>
+            <li onClick={this.handleClickFalse} className=''>
+                <NavLink exact to='/jobs' activeClassName='active' className='waves-effect'>
+                    <i className='dripicons-blog'></i><span>{t('Jobs')}</span>
+                </NavLink>
+            </li>
+            <li onClick={this.handleClickFalse} className=''>
+                <NavLink exact to='/transactions' activeClassName='active' className='waves-effect'>
+                    <i className='dripicons-blog'></i><span>{t('Transactions')}</span>
                 </NavLink>
             </li>
             <li onClick={this.handleClickFalse} className='separator'>
@@ -204,4 +214,4 @@ const mapDispatchToProps = (dispatch: Dispatch<any>) => ({
     }
 });
 
-export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Navigation));
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(translate(Navigation)));

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import Transactions from 'common/transactions/transactionsList';
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
@@ -17,9 +17,8 @@ import { Account } from 'typings/accounts';
 import {LocalSettings} from 'typings/settings';
 import * as log from 'electron-log';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws?: State['ws'];
-    t?: any;
     localSettings?: LocalSettings;
     account: Account;
 }
@@ -32,7 +31,8 @@ interface IState {
     transferStarted: boolean;
 }
 
-@translate(['accounts/accountView', 'utils/notice'])
+const translate = withTranslation(['accounts/accountView', 'utils/notice']);
+
 class AccountView extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
@@ -240,7 +240,7 @@ class AccountView extends React.Component<IProps, IState> {
                             <div className='col-9'>
                                 <input type='text'
                                        className='form-control'
-                                       value={destination === 'psc' ? t('MarketplaceOption') : t('AccountOption')}
+                                       value={(destination === 'psc' ? t('MarketplaceOption') : t('AccountOption')) as string}
                                        readOnly/>
                             </div>
                         </div>
@@ -282,8 +282,8 @@ class AccountView extends React.Component<IProps, IState> {
     }
 }
 
-export default connect( (state: State, ownProps: IProps) => {
+export default connect( (state: State, ownProps: any) => {
     return Object.assign({}, {
     ws: state.ws
    ,localSettings: state.localSettings
-}, ownProps);} )(AccountView);
+}, ownProps);} )(translate(AccountView));

@@ -1,14 +1,14 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     name: string;
     setting: any;
     onChange: (event: any) => void;
 }
 
-@translate(['settings', 'utils/notice'])
+const translate = withTranslation(['settings', 'utils/notice']);
+
 class SettingsItem extends React.Component<IProps, {}> {
 
     render(){
@@ -35,4 +35,4 @@ class SettingsItem extends React.Component<IProps, {}> {
     }
 }
 
-export default SettingsItem;
+export default translate(SettingsItem);

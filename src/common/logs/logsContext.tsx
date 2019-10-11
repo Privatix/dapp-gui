@@ -1,9 +1,7 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
-@translate('logs/logsContext')
-
-export default class LogsContext extends React.Component <any, any> {
+class LogsContext extends React.Component <any, any> {
 
     constructor(props: any) {
         super(props);
@@ -61,3 +59,5 @@ export default class LogsContext extends React.Component <any, any> {
         </div>;
     }
 }
+
+export default withTranslation('logs/logsContext')(LogsContext);

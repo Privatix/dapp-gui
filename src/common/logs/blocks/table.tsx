@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
 import LogsStack from '../logsStack';
@@ -10,13 +10,12 @@ import { Level, LogsDate, Message, Context, Stack } from 'common/tables/';
 
 import { Log } from 'typings/logs';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     logs: Log[];
     lang: string;
 }
 
-const translated = translate(['logs/logsList', 'common']);
+const translated = withTranslation(['logs/logsList', 'common']);
 
 function logsTable(props: IProps) {
 

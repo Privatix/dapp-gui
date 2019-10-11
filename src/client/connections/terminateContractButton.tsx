@@ -1,15 +1,14 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 import eth from 'utils/eth';
 
 import { State } from 'typings/state';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws?: State['ws'];
-    t?: any;
     status: string;
     payment: any;
     channelId: string;
@@ -22,7 +21,6 @@ interface IState {
     gasPrice: number;
 }
 
-@translate('client/terminateContractBlock', 'utils/gasRange')
 class TerminateContractButton extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
@@ -99,4 +97,4 @@ export default connect((state: State) => ({
      ws: state.ws
     ,localSettings: state.localSettings
     ,transactionFee: state.localSettings.gas.terminateContract
-}))(TerminateContractButton);
+}))(withTranslation(['client/terminateContractBlock', 'utils/gasRange'])(TerminateContractButton));

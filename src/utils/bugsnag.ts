@@ -1,5 +1,5 @@
 import {LocalSettings} from 'typings/settings';
-import bugsnag from 'bugsnag-js';
+import bugsnag from '@bugsnag/js';
 
 import * as api from 'utils/api';
 import { WS } from 'utils/ws';

@@ -1,14 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate, Trans } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import ModalWindow from 'common/modalWindow';
 import IncreaseDepositView from './increaseDepositView';
 
 import {State} from 'typings/state';
 
-@translate('client/increaseDepositButton')
-class IncreaseDepositButton extends React.Component<any, any>{
+class IncreaseDepositButton extends React.Component<any, {}>{
 
     openIncreaseDepositModal = (evt:any) => {
         evt.preventDefault();
@@ -47,4 +46,4 @@ class IncreaseDepositButton extends React.Component<any, any>{
     }
 }
 
-export default connect((state: State) => ({serviceName: state.serviceName}))(IncreaseDepositButton);
+export default connect((state: State) => ({serviceName: state.serviceName}))(withTranslation('client/increaseDepositButton')(IncreaseDepositButton));

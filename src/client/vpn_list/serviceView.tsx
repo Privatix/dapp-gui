@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import ChannelCommonInfo from 'client/components/channelCommonInfo';
 import ClientAccessInfo from 'client/endpoints/clientAccessInfo';
@@ -11,9 +11,8 @@ import notice from 'utils/notice';
 import { ClientChannel } from 'typings/channels';
 import { Offering } from 'typings/offerings';
 
-interface IProps {
+interface IProps extends WithTranslation {
     service: ClientChannel;
-    t?: any;
     render: any;
     closeModal: any;
 }
@@ -22,7 +21,6 @@ interface IState {
     offering: Offering;
 }
 
-@translate(['client/serviceView', 'utils/notice'])
 class ServiceView extends React.Component <IProps, IState> {
 
     render() {
@@ -56,4 +54,4 @@ class ServiceView extends React.Component <IProps, IState> {
     }
 }
 
-export default withRouter(ServiceView);
+export default withRouter(withTranslation(['client/serviceView', 'utils/notice'])(ServiceView));

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import ChannelsListByStatus from 'agent/channels/channelsListByStatus';
 import Offerings from 'agent/offerings/';
@@ -9,7 +9,7 @@ import ProductsList from 'agent/products/productsList';
 
 import { State } from 'typings/state';
 
-@translate('agent/dashboard')
+const translate = withTranslation('agent/dashboard');
 
 class Main extends React.Component <any,any> {
 
@@ -45,4 +45,4 @@ class Main extends React.Component <any,any> {
     }
 }
 
-export default connect((state: State) => ({totalIncome: state.totalIncome}))(Main);
+export default connect((state: State) => ({totalIncome: state.totalIncome}))(translate(Main));

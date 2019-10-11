@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate, Trans } from 'react-i18next';
+import { WithTranslation, withTranslation, Trans } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 
 import Select from 'react-select';
@@ -18,11 +18,10 @@ import { State } from 'typings/state';
 import { Offering } from 'typings/offerings';
 import { Account } from 'typings/accounts';
 import { LocalSettings } from 'typings/settings';
-import { WS } from 'utils/ws';
 
-interface IProps{
-    ws?: WS;
-    t?: any;
+interface IProps extends WithTranslation {
+    ws?: State['ws'];
+    channel?: State['channel'];
     localSettings?: LocalSettings;
     accounts?: Account[];
     history?: any;
@@ -39,10 +38,12 @@ interface IState{
     thereAreActiveChannels: boolean;
 }
 
-@translate(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice', 'common'])
+const translate = withTranslation(['client/acceptOffering', 'offerings/createOffering', 'utils/gasRange', 'utils/notice', 'common']);
+
 class AcceptOffering extends React.Component<IProps, IState>{
 
     acceptBtn = null;
+    mounted: boolean;
 
     constructor(props:IProps){
         super(props);
@@ -62,11 +63,13 @@ class AcceptOffering extends React.Component<IProps, IState>{
 
     async componentDidMount(){
 
+        this.mounted = true;
+
         const { ws } = this.props;
 
         try {
             const gasPrice = await ws.suggestGasPrice();
-            if(typeof gasPrice === 'number' && gasPrice !== 0){
+            if(typeof gasPrice === 'number' && gasPrice !== 0 && this.mounted){
                 this.setState({gasPrice});
             }
         }catch(e){
@@ -76,13 +79,18 @@ class AcceptOffering extends React.Component<IProps, IState>{
         this.getNotTerminatedConnections();
     }
 
+    componentWillUnmount(){
+        this.mounted = false;
+    }
+
     async getNotTerminatedConnections() {
 
         const { ws } = this.props;
 
         const activeChannels = await ws.getNotTerminatedClientChannels();
-        this.setState({thereAreActiveChannels: activeChannels.length > 0});
-
+        if(this.mounted){
+            this.setState({thereAreActiveChannels: activeChannels.length > 0});
+        }
     }
 
     onAccountChanged = (selectedAccount: any) => {
@@ -110,7 +118,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
         let err = false;
         let msg = '';
 
-        const { t, ws, localSettings, offering } = this.props;
+        const { t, channel, localSettings, offering } = this.props;
         const { deposit, customDeposit, account, gasPrice } = this.state;
 
         if(customDeposit < deposit) {
@@ -143,7 +151,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
         }
 
         try {
-            const acceptRes = await ws.acceptOffering(account.ethAddr, offering.id, customDeposit, gasPrice);
+            const acceptRes = await channel.acceptOffering(offering.id, account, customDeposit, gasPrice);
             if (typeof acceptRes === 'string') {
                 notice({level: 'info', header: t('utils/notice:Congratulations!'), msg: t('OfferingAccepted')});
                 this.acceptBtn.current.removeAttribute('disabled');
@@ -262,7 +270,7 @@ class AcceptOffering extends React.Component<IProps, IState>{
                         <label className='col-3 col-form-label'>{t('offerings/createOffering:MaxUnits')}:</label>
                         <div className='col-9'>
                             <div className='input-group bootstrap-touchspin'>
-                                <input type='text' className='form-control' value={Math.ceil(offering.maxUnit) === 0 ? t('unlimited') : Math.ceil(offering.maxUnit) } readOnly/>
+                                <input type='text' className='form-control' value={Math.ceil(offering.maxUnit) === 0 ? t('unlimited') as string : Math.ceil(offering.maxUnit) } readOnly/>
                                 <span className='input-group-addon bootstrap-touchspin-postfix'>{offering.unitName}</span>
                             </div>
                             <span className='help-block'>
@@ -338,10 +346,11 @@ class AcceptOffering extends React.Component<IProps, IState>{
     }
 }
 
-export default connect( (state: State, ownProps: IProps) => {
+export default connect( (state: State, ownProps: any) => {
     return Object.assign({}, {
     ws: state.ws
+   ,channel: state.channel
    ,localSettings: state.localSettings
    ,accounts: state.accounts
    ,serviceName: state.serviceName
-}, ownProps);} )(withRouter(AcceptOffering));
+}, ownProps);} )(withRouter(translate(AcceptOffering)));

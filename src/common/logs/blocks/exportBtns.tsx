@@ -1,32 +1,31 @@
-import * as React from 'react';
-import {translate} from 'react-i18next';
+import { exec } from 'child_process';
 import * as os from 'os';
-import {exec} from 'child_process';
-import notice from 'utils/notice';
-import * as api from 'utils/api';
-import {remote} from 'electron';
 import * as path from 'path';
-import {connect} from 'react-redux';
-import {State} from '../../../typings/state';
-import {LocalSettings} from '../../../typings/settings';
+
 import * as log from 'electron-log';
 import * as sudo from 'sudo-prompt';
 
-const {dialog} = remote;
-const {app} = remote;
+import {remote} from 'electron';
+const { dialog, app } = remote;
 
-interface IProps {
-    t?: any;
+import * as React from 'react';
+import {connect} from 'react-redux';
+import { WithTranslation, withTranslation } from 'react-i18next';
+
+import notice from 'utils/notice';
+import * as api from 'utils/api';
+
+import {State} from 'typings/state';
+import {LocalSettings} from 'typings/settings';
+
+interface IProps extends WithTranslation {
     localSettings?: LocalSettings;
-
     exportControllerLogsToFile(evt: any): void;
 }
 
 interface IState {
     disabledBtn: boolean;
 }
-
-@translate('logs/logsList')
 
 class ExportBtns extends React.Component<IProps, IState> {
 
@@ -164,4 +163,4 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 }
 
-export default connect((state: State) => ({localSettings: state.localSettings}))(ExportBtns);
+export default connect((state: State) => ({localSettings: state.localSettings}))(withTranslation('logs/logsList')(ExportBtns));

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import SelectCountry from '../selectCountry/';
 
@@ -10,15 +10,15 @@ interface SelectItem {
     label: string;
 }
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     selectedLocation: SelectItem;
     offering: Offering;
     onResume(event: any): void;
 }
 
-@translate(['client/simpleMode'])
-export default class Suspended extends React.Component<IProps, {}> {
+const translate = withTranslation(['client/simpleMode']);
+
+class Suspended extends React.Component<IProps, {}> {
 
     render(){
 
@@ -40,3 +40,5 @@ export default class Suspended extends React.Component<IProps, {}> {
         );
     }
 }
+
+export default translate(Suspended);

@@ -17,6 +17,9 @@ import initElectronMenu from 'utils/electronMenu';
 import setupLog from './workers/log';
 import subscribeAccounts from './workers/accounts';
 
+import Channel from 'models/channel';
+import Offerings from 'models/offerings';
+
 import { Role, Mode } from 'typings/mode';
 import { State } from 'typings/state';
 
@@ -99,7 +102,7 @@ export const createStorage = () => {
 
 
     api.on('releases', async function(event: any, data: any){
-
+        log.log(event, data);
         const { ws } = storage.getState();
         if(ws){
             await ws.whenAuthorized();
@@ -151,18 +154,25 @@ export const createStorage = () => {
 
     const refresh = async function(){
 
-        const { ws, role, serviceName } = storage.getState();
+        const { ws, role, serviceName, channel, offerings } = storage.getState();
 
         if(ws) {
-
+            if(role === Role.CLIENT){
+                if(!channel){
+                    const channel = new Channel(ws);
+                    storage.dispatch(handlers.setChannel(channel));
+                }
+                if(!offerings){
+                    const offerings = new Offerings(ws);
+                    storage.dispatch(handlers.setOfferings(offerings));
+                    offerings.init();
+                }
+            }
             await ws.whenAuthorized();
 
             if(role === Role.AGENT){
                 storage.dispatch(asyncProviders.updateProducts());
                 storage.dispatch(asyncProviders.updateTotalIncome());
-            }
-            if(role === Role.CLIENT){
-                storage.dispatch(asyncProviders.observeChannel());
             }
 
             if(serviceName === ''){

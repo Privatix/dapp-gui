@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import DotProgress from 'common/progressBars/dotProgress';
 import StepProgress from 'common/progressBars/stepProgress';
@@ -7,23 +7,23 @@ import StepProgress from 'common/progressBars/stepProgress';
 import SelectCountry from '../selectCountry/';
 
 import { Offering } from 'typings/offerings';
-import { ClientChannel } from 'typings/channels';
+import Channel from 'models/channel';
 
 interface SelectItem {
     value: string;
     label: string;
 }
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     selectedLocation: SelectItem;
-    channel: ClientChannel;
+    channel: Channel;
     offering: Offering;
     onChangeLocation: Function;
 }
 
-@translate(['client/simpleMode'])
-export default class Connecting extends React.Component<IProps, {}> {
+const translate = withTranslation(['client/simpleMode']);
+
+class Connecting extends React.Component<IProps, {}> {
 
     render(){
 
@@ -48,8 +48,10 @@ export default class Connecting extends React.Component<IProps, {}> {
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Connecting')} <DotProgress />
                 </button>
-                <StepProgress steps={steps} lastDoneStep={ channel ? channel.job.jobtype : null } />
+                <StepProgress steps={steps} lastDoneStep={ channel && channel.model ? channel.model.job.jobtype : null } />
             </>
         );
     }
 }
+
+export default translate(Connecting);

@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { withRouter } from 'react-router';
-import { translate } from 'react-i18next';
 import { NavLink } from 'react-router-dom';
 
 import TopPanel from './topPanel';
@@ -8,12 +6,7 @@ import UpdateInformer from './updateInformer/';
 
 declare var window: any;
 
-@translate(['header', 'utils/notice'])
-class Header extends React.Component<any, any>{
-
-    constructor(props:any){
-        super(props);
-    }
+class Header extends React.Component<{}, {}>{
 
     launchFullscreen(element: any) {
         if(element.requestFullscreen) {
@@ -97,4 +90,4 @@ class Header extends React.Component<any, any>{
     }
 }
 
-export default withRouter(Header);
+export default Header;

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
 import ServiceView from './serviceView';
@@ -12,15 +12,13 @@ import { ClientChannel, ClientChannelUsage } from 'typings/channels';
 
 import { ws, WS } from 'utils/ws';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     ws?: WS;
 }
 interface IState {
     allTerminatedChannels: ClientChannel[];
 }
 
-@translate(['client/history', 'utils/notice'])
 class ClientHistory extends React.Component<IProps, IState> {
 
     subscribeId = null;
@@ -184,4 +182,4 @@ class ClientHistory extends React.Component<IProps, IState> {
     }
 }
 
-export default ws<IProps>(ClientHistory);
+export default ws<IProps>(withTranslation(['client/history', 'utils/notice'])(ClientHistory));

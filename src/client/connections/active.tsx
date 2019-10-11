@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import SortableTable from 'react-sortable-table-vilan';
 
@@ -12,20 +13,20 @@ import ModalWindow from 'common/modalWindow';
 
 import { Id, Agent, Offering, ContractStatus, ServiceStatus, JobStatus, Usage, CostPRIX } from 'common/tables/';
 
-import { ws, WS } from 'utils/ws';
-import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+import { ClientChannelUsage } from 'typings/channels';
+import { State } from 'typings/state';
 
-interface IProps {
-    t?: any;
-    ws?: WS;
-    channels: ClientChannel[];
+interface IProps extends WithTranslation {
+    channel: State['channel'];
 }
 interface IState {
     popup: boolean;
-    usage: {[key: string]: ClientChannelUsage};
+    usage: ClientChannelUsage;
+    status: string;
 }
 
-@translate('client/connections/active')
+const translate = withTranslation('client/connections/active');
+
 class ActiveConnection extends React.Component<IProps, IState>{
 
     subscribeId = null;
@@ -36,40 +37,40 @@ class ActiveConnection extends React.Component<IProps, IState>{
 
         this.state = {
             popup: false,
-            usage: props.channels.reduce((usage, channel) => {
-                usage[channel.id] = channel.usage;
-                return usage;
-            }, {})
+            usage: props.channel.getUsage(),
+            status: 'active'
         };
     }
 
     componentDidMount() {
+
+        const { channel } = this.props;
+
         this.mounted = true;
-        this.subscribeUsage();
+        channel.addEventListener('StatusChanged', this.onStatusChanged);
+        channel.addEventListener('UsageChanged', this.onUsageChanged);
     }
 
     componentWillUnmount(){
+
+        const { channel } = this.props;
+
         this.mounted = false;
-        this.unsubscribeUsage();
+        channel.removeEventListener('StatusChanged', this.onStatusChanged);
+        channel.removeEventListener('UsageChanged', this.onUsageChanged);
     }
 
-    async subscribeUsage(){
-        const { ws, channels } = this.props;
-        const ids = channels.map(channel => channel.id);
-        if(ids.length){
-            this.subscribeId = await ws.subscribe('usage', ids, this.updateUsage);
+    onStatusChanged = () => {
+        const { channel } = this.props;
+        if(this.mounted){
+            this.setState({status: channel.getStatus()});
         }
     }
 
-    unsubscribeUsage(){
-        const { ws } = this.props;
-        ws.unsubscribe(this.subscribeId);
-        this.subscribeId = null;
-    }
-
-    updateUsage = (usage: IState['usage']) => {
+    onUsageChanged = () => {
+        const { channel } = this.props;
         if(this.mounted){
-            this.setState({usage});
+            this.setState({usage: channel.getUsage()});
         }
     }
 
@@ -89,38 +90,36 @@ class ActiveConnection extends React.Component<IProps, IState>{
 
     render() {
 
-        const { t, channels } = this.props;
-        const { usage } = this.state;
+        const { t, channel } = this.props;
+        const { usage, popup } = this.state;
 
-        const connections = channels.map((channel: ClientChannel) => {
-
-            channel.usage = usage[channel.id];
+        const connections = channel.model ? [((channel: State['channel']) => {
 
             return {
                 id: <ModalWindow
                     visible={this.state.popup}
                     customClass='shortTableText'
                     modalTitle={t('Connection')}
-                    text={channel.id}
+                    text={channel.model.id}
                     copyToClipboard={true}
                     component={<Connection channel={channel} />}
                 />,
                 offering: <ModalWindow
-                    visible={this.state.popup}
+                    visible={popup}
                     customClass='shortTableText'
                     modalTitle={t('Offering')}
-                    text={channel.offeringHash}
+                    text={channel.model.offeringHash}
                     copyToClipboard={true}
-                    component={<OfferingById offeringId={channel.offering} />}
+                    component={<OfferingById offeringId={channel.model.offering} />}
                 />,
-                agent: channel.agent,
-                contractStatus: channel.channelStatus.channelStatus,
-                serviceStatus: channel.channelStatus.serviceStatus,
-                jobStatus: channel.job,
-                usage: usage[channel.id],
-                costPRIX: usage[channel.id],
+                agent: channel.model.agent,
+                contractStatus: channel.model.channelStatus.channelStatus,
+                serviceStatus: channel.model.channelStatus.serviceStatus,
+                jobStatus: channel.model.job,
+                usage: usage,
+                costPRIX: usage,
             };
-        });
+        })(channel)] : [];
 
         return <div className='row'>
             <div className='col-12'>
@@ -141,4 +140,8 @@ class ActiveConnection extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(withRouter(ActiveConnection));
+export default connect((state: State) => {
+    return {
+        channel: state.channel
+    };
+})(withRouter(translate(ActiveConnection)));

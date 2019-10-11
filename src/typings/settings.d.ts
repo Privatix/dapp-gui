@@ -11,6 +11,7 @@ export interface GasConsumption {
     removeOffering: number;
     popupOffering: number;
     terminateContract: number;
+    transactionIncreaseCoefficient: number;
 }
 
 export interface LocalSettings {
@@ -26,8 +27,12 @@ export interface LocalSettings {
         enable: boolean;
     };
     commit: string;
-    logsCountPerPage: number;
-    elementsPerPage: number;
+    paging: {
+        logs: number;
+        jobs: number;
+        transactions: number;
+        offerings: number;
+    }
     lang: string;
     release: string;
     target: string;

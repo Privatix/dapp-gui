@@ -5,19 +5,19 @@ import handlers from 'redux/actions';
 
 import stopSupervisor from 'utils/stopSupervisor';
 import ReactSweetAlert from 'react-sweetalert-vilan';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import * as api from 'utils/api';
 
 import {State} from 'typings/state';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     exit: boolean;
     dispatch: any;
     ws: State['ws'];
 }
 
-@translate(['exit'])
+const translate = withTranslation(['exit']);
+
 class ExitNotice extends React.Component<IProps, {}>{
 
     cancelHandler = () => {
@@ -59,4 +59,4 @@ class ExitNotice extends React.Component<IProps, {}>{
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, exit: state.exit}) )(ExitNotice);
+export default connect( (state: State) => ({ws: state.ws, exit: state.exit}) )(translate(ExitNotice));

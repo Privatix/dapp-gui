@@ -1,12 +1,12 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     href: string;
 }
 
-@translate('updateInformer')
+const translate = withTranslation('updateInformer');
+
 class GoToUpdateButton extends React.Component<IProps, {}>{
 
     onClick = (evt: any) => {
@@ -35,4 +35,4 @@ class GoToUpdateButton extends React.Component<IProps, {}>{
 
 }
 
-export default GoToUpdateButton;
+export default translate(GoToUpdateButton);

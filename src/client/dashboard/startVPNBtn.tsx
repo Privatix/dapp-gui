@@ -1,13 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate, Trans } from 'react-i18next';
+import { withTranslation, Trans } from 'react-i18next';
 
 import ExitTrigger from 'client/exit/trigger';
 
 import { State } from 'typings/state';
 
-@translate('client/dashboard/start')
+const translate = withTranslation('client/dashboard/start');
 
 class StartVPN extends React.Component <any,any> {
 
@@ -55,4 +55,4 @@ class StartVPN extends React.Component <any,any> {
     }
 }
 
-export default connect((state: State) => ({ws: state.ws, serviceName: state.serviceName}))(withRouter(StartVPN));
+export default connect((state: State) => ({ws: state.ws, serviceName: state.serviceName}))(withRouter(translate(StartVPN)));

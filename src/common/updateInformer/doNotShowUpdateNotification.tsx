@@ -1,15 +1,15 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { WS, ws } from 'utils/ws';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     ws?: WS;
     version: string;
 }
 
-@translate('updateInformer')
+const translate = withTranslation('updateInformer');
+
 class DoNotShowUpdateNotification extends React.Component<IProps, {}>{
 
     onSkip = (evt: any) => {
@@ -35,4 +35,4 @@ class DoNotShowUpdateNotification extends React.Component<IProps, {}>{
 
 }
 
-export default ws<IProps>(DoNotShowUpdateNotification);
+export default ws<IProps>(translate(DoNotShowUpdateNotification));

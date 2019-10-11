@@ -1,35 +1,37 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withRouter } from 'react-router-dom';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 
-import { WS, ws } from 'utils/ws';
-import { ClientChannel } from 'typings/channels';
+import { ClientChannelUsage } from 'typings/channels';
+import { State } from 'typings/state';
 
-interface IProps {
-    ws?: WS;
-    t?: any;
-    channel: ClientChannel;
+interface IProps extends WithTranslation {
+    channel: State['channel'];
+    usage: ClientChannelUsage;
+    history?: any;
 }
-
-@translate('client/connections/finishServiceButton')
 
 class FinishServiceButton extends React.Component<IProps, {}>{
 
     done = async () => {
-        const { ws, channel } = this.props;
-        await ws.changeChannelStatus(channel.id, 'terminate');
+        const { channel } = this.props;
+        await channel.terminate();
+        this.props.history.push('/');
     }
 
     render(){
 
-        const { t, channel } = this.props;
+        const { t, usage } = this.props;
+
+        const cost = usage ? usage.cost : 0;
 
         return <div className='card m-b-20 card-body text-xs-center buttonBlock'>
             <div>
                 <p className='card-text'>{t('PermanentlyStopUsingService')}</p>
                 <p className='card-text'>
-                    {channel.usage.cost === 0
+                    {cost === 0
                         ? t('CanRequestFullDepositReturn')
                         : t('RemainingDepositWillBeReturned')
                     }
@@ -40,7 +42,7 @@ class FinishServiceButton extends React.Component<IProps, {}>{
                 title={t('Finish')}
                 text={
                     <span>{t('PermanentlyStopUsingService')}<br />
-                        {channel.usage.cost === 0
+                        {cost === 0
                             ? t('CanRequestFullDepositReturn')
                             : t('RemainingDepositWillBeReturned')
                         }
@@ -54,4 +56,4 @@ class FinishServiceButton extends React.Component<IProps, {}>{
     }
 }
 
-export default ws<IProps>(FinishServiceButton);
+export default withRouter(withTranslation('client/connections/finishServiceButton')(FinishServiceButton));

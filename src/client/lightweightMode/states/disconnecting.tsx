@@ -1,26 +1,26 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import DotProgress from 'common/progressBars/dotProgress';
 import StepProgress from 'common/progressBars/stepProgress';
 
 import SelectCountry from '../selectCountry/';
 
-import { ClientChannel } from 'typings/channels';
+import Channel from 'models/channel';
 
 interface SelectItem {
     value: string;
     label: string;
 }
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     selectedLocation: SelectItem;
-    channel: ClientChannel;
+    channel: Channel;
 }
 
-@translate(['client/simpleMode'])
-export default class Disconnecting extends React.Component<IProps, {}> {
+const translate = withTranslation(['client/simpleMode']);
+
+class Disconnecting extends React.Component<IProps, {}> {
 
     render(){
 
@@ -41,8 +41,10 @@ export default class Disconnecting extends React.Component<IProps, {}> {
                 <button type='button' disabled className='btn btn-primary btn-custom btn-rounded waves-effect waves-light spacing'>
                     {t('Disconnecting')} <DotProgress />
                 </button>
-                <StepProgress steps={steps} lastDoneStep={channel.job.jobtype} />
+                <StepProgress steps={steps} lastDoneStep={channel.model.job.jobtype} />
             </>
         );
     }
 }
+
+export default translate(Disconnecting);

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { remote } from 'electron';
 
 import { asyncProviders } from 'redux/actions';
@@ -22,14 +22,14 @@ import addFileExt from 'utils/addFileExt';
 
 import { Name, EthereumAddress, AccountBalance, Marketplace, Escrow, Actions } from 'common/tables/';
 
-interface IProps {
+interface IProps extends WithTranslation {
     accounts?: State['accounts'];
-    t?: any;
     ws?: State['ws'];
     dispatch: any;
 }
 
-@translate(['accounts/accountsList', 'auth/backup', 'utils/notice'])
+const translate = withTranslation(['accounts/accountsList', 'auth/backup', 'utils/notice']);
+
 class Accounts extends React.Component<IProps, {}> {
 
     componentDidMount(){
@@ -160,4 +160,4 @@ class Accounts extends React.Component<IProps, {}> {
     }
 }
 
-export default connect( (state: State) => ({accounts: state.accounts, ws: state.ws}) )(Accounts);
+export default connect( (state: State) => ({accounts: state.accounts, ws: state.ws}) )(translate(Accounts));

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as uuidv4 from 'uuid/v4';
+import uuidv4 from 'uuid/v4';
 
 import * as api from './api';
 import { Template, TemplateType } from 'typings/templates';
@@ -12,6 +12,7 @@ import { Product } from 'typings/products';
 import { Session } from 'typings/session';
 import { Channel, ClientChannel, ClientChannelUsage, ChannelResponse, ClientChannelResponse } from 'typings/channels';
 import { LogResponse } from 'typings/logs';
+import { JobResponse } from 'typings/jobs';
 import { State } from 'typings/state';
 import { GetClientOfferingsFilterParamsResponse } from 'typings/paginatedResponse';
 import * as log from 'electron-log';
@@ -36,10 +37,10 @@ export class WS {
 
     constructor(log: any) {
         this.log = log;
-        this.ready = new Promise((resolve: Function, reject: Function) => {
+        this.ready = new Promise((resolve: Function) => {
             this.resolve = resolve;
         });
-        this.authorized = new Promise((resolve: Function, reject: Function) => {
+        this.authorized = new Promise((resolve: Function) => {
             this.resolveAuth = resolve;
         });
         api.settings.getLocal()
@@ -55,10 +56,10 @@ export class WS {
         this.socket = socket;
 
         if(!this.resolve){
-            this.ready = new Promise((resolve: Function, reject: Function) => {
+            this.ready = new Promise((resolve: Function) => {
                 this.resolve = resolve;
             });
-            this.authorized = new Promise((resolve: Function, reject: Function) => {
+            this.authorized = new Promise((resolve: Function) => {
                 this.resolveAuth = resolve;
             });
         }
@@ -105,7 +106,7 @@ export class WS {
           // log.log('Data received: ' + event.data);
         };
 
-        socket.onerror = function(error: any) {
+        socket.onerror = function() {
           // log.log('Error ' + error.message);
         };
 
@@ -141,7 +142,7 @@ export class WS {
     }
 
     private _subscribe (uuid: string, entityType:string, ids: string[], handler: Function, onReconnect: Function){
-        return new Promise((resolve: Function, reject: Function) => {
+        return new Promise((resolve: Function) => {
             switch(entityType){
                 case 'usage':
                     const usagePolling = async () => {
@@ -477,12 +478,25 @@ export class WS {
         return this.send('ui_getEthTransactions', [type, id, offset, limit]) as Promise<TransactionResponse>;
     }
 
+    increaseTxGasPrice(id: string, gasPrice: number){
+        return this.send('ui_increaseTxGasPrice', [id, gasPrice]) as Promise<any>;
+    }
+
     getTotalIncome(): Promise<number> {
         return this.send('ui_getTotalIncome', []) as Promise<number>;
     }
 // logs
     getLogs(levels: Array<string>, searchText: string, dateFrom: string, dateTo: string, offset:number, limit: number): Promise<LogResponse> {
         return this.send('ui_getLogs', [levels, searchText, dateFrom, dateTo, offset, limit]) as Promise<LogResponse>;
+    }
+
+// jobs
+    getJobs(jobType: string, from: string, to: string, statuses: Array<string>, offset:number, limit: number): Promise<JobResponse> {
+        return this.send('ui_getJobs', [jobType, from, to, statuses, offset, limit]) as Promise<JobResponse>;
+    }
+
+    reactivateJob(id: string): Promise<any>{
+        return this.send('ui_reactivateJob', [id]) as Promise<any>;
     }
 
     suggestGasPrice() : Promise<number>{
@@ -532,7 +546,7 @@ export class WS {
 }
 
 export const ws = function<T>(constructor: React.ComponentType){
-    return connect( (state: State, onProps: T) => {
-        return (Object.assign({}, {ws: state.ws}, onProps));
+    return connect( (state: State, ownProps: any) => {
+        return (Object.assign({}, {ws: state.ws}, ownProps) as T);
     } )(constructor);
 };

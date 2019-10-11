@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import OfferingsListView from './offeringsListView';
 
-@translate('offerings/offerings')
+const translate = withTranslation('offerings/offerings');
 
 class OfferingsListByStatus extends React.Component<any, any>{
 
@@ -15,7 +15,7 @@ class OfferingsListByStatus extends React.Component<any, any>{
         };
     }
 
-    static getDerivedStateFromProps(props:any, state:any) {
+    static getDerivedStateFromProps(props:any) {
         return {
             products: props.products,
             offerings: props.offerings,
@@ -39,4 +39,4 @@ class OfferingsListByStatus extends React.Component<any, any>{
     }
 }
 
-export default OfferingsListByStatus;
+export default translate(OfferingsListByStatus);

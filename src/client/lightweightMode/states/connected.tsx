@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import SelectCountry from '../selectCountry/';
 import DotProgress from 'common/progressBars/dotProgress';
@@ -8,18 +8,18 @@ import prix from 'utils/prix';
 import mb from 'utils/mb';
 
 import { Offering } from 'typings/offerings';
-import { ClientChannel, ClientChannelUsage } from 'typings/channels';
+import { ClientChannelUsage } from 'typings/channels';
+// import Channel from 'models/channel';
 
 interface SelectItem {
     value: string;
     label: string;
 }
 
-interface IProps {
-    t?: any;
-    ip: string;
+interface IProps extends WithTranslation {
     selectedLocation: SelectItem;
-    channel: ClientChannel;
+    // channel: Channel;
+    ip: string;
     usage: ClientChannelUsage;
     offering: Offering;
     sessionsDuration: number;
@@ -33,8 +33,9 @@ interface IState {
     disconnecting: boolean;
 }
 
-@translate(['client/simpleMode'])
-export default class Connected extends React.Component<IProps, IState> {
+const translate = withTranslation(['client/simpleMode']);
+
+class Connected extends React.Component<IProps, IState> {
 
     private tickerHandler = null;
 
@@ -137,3 +138,5 @@ export default class Connected extends React.Component<IProps, IState> {
         );
     }
 }
+
+export default translate(Connected);

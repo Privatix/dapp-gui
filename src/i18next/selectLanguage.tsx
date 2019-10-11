@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import Select from 'react-select';
 
@@ -11,10 +11,9 @@ import { langs } from './init';
 
 import { State } from 'typings/state';
 
-interface IProps {
-    ws?: WS;
+interface IProps extends WithTranslation {
     lang?: string;
-    i18n?: any;
+    ws?: WS;
     dispatch?: any;
 }
 
@@ -22,7 +21,8 @@ interface IState {
     lang: string;
 }
 
-@translate()
+const translate = withTranslation();
+
 class SelectLanguage extends React.Component<IProps, IState> {
 
     constructor(props: IProps){
@@ -55,4 +55,4 @@ class SelectLanguage extends React.Component<IProps, IState> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, lang: state.localSettings.lang}))(SelectLanguage);
+export default connect( (state: State) => ({ws: state.ws, lang: state.localSettings.lang}))(translate(SelectLanguage));

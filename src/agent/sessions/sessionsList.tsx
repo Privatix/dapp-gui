@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import {remote} from 'electron';
 const {dialog} = remote;
@@ -13,7 +13,7 @@ import SessionsTable from './sessionsTable';
 
 import { State } from 'typings/state';
 
-@translate(['sessions/sessionsList'])
+const translate = withTranslation(['sessions/sessionsList']);
 
 class Sessions extends React.Component <any,any> {
 
@@ -128,4 +128,4 @@ class Sessions extends React.Component <any,any> {
     }
 }
 
-export default connect((state: State) => ({income: state.totalIncome, ws: state.ws}))(Sessions);
+export default connect((state: State) => ({income: state.totalIncome, ws: state.ws}))(translate(Sessions));

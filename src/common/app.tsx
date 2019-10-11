@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 
 import { connect } from 'react-redux';
 import { Route, Router, Switch} from 'react-router';
@@ -28,6 +28,8 @@ import ExternalLinkWarning from 'common/externalLinkWarning';
 import ExitNotice from 'client/exit/notice';
 
 import Logs from 'common/logs/logsList';
+import Jobs from 'common/jobs/jobsList';
+import Transactions from 'common/transactions/transactionsList';
 
 import { State } from 'typings/state';
 import { Role, Mode } from 'typings/mode';
@@ -59,7 +61,7 @@ class App extends React.Component<IProps, {}> {
                     <div className='content-page'>
                         <div className='content'>
                             <Switch>
-                                <Route exact path='/' render={(props: any) => role === Role.CLIENT ? <ClientDashboardStart /> : <Main /> } />
+                                <Route exact path='/' render={() => role === Role.CLIENT ? <ClientDashboardStart /> : <Main /> } />
                                 <Route path='/settings' component={Settings} />
                                 <Route path='/accounts' component={AccountsList} />
                                 <Route path='/offerings/:product' render={(props: any) => <Offerings product={props.match.params.product} statuses={[]} />} />
@@ -72,6 +74,8 @@ class App extends React.Component<IProps, {}> {
                                 <Route path='/sessions/:channel' render={(props: any) => <SessionsList channel={props.match.params.channel} /> } />
                                 <Route path='/setAccount' render={() => <Wizard currentState='createAccount' app={AccountsList} />} />
                                 <Route path='/logs' component={Logs} />
+                                <Route path='/jobs' component={Jobs} />
+                                <Route path='/transactions' component={Transactions} />
 
                                 <Route exact path='/client-dashboard-start' component={ClientDashboardStart} />
                                 <Route exact path='/client-dashboard-connecting' component={ClientDashboardConnecting} />

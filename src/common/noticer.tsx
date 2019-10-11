@@ -13,7 +13,7 @@ interface Props {
 
 class Noticer extends React.Component <Props, {}>{
 
-    componentDidUpdate(prevProps: Props){
+    componentDidUpdate(){
         const { dispatch, notices } = this.props;
         if(notices.length){
             dispatch(handlers.removeNotices(notices));

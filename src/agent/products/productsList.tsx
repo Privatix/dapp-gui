@@ -1,19 +1,19 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import ProductItem from './productItem';
 
 import { Product } from 'typings/products';
 import { State } from 'typings/state';
 
-interface IProps {
+interface IProps extends WithTranslation {
     products?: Product[];
     dispatch?: any;
-    t?: any;
 }
 
-@translate(['products/productsList'])
+const translate = withTranslation(['products/productsList']);
+
 class Products extends React.Component<IProps, {}>{
 
     render() {
@@ -47,4 +47,4 @@ class Products extends React.Component<IProps, {}>{
     }
 }
 
-export default connect( (state: State) => ({products: state.products}))(Products);
+export default connect( (state: State) => ({products: state.products}))(translate(Products));

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import eth from 'utils/eth';
 import prix from 'utils/prix';
@@ -8,13 +8,13 @@ import prix from 'utils/prix';
 import {Account} from 'typings/accounts';
 import {State} from 'typings/state';
 
-interface Props {
+interface IProps extends WithTranslation {
     accounts?: Account[];
-    t?: any;
 }
 
-@translate(['topPanel'])
-class TopPanel extends React.Component <Props, {}>{
+const translate = withTranslation(['topPanel']);
+
+class TopPanel extends React.Component <IProps, {}>{
 
     render() {
 
@@ -33,4 +33,4 @@ class TopPanel extends React.Component <Props, {}>{
     }
 }
 
-export default connect( (state: State) => ({accounts: state.accounts}) )(TopPanel);
+export default connect( (state: State) => ({accounts: state.accounts}) )(translate(TopPanel));

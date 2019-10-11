@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 
 import ModalWindow from 'common/modalWindow';
@@ -13,17 +13,17 @@ import { OfferStatus } from 'typings/offerings';
 import { Product } from 'typings/products';
 import { WS } from 'utils/ws';
 
-interface IProps {
+interface IProps extends WithTranslation {
     product: string;
     products?: Product[];
     statuses: OfferStatus[];
     ws?: WS;
-    t?: any;
     onlyTable?: boolean;
     page?: string;
 }
 
-@translate(['offerings/offerings', 'offerings'])
+const translate = withTranslation(['offerings/offerings', 'offerings']);
+
 class Offerings extends React.Component<IProps, any>{
 
     private subscribes = [];
@@ -41,7 +41,7 @@ class Offerings extends React.Component<IProps, any>{
         this.refresh();
     }
 
-    componentDidUpdate(prevProps:any, prevState:any) {
+    componentDidUpdate(prevProps:any) {
         if (this.props.statuses !== prevProps.statuses) {
             this.refresh();
         }
@@ -145,6 +145,6 @@ class Offerings extends React.Component<IProps, any>{
     }
 }
 
-export default connect((state: State, onProps: IProps) => {
+export default connect((state: State, onProps: any) => {
     return (Object.assign({}, {ws: state.ws, products: state.products}, onProps));
-})(withRouter(Offerings));
+})(withRouter(translate(Offerings)));

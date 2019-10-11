@@ -23,7 +23,7 @@ class UpdateChecker {
 
             versions.forEach(async (version) => {
 
-                const endpoint = settings.platformsEndpoint.replace(/\%([a-zA-Z]+)\%/, ((subs, newSub, name) => {
+                const endpoint = settings.platformsEndpoint.replace(/\%([a-zA-Z]+)\%/, ((subs, _, name) => {
                     return name in subs ? subs[name] : '';
                 }).bind(null, {version}));
                 const res = await fetch(endpoint);
