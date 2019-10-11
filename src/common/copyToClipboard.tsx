@@ -1,17 +1,17 @@
 import * as React from 'react';
 import {CopyToClipboard} from 'react-copy-to-clipboard';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import notice from 'utils/notice';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     className?: string;
     text: string;
 }
 
-@translate(['copyToClipboard', 'utils/notice'])
-export default class CopyToClipboardWrapper extends React.Component<IProps, {}> {
+const translate = withTranslation(['copyToClipboard', 'utils/notice']);
+
+class CopyToClipboardWrapper extends React.Component<IProps, {}> {
 
     onCopy = () => {
 
@@ -33,3 +33,5 @@ export default class CopyToClipboardWrapper extends React.Component<IProps, {}> 
     }
 
 }
+
+export default translate(CopyToClipboardWrapper);

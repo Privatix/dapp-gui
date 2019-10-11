@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import Select from 'react-select';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
@@ -12,19 +12,16 @@ import toFixedN from 'utils/toFixedN';
 import { asyncProviders } from 'redux/actions';
 
 import { State } from 'typings/state';
-import { ClientChannel } from 'typings/channels';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws: State['ws'];
     accounts: State['accounts'];
     localSettings: State['localSettings'];
-    channel: ClientChannel;
+    channel: State['channel'];
     dispatch: any;
-    t?: any;
     closeModal?: any;
 }
 
-@translate(['client/connections/increaseDepositView', 'utils/notice'])
 class IncreaseDepositView extends React.Component<IProps, any> {
 
     constructor(props: IProps) {
@@ -34,10 +31,10 @@ class IncreaseDepositView extends React.Component<IProps, any> {
 
         this.state = {
             gasPrice: localSettings.gas.defaultGasPrice,
-            account: accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === channel.client.toLowerCase()),
-            deposit: channel.totalDeposit,
+            account: accounts.find(account => `0x${account.ethAddr.toLowerCase()}` === channel.model.client.toLowerCase()),
+            deposit: channel.model.totalDeposit,
             offering: null,
-            channelDeposit: channel.totalDeposit,
+            channelDeposit: channel.model.totalDeposit,
             inputStr: ''
         };
     }
@@ -53,7 +50,7 @@ class IncreaseDepositView extends React.Component<IProps, any> {
         }catch(e){
             // DO NOTHING
         }
-        await this.getOffering(channel.offering );
+        await this.getOffering(channel.model.offering );
 
         dispatch(asyncProviders.updateSettings());
     }
@@ -94,7 +91,7 @@ class IncreaseDepositView extends React.Component<IProps, any> {
             msg.push(t('ErrorNotEnoughPRIX'));
         }
 
-        const maxDepositAddValue = offering.maxUnit - channel.totalDeposit / offering.unitPrice;
+        const maxDepositAddValue = offering.maxUnit - channel.model.totalDeposit / offering.unitPrice;
         const depositInUnits = deposit / offering.unitPrice;
         if (offering.maxUnit && (depositInUnits > maxDepositAddValue)) {
             err = true;
@@ -115,13 +112,13 @@ class IncreaseDepositView extends React.Component<IProps, any> {
 
     onConfirm = async () => {
 
-        const { ws, t, closeModal, channel } = this.props;
+        const { t, closeModal, channel } = this.props;
         const { gasPrice } = this.state;
 
         const deposit = this.getDeposit();
 
         try {
-            await ws.topUp(channel.id, deposit, gasPrice);
+            await channel.topUp(deposit, gasPrice);
             notice({level: 'info', header: t('utils/notice:Attention!'), msg: t('SuccessMessage')});
             closeModal();
         } catch ( e ) {
@@ -187,7 +184,7 @@ class IncreaseDepositView extends React.Component<IProps, any> {
 
         let value = '';
         if(offering){
-            const trafic = toFixedN({number: channel.totalDeposit/offering.unitPrice, fixed: 2});
+            const trafic = toFixedN({number: channel.model.totalDeposit/offering.unitPrice, fixed: 2});
             value = `${trafic} ${offering.unitName}`;
         }
 
@@ -204,7 +201,7 @@ class IncreaseDepositView extends React.Component<IProps, any> {
         let maxUnitsHint = '';
         if (offering && offering.maxUnit !== null) {
             const maxUnits = offering.maxUnit;
-            const maxDepositAddValue = maxUnits - channel.totalDeposit / offering.unitPrice;
+            const maxDepositAddValue = maxUnits - channel.model.totalDeposit / offering.unitPrice;
             maxUnitsHint = t('MaxUnitsHint', {maxUnits, maxDepositAddValue, unitName: offering.unitName});
         }
 
@@ -277,4 +274,4 @@ export default connect( (state: State) => {
     ws: state.ws
    ,accounts: state.accounts
    ,localSettings: state.localSettings
-};} )(IncreaseDepositView);
+};} )(withTranslation(['client/connections/increaseDepositView', 'utils/notice'])(IncreaseDepositView));

@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router';
 
@@ -117,7 +117,7 @@ class Routes extends React.Component<IProps, {}> {
             if(currentState === 'setAccount'){
                 routes.push(
                     <Route key='/' path='/'
-                           render={(props: any) => <GetPrix entryPoint={'/app'}
+                           render={() => <GetPrix entryPoint={'/app'}
                                                             accountId=''
                                                    />
                                   }

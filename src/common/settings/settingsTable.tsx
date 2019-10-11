@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { asyncProviders } from 'redux/actions';
 
@@ -12,9 +12,8 @@ import SettingsItem from './settingsItem';
 import { WS } from 'utils/ws';
 import { State } from 'typings/state';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     options: any;
     dispatch?: any;
 }
@@ -24,7 +23,8 @@ interface IState {
     payload: any;
 }
 
-@translate(['settings', 'utils/notice'])
+const translate = withTranslation(['settings', 'utils/notice']);
+
 class SettingsTable extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
@@ -35,7 +35,7 @@ class SettingsTable extends React.Component<IProps, IState> {
         };
     }
 
-    static getDerivedStateFromProps(props:IProps, state:IState) {
+    static getDerivedStateFromProps(props:IProps) {
         return {data: props.options};
     }
 
@@ -204,6 +204,6 @@ class SettingsTable extends React.Component<IProps, IState> {
     }
 }
 
-export default connect( (state: State, onProps: IProps) => {
-    return (Object.assign({}, {ws: state.ws}, onProps));
-} )(withRouter(SettingsTable));
+export default connect( (state: State, ownProps: any) => {
+    return (Object.assign({}, {ws: state.ws}, ownProps));
+} )(withRouter(translate(SettingsTable)));

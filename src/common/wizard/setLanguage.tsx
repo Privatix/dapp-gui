@@ -1,5 +1,5 @@
-import * as React from 'react';
-import { translate } from 'react-i18next';
+import React from 'react';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { withRouter } from 'react-router-dom';
 
 import Steps from './steps';
@@ -10,14 +10,12 @@ import SwitchSimpleModeButton from './switchSimpleModeButton';
 
 import { Mode, Role } from 'typings/mode';
 
-interface IProps {
+interface IProps extends WithTranslation {
     mode: Mode;
     role: Role;
-    t?: any;
     history?: any;
 }
 
-@translate(['auth/setLanguage'])
 class SetLanguage extends React.Component<IProps, {}>{
 
     componentDidMount() {
@@ -77,4 +75,4 @@ class SetLanguage extends React.Component<IProps, {}>{
     }
 }
 
-export default withRouter(SetLanguage);
+export default withRouter(withTranslation(['auth/setLanguage'])(SetLanguage));

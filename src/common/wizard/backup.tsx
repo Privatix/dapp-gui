@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { remote } from 'electron';
 
 import * as api from 'utils/api';
@@ -13,9 +13,8 @@ import addFileExt from 'utils/addFileExt';
 
 type From = 'generateKey' | 'importHexKey' | 'importJsonKey' | 'simpleMode';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     history?: any;
     accountId: string;
     from: From;
@@ -27,7 +26,8 @@ interface IState {
     accountId: string;
 }
 
-@translate(['auth/backup', 'auth/importJsonKey', 'utils/notice'])
+const translate = withTranslation(['auth/backup', 'auth/importJsonKey', 'utils/notice']);
+
 class Backup extends React.Component<IProps, IState>{
 
     constructor(props:IProps){
@@ -150,4 +150,4 @@ class Backup extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(withRouter(Backup));
+export default ws<IProps>(withRouter(translate(Backup)));

@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { default as handlers, asyncProviders } from 'redux/actions';
 
@@ -9,7 +9,7 @@ import Noticer from 'common/noticer';
 import SwitchAdvancedModeButton from './switchAdvancedModeButton';
 import States from './states';
 
-import notice from 'utils/notice';
+import { default as notice, notify } from 'utils/notice';
 
 import countryByISO from 'utils/countryByIso';
 
@@ -37,11 +37,10 @@ import * as log from 'electron-log';
 
 import { Status} from 'models/channel';
 
-interface IProps {
+interface IProps extends WithTranslation {
     ws: State['ws'];
     localSettings: State['localSettings'];
     offeringsAvailability: State['offeringsAvailability'];
-    t?: any;
     account: Account;
     balance: string;
     dispatch?: any;
@@ -70,7 +69,8 @@ interface IState {
     reconnectTry: number;
 }
 
-@translate(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering'])
+const translate = withTranslation(['client/simpleMode', 'client/dashboard/connecting', 'utils/notice', 'client/acceptOffering']);
+
 class LightWeightClient extends React.Component<IProps, IState> {
 
     private mounted: boolean;
@@ -110,6 +110,8 @@ class LightWeightClient extends React.Component<IProps, IState> {
             channel.addEventListener('StatusChanged', this.onStatusChanged);
             channel.addEventListener('ipChanged', this.onIpChanged);
             channel.addEventListener('UsageChanged', this.onUsageChanged);
+            channel.addEventListener('Connected', this.onConnected);
+            channel.addEventListener('Disconnected', this.onDisconnected);
             channel.setMode('simple');
 
             offerings.addEventListener('*', this.onOfferingsChange);
@@ -137,10 +139,22 @@ class LightWeightClient extends React.Component<IProps, IState> {
         channel.removeEventListener('StatusChanged', this.onStatusChanged);
         channel.removeEventListener('ipChanged', this.onIpChanged);
         channel.removeEventListener('UsageChanged', this.onUsageChanged);
+        channel.removeEventListener('Connected', this.onConnected);
+        channel.removeEventListener('Disconnected', this.onDisconnected);
         channel.setMode('advanced');
 
         offerings.removeEventListener('*', this.onOfferingsChange);
         offerings.useUnlimitedOnly = false;
+    }
+
+    onConnected = () => {
+        const { t } = this.props;
+        notify(t('client/simpleMode:connectedMsg'));
+    }
+
+    onDisconnected = () => {
+        const { t } = this.props;
+        notify(t('client/simpleMode:disconnectedMsg'));
     }
 
     onOfferingsChange = () => {
@@ -413,11 +427,11 @@ class LightWeightClient extends React.Component<IProps, IState> {
         }else{
             if(reconnectTry <= localSettings.reconnect.count){
                 this.setState({reconnectTry: reconnectTry + 1});
-                const connected = await this.tryToConnect();
-                if(!connected){
-                    setTimeout(this.reconnect, localSettings.reconnect.delay*Math.pow(localSettings.reconnect.progression, reconnectTry));
-                }else{
+                try {
+                    await this.tryToConnect();
                     this.setState({status: 'connected', reconnectTry: 0});
+                } catch(e) {
+                    setTimeout(this.reconnect, localSettings.reconnect.delay*Math.pow(localSettings.reconnect.progression, reconnectTry));
                 }
             }else{
                 notice({level: 'error', header: t('utils/notice:Attention!'), msg: t('reconnectFailed')});
@@ -439,7 +453,7 @@ class LightWeightClient extends React.Component<IProps, IState> {
                         case 'failed':
                         case 'canceled':
                             unsubscribe();
-                            resolve(false);
+                            reject();
                             break;
                         case 'done':
                             unsubscribe();
@@ -675,14 +689,14 @@ class LightWeightClient extends React.Component<IProps, IState> {
 
     render(){
 
-        const { t, account, transferring, stoppingSupervisor } = this.props;
+        const { t, account, channel, transferring, stoppingSupervisor } = this.props;
         const { status } = this.state;
 
         if(stoppingSupervisor){
             return <ExitScreen />;
         }
 
-        if(!account){
+        if(!account || !channel){
             return null;
         }
 
@@ -770,4 +784,4 @@ export default connect((state: State) => {
        ,transferring: state.transferring
        ,stoppingSupervisor: state.stoppingSupervisor
     };
-})(LightWeightClient);
+})(translate(LightWeightClient));

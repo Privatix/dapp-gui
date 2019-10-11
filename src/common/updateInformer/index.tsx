@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate, Trans } from 'react-i18next';
+import { WithTranslation, withTranslation, Trans } from 'react-i18next';
 import {valid, gt } from 'semver';
 
 import DoNotShowUpdateNotificationButton from './doNotShowUpdateNotification';
@@ -8,12 +8,13 @@ import GoToUpdateButton from './goToUpdateButton';
 
 import {State} from 'typings/state';
 
-interface IProps {
+interface IProps extends WithTranslation {
     localSettings: State['localSettings'];
     dbSettings: State['settings'];
 }
 
-@translate('updateInformer')
+const translate = withTranslation('updateInformer');
+
 class UpdateInformer extends React.Component<IProps, {}>{
 
     render(){
@@ -74,4 +75,4 @@ class UpdateInformer extends React.Component<IProps, {}>{
     }
 }
 
-export default connect( (state: State) => ({localSettings: state.localSettings, dbSettings: state.settings}) )(UpdateInformer);
+export default connect( (state: State) => ({localSettings: state.localSettings, dbSettings: state.settings}) )(translate(UpdateInformer));

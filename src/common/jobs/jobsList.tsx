@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import Pagination from 'react-js-pagination';
 
 import {State} from 'typings/state';
@@ -9,8 +9,7 @@ import { JobType } from 'typings/jobs';
 import StatusFilter from './blocks/statusFilter';
 import JobsTable from './blocks/table';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     localSettings: State['localSettings'];
     ws: State['ws'];
 }
@@ -25,7 +24,6 @@ interface IState {
     statuses: string[];
 }
 
-@translate(['jobs/jobsList', 'common'])
 class Jobs extends React.Component <IProps, IState> {
 
     constructor(props:IProps) {
@@ -160,4 +158,4 @@ class Jobs extends React.Component <IProps, IState> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(Jobs);
+export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(withTranslation(['jobs/jobsList', 'common'])(Jobs));

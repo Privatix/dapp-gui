@@ -1,11 +1,12 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import ProductView from './productView';
 import CreateOffering from 'agent/offerings/createOffering/';
 
 
-@translate(['offerings', 'offerings/offerings'])
+const translate = withTranslation(['offerings', 'offerings/offerings']);
+
 class Product extends React.Component <any, any> {
 
     constructor(props:any) {
@@ -43,4 +44,4 @@ class Product extends React.Component <any, any> {
     }
 }
 
-export default Product;
+export default translate(Product);

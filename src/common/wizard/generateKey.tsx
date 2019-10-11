@@ -1,6 +1,6 @@
-import * as React from 'react';
+import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import Steps from './steps';
 import {PreviousButton, NextButton, back} from './utils';
@@ -8,9 +8,8 @@ import notice from 'utils/notice';
 
 import { WS, ws } from 'utils/ws';
 
-interface IProps{
+interface IProps extends WithTranslation{
     ws?: WS;
-    t?: any;
     history?: any;
     isDefault: boolean;
 }
@@ -19,7 +18,8 @@ interface IState {
     name: string;
 }
 
-@translate(['auth/generateKey', 'auth/setAccount', 'utils/notice'])
+const translate = withTranslation(['auth/generateKey', 'auth/setAccount', 'utils/notice']);
+
 class GenerateKey extends React.Component<IProps, IState>{
 
     constructor(props: IProps){
@@ -122,4 +122,4 @@ class GenerateKey extends React.Component<IProps, IState>{
     }
 }
 
-export default ws<IProps>(withRouter(GenerateKey));
+export default ws<IProps>(withRouter(translate(GenerateKey)));

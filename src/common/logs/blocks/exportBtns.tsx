@@ -10,7 +10,7 @@ const { dialog, app } = remote;
 
 import * as React from 'react';
 import {connect} from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import notice from 'utils/notice';
 import * as api from 'utils/api';
@@ -18,10 +18,8 @@ import * as api from 'utils/api';
 import {State} from 'typings/state';
 import {LocalSettings} from 'typings/settings';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     localSettings?: LocalSettings;
-
     exportControllerLogsToFile(evt: any): void;
 }
 
@@ -29,7 +27,6 @@ interface IState {
     disabledBtn: boolean;
 }
 
-@translate('logs/logsList')
 class ExportBtns extends React.Component<IProps, IState> {
 
     archiveName = 'dump.zip';
@@ -166,4 +163,4 @@ class ExportBtns extends React.Component<IProps, IState> {
     }
 }
 
-export default connect((state: State) => ({localSettings: state.localSettings}))(ExportBtns);
+export default connect((state: State) => ({localSettings: state.localSettings}))(withTranslation('logs/logsList')(ExportBtns));

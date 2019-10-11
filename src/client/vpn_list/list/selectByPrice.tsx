@@ -1,11 +1,10 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { Range } from 'rc-slider';
 
 import toFixedN from 'utils/toFixedN';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     onChangeMinPrice(evt: any): void;
     onChangeMaxPrice(evt: any): void;
     onChangeRange(evt: any): void;
@@ -19,7 +18,7 @@ interface IProps {
 interface IState {
 }
 
-const translated = translate(['client/vpnList']);
+const translated = withTranslation(['client/vpnList']);
 
 class SelectByPrice extends React.Component<IProps, IState>{
 

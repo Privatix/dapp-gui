@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import SelectCountry from '../selectCountry/';
 import DotProgress from 'common/progressBars/dotProgress';
@@ -9,15 +9,15 @@ interface SelectItem {
     label: string;
 }
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     locations: SelectItem[];
     selectedLocation: SelectItem;
     onChangeLocation: Function;
 }
 
-@translate(['client/simpleMode'])
-export default class PingLocations extends React.Component<IProps, {}> {
+const translate = withTranslation(['client/simpleMode']);
+
+class PingLocations extends React.Component<IProps, {}> {
 
     render(){
 
@@ -52,3 +52,5 @@ export default class PingLocations extends React.Component<IProps, {}> {
         );
     }
 }
+
+export default translate(PingLocations);

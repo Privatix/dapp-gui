@@ -18,6 +18,7 @@ export default class Offerings {
     }
 
     async init(){
+        await this.ws.whenAuthorized();
         const allOfferings = await this.ws.getClientOfferings('', 0, 0, [], [], 0, 0);
         const clientOfferings = allOfferings.items.filter(this.isProperOffering);
         this.offerings = clientOfferings;
@@ -33,18 +34,20 @@ export default class Offerings {
 
 
     private onNewOffering = (evt: any) => {
-        if(evt.job.Status !== 'done'){
-            // TODO check fault?
-            return;
-        }
+        if(evt && evt.job && evt.object){
+            if(evt.job.Status !== 'done'){
+                // TODO check fault?
+                return;
+            }
 
-        if(evt.object.currentSupply <= 0){
-            // TODO ?
-            return;
-        }
+            if(evt.object.currentSupply <= 0){
+                // TODO ?
+                return;
+            }
 
-        this.addOffering({offering: evt.object, rating: 0});
-        this.emit('newOffering');
+            this.addOffering({offering: evt.object, rating: 0});
+            this.emit('newOffering');
+        }
     }
 
     private addOffering(offeringItem: ClientOfferingItem){
@@ -58,10 +61,12 @@ export default class Offerings {
     }
 
     private onSupplyChange = (evt: any) => {
-        const current = this.offerings.find(item => item.offering.id === evt.object.id);
-        this.offerings = this.offerings.filter(item => item.offering.id !== evt.object.id);
-        this.addOffering({offering: evt.object, rating: current.rating});
-        this.emit('supplyChange');
+        if(evt.object){
+            const current = this.offerings.find(item => item.offering.id === evt.object.id);
+            this.offerings = this.offerings.filter(item => item.offering.id !== evt.object.id);
+            this.addOffering({offering: evt.object, rating: current ? current.rating : 0});
+            this.emit('supplyChange');
+        }
         console.log('supplyChange', evt);
     }
 

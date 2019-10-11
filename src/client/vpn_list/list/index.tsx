@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import { connect } from 'react-redux';
 import Pagination from 'react-js-pagination';
 
@@ -28,8 +28,7 @@ import SelectByIPType from './selectByIPType';
 import { State } from 'typings/state';
 import { ClientOfferingItem } from 'typings/offerings';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     ws?: State['ws'];
     offerings: State['offerings'];
     dispatch?: any;
@@ -72,7 +71,6 @@ interface IState {
     };
 }
 
-@translate(['client/vpnList', 'utils/notice', 'common'])
 class VPNList extends React.Component<IProps, IState> {
 
     checkAvailabilityBtn = null;
@@ -488,4 +486,4 @@ export default connect( (state: State) => (
     ,offerings: state.offerings
     ,offeringsAvailability: state.offeringsAvailability
     ,localSettings: state.localSettings
-    }) )(VPNList);
+    }) )(withTranslation(['client/vpnList', 'utils/notice', 'common'])(VPNList));

@@ -1,9 +1,10 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import ChannelsListByStatus from './channelsListByStatus';
 
-@translate(['channels/channelsList', 'common'])
+const translate = withTranslation(['channels/channelsList', 'common']);
+
 class ChannelsList extends React.Component<any, any> {
 
     render() {
@@ -24,4 +25,4 @@ class ChannelsList extends React.Component<any, any> {
 
 }
 
-export default ChannelsList;
+export default translate(ChannelsList);

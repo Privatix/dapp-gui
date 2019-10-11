@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
 import Offering from './offering';
@@ -12,14 +12,14 @@ import { ResolvedOffering } from 'typings/offerings';
 
 import { Hash, ServiceName, Server, OfferingStatus, AvailableSupply, Supply } from 'common/tables/';
 
-interface IProps {
+interface IProps extends WithTranslation{
     products: ProductType[];
     offerings: ResolvedOffering[];
-    t?: any;
     showRemoved?: boolean;
 }
 
-@translate(['offerings/offeringsList'])
+const translate = withTranslation(['offerings/offeringsList']);
+
 class OfferingsListView extends React.Component<IProps, any> {
 
     render() {
@@ -74,4 +74,4 @@ class OfferingsListView extends React.Component<IProps, any> {
 
 }
 
-export default OfferingsListView;
+export default translate(OfferingsListView);

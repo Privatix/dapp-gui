@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import * as uuidv4 from 'uuid/v4';
+import uuidv4 from 'uuid/v4';
 
 import * as api from './api';
 import { Template, TemplateType } from 'typings/templates';
@@ -37,10 +37,10 @@ export class WS {
 
     constructor(log: any) {
         this.log = log;
-        this.ready = new Promise((resolve: Function, reject: Function) => {
+        this.ready = new Promise((resolve: Function) => {
             this.resolve = resolve;
         });
-        this.authorized = new Promise((resolve: Function, reject: Function) => {
+        this.authorized = new Promise((resolve: Function) => {
             this.resolveAuth = resolve;
         });
         api.settings.getLocal()
@@ -56,10 +56,10 @@ export class WS {
         this.socket = socket;
 
         if(!this.resolve){
-            this.ready = new Promise((resolve: Function, reject: Function) => {
+            this.ready = new Promise((resolve: Function) => {
                 this.resolve = resolve;
             });
-            this.authorized = new Promise((resolve: Function, reject: Function) => {
+            this.authorized = new Promise((resolve: Function) => {
                 this.resolveAuth = resolve;
             });
         }
@@ -106,7 +106,7 @@ export class WS {
           // log.log('Data received: ' + event.data);
         };
 
-        socket.onerror = function(error: any) {
+        socket.onerror = function() {
           // log.log('Error ' + error.message);
         };
 
@@ -142,7 +142,7 @@ export class WS {
     }
 
     private _subscribe (uuid: string, entityType:string, ids: string[], handler: Function, onReconnect: Function){
-        return new Promise((resolve: Function, reject: Function) => {
+        return new Promise((resolve: Function) => {
             switch(entityType){
                 case 'usage':
                     const usagePolling = async () => {
@@ -546,7 +546,7 @@ export class WS {
 }
 
 export const ws = function<T>(constructor: React.ComponentType){
-    return connect( (state: State, onProps: T) => {
-        return (Object.assign({}, {ws: state.ws}, onProps));
+    return connect( (state: State, ownProps: any) => {
+        return (Object.assign({}, {ws: state.ws}, ownProps) as T);
     } )(constructor);
 };

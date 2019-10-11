@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { withRouter } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import PgTime from 'common/etc/pgTime';
 import ContractStatus from 'common/badges/contractStatus';
@@ -15,11 +15,10 @@ import { State } from 'typings/state';
 import { ClientChannel } from 'typings/channels';
 import { Offering } from 'typings/offerings';
 
-interface IProps {
+interface IProps extends WithTranslation {
     channel: ClientChannel;
     ws?: State['ws'];
-    t?: any;
-    history: any;
+    history?: any;
     render: any;
 }
 
@@ -27,7 +26,6 @@ interface IState {
     offering: Offering;
 }
 
-@translate(['client/serviceView', 'utils/notice'])
 class ServiceView extends React.Component <IProps, IState> {
 
     constructor(props: IProps) {
@@ -116,4 +114,5 @@ class ServiceView extends React.Component <IProps, IState> {
     }
 }
 
-export default connect( (state: State, ownProps: any) => Object.assign({}, {ws: state.ws}, ownProps))(withRouter(ServiceView));
+export default connect( (state: State, ownProps: any) => Object.assign({}, {ws: state.ws}, ownProps))
+              (withRouter(withTranslation(['client/serviceView', 'utils/notice'])(ServiceView)));

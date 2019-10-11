@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import { WS, ws } from 'utils/ws';
 import {Channel} from 'typings/channels';
@@ -14,14 +14,14 @@ import ContractStatus from 'common/badges/contractStatus';
 import Prix from 'common/badges/PRIX';
 import Offering from 'agent/offerings/offeringView';
 
-interface IProps{
+interface IProps extends WithTranslation {
     ws?: WS;
-    t?: any;
     render?: Function;
     channel: Channel;
 }
 
-@translate('channels/channelView')
+const translate = withTranslation('channels/channelView');
+
 class ChannelView extends React.Component<IProps, any> {
 
     constructor(props: IProps){
@@ -111,4 +111,4 @@ class ChannelView extends React.Component<IProps, any> {
     }
 }
 
-export default ws<IProps>(ChannelView);
+export default ws<IProps>(translate(ChannelView));

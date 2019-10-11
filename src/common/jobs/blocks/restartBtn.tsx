@@ -1,11 +1,10 @@
 import * as React from 'react';
 import {connect} from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import {State} from 'typings/state';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     jobId: string;
     onClick?: Function;
     ws?: State['ws'];
@@ -15,7 +14,6 @@ interface IState {
     disabledBtn: boolean;
 }
 
-@translate('jobs/jobsList')
 class RestartBtn extends React.Component<IProps, IState> {
 
     constructor(props: IProps) {
@@ -53,4 +51,4 @@ class RestartBtn extends React.Component<IProps, IState> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws}) )(RestartBtn);
+export default connect( (state: State) => ({ws: state.ws}) )(withTranslation('jobs/jobsList')(RestartBtn));

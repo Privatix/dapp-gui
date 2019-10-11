@@ -40,6 +40,7 @@ export default class Channel {
 
     async checkChannels(){
         const ws = this.ws;
+        await ws.whenAuthorized();
         const channels = await ws.getNotTerminatedClientChannels();
         if(channels.length){
             if(this.model){
@@ -54,6 +55,7 @@ export default class Channel {
     }
 
     async subscribeOnNewChannel(){
+        await this.ws.whenAuthorized();
         const id = await this.ws.subscribe('channel', ['clientPreChannelCreate'], this._onChannelCreated);
         this.newChannelSubscription = id;
     }
@@ -141,6 +143,7 @@ export default class Channel {
         if(this.model){
             throw new Error('already created channel');
         }else{
+            this.usage = null;
             try{
                 const acceptRes = await this.ws.acceptOffering(account.ethAddr, offeringId, deposit, gasPrice);
                 if(typeof acceptRes === 'string') {
@@ -148,13 +151,14 @@ export default class Channel {
                 }else{
                     // TODO onAcceptOfferingFailed
                 }
+                return acceptRes;
             }catch(e){
                 // TODO onAcceptOfferingFailed
             }
         }
     }
 
-    private _onChannelCreated = async (evt: any) => {
+    private _onChannelCreated = async () => {
         await this.checkChannels();
     }
 
@@ -225,6 +229,7 @@ export default class Channel {
                 startWatchingClosing(channel.id);
             }
         }
+
         switch(channel.channelStatus.serviceStatus){
             case 'active':
                 if(model && model.channelStatus.serviceStatus !== 'active'){
@@ -283,6 +288,12 @@ export default class Channel {
                     this.emit('StatusChanged');
                 }
                 break;
+            case 'terminated':
+                if(this.mode === Mode.SIMPLE && model && model.id === channel.id){
+                    this.model = null;
+                    this.usage = null;
+                }
+                break;
         }
     }
 
@@ -291,11 +302,19 @@ export default class Channel {
             throw new Error('there is no channel');
         }
         try{
+            const serviceStatus = this.model.channelStatus.serviceStatus;
             await this.ws.changeChannelStatus(this.model.id, 'terminate');
+            if(serviceStatus === 'active'){
+                this.emit('Disconnected');
+            }
             this.status = 'disconnecting';
+            if(this.mode === 'advanced'){
+                this.model = null;
+            }
             this.usage = null;
             this.sessionsDuration = 0;
             this.emit('StatusChanged');
+            this.emit('Terminated');
         }catch(e){
             // TODO onTerminateFailed
         }
@@ -307,8 +326,21 @@ export default class Channel {
         }
         try{
             await this.ws.changeChannelStatus(this.model.id, 'close');
+            this.usage = null;
         }catch(e){
             // TODO onCloseFailed
+        }
+    }
+
+    async pause(){
+        if(!this.model){
+            throw new Error('there is no channel');
+        }
+        try{
+            await this.ws.changeChannelStatus(this.model.id, 'pause');
+            this.emit('Disconnected');
+        }catch(e){
+            // TODO onPauseFailed
         }
     }
 
@@ -321,6 +353,10 @@ export default class Channel {
         }catch(e){
             // TODO onResumeFailed
         }
+    }
+
+    topUp(deposit: number, gasPrice: number){
+        return this.ws.topUp(this.model.id, deposit, gasPrice);
     }
 
     addEventListener(evtName: string, listener: Function){

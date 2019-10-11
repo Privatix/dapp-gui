@@ -102,7 +102,7 @@ export const createStorage = () => {
 
 
     api.on('releases', async function(event: any, data: any){
-
+        log.log(event, data);
         const { ws } = storage.getState();
         if(ws){
             await ws.whenAuthorized();
@@ -157,13 +157,6 @@ export const createStorage = () => {
         const { ws, role, serviceName, channel, offerings } = storage.getState();
 
         if(ws) {
-
-            await ws.whenAuthorized();
-
-            if(role === Role.AGENT){
-                storage.dispatch(asyncProviders.updateProducts());
-                storage.dispatch(asyncProviders.updateTotalIncome());
-            }
             if(role === Role.CLIENT){
                 if(!channel){
                     const channel = new Channel(ws);
@@ -171,9 +164,15 @@ export const createStorage = () => {
                 }
                 if(!offerings){
                     const offerings = new Offerings(ws);
-                    offerings.init();
                     storage.dispatch(handlers.setOfferings(offerings));
+                    offerings.init();
                 }
+            }
+            await ws.whenAuthorized();
+
+            if(role === Role.AGENT){
+                storage.dispatch(asyncProviders.updateProducts());
+                storage.dispatch(asyncProviders.updateTotalIncome());
             }
 
             if(serviceName === ''){

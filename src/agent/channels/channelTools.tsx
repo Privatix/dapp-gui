@@ -1,12 +1,13 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import ConfirmPopupSwal from 'common/confirmPopupSwal';
 
 import { State } from 'typings/state';
 
-@translate('channels/channelView')
+const translate = withTranslation('channels/channelView');
+
 class ChannelTools extends React.Component<any, any>{
 
     constructor(props: any) {
@@ -51,4 +52,4 @@ class ChannelTools extends React.Component<any, any>{
     }
 }
 
-export default connect((state: State) => ({ws: state.ws}))(ChannelTools);
+export default connect((state: State) => ({ws: state.ws}))(translate(ChannelTools));

@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 import SortableTable from 'react-sortable-table-vilan';
 
 import {
@@ -16,7 +16,7 @@ import {
     , Rating
 } from 'common/tables/';
 
-const translated = translate(['client/vpnList', 'common']);
+const translated = withTranslation(['client/vpnList', 'common']);
 
 class VPNListTable extends React.Component<any,any> {
 

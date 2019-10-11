@@ -4,19 +4,19 @@ import { connect } from 'react-redux';
 import handlers from 'redux/actions';
 
 import ReactSweetAlert from 'react-sweetalert-vilan';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import {State} from 'typings/state';
 import {remote} from 'electron';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     showExternalLink: boolean;
     externalLink: string;
     dispatch: any;
 }
 
-@translate(['externalLinks/warning'])
+const translate = withTranslation(['externalLinks/warning']);
+
 class ExternalLinkWarning extends React.Component<IProps, {}>{
 
     cancelHandler = () => {
@@ -54,4 +54,4 @@ class ExternalLinkWarning extends React.Component<IProps, {}>{
     }
 }
 
-export default connect( (state: State) => ({showExternalLink: state.showExternalLink, externalLink: state.externalLink}) )(ExternalLinkWarning);
+export default connect( (state: State) => ({showExternalLink: state.showExternalLink, externalLink: state.externalLink}) )(translate(ExternalLinkWarning));

@@ -50,7 +50,7 @@ export default function(notice: Notice, delay?: number){
     const target = document.getElementById('noticeHolder');
     const holder = document.createElement('div');
 
-    const selfDestroy = (evt?:any) => {
+    const selfDestroy = () => {
         ReactDOM.unmountComponentAtNode(holder);
     };
 
@@ -78,4 +78,13 @@ export const clearNotices = function(){
 
 export const isNotice = function(elem:any){
     return document.getElementById('noticeHolder').contains(elem);
+};
+
+export const notify = function(msg: string){
+    const notification = new Notification('Privatix', {
+      body: msg
+    });
+    notification.onclick = () => {
+      //
+    };
 };

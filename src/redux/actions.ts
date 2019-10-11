@@ -62,106 +62,12 @@ const handlers  = {
     setTransferringFlag        : function(flag: boolean){ return { type: actions.SET_TRANSFERRING_FLAG, value: flag };}
 };
 
-const notify = function(msg: string){
-    const notification = new Notification('Privatix', {
-      body: msg
-    });
-    notification.onclick = () => {
-      //
-    };
-};
-
 export const asyncProviders = {
-    observeChannel: function(){
-
-        const refresh = async function(dispatch: any, getState: Function, evt?: any){
-            let context = {} as any;
-            const startWatchingClosing = async (channelId: string) => {
-
-                const { ws } = getState();
-                const Watcher = class {
-                    private _subscriptionId = null;
-                    private unsubscribe = false;
-
-                    get subscriptionId(){
-                        return this._subscriptionId;
-                    }
-
-                    set subscriptionId(id: string){
-                        this._subscriptionId = id;
-                        if(this.unsubscribe){
-                            ws.unsubscribe(id);
-                        }
-                    }
-                    checkIfComplete = (evt: any) => {
-                        if(evt.object.serviceStatus === 'terminated' && evt.object.channelStatus === 'active'){
-                            ws.changeChannelStatus(evt.object.id, 'close');
-                            if(this.subscriptionId){
-                                ws.unsubscribe(this.subscriptionId);
-                            }else{
-                                this.unsubscribe = true;
-                            }
-                        }
-                    }
-                };
-                const watcher = new Watcher();
-                watcher.subscriptionId = await ws.subscribe('channel', [channelId], watcher.checkIfComplete);
-            };
-            const { channel, ws, mode } = getState();
-            if(evt){
-                if(evt.object.serviceStatus === 'terminating' && mode === Mode.SIMPLE){
-                    if(evt.object.receiptBalance === 0){
-                        startWatchingClosing(evt.object.id);
-                    }
-                }
-            }
-
-            const handler = refresh.bind(null, dispatch, getState);
-            const channels = await ws.getNotTerminatedClientChannels();
-            
-            if(channels.length){
-                dispatch(handlers.setChannel(channels[0]));
-                if(channels[0].channelStatus.serviceStatus === 'active'){
-                    if(context.connected === false){
-                        context.connected = true;
-                        notify(i18n.t('client/simpleMode:connectedMsg'));
-                    }
-                }
-                if(!channel || channel.id !== channels[0].id){
-                    if(context.channelSubscription){
-                        ws.unsubscribe(context.channelSubscription);
-                        context.channelSubscription = null;
-                    }
-                    const channelSubscription = await ws.subscribe('channel', [channels[0].id], handler, handler);
-                    const { channelObserverContext: updatedContext } = getState();
-                    if(!updatedContext.channelSubscription){
-                        updatedContext.channelSubscription = channelSubscription;
-                    }else{
-                        ws.unsubscribe(channelSubscription);
-                    }
-                }
-            }else{
-                dispatch(handlers.setChannel(null));
-                if(context.connected === true){
-                    notify(i18n.t('client/simpleMode:disconnectedMsg'));
-                    // dispatch(handlers.setIP(''));
-                }
-                context.connected = false;
-
-                if(context.channelSubscription){
-                    ws.unsubscribe(context.channelSubscription);
-                    context.channelSubscription = null;
-                }
-            }
-        };
-
-        return refresh;
-    },
     updateAccounts: function(){
         return async function(dispatch: any, getState: Function){
             const { ws, role, autoTransfer, localSettings } = getState();
 
-            const startWatchingTransfer = async (accountId: string, address: string, amount: number) => {
+            const startWatchingTransfer = async (accountId: string) => {
 
                 const Watcher = class {
                     private _subscriptionId = null;
@@ -227,7 +133,7 @@ export const asyncProviders = {
 
                 if(localSettings.gas.transfer*gasPrice <= account.ethBalance){
                     dispatch(handlers.setTransferringFlag(true));
-                    startWatchingTransfer(account.id, account.ethAddr, account.ptcBalance);
+                    startWatchingTransfer(account.id);
                     ws.transferTokens(account.id, 'psc', account.ptcBalance, gasPrice);
                 }else{
                     dispatch(handlers.addNotice({code: 0, notice: {level: 'warning', msg: i18n.t('transferTokens:TransferPRIXNotEnoughETH')}}));
@@ -328,7 +234,7 @@ export const asyncProviders = {
         };
     },
     setMode: function(mode: Mode){
-        return async function(dispatch: any, getState: Function){
+        return async function(dispatch: any){
 
             const { window } = await api.settings.getLocal();
             let { width, height } = window[mode];

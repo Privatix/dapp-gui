@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 
 import SelectCountry from '../selectCountry/';
 import DotProgress from 'common/progressBars/dotProgress';
@@ -16,8 +16,7 @@ interface SelectItem {
     label: string;
 }
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     selectedLocation: SelectItem;
     // channel: Channel;
     ip: string;
@@ -34,8 +33,9 @@ interface IState {
     disconnecting: boolean;
 }
 
-@translate(['client/simpleMode'])
-export default class Connected extends React.Component<IProps, IState> {
+const translate = withTranslation(['client/simpleMode']);
+
+class Connected extends React.Component<IProps, IState> {
 
     private tickerHandler = null;
 
@@ -138,3 +138,5 @@ export default class Connected extends React.Component<IProps, IState> {
         );
     }
 }
+
+export default translate(Connected);

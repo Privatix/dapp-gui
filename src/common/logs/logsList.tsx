@@ -1,9 +1,9 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { WithTranslation, withTranslation } from 'react-i18next';
 import Pagination from 'react-js-pagination';
 
-import * as moment from 'moment';
+import moment from 'moment';
 
 import { remote } from 'electron';
 const {dialog} = remote;
@@ -20,8 +20,7 @@ import LevelsFilter from './blocks/levelsFilter';
 import TimeFilter from './blocks/timeFilter';
 import LogsTable from './blocks/table';
 
-interface IProps {
-    t?: any;
+interface IProps extends WithTranslation {
     localSettings: State['localSettings'];
     ws: State['ws'];
 }
@@ -40,7 +39,6 @@ interface IState {
     lang: string;
 }
 
-@translate(['logs/logsList', 'common'])
 class Logs extends React.Component <IProps, IState> {
 
     constructor(props:IProps) {
@@ -51,8 +49,8 @@ class Logs extends React.Component <IProps, IState> {
 
         this.state = {
             logsData: [],
-            dateFrom: moment().subtract(1, 'day'),
-            dateTo: moment(),
+            dateFrom: moment().subtract(1, 'day').toDate(),
+            dateTo: new Date(),
             searchText: '',
             activePage: 1,
             pages: 1,
@@ -149,7 +147,7 @@ class Logs extends React.Component <IProps, IState> {
     }
 
     handleNow = () => {
-        this.handleChangeDateTo(moment());
+        this.handleChangeDateTo(new Date());
     }
 
     handlePageChange = (activePage:number) => {
@@ -269,7 +267,6 @@ class Logs extends React.Component <IProps, IState> {
                                     lang={lang}
                                     handleChangeDate={this.handleChangeDateFrom}
                                 />
-
                                 <TimeFilter
                                     blockClass='logsTimeFilterToBl'
                                     label={t('LogsFilterTo')}
@@ -295,4 +292,4 @@ class Logs extends React.Component <IProps, IState> {
     }
 }
 
-export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(Logs);
+export default connect( (state: State) => ({ws: state.ws, localSettings: state.localSettings}) )(withTranslation(['logs/logsList', 'common'])(Logs));

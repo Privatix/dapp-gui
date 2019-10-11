@@ -815,3 +815,7 @@ progress::-webkit-progress-value {
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
 }
+
+.react-datepicker .react-datepicker__time-container {
+    width: 65px;
+}

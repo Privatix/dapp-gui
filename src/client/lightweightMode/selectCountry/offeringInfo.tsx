@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
-import { translate } from 'react-i18next';
+import { withTranslation } from 'react-i18next';
 
 import MB from 'common/badges/MB';
 
@@ -8,7 +8,8 @@ import prix from 'utils/prix';
 
 import { State } from 'typings/state';
 
-@translate(['client/simpleMode'])
+const translate = withTranslation(['client/simpleMode']);
+
 class OfferingInfo extends React.Component<any, {}> {
 
     render(){
@@ -52,4 +53,4 @@ class OfferingInfo extends React.Component<any, {}> {
 export default connect((state: State) => ({
     autoIncreaseDeposit: state.settings['client.autoincrease.deposit'] === 'true'
    ,minFirstDeposit: parseFloat(state.settings['client.min.deposit'])
-}))(OfferingInfo);
+}))(translate(OfferingInfo));
